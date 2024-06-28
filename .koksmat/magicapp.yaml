@@ -1,0 +1,409 @@
+# https://locize.com/blog/next-app-dir-i18n/
+name: people
+type: magicservice
+organisation: magicbutton
+magicappversion: v0.0.1
+description: |
+  Application focusing on having a single point of entry in the form of a `person` to find all related information 
+  - Users, Companies, Groups, Relations, Systems, Countries
+react:
+  templates:
+    formfield: &formfield
+      markup: |
+        <FormField
+         control={form.control}
+         name="##NAME##"
+         render={({ field }) => (
+           <FormItem>
+             <FormLabel>##LABEL##</FormLabel>
+             <FormControl>
+               ##FORMCONTROL##
+             </FormControl>
+             <FormDescription>
+               ##DESCRIPTION##
+             </FormDescription>
+             <FormMessage />
+           </FormItem>
+         )}
+        />
+  components:
+    stringformfield: &StringFormField
+      name: formfield
+      template: *formfield
+      markup: |
+        <Input placeholder="##PLACEHOLDER##" {...field} />
+
+    numberformfield: &NumberFormField
+      name: formfield
+      template: *formfield
+
+      markup: |
+        <Input placeholder="##PLACEHOLDER##" {...field} />
+    intformfield: &IntFormField
+      name: formfield
+      template: *formfield
+
+      markup: |
+        <Input placeholder="##PLACEHOLDER##" {...field} />
+    datetimeformfield: &DateTimeFormField
+      name: formfield
+      template: *formfield
+
+      markup: |
+        <Input placeholder="##PLACEHOLDER##" {...field} />
+    booleanformfield: &BooleanFormField
+      name: formfield
+      template: *formfield
+      markup: |
+        <div>Boolean not implemented</div>
+      # markup: |
+      #   <Input placeholder="##PLACEHOLDER##" {...field} />
+    arrayformfield: &ArrayFormField
+      name: formfield
+      template: *formfield
+
+      markup: |
+        <Input placeholder="##PLACEHOLDER##" {...field} />
+    lookupformfield: &LookupFormField
+      name: formfield
+      template: *formfield
+
+      markup: |
+        <Input placeholder="##PLACEHOLDER##" {...field} />
+    referenceformfield: &ReferenceFormField
+      name: formfield
+      template: *formfield
+
+      markup: |
+        <Input placeholder="##PLACEHOLDER##" {...field} />
+
+    jsonformfield: &JSONFormField
+      name: formfield
+      template: *formfield
+
+      markup: |
+        <Input placeholder="##PLACEHOLDER##" {...field} />
+    viewitem: &ViewItem
+      name: viewitem
+      markup: |
+        export function ViewItem<T>(props: {caption:string, value:T}) {
+        const {caption, value} = props;
+        return (
+        <div>
+          <div className="font-bold">{caption}</h1>
+          <div >{value}</h1>
+        </div>
+        )
+        }
+    formitem: &EditItem
+      name: formitem
+      markup: |
+        export function EditItem<T>(props: { caption:string, FormField : FormFieldType<T>, value:T, onChange: (value:T) => void}) {
+        const {caption, value,ForField} = props;
+        return (
+        <div>
+          <div className="font-bold">{caption}</h1>
+          <div ><FormField<T> onChange={onChange} value={value} /></h1>
+        </div>
+        )
+        }
+defaults:
+  viewitem: *ViewItem
+  edititem: *EditItem
+  primitive:
+    json:
+      formfield: *JSONFormField
+
+    string:
+      formfield: *StringFormField
+    number:
+      formfield: *NumberFormField
+    datetime:
+      formfield: *DateTimeFormField
+    int:
+      formfield: *IntFormField
+    boolean:
+      formfield: *BooleanFormField
+    array:
+      formfield: *ArrayFormField
+    reference:
+      formfield: *LookupFormField
+baseattributes:
+  record:
+    &recordAttributes # Id + Created + Updated + CreatedBy + UpdatedBy are implicit
+    - name: tenant
+      type: string
+      displayname: Tenant
+      hidden: true
+      required: true
+    - name: searchindex
+      type: string
+      displayname: Search Index
+      description: |
+        Search Index is used for concatenating all searchable fields in a single field making in easier to search
+      hidden: true
+      required: true
+    - name: name
+      type: string
+      displayname: Name
+      required: true
+    - name: description
+      displayname: Description
+      type: string
+      required: false
+
+entities:
+  group: &group
+    name: group
+    description: Group
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: hidden
+        displayname: Hidden
+        type: boolean
+        required: false
+      - name: notesid
+        displayname: NotesId
+        type: string
+        required: true
+  country: &country
+    name: country
+    displayname: Country
+    description: Country
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: code
+        type: string
+        required: true
+  company: &company
+    name: company
+    displayname: Company
+    description: Company
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: vatnumber
+        displayname: Vat Number
+        type: string
+        required: true
+      - name: phonenumber
+        displayname: Phone Number
+        type: string
+        required: false
+      - name: address
+        displayname: Address
+        type: string
+        required: false
+      - name: city
+        displayname: City
+        type: string
+        required: false
+      - name: postalcode
+        displayname: Postal Code
+        type: string
+        required: false
+      - name: country
+        displayname: Country
+        type: reference
+        entity: *country
+        required: false
+  system: &system
+    name: system
+    displayname: System
+    description: System
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: version
+        displayname: Version
+        type: string
+        required: true
+
+  user: &user
+    name: user
+    displayname: User
+    description: User
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: system
+        displayname: System
+        type: reference
+        entity: *system
+        required: true
+      - name: fullname
+        displayname: FullName
+        type: string
+        required: true
+  relation: &relation
+    name: relation
+    displayname: Relation
+    description: Relation
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: relation
+        type: reference
+        displayname: Company Relation
+        entity: *company
+        required: false
+      - name: relationtype
+        displayname: Relation Type
+        type: string
+        required: false
+      - name: groups
+        displayname: Groups
+        type: array
+        entity: *group
+
+  person: &person
+    name: person
+    description: Person
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: email
+        displayname: Email
+        type: string
+        required: false
+        searchindex: true
+      - name: displayname
+        displayname: DisplayName
+        type: string
+        required: false
+        searchindex: true
+      - name: firstname
+        displayname: FirstName
+        type: string
+        required: true
+      - name: lastname
+        displayname: LastName
+        type: string
+        required: true
+      - name: uniqueid
+        displayname: Unique Id
+        type: string
+        required: true
+        searchindex: true
+
+      - name: nationality
+        displayname: Nationality
+        type: reference
+        entity: *country
+        required: false
+      - name: users
+        displayname: Users
+        type: array
+        entity: *relation
+        required: false
+
+models:
+  itemMethods: &itemMethods
+    - name: read
+      description: Read a single item
+      parameters:
+        - name: id
+          description: The id of the item
+          type: int64
+          required: true
+      returns:
+        type: object
+
+    - name: create
+      description: Create a new item
+      parameters:
+        - name: item
+          description: The item to create
+          type: object
+          required: true
+      returns:
+        type: object
+    - name: update
+      description: Update an existing item
+      parameters:
+        - name: item
+          description: The item to update
+          type: object
+          required: true
+      returns:
+        type: object
+
+    - name: delete
+      description: Delete an existing item
+      parameters:
+        - name: id
+          description: The id of the item
+          type: int64
+          required: true
+      returns:
+        type: void
+    - name: search
+      description: Search for items
+      parameters:
+        - name: query
+          description: The search query
+          type: string
+          required: true
+
+      returns:
+        type: page
+
+services:
+  - name: user
+    description: Manage users
+    entity:
+      type: record
+      model: user
+      objectname: User
+      entity: *user
+    methods: *itemMethods
+
+  - name: group
+    description: Manage Groups
+    entity:
+      type: record
+      model: group
+      objectname: Group
+      entity: *group
+    methods: *itemMethods
+
+  - name: country
+    description: Manage Countries
+    entity:
+      type: record
+      model: country
+      objectname: Country
+      entity: *country
+    methods: *itemMethods
+
+  - name: company
+    description: Manage Companies
+    entity:
+      type: record
+      model: company
+      objectname: Company
+      entity: *company
+    methods: *itemMethods
+
+  - name: person
+    description: Manage Persons
+    entity:
+      type: record
+      model: person
+      objectname: Person
+      entity: *person
+    methods: *itemMethods
+    viewitem:
+
+  - name: relation
+    description: Manage Relations
+    entity:
+      type: record
+      model: relation
+      objectname: Relation
+      entity: *relation
+    methods: *itemMethods
+
+  - name: system
+    description: Manage Systems
+    entity:
+      type: record
+      model: system
+      objectname: System
+      entity: *system
+    methods: *itemMethods

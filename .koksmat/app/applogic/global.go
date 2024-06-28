@@ -1,0 +1,5 @@
+package applogic
+
+func init() {
+
+}

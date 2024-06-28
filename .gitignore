@@ -1,0 +1,6 @@
+sessions
+workdir
+.DS_Store
+.env
+.koksmat/app/__debug*
+.koksmat/app/database/tern/tern.conf

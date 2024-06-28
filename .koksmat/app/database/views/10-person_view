@@ -1,0 +1,5 @@
+create OR REPLACE view public.view_person as
+select public.person.id as person_id, public.person.name as person_name, people.person."email (column 5)" as email, people.person."uniqueid (column 7)" as uniqueid
+from public.person 
+left join people.person
+on public.person.name = people.person."displayname (column 6)"
