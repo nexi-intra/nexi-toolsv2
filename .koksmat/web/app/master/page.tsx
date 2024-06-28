@@ -18,8 +18,19 @@ export default function Page() {
       
       {!consented && (
            <div className="h-full ">
-           What you see is a raw list of components in its v0.1 state. This means that the list includes the initial, basic elements that have been identified and included without any further refinement or organization. It's the earliest version, representing the foundation upon which further development and improvements will be made. At this stage, the components are likely to be in a rough, unpolished form, serving as a preliminary outline rather than a finalized, well-structured product.
+           <p>
+           What you see is a raw list of components in its v0.1 state. 
+           </p>
+           <p>
+           This means that the list includes the initial, basic elements that have been identified and included without 
+           any further refinement or organization. 
+           </p>
+           <p>
+           It&apos;s the earliest version, representing the foundation upon which further development and improvements will be made. At this stage, the components are likely to be in a rough, unpolished form, serving as a preliminary outline rather than a finalized, well-structured product.
+           </p>
+           <p>
            <Button onClick={()=>setconsented(true)}>OK</Button>
+           </p>
            </div>
       )}
       {consented && (
