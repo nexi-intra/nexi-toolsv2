@@ -19,33 +19,8 @@ import { leftRailApps } from "../../components/navigation";
 export default function Layout(props: { children: any }) {
   const { children } = props;
   const magicbox = useContext(MagicboxContext);
-  if (!magicbox) {
-    return <div>no magicbox</div>;
-  }
-  if (!magicbox.user) {
-    return (
-      <div className="flex h-screen">
-        <div className="grow"></div>
-        <div className="flex flex-col">
-          <div className="grow"></div>
-          <div>
-            {" "}
-            <Button
-              onClick={async () => {
-                const signedIn = await magicbox.signIn(["User.Read"], "");
-
-                magicbox.refresh();
-              }}
-            >
-              Sign In using Microsoft 365 account
-            </Button>
-          </div>
-          <div className="grow"></div>
-        </div>
-        <div className="grow"></div>
-      </div>
-    );
-  }
+ 
+ 
   return (
     <AppProvider>
       <div className="flex bg-[#2D32A9] h-[80px]">
