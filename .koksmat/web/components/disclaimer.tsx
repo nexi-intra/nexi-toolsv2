@@ -26,7 +26,7 @@ export function Disclaimer(props : {onConsent : ()=>void}) {
         <div className="mx-auto max-w-2xl rounded-lg bg-card p-6 text-center shadow">
           <div className="mb-4 text-lg font-medium text-muted-foreground">Disclaimer</div>
           <p className="mb-6 text-muted-foreground">
-            Please read the following disclaimer carefully. By clicking "Continue", you acknowledge and understand the
+            Please read the following disclaimer carefully. By clicking &quot;Continue&quot;, you acknowledge and understand the
             terms of this disclaimer.
           </p>
           <p className="mb-6 text-sm text-muted-foreground">
