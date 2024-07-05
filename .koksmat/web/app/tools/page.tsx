@@ -12,12 +12,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 export default function Page() {
-  const [consented, setconsented] = useState(true);
+  const [consented, setconsented] = useState(false);
   return (
     <div>
       {!consented && (
         <div className="h-full ">
-          <p>What you see is a raw list of components in its v0.1 state.</p>
+          <p>What you see is in very early stage</p>
           <p>
             This means that the list includes the initial, basic elements that
             have been identified and included without any further refinement or
@@ -46,7 +46,6 @@ export default function Page() {
           <SectionRegion />
 
           <ToolMedium />
-          <ToolLarge />
         </div>
       )}
     </div>

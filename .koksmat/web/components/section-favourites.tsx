@@ -13,6 +13,15 @@ import { ToolMiniature } from "./tool-miniature";
 import { useEffect, useState } from "react";
 import { getBadge } from "@/lib/getbadge";
 import { FavouriteIcon } from "./favourite-icon";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ToolLarge } from "./tool-large";
 
 export interface ToolsProps {
   weburl: string;
@@ -57,7 +66,7 @@ where weburl ilike '%/Lists/Applications/%'
   const [search, setsearch] = useState("");
   const [foundTools, setfoundTools] = useState<ToolsProps[]>([]);
   const [favourites, setfavourites] = useState<ToolsProps[]>([]);
-  const [selectedTool, setselectedTool] = useState<ToolsProps>();
+  const [selectedTool, setselectedTool] = useState<ToolsProps | null>(null);
 
   useEffect(() => {
     if (search === "") {
@@ -71,14 +80,17 @@ where weburl ilike '%/Lists/Applications/%'
     }
   }, [search]);
 
-  const isFavourite = (tool: ToolsProps) => {
+  const isFavourite = (tool: ToolsProps | null) => {
+    if (tool === null) return false;
     return favourites.includes(tool);
   };
-  const addFavourite = (tool: ToolsProps) => {
+  const addFavourite = (tool: ToolsProps | null) => {
+    if (tool === null) return false;
     if (isFavourite(tool)) return;
     setfavourites([...favourites, tool]);
   };
-  const removeFavourite = (tool: ToolsProps) => {
+  const removeFavourite = (tool: ToolsProps | null) => {
+    if (tool === null) return false;
     setfavourites(favourites.filter((favourite) => favourite !== tool));
   };
 
@@ -93,7 +105,7 @@ where weburl ilike '%/Lists/Applications/%'
           </p>
         </div>
         <div className="relative">
-          <SearchIcon className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+          <SearchIcon className="absolute left-3 top-2 h-5 w-5 text-muted-foreground" />
           <Input
             type="search"
             value={search}
@@ -112,7 +124,7 @@ where weburl ilike '%/Lists/Applications/%'
                 <div
                   key={index}
                   style={{ animationDelay: index * 100 + "ms" }}
-                  className={"animate-fadeIn "}
+                  className={"Xanimate-fadeIn "}
                 >
                   <ToolMiniature
                     weburl={tool.weburl}
@@ -127,6 +139,7 @@ where weburl ilike '%/Lists/Applications/%'
                       }
                     }}
                     onClick={function (): void {
+                      setselectedTool(tool);
                       // throw new Error("Function not implemented.");
                     }}
                   />
@@ -146,28 +159,30 @@ where weburl ilike '%/Lists/Applications/%'
         </h2>
         <p className="text-blue-600 mt-2 cursor-pointer">+ Add tool</p>
         <div className="flex space-x-4 mt-4 flex-wrap ">
-          {favourites.map((tool, index) => {
-            return (
-              <div key={index}>
-                <ToolMiniature
-                  weburl={tool.weburl}
-                  title={tool.title}
-                  badge={getBadge(1)}
-                  isfavourite={isFavourite(tool)}
-                  onClick={function (): void {
-                    //throw new Error("Function not implemented.");
-                  }}
-                  tooglefavourite={function (): void {
-                    if (isFavourite(tool)) {
-                      removeFavourite(tool);
-                    } else {
-                      addFavourite(tool);
-                    }
-                  }}
-                />
-              </div>
-            );
-          })}
+          {favourites
+            .sort((a, b) => a.title.localeCompare(b.title))
+            .map((tool, index) => {
+              return (
+                <div key={index}>
+                  <ToolMiniature
+                    weburl={tool.weburl}
+                    title={tool.title}
+                    badge={getBadge(1)}
+                    isfavourite={isFavourite(tool)}
+                    onClick={function (): void {
+                      //throw new Error("Function not implemented.");
+                    }}
+                    tooglefavourite={function (): void {
+                      if (isFavourite(tool)) {
+                        removeFavourite(tool);
+                      } else {
+                        addFavourite(tool);
+                      }
+                    }}
+                  />
+                </div>
+              );
+            })}
         </div>
       </div>
       {/* <div>
@@ -182,6 +197,40 @@ where weburl ilike '%/Lists/Applications/%'
           <Button className="bg-blue-400 text-white">Lorem Ipsum</Button>
         </div>
       </div> */}
+      <Dialog
+        open={selectedTool !== null}
+        onOpenChange={(open) => {
+          if (!open) setselectedTool(null);
+        }}
+      >
+        {/* <DialogTrigger>Open</DialogTrigger> */}
+        <DialogContent>
+          {/* <DialogHeader>
+            <DialogTitle>Are you absolutely sure?</DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. This will permanently delete your
+              account and remove your data from our servers.
+            </DialogDescription>
+          </DialogHeader> */}
+          <ToolLarge
+            weburl={selectedTool?.weburl ?? ""}
+            title={selectedTool?.title ?? ""}
+            description={selectedTool?.description ?? ""}
+            badge={getBadge(1)}
+            isfavourite={isFavourite(selectedTool)}
+            tooglefavourite={function (): void {
+              if (isFavourite(selectedTool)) {
+                removeFavourite(selectedTool);
+              } else {
+                addFavourite(selectedTool);
+              }
+            }}
+            onClick={function (): void {
+              // throw new Error("Function not implemented.");
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

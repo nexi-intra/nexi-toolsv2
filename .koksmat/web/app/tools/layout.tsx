@@ -45,7 +45,7 @@ export default function Layout(props: { children: any }) {
   }
   return (
     <AppProvider>
-      <div className="flex bg-[#2D32A9] h-[80px]">
+      {/* <div className="flex bg-[#2D32A9] h-[80px]">
         <div className="hidden md:block w-14 "></div>
         <div className="p-2 text-white font-extralight text-2xl  md:text-4xl mt-3 ml-10 md:mt-2 md:ml-0 w-full">
           <div className="flex">
@@ -59,8 +59,7 @@ export default function Layout(props: { children: any }) {
             </div>
           </div>
         </div>
-        $$
-      </div>
+      </div> */}
       <div className="flex min-h-[calc(100vh-80px)]">
         <div className="hidden ">
           <AppLeftRail {...leftRailApps} />
