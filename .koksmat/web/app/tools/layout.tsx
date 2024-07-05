@@ -19,8 +19,30 @@ import { leftRailApps } from "../../components/navigation";
 export default function Layout(props: { children: any }) {
   const { children } = props;
   const magicbox = useContext(MagicboxContext);
- 
- 
+  if (!magicbox.user) {
+    return (
+      <div className="flex h-screen">
+        <div className="grow"></div>
+        <div className="flex flex-col">
+          <div className="grow"></div>
+          <div>
+            {" "}
+            <Button
+              onClick={async () => {
+                const signedIn = await magicbox.signIn(["User.Read"], "");
+
+                magicbox.refresh();
+              }}
+            >
+              Sign In using Microsoft 365 account
+            </Button>
+          </div>
+          <div className="grow"></div>
+        </div>
+        <div className="grow"></div>
+      </div>
+    );
+  }
   return (
     <AppProvider>
       <div className="flex bg-[#2D32A9] h-[80px]">
@@ -28,7 +50,7 @@ export default function Layout(props: { children: any }) {
         <div className="p-2 text-white font-extralight text-2xl  md:text-4xl mt-3 ml-10 md:mt-2 md:ml-0 w-full">
           <div className="flex">
             <div>
-              <Link href="/">{"master"}</Link>
+              <Link href="/">{"tools"}</Link>
             </div>
             <div className="grow"></div>
             <div>
@@ -40,7 +62,7 @@ export default function Layout(props: { children: any }) {
         $$
       </div>
       <div className="flex min-h-[calc(100vh-80px)]">
-        <div className="hidden md:block">
+        <div className="hidden ">
           <AppLeftRail {...leftRailApps} />
         </div>
         <div className="grow bg-slate-50 dark:bg-slate-800"></div>
