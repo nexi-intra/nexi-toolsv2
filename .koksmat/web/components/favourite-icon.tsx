@@ -7,6 +7,10 @@ export function FavouriteIcon(props: {
   return (
     <svg
       {...props}
+      onClick={(e) => {
+        e.stopPropagation();
+        props.onClick();
+      }}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
