@@ -218,7 +218,7 @@ where weburl ilike '%/Lists/Applications/%'
             description={selectedTool?.description ?? ""}
             badge={getBadge(1)}
             isfavourite={isFavourite(selectedTool)}
-            tooglefavourite={function (): void {
+            toogleFavourite={function (): void {
               if (isFavourite(selectedTool)) {
                 removeFavourite(selectedTool);
               } else {
