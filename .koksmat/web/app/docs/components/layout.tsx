@@ -10,15 +10,16 @@ import { Menu } from "lucide-react"
 
 // Define the navigation links
 const navLinks = [
-  { href: '/components/button', label: 'Button' },
-  { href: '/components/card', label: 'Card' },
-  { href: '/components/dialog', label: 'Dialog' },
-  { href: '/components/dropdown-menu', label: 'Dropdown Menu' },
-  { href: '/components/input', label: 'Input' },
-  { href: '/components/select', label: 'Select' },
-  { href: '/components/switch', label: 'Switch' },
-  { href: '/components/textarea', label: 'Textarea' },
-  { href: '/components/tooltip', label: 'Tooltip' },
+  { href: '/docs/components/tooladmin', label: 'Tool Administration' },
+  { href: '/docs/components/toolcards', label: 'Tool Cards' },
+  // { href: '/components/card', label: 'Card' },
+  // { href: '/components/dialog', label: 'Dialog' },
+  // { href: '/components/dropdown-menu', label: 'Dropdown Menu' },
+  // { href: '/components/input', label: 'Input' },
+  // { href: '/components/select', label: 'Select' },
+  // { href: '/components/switch', label: 'Switch' },
+  // { href: '/components/textarea', label: 'Textarea' },
+  // { href: '/components/tooltip', label: 'Tooltip' },
 ]
 
 const NavLinks = ({ className = '', onItemClick = () => { } }) => {

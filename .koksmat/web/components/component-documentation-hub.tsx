@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; interface ComponentProp {
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+interface ComponentProp {
   name: string;
   description: string;
 }
@@ -12,7 +14,7 @@ export interface ComponentDoc {
   name: string;
   description: string;
   usage: string;
-  props: ComponentProp[];
+  //props: ComponentProp[];
   example: JSX.Element;
 }
 
@@ -52,21 +54,19 @@ export const ComponentDocumentation: React.FC<ComponentDocumentationProps> = ({ 
 
       <section id={`${component.id}-usage`} className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Usage</h2>
-        <pre className="bg-gray-100 p-4 rounded-md">
+        <pre className="bg-gray-100 p-4 rounded-md overflow-auto">
           <code>{component.usage}</code>
         </pre>
       </section>
 
-      <section id={`${component.id}-props`} className="mb-8">
+      {/* <section id={`${component.id}-props`} className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Props</h2>
         <ul className="list-disc pl-6">
           {component.props.map((prop, index) => (
             <li key={index}><strong>{prop.name}:</strong> {prop.description}</li>
           ))}
         </ul>
-      </section>
-
-
+      </section> */}
     </div>
   );
 };
@@ -117,15 +117,15 @@ export const ComponentDocumentationHub: React.FC<ComponentDocumentationHubProps>
   }, [allSections]);
 
   return (
-    <div className="flex">
-      <div className="w-3/4 pr-8">
+    <div className="flex flex-col md:flex-row">
+      <div className="w-full md:w-3/4 pr-0 md:pr-8 mb-8 md:mb-0">
         {components.map((component, index) => (
           <ComponentDocumentation key={index} component={component} />
         ))}
       </div>
 
-      <div className="w-1/4">
-        <div className="sticky top-4">
+      <div className="w-full md:w-1/4">
+        <div className="md:sticky md:top-4 overflow-auto max-h-screen">
           <Card>
             <CardHeader>
               <CardTitle>Table of Contents</CardTitle>
@@ -137,7 +137,7 @@ export const ComponentDocumentationHub: React.FC<ComponentDocumentationHubProps>
                     <li key={section.id}>
                       <Button
                         variant={activeSection === section.id ? "default" : "ghost"}
-                        className="w-full justify-start"
+                        className="w-full justify-start text-left"
                         onClick={() => {
                           document.getElementById(section.id)?.scrollIntoView({
                             behavior: 'smooth'
