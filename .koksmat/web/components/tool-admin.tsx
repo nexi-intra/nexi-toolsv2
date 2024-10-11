@@ -29,6 +29,21 @@ interface ToolInfoManagerProps {
   availableBusinessPurposes: BusinessPurpose[]
   availableLanguages: string[]
 }
+const sampleAvailableCountries: Country[] = [
+  { id: "DK", name: "Denmark" },
+  { id: "SE", name: "Sweden" },
+  { id: "NO", name: "Norway" },
+  { id: "FI", name: "Finland" },
+  { id: "IS", name: "Iceland" }
+]
+
+const sampleAvailableBusinessPurposes: BusinessPurpose[] = [
+  { id: "DATA_ANALYSIS", name: "Data Analysis" },
+  { id: "REPORTING", name: "Reporting" },
+  { id: "VISUALIZATION", name: "Visualization" },
+  { id: "FORECASTING", name: "Forecasting" },
+  { id: "MACHINE_LEARNING", name: "Machine Learning" }
+]
 
 export const examplesToolAdmin: ComponentDoc[] = [{
   id: 'ToolAdmin',
@@ -37,6 +52,21 @@ export const examplesToolAdmin: ComponentDoc[] = [{
   usage: `
   
 
+const sampleAvailableCountries: Country[] = [
+  { id: "DK", name: "Denmark" },
+  { id: "SE", name: "Sweden" },
+  { id: "NO", name: "Norway" },
+  { id: "FI", name: "Finland" },
+  { id: "IS", name: "Iceland" }
+]
+
+const sampleAvailableBusinessPurposes: BusinessPurpose[] = [
+  { id: "DATA_ANALYSIS", name: "Data Analysis" },
+  { id: "REPORTING", name: "Reporting" },
+  { id: "VISUALIZATION", name: "Visualization" },
+  { id: "FORECASTING", name: "Forecasting" },
+  { id: "MACHINE_LEARNING", name: "Machine Learning" }
+]
 
 
 // use intellisense to get the import statement right
@@ -50,7 +80,7 @@ export const examplesToolAdmin: ComponentDoc[] = [{
   example: (
     <ToolAdmin defaultInfo={exampleToolInfo} onSave={function (updatedInfo: ToolInfo): void {
       throw new Error('Function not implemented.')
-    }} availableCountries={[]} availableBusinessPurposes={[]} availableLanguages={[]} />
+    }} availableCountries={sampleAvailableCountries} availableBusinessPurposes={sampleAvailableBusinessPurposes} availableLanguages={[]} />
   ),
 }
 ]
@@ -143,7 +173,7 @@ export default function ToolAdmin({
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={() => setIsDialogOpen(true)} className="w-full">OPEN TOOL</Button>
+        <Button onClick={() => setIsDialogOpen(true)} className="w-full">Edit</Button>
       </CardFooter>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
