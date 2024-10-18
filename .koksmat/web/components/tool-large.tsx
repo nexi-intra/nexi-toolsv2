@@ -68,7 +68,7 @@ export interface ToolLargeProps {
   onClick: () => void;
 }
 
-export default function ToolLarge({ tool, badge, isFavourite, toggleFavourite, onClick }: ToolLargeProps) {
+export function ToolLarge({ tool, badge, isFavourite, toggleFavourite, onClick }: ToolLargeProps) {
   const defaultLanguage = 'en'; // Assuming English as default language
 
   return (

@@ -118,13 +118,13 @@ export const ComponentDocumentationHub: React.FC<ComponentDocumentationHubProps>
 
   return (
     <div className="flex flex-col md:flex-row">
-      <div className="w-full md:w-3/4 pr-0 md:pr-8 mb-8 md:mb-0">
+      <div className="w-full  pr-0 md:pr-8 mb-8 md:mb-0">
         {components.map((component, index) => (
           <ComponentDocumentation key={index} component={component} />
         ))}
       </div>
 
-      <div className="w-full md:w-1/4">
+      {/* <div className="w-full md:w-1/4">
         <div className="md:sticky md:top-4 overflow-auto max-h-screen">
           <Card>
             <CardHeader>
@@ -153,7 +153,7 @@ export const ComponentDocumentationHub: React.FC<ComponentDocumentationHubProps>
             </CardContent>
           </Card>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

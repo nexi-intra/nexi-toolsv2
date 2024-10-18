@@ -6,7 +6,7 @@ import { SectionSearch } from "@/components/section-search";
 import { ToolMiniature } from "@/components/tool-miniature";
 
 import { ToolMedium } from "@/components/tool-medium";
-import { ToolLarge } from "@/components/tool-large";
+
 import { Disclaimer } from "@/components/disclaimer";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";

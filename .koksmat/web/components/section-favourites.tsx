@@ -212,7 +212,12 @@ where weburl ilike '%/Lists/Applications/%'
               account and remove your data from our servers.
             </DialogDescription>
           </DialogHeader> */}
+
+          {/*           
+
+//TODO: Implement ToolLarge
           <ToolLarge
+          
             weburl={selectedTool?.weburl ?? ""}
             title={selectedTool?.title ?? ""}
             description={selectedTool?.description ?? ""}
@@ -228,7 +233,7 @@ where weburl ilike '%/Lists/Applications/%'
             onClick={function (): void {
               // throw new Error("Function not implemented.");
             }}
-          />
+          /> */}
         </DialogContent>
       </Dialog>
     </div>

@@ -60,6 +60,10 @@ export default function DocumentationLayout({
             </NavigationMenuList>
           </NavigationMenu>
           <div className="flex items-center ml-auto space-x-4">
+
+            {/* 
+            TODO: Implement search
+            
             <form className="hidden sm:block">
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -68,7 +72,7 @@ export default function DocumentationLayout({
                   className="pl-8 w-64"
                 />
               </div>
-            </form>
+            </form> */}
             <Button
               variant="ghost"
               size="icon"
@@ -85,7 +89,7 @@ export default function DocumentationLayout({
               aria-label="GitHub"
               asChild
             >
-              <Link href="https://github.com/your-repo-url" target="_blank" rel="noopener noreferrer">
+              <Link href="https://github.com/nexi-intra/nexi-toolsv2" target="_blank" rel="noopener noreferrer">
                 <Github className="h-5 w-5" />
                 <span className="sr-only">GitHub</span>
               </Link>
@@ -99,7 +103,7 @@ export default function DocumentationLayout({
       <footer className="border-t py-6 md:py-0">
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-            Built by Your Company. The source code is available on GitHub.
+            {/* Built by Your Company. The source code is available on GitHub. */}
           </p>
         </div>
       </footer>
