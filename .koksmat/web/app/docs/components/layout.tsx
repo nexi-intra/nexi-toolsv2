@@ -11,7 +11,9 @@ import { Menu } from "lucide-react"
 // Define the navigation links
 const navLinks = [
   { href: '/docs/components/tooladmin', label: 'Tool Administration' },
-  { href: '/docs/components/toolcards', label: 'Tool Cards' },
+  { href: '/docs/components/toolcard-large', label: 'Tool Cards Large' },
+  { href: '/docs/components/toolcard-medium', label: 'Tool Cards Medium' },
+  { href: '/docs/components/toolcard-small', label: 'Tool Cards Small' },
   // { href: '/components/card', label: 'Card' },
   // { href: '/components/dialog', label: 'Dialog' },
   // { href: '/components/dropdown-menu', label: 'Dropdown Menu' },

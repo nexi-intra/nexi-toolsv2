@@ -6,6 +6,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FavouriteIcon } from "./favourite-icon";
+import { ComponentDoc } from "./component-documentation-hub";
 
 export interface ToolMiniatureProps {
   weburl: string;
@@ -16,6 +17,49 @@ export interface ToolMiniatureProps {
   onClick: () => void;
 }
 
+export const examples: ComponentDoc[] = [{
+  id: 'toolMiniature',
+  name: 'ToolMiniature',
+  description: 'The ToolMedium component is a versatile tool display element that showcases detailed information about a tool, including its description, associated countries, business purposes, and related documents.',
+  usage: `import ToolLarge, { ToolInfo } from "@/components/tool-large"
+
+const toolInfo: ToolInfo = {
+  id: 'nexi-intra-github',
+  icon: 'https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png',
+  name: 'Nexi Intra GitHub repo',
+  description: {
+    en: 'Welcome to the Nexi Digital Workspace! As we embark on a transformative journey to streamline business operations, our small but mighty team is poised to revolutionize how we approach productivity and workflow management. Our core team consists of two dedicated developers and one adept colleague focusing on monitoring. Together, we are committed to developing a comprehensive portfolio of business productivity applications.'
+  },
+  countries: ['Italy', 'Denmark', 'Norway'],
+  businessPurposes: ['Code Repository', 'Collaboration'],
+  documents: [
+    { name: 'README', url: 'https://github.com/nexi-intra/README.md' },
+    { name: 'Contributing Guidelines', url: 'https://github.com/nexi-intra/CONTRIBUTING.md' }
+  ]
+
+};
+
+<ToolLarge
+  tool={toolInfo}
+  badge="Exampler"
+  isFavourite={false}
+  toggleFavourite={() => {
+    // Handle favourite toggle
+  }}
+  onClick={() => {
+    // Handle click action
+  }}
+/>`,
+  example: (
+    <ToolMiniature weburl={""} title={"Mini"} badge={"M"} isfavourite={false} tooglefavourite={function (): void {
+      throw new Error("Function not implemented.");
+    } } onClick={function (): void {
+      throw new Error("Function not implemented.");
+    } }     
+    />
+  ),
+}
+]
 export function ToolMiniature(props: ToolMiniatureProps) {
   const { title, badge, isfavourite, tooglefavourite, onClick } = props;
   return (
