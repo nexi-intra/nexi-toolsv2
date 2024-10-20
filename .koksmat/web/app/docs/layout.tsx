@@ -20,6 +20,7 @@ import { useTheme } from "next-themes"
 const navItems = [
   { href: '/docs/use-cases', label: 'Use Cases' },
   { href: '/docs/components', label: 'Components' },
+  { href: '/docs/api', label: 'API' },
   { href: '/', label: 'Try', target: "_blank" },
   { href: '/about', label: '"Buy"' },
 ]
