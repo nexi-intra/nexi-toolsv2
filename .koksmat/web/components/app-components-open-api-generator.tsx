@@ -7,31 +7,19 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { z } from 'zod'
 import {
-  ToolSchema,
-  CountrySchema,
-  PurposeSchema,
-  TagSchema,
-  ToolGroupSchema,
-  UserSchema,
-  CreateToolInputSchema,
-  UpdateToolInputSchema,
-  CreateCountryInputSchema,
-  UpdateCountryInputSchema,
-  CreatePurposeInputSchema,
-  UpdatePurposeInputSchema,
-  CreateTagInputSchema,
-  UpdateTagInputSchema,
-  CreateToolGroupInputSchema,
-  UpdateToolGroupInputSchema,
-  CreateUserInputSchema,
-  UpdateUserInputSchema
-} from '@/app/api/entity/[...slug]/types'
+
+  typeNames,
+  schemaMapObjects,
+  SchemaName,
+  createInputSchema,
+  updateInputSchema
+} from '@/app/api/entity/schemas'
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 
 // Call this once in your app's entry point
 extendZodWithOpenApi(z);
 
-export function OpenApiGeneratorComponent() {
+export function OpenApiGeneratorComponent({ server }: { server: string }) {
   const [openApiSpec, setOpenApiSpec] = useState('')
 
   useEffect(() => {
@@ -42,35 +30,41 @@ export function OpenApiGeneratorComponent() {
     const registry = new OpenAPIRegistry()
     const schemaMap: { [key: string]: z.ZodTypeAny } = {};
 
+    Object.entries(typeNames).forEach(([schemaName, typeName]) => {
+      schemaMap[typeName] = registry.register(typeName, schemaMapObjects[schemaName as SchemaName].openapi({ title: typeName }));
+      schemaMap[`Create${typeName}Input`] = registry.register(`Create${typeName}Input`,
+        createInputSchema(schemaMapObjects[schemaName as SchemaName]).openapi({ title: `Create${typeName}Input` }));
+      schemaMap[`Update${typeName}Input`] = registry.register(`Update${typeName}Input`,
+        updateInputSchema(schemaMapObjects[schemaName as SchemaName]).openapi({ title: `Update${typeName}Input` }));
 
-    // Using an object as a schema map
-    schemaMap['Tool'] = registry.register('Tool', ToolSchema.openapi({ title: 'Tool' }));
-    schemaMap['Country'] = registry.register('Country', CountrySchema.openapi({ title: 'Country' }));
-    schemaMap['Purpose'] = registry.register('Purpose', PurposeSchema.openapi({ title: 'Purpose' }));
-    schemaMap['Tag'] = registry.register('Tag', TagSchema.openapi({ title: 'Tag' }));
-    schemaMap['ToolGroup'] = registry.register('ToolGroup', ToolGroupSchema.openapi({ title: 'ToolGroup' }));
-    schemaMap['User'] = registry.register('User', UserSchema.openapi({ title: 'User' }));
 
-    // Register input schemas
-    schemaMap['CreateToolInput'] = registry.register('CreateToolInput', CreateToolInputSchema.openapi({ title: 'CreateToolInput' }));
-    schemaMap['UpdateToolInput'] = registry.register('UpdateToolInput', UpdateToolInputSchema.openapi({ title: 'UpdateToolInput' }));
-    schemaMap['CreateCountryInput'] = registry.register('CreateCountryInput', CreateCountryInputSchema.openapi({ title: 'CreateCountryInput' }));
-    schemaMap['UpdateCountryInput'] = registry.register('UpdateCountryInput', UpdateCountryInputSchema.openapi({ title: 'UpdateCountryInput' }));
-    schemaMap['CreatePurposeInput'] = registry.register('CreatePurposeInput', CreatePurposeInputSchema.openapi({ title: 'CreatePurposeInput' }));
-    schemaMap['UpdatePurposeInput'] = registry.register('UpdatePurposeInput', UpdatePurposeInputSchema.openapi({ title: 'UpdatePurposeInput' }));
-    schemaMap['CreateTagInput'] = registry.register('CreateTagInput', CreateTagInputSchema.openapi({ title: 'CreateTagInput' }));
-    schemaMap['UpdateTagInput'] = registry.register('UpdateTagInput', UpdateTagInputSchema.openapi({ title: 'UpdateTagInput' }));
-    schemaMap['CreateToolGroupInput'] = registry.register('CreateToolGroupInput', CreateToolGroupInputSchema.openapi({ title: 'CreateToolGroupInput' }));
-    schemaMap['UpdateToolGroupInput'] = registry.register('UpdateToolGroupInput', UpdateToolGroupInputSchema.openapi({ title: 'UpdateToolGroupInput' }));
-    schemaMap['CreateUserInput'] = registry.register('CreateUserInput', CreateUserInputSchema.openapi({ title: 'CreateUserInput' }));
-    schemaMap['UpdateUserInput'] = registry.register('UpdateUserInput', UpdateUserInputSchema.openapi({ title: 'UpdateUserInput' }));
+    });
+    // // Using an object as a schema map
+    // schemaMap['Tool'] = registry.register('Tool', ToolSchema.openapi({ title: 'Tool' }));
+    // schemaMap['Country'] = registry.register('Country', CountrySchema.openapi({ title: 'Country' }));
+    // schemaMap['Purpose'] = registry.register('Purpose', PurposeSchema.openapi({ title: 'Purpose' }));
+    // schemaMap['Tag'] = registry.register('Tag', TagSchema.openapi({ title: 'Tag' }));
+    // schemaMap['ToolGroup'] = registry.register('ToolGroup', ToolGroupSchema.openapi({ title: 'ToolGroup' }));
+    // schemaMap['User'] = registry.register('User', UserSchema.openapi({ title: 'User' }));
+
+    // // Register input schemas
+    // schemaMap['CreateCountryInput'] = registry.register('CreateCountryInput', CreateCountryInputSchema.openapi({ title: 'CreateCountryInput' }));
+    // schemaMap['UpdateCountryInput'] = registry.register('UpdateCountryInput', UpdateCountryInputSchema.openapi({ title: 'UpdateCountryInput' }));
+    // schemaMap['CreatePurposeInput'] = registry.register('CreatePurposeInput', CreatePurposeInputSchema.openapi({ title: 'CreatePurposeInput' }));
+    // schemaMap['UpdatePurposeInput'] = registry.register('UpdatePurposeInput', UpdatePurposeInputSchema.openapi({ title: 'UpdatePurposeInput' }));
+    // schemaMap['CreateTagInput'] = registry.register('CreateTagInput', CreateTagInputSchema.openapi({ title: 'CreateTagInput' }));
+    // schemaMap['UpdateTagInput'] = registry.register('UpdateTagInput', UpdateTagInputSchema.openapi({ title: 'UpdateTagInput' }));
+    // schemaMap['CreateToolGroupInput'] = registry.register('CreateToolGroupInput', CreateToolGroupInputSchema.openapi({ title: 'CreateToolGroupInput' }));
+    // schemaMap['UpdateToolGroupInput'] = registry.register('UpdateToolGroupInput', UpdateToolGroupInputSchema.openapi({ title: 'UpdateToolGroupInput' }));
+    // schemaMap['CreateUserInput'] = registry.register('CreateUserInput', CreateUserInputSchema.openapi({ title: 'CreateUserInput' }));
+    // schemaMap['UpdateUserInput'] = registry.register('UpdateUserInput', UpdateUserInputSchema.openapi({ title: 'UpdateUserInput' }));
 
 
     // Define paths
     const entities = ['tool', 'country', 'purpose', 'tag', 'toolGroup', 'user']
-    entities.forEach(entity => {
-      const singularEntity = entity //.slice(0, -1)
-      const capitalizedEntity = singularEntity.charAt(0).toUpperCase() + singularEntity.slice(1)
+    Object.entries(typeNames).forEach(([schemaName, typeName]) => {
+      const singularEntity = schemaName //.slice(0, -1)
+      const capitalizedEntity = typeName //singularEntity.charAt(0).toUpperCase() + singularEntity.slice(1)
       const entitySchema = schemaMap[capitalizedEntity];
       if (!entitySchema) {
         throw new Error(`Schema for ${capitalizedEntity} not found.`);
@@ -86,8 +80,8 @@ export function OpenApiGeneratorComponent() {
 
       registry.registerPath({
         method: 'get',
-        path: `/api/entity/${entity}`,
-        summary: `Get all ${entity}`,
+        path: `/api/entity/${schemaName}`,
+        summary: `Get all ${schemaName}`,
         request: {
           query: z.object({
             page: z.number().optional(),
@@ -96,7 +90,7 @@ export function OpenApiGeneratorComponent() {
         },
         responses: {
           200: {
-            description: `Successfully retrieved ${entity}`,
+            description: `Successfully retrieved ${schemaName}`,
             content: {
               'application/json': {
                 schema: registry.register(`${capitalizedEntity}ListResponse`, z.object({
@@ -119,7 +113,7 @@ export function OpenApiGeneratorComponent() {
 
       registry.registerPath({
         method: 'get',
-        path: `/api/entity/${entity}/{id}`,
+        path: `/api/entity/${schemaName}/{id}`,
         summary: `Get a specific ${singularEntity}`,
         request: {
           params: z.object({
@@ -144,7 +138,7 @@ export function OpenApiGeneratorComponent() {
 
       registry.registerPath({
         method: 'post',
-        path: `/api/entity/${entity}`,
+        path: `/api/entity/${schemaName}`,
         summary: `Create a new ${singularEntity}`,
         request: {
           body: {
@@ -169,7 +163,7 @@ export function OpenApiGeneratorComponent() {
 
       registry.registerPath({
         method: 'put',
-        path: `/api/entity/${entity}/{id}`,
+        path: `/api/entity/${schemaName}/{id}`,
         summary: `Update a ${singularEntity}`,
         request: {
           params: z.object({
@@ -197,7 +191,7 @@ export function OpenApiGeneratorComponent() {
 
       registry.registerPath({
         method: 'delete',
-        path: `/api/entity/${entity}/{id}`,
+        path: `/api/entity/${schemaName}/{id}`,
         summary: `Delete a ${singularEntity}`,
         request: {
           params: z.object({
@@ -229,7 +223,7 @@ export function OpenApiGeneratorComponent() {
         title: 'Nexi Tools API',
         description: 'API for managing Nexi Tools entities',
       },
-      servers: [{ url: 'https://api.nexitools.com/v1' }],
+      servers: [{ url: server }],
     })
 
     setOpenApiSpec(JSON.stringify(spec, null, 2))

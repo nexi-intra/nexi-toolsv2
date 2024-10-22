@@ -2,25 +2,8 @@
 import { Result } from "@/app/koksmat/httphelper";
 import { NatsConnection, connect, StringCodec } from "nats";
 import { z } from "zod";
-import {
-  ToolSchema,
-  CountrySchema,
-  PurposeSchema,
-  TagSchema,
-  ToolGroupSchema,
-  UserSchema,
-} from "./types";
+import { schemaMapObjects, SchemaName } from "./schemas";
 import { BackendService } from "./BackendService";
-
-// Define the schema map
-const schemaMap: { [key: string]: z.ZodTypeAny } = {
-  tool: ToolSchema,
-  country: CountrySchema,
-  purpose: PurposeSchema,
-  tag: TagSchema,
-  toolGroup: ToolGroupSchema,
-  user: UserSchema,
-};
 
 // natsRequest function remains the same, adjusted for any types
 async function natsRequest(
@@ -103,9 +86,9 @@ export class NatsBackendService implements BackendService {
 
     if (!result.hasError && result.data) {
       // Optionally validate data with Zod schema
-      if (schemaMap[entityType]) {
+      if (schemaMapObjects[entityType as SchemaName]) {
         result.data.items = result.data.items.map((item: any) =>
-          schemaMap[entityType].parse(item)
+          schemaMapObjects[entityType as SchemaName].parse(item)
         );
       }
     }
@@ -125,8 +108,10 @@ export class NatsBackendService implements BackendService {
     const result = await natsRequest(subject, payload, this.timeout);
 
     if (!result.hasError && result.data) {
-      if (schemaMap[entityType]) {
-        result.data = schemaMap[entityType].parse(result.data);
+      if (schemaMapObjects[entityType as SchemaName]) {
+        result.data = schemaMapObjects[entityType as SchemaName].parse(
+          result.data
+        );
       }
     }
 
@@ -145,8 +130,10 @@ export class NatsBackendService implements BackendService {
     const result = await natsRequest(subject, payload, this.timeout);
 
     if (!result.hasError && result.data) {
-      if (schemaMap[entityType]) {
-        result.data = schemaMap[entityType].parse(result.data);
+      if (schemaMapObjects[entityType as SchemaName]) {
+        result.data = schemaMapObjects[entityType as SchemaName].parse(
+          result.data
+        );
       }
     }
 
@@ -165,8 +152,10 @@ export class NatsBackendService implements BackendService {
     const result = await natsRequest(subject, payload, this.timeout);
 
     if (!result.hasError && result.data) {
-      if (schemaMap[entityType]) {
-        result.data = schemaMap[entityType].parse(result.data);
+      if (schemaMapObjects[entityType as SchemaName]) {
+        result.data = schemaMapObjects[entityType as SchemaName].parse(
+          result.data
+        );
       }
     }
 

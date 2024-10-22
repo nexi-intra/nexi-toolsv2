@@ -1,10 +1,5 @@
 import { z } from "zod";
-import {
-  createInputSchema,
-  updateInputSchema,
-  responseSchema,
-  listResponseSchema,
-} from ".";
+
 import { SharedAttributes } from "./_shared";
 
 export const ToolStatus = z.enum(["active", "inactive", "deprecated"]);
@@ -58,14 +53,3 @@ export const ToolSchema = SharedAttributes.extend({
     .optional()
     .describe("Optional array of related tool IDs"),
 });
-
-export const CreateToolInputSchema = createInputSchema(ToolSchema);
-export const UpdateToolInputSchema = updateInputSchema(ToolSchema);
-export const ToolResponseSchema = responseSchema(ToolSchema);
-export const ToolsListResponseSchema = listResponseSchema(ToolSchema);
-
-export type Tool = z.infer<typeof ToolSchema>;
-export type CreateToolInput = z.infer<typeof CreateToolInputSchema>;
-export type UpdateToolInput = z.infer<typeof UpdateToolInputSchema>;
-export type ToolResponse = z.infer<typeof ToolResponseSchema>;
-export type ToolsListResponse = z.infer<typeof ToolsListResponseSchema>;

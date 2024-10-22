@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import {
   Tool,
@@ -7,15 +6,11 @@ import {
   Tag,
   ToolGroup,
   User,
-  ToolSchema,
-  CountrySchema,
-  PurposeSchema,
-  TagSchema,
-  ToolGroupSchema,
-  UserSchema,
-} from "./types";
+  schemaMapObjects,
+  SchemaName,
+} from "./schemas";
 
-import { SharedAttributes } from "./types/_shared";
+import { SharedAttributes } from "./schemas/_shared";
 // Define a union type for all entity types
 type EntityType = Tool | Country | Purpose | Tag | ToolGroup | User;
 
@@ -62,51 +57,42 @@ export function createEntity<T extends z.ZodObject<any>>(
   return validatedData as EntityOutput<T>;
 }
 
-// Hashtable to store schemas by entityType
-const schemaMap: Record<string, z.ZodObject<any>> = {
-  tool: ToolSchema,
-  country: CountrySchema,
-  purpose: PurposeSchema,
-  tag: TagSchema,
-  toolGroup: ToolGroupSchema,
-  user: UserSchema,
-};
-
 // Pre-populated mock database
 const db: Record<string, any[]> = {
   tool: [
     // Microsoft 365 Tools
-    // createEntity(ToolSchema, "system", {
-    //   name: "Microsoft Teams",
-    //   description: "Team collaboration and communication platform",
-    //   url: "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software",
-    //   groupId: "group1",
-    //   purposeIds: ["purpose1", "purpose2"],
-    //   tagIds: ["tag1", "tag2"],
-    //   version: "1.5.00.8070",
-    //   status: "active",
-    //   icon: "https://example.com/teams-icon.png",
-    //   documentationUrl: "https://docs.microsoft.com/en-us/microsoftteams/",
-    //   supportContact: "support@microsoft.com",
-    //   license: "Commercial",
-    //   compatiblePlatforms: ["Windows", "macOS", "iOS", "Android", "Web"],
-    //   systemRequirements: "Windows 10 or later, macOS 10.14 or later",
-    // }),
+    createEntity(schemaMapObjects.tool, "system", {
+      name: "Microsoft Teams",
+      description: "Team collaboration and communication platform",
+      url: "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software",
+      groupId: "group1",
+      purposeIds: ["purpose1", "purpose2"],
+      tagIds: ["tag1", "tag2"],
+      version: "1.5.00.8070",
+      status: "active",
+      icon: "https://example.com/teams-icon.png",
+      documentationUrl: "https://docs.microsoft.com/en-us/microsoftteams/",
+      supportContact: "support@microsoft.com",
+      license: "Commercial",
+      compatiblePlatforms: ["Windows", "macOS", "iOS", "Android", "Web"],
+      systemRequirements: "Windows 10 or later, macOS 10.14 or later",
+    }),
     // ... (other tools)
   ],
   country: [
     // European countries
-    createEntity(CountrySchema, "system", {
+    createEntity(schemaMapObjects.country, "system", {
       name: "Albania",
       code: "AL",
       continent: "Europe",
       currency: "ALL",
       phoneCode: "+355",
     }),
+
     // ... (other countries)
   ],
   purpose: [
-    createEntity(PurposeSchema, "system", {
+    createEntity(schemaMapObjects.purpose, "system", {
       name: "Collaboration",
       description: "Tools for team collaboration and communication",
       category: "Productivity",
@@ -114,21 +100,21 @@ const db: Record<string, any[]> = {
     // ... (other purposes)
   ],
   tag: [
-    createEntity(TagSchema, "system", {
+    createEntity(schemaMapObjects.tag, "system", {
       name: "Microsoft 365",
       color: "#0078D4",
     }),
     // ... (other tags)
   ],
   toolGroup: [
-    createEntity(ToolGroupSchema, "system", {
+    createEntity(schemaMapObjects.toolGroup, "system", {
       name: "Microsoft 365",
       description: "Tools provided by Microsoft 365 suite",
     }),
     // ... (other tool groups)
   ],
   user: [
-    createEntity(UserSchema, "system", {
+    createEntity(schemaMapObjects.user, "system", {
       name: "John Doe",
       email: "john.doe@example.com",
       role: "admin",
@@ -167,7 +153,7 @@ const mockBackendService = {
   },
 
   create: async (entityType: string, data: Partial<EntityType>) => {
-    const schema = schemaMap[entityType];
+    const schema = schemaMapObjects[entityType as SchemaName];
     if (!schema) {
       throw new Error("Invalid entity type");
     }
@@ -181,7 +167,7 @@ const mockBackendService = {
     if (index === -1) {
       throw new Error("Entity not found");
     }
-    const schema = schemaMap[entityType];
+    const schema = schemaMapObjects[entityType as SchemaName];
     if (!schema) {
       throw new Error("Invalid entity type");
     }

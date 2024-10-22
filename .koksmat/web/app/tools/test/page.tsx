@@ -1,5 +1,5 @@
 "use client"
-import { ApiClient } from '@/app/api/entity/[...slug]/api-client'
+import { ApiClient } from '@/app/api/entity/api-client'
 
 import React, { useMemo } from 'react'
 

@@ -13,7 +13,6 @@ import React, { useEffect, useState } from 'react';
 import { Skeleton } from "@/components/ui/skeleton"
 import CodeSamplesPage from '@/components/code-samples-page';
 import { schemaMapObjects, typeNames } from '@/app/api/entity/schemas';
-import { APILandingPage } from '@/components/app-api-page';
 
 export default function ExampleUsage() {
   const [currentHost, setCurrentHost] = useState<string | null>(null);
@@ -25,7 +24,12 @@ export default function ExampleUsage() {
 
   return (
     <div className="space-y-6 p-6">
-      <APILandingPage />
+      {currentHost ? (
+        <OpenApiGeneratorComponent server={currentHost} />
+      ) : (
+        <Skeleton className="w-full h-[200px] rounded-lg" />
+      )}
+
     </div>
   );
 }

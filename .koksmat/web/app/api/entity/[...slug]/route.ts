@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { natsBackendServiceFactory } from "./backend-service";
-import { mockBackendServiceFactory } from "./mock-backend-service";
-import { BackendService } from "./BackendService";
+import { natsBackendServiceFactory } from "../backend-service";
+import { mockBackendServiceFactory } from "../mock-backend-service";
+import { BackendService } from "../BackendService";
 
 type BackendServiceFactory = () => BackendService;
 

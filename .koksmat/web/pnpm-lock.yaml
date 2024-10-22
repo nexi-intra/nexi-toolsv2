@@ -173,6 +173,9 @@ dependencies:
   next-themes:
     specifier: ^0.2.1
     version: 0.2.1(next@14.2.15)(react-dom@18.2.0)(react@18.2.0)
+  prism-react-renderer:
+    specifier: ^2.4.0
+    version: 2.4.0(react@18.2.0)
   react:
     specifier: ^18
     version: 18.2.0
@@ -3403,6 +3406,10 @@ packages:
   /@types/office-runtime@1.0.35:
     resolution: {integrity: sha512-qrP3bkDNoPY6WZMTOoutFdkZHdK91OUC1/Ohzw94bE8OD8pVoPjHKSoYaS+NlTFyXH3SNKYmQU+E6o966zARIA==}
     dev: true
+
+  /@types/prismjs@1.26.4:
+    resolution: {integrity: sha512-rlAnzkW2sZOjbqZ743IHUhFcvzaGbqijwOu8QZnZCjfQzBqFE3s4lOTJEsxikImav9uzz/42I+O7YUs1mWgMlg==}
+    dev: false
 
   /@types/prop-types@15.7.12:
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
@@ -7956,6 +7963,16 @@ packages:
       ansi-styles: 5.2.0
       react-is: 18.3.1
     dev: true
+
+  /prism-react-renderer@2.4.0(react@18.2.0):
+    resolution: {integrity: sha512-327BsVCD/unU4CNLZTWVHyUHKnsqcvj2qbPlQ8MiBE2eq2rgctjigPA1Gp9HLF83kZ20zNN6jgizHJeEsyFYOw==}
+    peerDependencies:
+      react: '>=16.0.0'
+    dependencies:
+      '@types/prismjs': 1.26.4
+      clsx: 2.1.0
+      react: 18.2.0
+    dev: false
 
   /prismjs@1.27.0:
     resolution: {integrity: sha512-t13BGPUlFDR7wRB5kQDG4jjl7XeuH6jbJGt11JHPL96qwsEHNX2+68tFXqc1/k+/jALsbSWJKUOT/hcYAZ5LkA==}

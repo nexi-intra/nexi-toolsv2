@@ -1,39 +1,6 @@
 import { z } from "zod";
-import {
-  Tool,
-  Country,
-  Purpose,
-  Tag,
-  ToolGroup,
-  User,
-  ToolSchema,
-  CountrySchema,
-  PurposeSchema,
-  TagSchema,
-  ToolGroupSchema,
-  UserSchema,
-} from "./types";
-import { SharedAttributes } from "./types/_shared";
-
-type EntityType = "tool" | "country" | "purpose" | "tag" | "toolGroup" | "user";
-
-type EntityTypeMap = {
-  tool: Tool;
-  country: Country;
-  purpose: Purpose;
-  tag: Tag;
-  toolGroup: ToolGroup;
-  user: User;
-};
-
-const SchemaMap: { [K in EntityType]: z.ZodType<EntityTypeMap[K]> } = {
-  tool: ToolSchema,
-  country: CountrySchema,
-  purpose: PurposeSchema,
-  tag: TagSchema,
-  toolGroup: ToolGroupSchema,
-  user: UserSchema,
-};
+import { SchemaName, schemaMapTypes, SchemaMap } from "./schemas";
+import { SharedAttributes } from "./schemas/_shared";
 
 interface PaginatedResponse<T> {
   items: T[];
@@ -43,17 +10,17 @@ interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-export class ApiClient<T extends EntityType> {
+export class ApiClient<T extends SchemaName> {
   private entity: T;
   private baseUrl: string;
   private getToken: () => string | Promise<string>;
-  private schema: z.ZodType<EntityTypeMap[T]>;
+  private schema: z.ZodType<SchemaMap[T]>;
 
   constructor(entity: T, getToken: () => string | Promise<string>) {
     this.entity = entity;
-    this.baseUrl = `http://localhost:4997/api/entity/${entity}`;
+    this.baseUrl = `/api/entity/${entity}`;
     this.getToken = getToken;
-    this.schema = SchemaMap[entity];
+    this.schema = schemaMapTypes[entity];
   }
 
   private async fetchWithAuth(
@@ -72,7 +39,7 @@ export class ApiClient<T extends EntityType> {
   async getAll(
     page: number = 1,
     pageSize: number = 10
-  ): Promise<PaginatedResponse<EntityTypeMap[T]>> {
+  ): Promise<PaginatedResponse<SchemaMap[T]>> {
     const response = await this.fetchWithAuth(
       `${this.baseUrl}?page=${page}&pageSize=${pageSize}`
     );
@@ -84,7 +51,7 @@ export class ApiClient<T extends EntityType> {
     };
   }
 
-  async getOne(id: string): Promise<EntityTypeMap[T]> {
+  async getOne(id: string): Promise<SchemaMap[T]> {
     const response = await this.fetchWithAuth(`${this.baseUrl}/${id}`);
     if (!response.ok) throw new Error("Failed to fetch data");
     const data = await response.json();
@@ -92,8 +59,8 @@ export class ApiClient<T extends EntityType> {
   }
 
   async create(
-    data: Omit<EntityTypeMap[T], keyof z.infer<typeof SharedAttributes>>
-  ): Promise<EntityTypeMap[T]> {
+    data: Omit<SchemaMap[T], keyof z.infer<typeof SharedAttributes>>
+  ): Promise<SchemaMap[T]> {
     const response = await this.fetchWithAuth(this.baseUrl, {
       method: "POST",
       body: JSON.stringify(data),
@@ -103,10 +70,7 @@ export class ApiClient<T extends EntityType> {
     return this.schema.parse(responseData);
   }
 
-  async update(
-    id: string,
-    data: Partial<EntityTypeMap[T]>
-  ): Promise<EntityTypeMap[T]> {
+  async update(id: string, data: Partial<SchemaMap[T]>): Promise<SchemaMap[T]> {
     const response = await this.fetchWithAuth(`${this.baseUrl}/${id}`, {
       method: "PUT",
       body: JSON.stringify(data),
@@ -116,10 +80,7 @@ export class ApiClient<T extends EntityType> {
     return this.schema.parse(responseData);
   }
 
-  async patch(
-    id: string,
-    data: Partial<EntityTypeMap[T]>
-  ): Promise<EntityTypeMap[T]> {
+  async patch(id: string, data: Partial<SchemaMap[T]>): Promise<SchemaMap[T]> {
     const response = await this.fetchWithAuth(`${this.baseUrl}/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
