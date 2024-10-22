@@ -472,7 +472,7 @@ const createUser = async () => {
   }
 }
 `,
-    update:  `
+    update: `
 import { ApiClient } from '@/lib/api-client'
 
 const usersClient = new ApiClient('users', () => 'YOUR_AUTH_TOKEN')
@@ -610,9 +610,8 @@ export function EntityCodeExamplesComponent() {
                       <button
                         key={`${entity}-${operation}`}
                         onClick={() => scrollToSection(`${entity}-${operation}`)}
-                        className={`block w-full text-left px-4 py-2 text-sm ${
-                          activeSection === `${entity}-${operation}` ? 'bg-gray-100 dark:bg-gray-700' : ''
-                        }`}
+                        className={`block w-full text-left px-4 py-2 text-sm ${activeSection === `${entity}-${operation}` ? 'bg-gray-100 dark:bg-gray-700' : ''
+                          }`}
                       >
                         {operation.charAt(0).toUpperCase() + operation.slice(1)}
                       </button>
@@ -631,9 +630,8 @@ export function EntityCodeExamplesComponent() {
                   <button
                     key={`${entity}-${operation}`}
                     onClick={() => scrollToSection(`${entity}-${operation}`)}
-                    className={`block w-full text-left px-4 py-2 text-sm rounded-md ${
-                      activeSection === `${entity}-${operation}` ? 'bg-gray-100 dark:bg-gray-700 font-medium' : ''
-                    }`}
+                    className={`block w-full text-left px-4 py-2 text-sm rounded-md ${activeSection === `${entity}-${operation}` ? 'bg-gray-100 dark:bg-gray-700 font-medium' : ''
+                      }`}
                   >
                     {operation.charAt(0).toUpperCase() + operation.slice(1)}
                   </button>
