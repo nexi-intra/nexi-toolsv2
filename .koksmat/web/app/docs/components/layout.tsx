@@ -14,6 +14,7 @@ const navLinks = [
   { href: '/docs/components/toolcard-large', label: 'Tool Cards Large' },
   { href: '/docs/components/toolcard-medium', label: 'Tool Cards Medium' },
   { href: '/docs/components/toolcard-small', label: 'Tool Cards Small' },
+  { href: '/docs/components/icon', label: 'Icon' },
   // { href: '/components/card', label: 'Card' },
   // { href: '/components/dialog', label: 'Dialog' },
   // { href: '/components/dropdown-menu', label: 'Dropdown Menu' },

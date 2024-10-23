@@ -52,4 +52,37 @@ export const ToolSchema = SharedAttributes.extend({
     .array(z.string())
     .optional()
     .describe("Optional array of related tool IDs"),
+  // New fields to support the information in the image
+  countries: z
+    .array(z.string())
+    .optional()
+    .describe("Countries involved in the tool's development or usage"),
+  repositoryUrl: z
+    .string()
+    .url()
+    .optional()
+    .describe("URL of the tool's code repository"),
+  collaborationType: z
+    .string()
+    .optional()
+    .describe("Type of collaboration (e.g., 'Open Source', 'Internal')"),
+  documents: z
+    .array(
+      z.object({
+        name: z.string(),
+        url: z.string().url(),
+      })
+    )
+    .optional()
+    .describe("Array of important documents related to the tool"),
+  teamSize: z
+    .number()
+    .optional()
+    .describe("Number of team members working on the tool"),
+  primaryFocus: z
+    .string()
+    .optional()
+    .describe(
+      "Primary focus or category of the tool (e.g., 'Business Productivity')"
+    ),
 });
