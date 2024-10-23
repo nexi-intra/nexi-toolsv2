@@ -220,8 +220,8 @@ export function OpenApiGeneratorComponent({ server }: { server: string }) {
       openapi: '3.0.0',
       info: {
         version: '1.0.0',
-        title: 'Nexi Tools API',
-        description: 'API for managing Nexi Tools entities',
+        title: 'Magic Links API',
+        description: 'API for managing Magic Links entities',
       },
       servers: [{ url: server }],
     })

@@ -18,7 +18,7 @@ type EntityType = Tool | Country | Purpose | Tag | ToolGroup | User;
  * MockBackendService
  *
  * This file contains a mock implementation of the backend service
- * for the Nexi Tools project. It simulates database operations
+ * for the Magic Links project. It simulates database operations
  * using in-memory storage with pre-populated data.
  */
 

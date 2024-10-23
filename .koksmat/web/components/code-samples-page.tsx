@@ -20,12 +20,12 @@ interface CodeSample {
 }
 
 const CodeBlock: React.FC<{ code: string }> = ({ code }) => (
-  <Highlight theme={themes.nightOwl} code={code} language="tsx">
+  <Highlight theme={themes.nightOwl} code={code} language="tsx" >
     {({ className, style, tokens, getLineProps, getTokenProps }) => (
       <pre className={`${className} p-4 rounded-md overflow-x-auto`} style={style}>
         {tokens.map((line, i) => (
           <div key={i} {...getLineProps({ line, key: i })}>
-            <span className="mr-4 text-gray-500">{i + 1}</span>
+            {/* <span className="mr-4 text-gray-500">{i + 1}</span> */}
             {line.map((token, key) => (
               <span key={key} {...getTokenProps({ token, key })} />
             ))}

@@ -17,6 +17,7 @@ import { ServiceInspector } from "@/app/koksmat/components/service-inspector";
 
 import { ToastProvider } from "@/components/ui/toast";
 import { CLARITY } from "./global";
+import KoksmatClient from "@/components/koksmat-client";
 
 export default function RootLayout2({
   children,
@@ -47,6 +48,7 @@ export default function RootLayout2({
               <TailwindIndicator />
               <ServiceInspector />
               <ToastProvider />
+              <KoksmatClient />
             </MSALWrapper>
           </MagicboxProvider>
         </ThemeProvider>

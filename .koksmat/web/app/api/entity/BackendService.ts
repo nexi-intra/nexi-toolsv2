@@ -3,7 +3,7 @@
  *
  * This file contains the route handlers for dynamic entity endpoints.
  * It supports GET, POST, PUT, and DELETE operations for various entities
- * defined in the Nexi Tools API schema.
+ * defined in the Magic Links API schema.
  */
 
 export interface BackendService {

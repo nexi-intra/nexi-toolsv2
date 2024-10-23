@@ -11,7 +11,7 @@ export function APILandingPage() {
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
       <section className="text-center mb-16">
-        <h1 className="text-4xl font-bold mb-4 dark:text-white">Nexi Tools API</h1>
+        <h1 className="text-4xl font-bold mb-4 dark:text-white">Magic Links API</h1>
         <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
           Powerful, flexible, and easy to use. Build amazing applications with our API.
         </p>
