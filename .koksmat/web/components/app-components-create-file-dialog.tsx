@@ -1,20 +1,30 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
-import { Code } from 'lucide-react'
+import { Code, ExternalLink } from 'lucide-react'
 import { checkFileExists, createFile, openFile } from './app-actions-file-actions'
+import { set } from 'date-fns'
 
-export function CreateFileDialogComponent() {
-  const [filePath, setFilePath] = useState('')
+export function CreateFileDialogComponent(props: { path: string, content: string }) {
+  const { path, content } = props
+  const [filePath, setFilePath] = useState(path)
   const [isOpen, setIsOpen] = useState(false)
   const [isAlertOpen, setIsAlertOpen] = useState(false)
   const [message, setMessage] = useState('')
-
+  const [fileExists, setfileExists] = useState(false)
+  useEffect(() => {
+    setFilePath(path)
+    const check = async () => {
+      const exists = await checkFileExists(filePath)
+      setfileExists(exists)
+    }
+    check()
+  }, [path])
   const handleCreate = async () => {
     const fileExists = await checkFileExists(filePath)
     if (fileExists) {
@@ -25,13 +35,7 @@ export function CreateFileDialogComponent() {
   }
 
   const createNewFile = async () => {
-    const content = `export default function Page() {
-  return (
-    <div>
-      <h1>New Page</h1>
-    </div>
-  )
-}`
+
     const createResult = await createFile(filePath, content)
     if (createResult.success) {
       const openResult = await openFile(filePath)
@@ -75,7 +79,26 @@ export function CreateFileDialogComponent() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {fileExists && (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm" className="ml-2">
+              <ExternalLink className="h-4 w-4" />
+              <span className="sr-only">Open preview</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[80vw] sm:max-h-[80vh]">
+            <DialogHeader>
+              <DialogTitle>File Preview</DialogTitle>
+            </DialogHeader>
+            <div className="w-full h-[60vh]">
 
+              <iframe src={"/" + path} className="w-full h-full border-0" title="File Preview" />
+              <a href={"/" + path} target="_blank">{"/" + path}</a>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

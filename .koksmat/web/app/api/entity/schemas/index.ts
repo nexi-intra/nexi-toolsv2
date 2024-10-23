@@ -72,7 +72,7 @@ export type SchemaName =
   | "country"
   | "purpose"
   | "user"
-  | "toolGroup"
+  | "toolgroup"
   | "tag";
 
 export type SchemaMap = {
@@ -80,7 +80,7 @@ export type SchemaMap = {
   country: Country;
   purpose: Purpose;
   tag: Tag;
-  toolGroup: ToolGroup;
+  toolgroup: ToolGroup;
   user: User;
 };
 export const typeNames: { [K in SchemaName]: string } = {
@@ -88,7 +88,7 @@ export const typeNames: { [K in SchemaName]: string } = {
   country: "Country",
   purpose: "Purpose",
   tag: "Tag",
-  toolGroup: "ToolGroup",
+  toolgroup: "ToolGroup",
   user: "User",
 };
 export const schemaMapTypes: { [K in SchemaName]: z.ZodType<SchemaMap[K]> } = {
@@ -96,7 +96,7 @@ export const schemaMapTypes: { [K in SchemaName]: z.ZodType<SchemaMap[K]> } = {
   country: CountrySchema,
   purpose: PurposeSchema,
   tag: TagSchema,
-  toolGroup: ToolGroupSchema,
+  toolgroup: ToolGroupSchema,
   user: UserSchema,
 };
 export const schemaMapObjects: {
@@ -106,7 +106,7 @@ export const schemaMapObjects: {
   country: CountrySchema,
   purpose: PurposeSchema,
   tag: TagSchema,
-  toolGroup: ToolGroupSchema,
+  toolgroup: ToolGroupSchema,
   user: UserSchema,
 };
 export type Tool = z.infer<typeof ToolSchema>;

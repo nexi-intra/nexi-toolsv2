@@ -6,12 +6,15 @@ import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
 import { Highlight, themes } from 'prism-react-renderer'
 import { z } from 'zod'
+import path from 'path'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { CreateFileDialogComponent } from './app-components-create-file-dialog'
+import { typeNames } from '@/app/api/entity/schemas'
 
 interface CodeSample {
   operation: string
@@ -20,12 +23,12 @@ interface CodeSample {
 }
 
 const CodeBlock: React.FC<{ code: string }> = ({ code }) => (
-  <Highlight theme={themes.nightOwl} code={code} language="tsx" >
+  <Highlight theme={themes.nightOwl} code={code} language="tsx">
     {({ className, style, tokens, getLineProps, getTokenProps }) => (
       <pre className={`${className} p-4 rounded-md overflow-x-auto`} style={style}>
         {tokens.map((line, i) => (
           <div key={i} {...getLineProps({ line, key: i })}>
-            {/* <span className="mr-4 text-gray-500">{i + 1}</span> */}
+            <span className="mr-4 text-gray-500">{i + 1}</span>
             {line.map((token, key) => (
               <span key={key} {...getTokenProps({ token, key })} />
             ))}
@@ -44,6 +47,8 @@ interface DynamicEntityCodeSamplesProps {
 export default function DynamicEntityCodeSamples({ schema, entityName }: DynamicEntityCodeSamplesProps) {
   const [activeSection, setActiveSection] = useState('')
   const fieldsToOmit = ['id', 'createdAt', 'createdBy', 'updatedAt', 'updatedBy', 'deletedAt', 'deletedBy']
+
+  const typeName = typeNames[entityName as keyof typeof typeNames] || entityName
 
   const schemaFields = useMemo(() => {
     if (!schema || typeof schema.shape !== 'object') {
@@ -72,54 +77,33 @@ export default function DynamicEntityCodeSamples({ schema, entityName }: Dynamic
     }
 
     const lowercaseEntity = entityName.toLowerCase()
-    const pluralEntity = `${lowercaseEntity}s`
 
     const samples: CodeSample[] = [
       {
         operation: "Fetch All",
-        description: `Fetch all ${pluralEntity} using useMemo`,
-        code: `'use client'
-
-import { useMemo } from 'react'
-import { ApiClient } from '@/lib/api-client'
-
-export default function ${entityName}List() {
-  const ${lowercaseEntity}Client = useMemo(() => new ApiClient('${pluralEntity}', () => 'YOUR_AUTH_TOKEN'), [])
-
-  const { data: ${pluralEntity}, error, isLoading } = useMemo(() => ${lowercaseEntity}Client.getAll(), [${lowercaseEntity}Client])
-
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
-
-  return (
-    <ul>
-      {${pluralEntity}.map(${lowercaseEntity} => (
-        <li key={${lowercaseEntity}.id}>{${lowercaseEntity}.name}</li>
-      ))}
-    </ul>
-  )
-}`
-      },
-      {
-        operation: "Fetch One",
-        description: `Fetch a specific ${lowercaseEntity} using useState`,
+        description: `Fetch all ${typeName} with pagination using useEffect and useState`,
         code: `'use client'
 
 import { useState, useEffect } from 'react'
-import { ApiClient } from '@/lib/api-client'
+import { ApiClient } from '@/app/api/entity/api-client'
+import { ${typeName} } from '@/app/api/entity/schemas'
 
-export default function ${entityName}Detail({ id }: { id: string }) {
-  const [${lowercaseEntity}, set${entityName}] = useState<any>(null)
+export default function ${typeName}List() {
+  const [${lowercaseEntity}s, set${typeName}s] = useState<${typeName}[]>([])
+  const [totalCount, setTotalCount] = useState(0)
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const ${lowercaseEntity}Client = new ApiClient('${pluralEntity}', () => 'YOUR_AUTH_TOKEN')
-    
-    const fetch${entityName} = async () => {
+    const ${lowercaseEntity}Client = new ApiClient('${lowercaseEntity}', () => 'YOUR_AUTH_TOKEN')
+
+    const fetch${typeName}s = async () => {
       try {
-        const data = await ${lowercaseEntity}Client.getOne(id)
-        set${entityName}(data)
+        const data = await ${lowercaseEntity}Client.getAll(page, pageSize)
+        set${typeName}s(data.items)
+        setTotalCount(data.totalCount)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred')
       } finally {
@@ -127,12 +111,64 @@ export default function ${entityName}Detail({ id }: { id: string }) {
       }
     }
 
-    fetch${entityName}()
+    fetch${typeName}s()
+  }, [page, pageSize])
+
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error}</div>
+
+  return (
+    <div>
+      <ul>
+        {${lowercaseEntity}s.map(item => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
+      <div>
+        Total: {totalCount} | Page: {page} of {Math.ceil(totalCount / pageSize)}
+        <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>Previous</button>
+        <button onClick={() => setPage(p => p + 1)} disabled={page >= Math.ceil(totalCount / pageSize)}>Next</button>
+      </div>
+    </div>
+  )
+}`
+      },
+      {
+        operation: "Fetch One",
+        description: `Fetch a specific ${typeName} using useState`,
+        code: `'use client'
+
+import { useState, useEffect } from 'react'
+import { ApiClient } from '@/app/api/entity/api-client'
+import { ${typeName} } from '@/app/api/entity/schemas'
+
+export default function ${typeName}Detail() {
+  // TODO: Replace '2' with the actual ID you want to fetch
+  const id = '2'
+  const [${lowercaseEntity}, set${typeName}] = useState<${typeName} | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const ${lowercaseEntity}Client = new ApiClient('${lowercaseEntity}', () => 'YOUR_AUTH_TOKEN')
+    
+    const fetch${typeName} = async () => {
+      try {
+        const data = await ${lowercaseEntity}Client.getOne(id)
+        set${typeName}(data)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetch${typeName}()
   }, [id])
 
   if (isLoading) return <div>Loading...</div>
   if (error) return <div>Error: {error}</div>
-  if (!${lowercaseEntity}) return <div>${entityName} not found</div>
+  if (!${lowercaseEntity}) return <div>${typeName} not found</div>
 
   return (
     <div>
@@ -144,115 +180,175 @@ export default function ${entityName}Detail({ id }: { id: string }) {
       },
       {
         operation: "Create",
-        description: `Create a new ${lowercaseEntity} using an async function`,
+        description: `Create a new ${typeName} using an async function`,
         code: `'use client'
 
 import { useState } from 'react'
-import { ApiClient } from '@/lib/api-client'
+import { ApiClient } from '@/app/api/entity/api-client'
+import { ${typeName} } from '@/app/api/entity/schemas'
 
-export default function Create${entityName}() {
-  ${schemaFields.map(field => `const [${field.key}, set${field.key.charAt(0).toUpperCase() + field.key.slice(1)}] = useState${field.type === 'string' ? "('')" : field.type === 'number' ? '(0)' : field.type === 'boolean' ? '(false)' : '(null)'}`).join('\n  ')}
+export default function Create${typeName}() {
+  ${schemaFields.map(field => `const [${field.key}, set${field.key.charAt(0).toUpperCase() + field.key.slice(1)}] = useState${field.type === 'string' ? "<string>('')" : field.type === 'number' ? '<number>(0)' : field.type === 'boolean' ? '<boolean>(false)' : '<Date | null>(null)'}`).join('\n  ')}
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const ${lowercaseEntity}Client = new ApiClient('${pluralEntity}', () => 'YOUR_AUTH_TOKEN')
+    const ${lowercaseEntity}Client = new ApiClient('${lowercaseEntity}', () => 'YOUR_AUTH_TOKEN')
 
     try {
-      const new${entityName} = await ${lowercaseEntity}Client.create({ ${schemaFields.map(field => field.key).join(', ')} })
-      console.log('Created ${lowercaseEntity}:', new${entityName})
+      const new${typeName} = await ${lowercaseEntity}Client.create({ ${schemaFields.map(field => field.key).join(', ')} })
+      console.log('Created ${typeName}:', new${typeName})
       // Reset form or navigate away
     } catch (error) {
-      console.error('Error creating ${lowercaseEntity}:', error)
+      console.error('Error creating ${typeName}:', error)
     }
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      ${schemaFields.map(field => `<input type="${field.type === 'number' ? 'number' : 'text'}" value={${field.key}} onChange={(e) => set${field.key.charAt(0).toUpperCase() + field.key.slice(1)}(${field.type === 'number' ? 'Number(e.target.value)' : 'e.target.value'})} placeholder="${field.key.charAt(0).toUpperCase() + field.key.slice(1)}" required />`).join('\n      ')}
-      <button type="submit">Create ${entityName}</button>
+      ${schemaFields.map(field => `<input type="${field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : 'text'}" value={${field.key}${field.type === 'Date' ? ' ? ' + field.key + '.toISOString().split(\'T\')[0] : \'\'' : ''}} onChange={(e) => set${field.key.charAt(0).toUpperCase() + field.key.slice(1)}(${field.type === 'number' ? 'Number(e.target.value)' : field.type === 'Date' ? 'new Date(e.target.value)' : 'e.target.value'})} placeholder="${field.key.charAt(0).toUpperCase() + field.key.slice(1)}" required />`).join('\n      ')}
+      <button type="submit">Create ${typeName}</button>
     </form>
   )
 }`
       },
       {
         operation: "Update",
-        description: `Update an existing ${lowercaseEntity} using an async function`,
+        description: `Update an existing ${typeName} using an async function`,
         code: `'use client'
 
 import { useState, useEffect } from 'react'
-import { ApiClient } from '@/lib/api-client'
+import { ApiClient } from '@/app/api/entity/api-client'
+import { ${typeName} } from '@/app/api/entity/schemas'
 
-interface ${entityName} {
-  id: string
-  ${schemaFields.map(field => `${field.key}: ${field.type}`).join('\n  ')}
-}
-
-export default function Update${entityName}({ id }: { id: string }) {
-  const [${lowercaseEntity}, set${entityName}] = useState<${entityName}>({
-    id: '',
-    ${schemaFields.map(field => `${field.key}: ${field.type === 'string' ? "''" : field.type === 'number' ? '0' : field.type === 'boolean' ? 'false' : 'null'}`).join(',\n    ')}
-  })
+export default function Update${typeName}() {
+  // TODO: Replace '2' with the actual ID you want to update
+  const id = '2'
+  const [${lowercaseEntity}, set${typeName}] = useState<${typeName} | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetch${entityName} = async () => {
-      const ${lowercaseEntity}Client = new ApiClient('${pluralEntity}', () => 'YOUR_AUTH_TOKEN')
-      const data = await ${lowercaseEntity}Client.getOne(id)
-      set${entityName}(data)
+    const fetch${typeName} = async () => {
+      const ${lowercaseEntity}Client = new ApiClient('${lowercaseEntity}', () => 'YOUR_AUTH_TOKEN')
+      try {
+        const data = await ${lowercaseEntity}Client.getOne(id)
+        set${typeName}(data)
+        setIsLoading(false)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
+        setIsLoading(false)
+      }
     }
-    fetch${entityName}()
+    fetch${typeName}()
   }, [id])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const ${lowercaseEntity}Client = new ApiClient('${pluralEntity}', () => 'YOUR_AUTH_TOKEN')
+    if (!${lowercaseEntity}) return
+
+    const ${lowercaseEntity}Client = new ApiClient('${lowercaseEntity}', () => 'YOUR_AUTH_TOKEN')
 
     try {
-      const updated${entityName} = await ${lowercaseEntity}Client.update(id, ${lowercaseEntity})
-      console.log('Updated ${lowercaseEntity}:', updated${entityName})
+      const updated${typeName} = await ${lowercaseEntity}Client.update(id, ${lowercaseEntity})
+      console.log('Updated ${typeName}:', updated${typeName})
       // Handle successful update (e.g., show a success message)
     } catch (error) {
-      console.error('Error updating ${lowercaseEntity}:', error)
+      console.error('Error updating ${typeName}:', error)
       // Handle error (e.g., show an error message)
+    }
+  }
+
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error}</div>
+  if (!${lowercaseEntity}) return <div>${typeName} not found</div>
+
+  return (
+    <form onSubmit={handleSubmit}>
+      ${schemaFields.map(field => `<input
+        type="${field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : 'text'}"
+        value={${lowercaseEntity}.${field.key}${field.type === 'Date' ? ' ? ' + lowercaseEntity + '.' + field.key + '.toISOString().split(\'T\')[0] : \'\'' : ''}}
+        onChange={(e) => set${typeName}({ ...${lowercaseEntity}, ${field.key}: ${field.type === 'number' ? 'Number(e.target.value)' : field.type === 'Date' ? 'new Date(e.target.value)' : 'e.target.value'} })}
+        placeholder="${field.key.charAt(0).toUpperCase() + field.key.slice(1)}"
+        required
+      />`).join('\n      ')}
+      <button type="submit">Update ${typeName}</button>
+    </form>
+  )
+}`
+      },
+      {
+        operation: "Patch",
+        description: `Partially update an existing ${typeName} using an async function`,
+        code: `'use client'
+
+import { useState } from 'react'
+import { ApiClient } from '@/app/api/entity/api-client'
+import { ${typeName} } from '@/app/api/entity/schemas'
+
+export default function Patch${typeName}() {
+  // TODO: Replace '2' with the actual ID you want to patch
+  const id = '2'
+  const [patchData, setPatchData] = useState<Partial<${typeName}>>({})
+  const [error, setError] = useState<string | null>(null)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const ${lowercaseEntity}Client = new ApiClient('${lowercaseEntity}', () => 'YOUR_AUTH_TOKEN')
+
+    try {
+      const patched${typeName} = await ${lowercaseEntity}Client.patch(id, patchData)
+      console.log('Patched ${typeName}:', patched${typeName})
+      // Handle successful patch (e.g., show a success message)
+    } catch (error) {
+      console.error('Error patching ${typeName}:', error)
+      setError('Failed to patch ${typeName}')
     }
   }
 
   return (
     <form onSubmit={handleSubmit}>
       ${schemaFields.map(field => `<input
-        type="${field.type === 'number' ? 'number' : 'text'}"
-        value={${lowercaseEntity}.${field.key}}
-        onChange={(e) => set${entityName}({ ...${lowercaseEntity}, ${field.key}: ${field.type === 'number' ? 'Number(e.target.value)' : 'e.target.value'} })}
+        type="${field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : 'text'}"
+        onChange={(e) => setPatchData({ ...patchData, ${field.key}: ${field.type === 'number' ? 'Number(e.target.value)' : field.type === 'Date' ? 'new Date(e.target.value)' : 'e.target.value'} })}
         placeholder="${field.key.charAt(0).toUpperCase() + field.key.slice(1)}"
-        required
       />`).join('\n      ')}
-      <button type="submit">Update ${entityName}</button>
+      <button type="submit">Patch ${typeName}</button>
+      {error && <p className="text-red-500">{error}</p>}
     </form>
   )
 }`
+
       },
       {
         operation: "Delete",
-        description: `Delete a ${lowercaseEntity} using an async function`,
+        description: `Delete a ${typeName} using an async function`,
         code: `'use client'
 
 import { useState } from 'react'
-import { ApiClient } from '@/lib/api-client'
+import { ApiClient } from '@/app/api/entity/api-client'
+import { ${typeName} } from '@/app/api/entity/schemas'
 
-export default function Delete${entityName}({ id }: { id: string }) {
+export default function Delete${typeName}() {
+  // TODO: Replace '2' with the actual ID you want to delete
+  const id = '2'
   const [isDeleting, setIsDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const handleDelete = async () => {
     setIsDeleting(true)
     setError(null)
-    const ${lowercaseEntity}Client = new ApiClient('${pluralEntity}', () => 'YOUR_AUTH_TOKEN')
+    const ${lowercaseEntity}Client = new ApiClient('${lowercaseEntity}', () => 'YOUR_AUTH_TOKEN')
 
     try {
-      await ${lowercaseEntity}Client.delete(id)
-      console.log('${entityName} deleted successfully')
-      // Handle successful deletion (e.g., navigate away or update UI)
+      const result = await ${lowercaseEntity}Client.delete(id)
+      if (result) {
+        console.log('${typeName} deleted successfully')
+        // Handle successful deletion (e.g., navigate away or update UI)
+      } else {
+        setError('Failed to delete ${typeName}')
+      }
     } catch (err) {
-      setError('Error deleting ${lowercaseEntity}: ' + (err instanceof Error ? err.message : 'An error occurred'))
+      setError('Error deleting ${typeName}: ' + (err instanceof Error ? err.message : 'An error occurred'))
     } finally {
       setIsDeleting(false)
     }
@@ -261,9 +357,79 @@ export default function Delete${entityName}({ id }: { id: string }) {
   return (
     <div>
       <button onClick={handleDelete} disabled={isDeleting}>
-        {isDeleting ? 'Deleting...' : 'Delete ${entityName}'}
+        {isDeleting ? 'Deleting...' : 'Delete ${typeName}'}
       </button>
       {error && <p className="text-red-500">{error}</p>}
+    </div>
+  )
+}`
+      },
+      {
+        operation: "Query",
+        description: `Execute a custom SQL query for ${typeName} using an async function`,
+        code: `'use client'
+
+import { useState } from 'react'
+import { ApiClient } from '@/app/api/entity/api-client'
+import { ${typeName} } from '@/app/api/entity/schemas'
+
+export default function Query${typeName}() {
+  const [sql, setSql] = useState<string>('')
+  const [results, setResults] = useState<any[]>([])
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError(null)
+    const ${lowercaseEntity}Client = new ApiClient('${lowercaseEntity}', () => 'YOUR_AUTH_TOKEN')
+
+    try {
+      const data = await ${lowercaseEntity}Client.query(sql, 1, 100, (row) => row)
+      setResults(data.items)
+    } catch (err) {
+      setError('Error executing query: ' + (err instanceof Error ? err.message : 'An error occurred'))
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <textarea
+          value={sql}
+          onChange={(e) => setSql(e.target.value)}
+          placeholder="Enter your SQL query here"
+          rows={4}
+          cols={50}
+        />
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? 'Executing...' : 'Execute Query'}
+        </button>
+      </form>
+      {error && <p className="text-red-500">{error}</p>}
+      {results.length > 0 && (
+        <table>
+          <thead>
+            <tr>
+              {Object.keys(results[0]).map((key) => (
+                <th key={key}>{key}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {results.map((row, index) => (
+              <tr key={index}>
+                {Object.values(row).map((value: any, i) => (
+                  <td key={i}>{JSON.stringify(value)}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   )
 }`
@@ -273,7 +439,7 @@ export default function Delete${entityName}({ id }: { id: string }) {
     return samples
   }
 
-  const samples = useMemo(() => generateSamples(), [schemaFields, entityName])
+  const samples = useMemo(() => generateSamples(), [schemaFields, entityName, typeName])
 
   const copyToClipboard = (code: string) => {
     navigator.clipboard.writeText(code).then(() => {
@@ -331,20 +497,19 @@ export default function Delete${entityName}({ id }: { id: string }) {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 dark:text-white">{entityName} API Code Samples</h1>
+      <h1 className="text-3xl font-bold mb-6 dark:text-white">{typeName} API Code Samples</h1>
 
       {/* Mobile ToC Dropdown */}
-      <div className="lg:hidden mb-4 fixed top-14 w-max z-10 ">
+      <div className="md:hidden mb-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="w-full">
-
-              <span>Methods</span>
+              <Menu className="mr-2 h-4 w-4" />
+              <span>Table of Contents</span>
               <ChevronDown className="ml-auto h-4 w-4 opacity-50" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]">
-
             {samples.map((sample, index) => (
               <DropdownMenuItem key={index} onSelect={() => scrollToSection(`section-${index}`)}>
                 {sample.operation}
@@ -355,9 +520,9 @@ export default function Delete${entityName}({ id }: { id: string }) {
       </div>
 
       {/* Desktop ToC */}
-      <div className="hidden lg:block fixed top-20 right-4 w-48">
+      <div className="hidden md:block fixed top-20 right-4 w-48">
         <nav className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg">
-          <h2 className="text-lg font-semibold mb-2 dark:text-white">Methods</h2>
+          <h2 className="text-lg font-semibold mb-2 dark:text-white">Table of Contents</h2>
           <ul>
             {samples.map((sample, index) => (
               <li key={index} className="mb-2">
@@ -378,7 +543,7 @@ export default function Delete${entityName}({ id }: { id: string }) {
       </div>
 
       {/* Main content */}
-      <div className="lg:pr-44">
+      <div className="md:pr-52">
         {samples.map((sample, index) => (
           <section key={index} id={`section-${index}`} className="mb-12 pt-24 -mt-24">
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
@@ -400,6 +565,11 @@ export default function Delete${entityName}({ id }: { id: string }) {
                   <Copy className="h-4 w-4" />
                   <span className="sr-only">Copy code</span>
                 </Button>
+                <div className="absolute top-2 right-20">
+                  <CreateFileDialogComponent
+                    content={sample.code}
+                    path={path.join("test", entityName.toLowerCase(), sample.operation.replaceAll(" ", "-").toLowerCase())} />
+                </div>
               </div>
             </div>
           </section>

@@ -3,7 +3,7 @@ import { z } from "zod";
 // Define SharedAttributes
 
 export const SharedAttributes = z.object({
-  id: z.number().describe("Unique identifier"),
+  id: z.union([z.string(), z.number()]).describe("Unique identifier"),
   createdAt: z.date().describe("Creation timestamp"),
   createdBy: z
     .string()

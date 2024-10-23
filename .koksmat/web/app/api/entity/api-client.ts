@@ -55,7 +55,8 @@ export class ApiClient<T extends SchemaName> {
     const response = await this.fetchWithAuth(`${this.baseUrl}/${id}`);
     if (!response.ok) throw new Error("Failed to fetch data");
     const data = await response.json();
-    return this.schema.parse(data);
+    return data;
+    //return this.schema.parse(data);
   }
 
   async create(
@@ -67,7 +68,8 @@ export class ApiClient<T extends SchemaName> {
     });
     if (!response.ok) throw new Error("Failed to create data");
     const responseData = await response.json();
-    return this.schema.parse(responseData);
+    return responseData;
+    //return this.schema.parse(responseData);
   }
 
   async update(id: string, data: Partial<SchemaMap[T]>): Promise<SchemaMap[T]> {
@@ -77,7 +79,8 @@ export class ApiClient<T extends SchemaName> {
     });
     if (!response.ok) throw new Error("Failed to update data");
     const responseData = await response.json();
-    return this.schema.parse(responseData);
+    return responseData;
+    //return this.schema.parse(responseData);
   }
 
   async patch(id: string, data: Partial<SchemaMap[T]>): Promise<SchemaMap[T]> {
@@ -87,7 +90,8 @@ export class ApiClient<T extends SchemaName> {
     });
     if (!response.ok) throw new Error("Failed to patch data");
     const responseData = await response.json();
-    return this.schema.parse(responseData);
+    return responseData;
+    //return this.schema.parse(responseData);
   }
 
   async delete(id: string): Promise<boolean> {

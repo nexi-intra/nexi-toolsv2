@@ -39,7 +39,7 @@ export function createEntity<T extends z.ZodObject<any>>(
   const now = new Date();
   id++;
   const sharedData = {
-    id,
+    id: id.toString(),
     createdAt: now,
     createdBy: userId,
     updatedAt: now,
@@ -107,7 +107,7 @@ const db: Record<string, any[]> = {
     // ... (other tags)
   ],
   toolGroup: [
-    createEntity(schemaMapObjects.toolGroup, "system", {
+    createEntity(schemaMapObjects.toolgroup, "system", {
       name: "Microsoft 365",
       description: "Tools provided by Microsoft 365 suite",
     }),

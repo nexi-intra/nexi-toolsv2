@@ -49,18 +49,10 @@ export async function GET(
 
     if (id) {
       const entity = await service.getById(entityType, id);
-      return NextResponse.json({
-        data: entity,
-        message: "Entity retrieved successfully",
-        success: true,
-      });
+      return NextResponse.json(entity);
     } else {
       const result = await service.getAll(entityType, page, pageSize);
-      return NextResponse.json({
-        data: result,
-        message: "Entities retrieved successfully",
-        success: true,
-      });
+      return NextResponse.json(result);
     }
   } catch (error) {
     return handleError(error);
