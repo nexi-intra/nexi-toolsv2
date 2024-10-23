@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { SharedAttributes } from "./_shared";
 
-export const UserRoleSchema = z.enum(["admin", "user", "guest"]);
+export const UserRoleSchema = z.enum(["admin", "user", "guest", "editor"]);
 export const UserStatusSchema = z.enum(["active", "inactive", "suspended"]);
 
 export const UserSchema = SharedAttributes.extend({
