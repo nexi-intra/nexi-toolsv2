@@ -19,7 +19,7 @@ export const ToolSchema = SharedAttributes.extend({
       z.object({
         key: z.string(),
         value: z.string(),
-        order: z.number(),
+        order: z.string(),
       })
     )
     .describe("List of purposes, each with a key, value, and order"),
@@ -28,7 +28,7 @@ export const ToolSchema = SharedAttributes.extend({
       z.object({
         key: z.string(),
         value: z.string(),
-        order: z.number(),
+        order: z.string(),
       })
     )
     .describe("List of tags, each with a key, value, and order"),
@@ -49,7 +49,7 @@ export const ToolSchema = SharedAttributes.extend({
       z.object({
         key: z.string(),
         value: z.string(),
-        order: z.number(),
+        order: z.string(),
       })
     )
     .optional()
@@ -59,7 +59,7 @@ export const ToolSchema = SharedAttributes.extend({
       z.object({
         key: z.string(),
         value: z.string(),
-        order: z.number(),
+        order: z.string(),
       })
     )
     .optional()
@@ -77,7 +77,7 @@ export const ToolSchema = SharedAttributes.extend({
       z.object({
         key: z.string(),
         value: z.string(),
-        order: z.number(),
+        order: z.string(),
       })
     )
     .optional()
@@ -88,7 +88,7 @@ export const ToolSchema = SharedAttributes.extend({
       z.object({
         key: z.string(),
         value: z.string(),
-        order: z.number(),
+        order: z.string(),
       })
     )
     .optional()
@@ -103,7 +103,7 @@ export const ToolSchema = SharedAttributes.extend({
       z.object({
         key: z.string(),
         value: z.string(),
-        order: z.number(),
+        order: z.string(),
       })
     )
     .optional()
@@ -126,7 +126,7 @@ export const ToolSchema = SharedAttributes.extend({
       z.object({
         key: z.string(),
         value: z.string(),
-        order: z.number(),
+        order: z.string(),
       })
     )
     .optional()

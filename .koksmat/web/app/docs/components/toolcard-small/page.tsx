@@ -1,8 +1,10 @@
 'use client';
 
 import React, { } from 'react';
-import { examples } from '@/components/tool-miniature';
+
 import { ComponentDoc, ComponentDocumentationHub } from '@/components/component-documentation-hub';
+import { examplesToolCardMini } from '@/components/tool-card-mini';
+
 
 
 
@@ -10,7 +12,7 @@ import { ComponentDoc, ComponentDocumentationHub } from '@/components/component-
 // Example usage
 export default function ExampleUsage() {
   const componentDocs: ComponentDoc[] = [
-    ...examples
+    ...examplesToolCardMini
   ];
 
   return <ComponentDocumentationHub components={componentDocs} />;
