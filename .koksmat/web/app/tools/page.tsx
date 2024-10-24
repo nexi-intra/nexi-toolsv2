@@ -5,11 +5,12 @@ import { SectionRegion } from "@/components/section-region";
 import { SectionSearch } from "@/components/section-search";
 import { ToolMiniature } from "@/components/tool-miniature";
 
-import { ToolMedium } from "@/components/tool-medium";
+
 
 import { Disclaimer } from "@/components/disclaimer";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import ToolMedium from "@/components/tool-medium";
 
 export default function Page() {
   const [consented, setconsented] = useState(false);
