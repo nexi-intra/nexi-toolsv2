@@ -4,13 +4,21 @@ import React, { useEffect, useState } from 'react';
 import { Skeleton } from "@/components/ui/skeleton"
 import CodeSamplesPage from '@/components/code-samples-page';
 import { schemaMapObjects, SchemaName, typeNames } from '@/app/api/entity/schemas';
+import ZodSchemaDocumentation from '@/components/zod-schema-documentation';
+
 
 export default function EntityCodeSamplePage(props: { params: { entity: string } }) {
 
   const { entity } = props.params;
   return (
     <div className="space-y-6 p-6">
-
+      <h1 className="text-3xl font-bold mb-6 dark:text-white">{typeNames[entity as SchemaName]} </h1>
+      <code>
+        import {typeNames[entity as SchemaName]} from '@/app/api/entity/schemas'
+      </code>
+      <div className='pr-48'>
+        <ZodSchemaDocumentation schema={schemaMapObjects[entity as SchemaName]} name={entity} typename={typeNames[entity as SchemaName]} />
+      </div>
       <CodeSamplesPage schema={schemaMapObjects[entity as SchemaName]} entityName={entity} />
     </div>
   );

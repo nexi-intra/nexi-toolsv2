@@ -16,14 +16,12 @@ const navLinks = [
   { href: '/docs/components/toolcard-small', label: 'Tool Cards Small' },
   { href: '/docs/components/icon', label: 'Icon' },
   { href: '/docs/components/filelist', label: 'File list' },
-  // { href: '/components/card', label: 'Card' },
-  // { href: '/components/dialog', label: 'Dialog' },
-  // { href: '/components/dropdown-menu', label: 'Dropdown Menu' },
-  // { href: '/components/input', label: 'Input' },
-  // { href: '/components/select', label: 'Select' },
-  // { href: '/components/switch', label: 'Switch' },
-  // { href: '/components/textarea', label: 'Textarea' },
-  // { href: '/components/tooltip', label: 'Tooltip' },
+  { href: '/docs/components/favorite', label: 'Favorite' },
+  { href: '/docs/components/tag', label: 'Tag' },
+  { href: '/docs/components/oneline', label: 'One line text' },
+  { href: '/docs/components/multiline', label: 'Multi line text' },
+  { href: '/docs/components/toolcard', label: 'Tool Card' },
+
 ]
 
 const NavLinks = ({ className = '', onItemClick = () => { } }) => {

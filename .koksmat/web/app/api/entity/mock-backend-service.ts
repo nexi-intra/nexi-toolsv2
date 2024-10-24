@@ -56,7 +56,7 @@ export function createEntity<T extends z.ZodObject<any>>(
   const validatedData = SharedAttributes.merge(schema).parse(mergedData);
   return validatedData as EntityOutput<T>;
 }
-
+//TODO: Move the examples into the schema files
 // Pre-populated mock database
 const db: Record<string, any[]> = {
   tool: [

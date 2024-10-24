@@ -127,7 +127,7 @@ export default function IconUploader({
             <img
               src={icon}
               alt="Uploaded icon"
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              style={{ width: '100%', height: '100%', objectFit: 'fill' }}
             />
             {mode !== 'view' && (
               <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -159,9 +159,9 @@ export default function IconUploader({
           />
         )}
       </div>
-      <p className="text-sm text-gray-500">
+      {/* <p className="text-sm text-gray-500">
         {mode === 'new' ? 'Upload a new icon' : mode === 'edit' ? 'Edit existing icon' : 'View icon'}
-      </p>
+      </p> */}
     </div>
   )
 }
@@ -207,7 +207,7 @@ const handleIconUpdate = (mode: 'new' | 'edit' | 'view', icon: string | null) =>
   mode="edit"
   initialIcon="/placeholder.svg?height=100&width=100"
   onUpdate={handleIconUpdate}
-  className="bg-blue-100 p-4 rounded-lg"
+  className="bg-blue-100 p-4 rounded-lg "
 />
     `,
     example: (
