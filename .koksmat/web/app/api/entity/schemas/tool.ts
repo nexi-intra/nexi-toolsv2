@@ -14,12 +14,24 @@ export const ToolSchema = SharedAttributes.extend({
     .url()
     .describe("URL where the tool can be accessed or downloaded"),
   groupId: z.string().describe("ID of the group this tool belongs to"),
-  purposeIds: z
-    .array(z.string())
-    .describe("IDs of the purposes this tool serves"),
-  tagIds: z
-    .array(z.string())
-    .describe("IDs of the tags associated with this tool"),
+  purposes: z
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+        order: z.number(),
+      })
+    )
+    .describe("List of purposes, each with a key, value, and order"),
+  tags: z
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+        order: z.number(),
+      })
+    )
+    .describe("List of tags, each with a key, value, and order"),
   version: z.string().describe("Current version of the tool"),
   status: ToolStatus.describe("Current status of the tool"),
   icon: z
@@ -33,11 +45,23 @@ export const ToolSchema = SharedAttributes.extend({
     .optional()
     .describe("Optional documentation URL for the tool"),
   supportContact: z
-    .string()
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+        order: z.number(),
+      })
+    )
     .optional()
     .describe("Optional support contact for the tool"),
   license: z
-    .string()
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+        order: z.number(),
+      })
+    )
     .optional()
     .describe("Optional license information for the tool"),
   compatiblePlatforms: z
@@ -49,12 +73,24 @@ export const ToolSchema = SharedAttributes.extend({
     .optional()
     .describe("Optional minimum system requirements"),
   relatedToolIds: z
-    .array(z.string())
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+        order: z.number(),
+      })
+    )
     .optional()
-    .describe("Optional array of related tool IDs"),
+    .describe("Optional array of related tools"),
   // New fields to support the information in the image
   countries: z
-    .array(z.string())
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+        order: z.number(),
+      })
+    )
     .optional()
     .describe("Countries involved in the tool's development or usage"),
   repositoryUrl: z
@@ -63,7 +99,13 @@ export const ToolSchema = SharedAttributes.extend({
     .optional()
     .describe("URL of the tool's code repository"),
   collaborationType: z
-    .string()
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+        order: z.number(),
+      })
+    )
     .optional()
     .describe("Type of collaboration (e.g., 'Open Source', 'Internal')"),
   documents: z
@@ -80,7 +122,13 @@ export const ToolSchema = SharedAttributes.extend({
     .optional()
     .describe("Number of team members working on the tool"),
   primaryFocus: z
-    .string()
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+        order: z.number(),
+      })
+    )
     .optional()
     .describe(
       "Primary focus or category of the tool (e.g., 'Business Productivity')"

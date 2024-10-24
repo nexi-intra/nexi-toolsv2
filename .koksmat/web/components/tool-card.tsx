@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ComponentDoc } from './component-documentation-hub'
 import { Tool } from '@/app/api/entity/schemas'
 import IconUploader from './icon-uploader'
@@ -19,10 +19,25 @@ interface ToolCardProps {
   mode: 'view' | 'edit' | 'new'
   onSave?: (data: Tool, mode: 'view' | 'edit' | 'new') => void
   className?: string
+  allowedTags: { name: string; color: string; description: string }[]
+  isFavorite: boolean
+  onFavoriteChange: (isFavorite: boolean) => void
 }
 
-export default function ToolCard({ tool: initialTool, mode, onSave, className = '' }: ToolCardProps) {
+export default function ToolCard({
+  tool: initialTool,
+  mode,
+  onSave,
+  className = '',
+  allowedTags,
+  isFavorite,
+  onFavoriteChange
+}: ToolCardProps) {
   const [tool, setTool] = useState<Tool>(initialTool)
+
+  useEffect(() => {
+    setTool(initialTool)
+  }, [initialTool])
 
   const handleChange = (field: keyof Tool, value: any) => {
     setTool(prev => ({ ...prev, [field]: value }))
@@ -34,50 +49,64 @@ export default function ToolCard({ tool: initialTool, mode, onSave, className = 
     }
   }
 
+  const handleFavoriteChange = (mode: 'view' | 'edit' | 'new', newFavoriteState: boolean) => {
+    onFavoriteChange(newFavoriteState)
+    handleChange('status', newFavoriteState ? 'active' : 'inactive')
+  }
+
   return (
     <Card className={className}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <div className="flex-1">
-          <Tag
-            tags={tool.tagIds.map(id => ({ name: id, color: '#0075ca', description: '' }))}
-            selectedTags={tool.tagIds}
-            allowMulti={false}
-            required={false}
-            mode={mode}
-            onChange={(_, selectedTags) => handleChange('tagIds', selectedTags)}
-            canEditTagList={false}
-          />
-        </div>
-        <div className="flex-1 flex justify-center">
+        <div className="flex grow">
           <IconUploader
+            size={48}
             mode={mode}
             onUpdate={(_, icon) => handleChange('icon', icon)}
             initialIcon={tool.icon}
-            className="w-[100px] h-[100px]"
+            className="w-[48px] h-[48px]"
+          />
+          <OneLineTextComponent
+            initialValue={tool.name}
+            placeholder="Enter tool name"
+            mode={mode}
+            onChange={(_, value) => handleChange('name', value)}
+            className='text-2xl font-bold ml-3'
           />
         </div>
-        <div className="flex-1 flex justify-end">
+
+        <div className="flex items-center space-x-2">
+          <Tag
+            tags={allowedTags}
+            selectedTags={tool.tags.map(tag => tag.key)}
+            allowMulti={false}
+            required={false}
+            mode={mode}
+            onChange={(_, selectedTags) => handleChange('tags', selectedTags)}
+            canEditTagList={false}
+            className='right-0'
+          />
           <FavoriteComponent
             mode={mode}
-            onChange={(_, isFavorite) => handleChange('status', isFavorite ? 'active' : 'inactive')}
-            defaultIsFavorite={false}
+            onChange={handleFavoriteChange}
+            defaultIsFavorite={isFavorite}
           />
         </div>
       </CardHeader>
       <CardContent>
-        <OneLineTextComponent
-          initialValue={tool.name}
-          placeholder="Enter tool name"
-          mode={mode}
-          onChange={(_, value) => handleChange('name', value)}
-          className='text-2xl font-bold '
-        />
+
         <MultiLineText
           initialValue={tool.description}
           placeholder="Enter tool description"
           mode={mode}
           onChange={(_, value) => handleChange('description', value)}
         />
+
+        {tool && tool.documents && tool.documents?.length > 0 && (
+          <div className='text-xl font-bold ml-2 mt-2'>
+            Documents
+          </div>
+
+        )}
         <FileLinksGridComponent
           initialLinks={tool.documents?.map((doc, index) => ({
             id: index.toString(),
@@ -95,19 +124,17 @@ export default function ToolCard({ tool: initialTool, mode, onSave, className = 
             placeholder="Enter tool url"
             mode={mode}
             onChange={(_, value) => handleChange('url', value)}
-
-          />)
-        }
+          />
+        )}
         {mode === 'view' && (
           <div className="flex justify-center w-full mt-4">
-            <Link href={tool.url} target="_blank" >
-              {/* make the button centered */}
-              <Button variant="default" className="" >
+            <Link href={tool.url} target="_blank">
+              <Button variant="default">
                 Open Tool
-              </Button></Link>
+              </Button>
+            </Link>
           </div>
-        )
-        }
+        )}
       </CardContent>
       <CardFooter className="flex justify-end">
         {mode !== 'view' && (
@@ -131,36 +158,55 @@ function ToolCardExample() {
     updatedBy: 'Jane Smith',
     deletedAt: null,
     deletedBy: null,
-    name: 'Sample Tool',
-    description: 'This is a sample tool for demonstration purposes.',
-    url: 'https://example.com/sample-tool',
+    name: 'Nexi Connect',
+    description: `Il servizio per chiedere assistenza sulla dotazione tecnologica aziendale, tramite:
+
+Ticket
+Chat
+Telefono
+    
+    `,
+    url: 'https://nets.service-now.com/sp',
     groupId: 'tools-group',
-    purposeIds: ['purpose1', 'purpose2'],
-    tagIds: ['tag1', 'tag2'],
+    purposes: [],
+    tags: [],
     version: '1.0.0',
     status: 'active',
-    icon: '/placeholder.svg',
+    icon: '/nexiconnect.png',
     documentationUrl: 'https://example.com/docs',
-    supportContact: 'support@example.com',
-    license: 'MIT',
+
+    supportContact: [],
+    license: [],
     compatiblePlatforms: ['Windows', 'Mac', 'Linux'],
     systemRequirements: 'Node.js 14+',
-    relatedToolIds: ['tool2', 'tool3'],
-    countries: ['US', 'UK', 'CA'],
+    relatedToolIds: [],
+    countries: [],
     repositoryUrl: 'https://github.com/example/sample-tool',
-    collaborationType: 'Open Source',
+    collaborationType: [],
     documents: [
-      { name: 'User Guide', url: 'https://example.com/user-guide.pdf' },
-      { name: 'API Documentation', url: 'https://example.com/api-docs.pdf' }
+      { name: 'Manuale Utente', url: 'https://christianiabpos.sharepoint.com/sites/nexiintra-unit-gf-it/SiteAssets/SitePages/Nexi-Connect(1)/Nexi_Connect_Come_fare_per.pdf?web=1' },
+      { name: 'Nexi Connect: il nuovo accesso al supporto IT', url: 'https://christianiabpos.sharepoint.com/sites/nexiintra-unit-gf-it/SitePages/it/Nexi-Connect.aspx' }
     ],
     teamSize: 5,
-    primaryFocus: 'Development'
+    primaryFocus: []
   })
+  const [isFavorite, setIsFavorite] = useState(false)
+
+  const allowedTags = [
+    { name: 'tag1', color: '#ff0000', description: 'Tag 1' },
+    { name: 'tag2', color: '#00ff00', description: 'Tag 2' },
+    { name: 'tag3', color: '#0000ff', description: 'Tag 3' },
+  ]
 
   const handleSave = (updatedTool: Tool, saveMode: 'view' | 'edit' | 'new') => {
     console.log('Saved:', updatedTool, 'Mode:', saveMode)
     setTool(updatedTool)
     setMode('view')
+  }
+
+  const handleFavoriteChange = (newFavoriteState: boolean) => {
+    setIsFavorite(newFavoriteState)
+    console.log('Favorite changed:', newFavoriteState)
   }
 
   return (
@@ -183,6 +229,9 @@ function ToolCardExample() {
           tool={tool}
           mode={mode}
           onSave={handleSave}
+          allowedTags={allowedTags}
+          isFavorite={isFavorite}
+          onFavoriteChange={handleFavoriteChange}
         />
       </CardContent>
     </Card>
@@ -194,7 +243,7 @@ export const examplesToolCard: ComponentDoc[] = [
   {
     id: 'ToolCard-AllModes',
     name: 'ToolCard - All Modes',
-    description: 'ToolCard component with view/edit/new mode selector',
+    description: 'ToolCard component with view/edit/new mode selector, allowed tags, and favorite management',
     usage: `
 import React, { useState } from 'react'
 import { Tool } from '@/app/api/entity/schemas'
@@ -205,43 +254,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 function ToolCardExample() {
   const [mode, setMode] = useState<'view' | 'edit' | 'new'>('view')
   const [tool, setTool] = useState<Tool>({
-    id: '1',
-    createdAt: new Date(),
-    createdBy: 'John Doe',
-    updatedAt: new Date(),
-    updatedBy: 'Jane Smith',
-    deletedAt: null,
-    deletedBy: null,
-    name: 'Sample Tool',
-    description: 'This is a sample tool for demonstration purposes.',
-    url: 'https://example.com/sample-tool',
-    groupId: 'tools-group',
-    purposeIds: ['purpose1', 'purpose2'],
-    tagIds: ['tag1', 'tag2'],
-    version: '1.0.0',
-    status: 'active',
-    icon: '/placeholder.svg')',
-    documentationUrl: 'https://example.com/docs',
-    supportContact: 'support@example.com',
-    license: 'MIT',
-    compatiblePlatforms: ['Windows', 'Mac', 'Linux'],
-    systemRequirements: 'Node.js 14+',
-    relatedToolIds: ['tool2', 'tool3'],
-    countries: ['US', 'UK', 'CA'],
-    repositoryUrl: 'https://github.com/example/sample-tool',
-    collaborationType: 'Open Source',
-    documents: [
-      { name: 'User Guide', url: 'https://example.com/user-guide.pdf' },
-      { name: 'API Documentation', url: 'https://example.com/api-docs.pdf' }
-    ],
-    teamSize: 5,
-    primaryFocus: 'Development'
+    // ... (tool properties)
   })
+  const [isFavorite, setIsFavorite] = useState(false)
+
+  const allowedTags = [
+    { name: 'tag1', color: '#ff0000', description: 'Tag 1' },
+    { name: 'tag2', color: '#00ff00', description: 'Tag 2' },
+    { name: 'tag3', color: '#0000ff', description: 'Tag 3' },
+  ]
 
   const handleSave = (updatedTool: Tool, saveMode: 'view' | 'edit' | 'new') => {
     console.log('Saved:', updatedTool, 'Mode:', saveMode)
     setTool(updatedTool)
     setMode('view')
+  }
+
+  const handleFavoriteChange = (newFavoriteState: boolean) => {
+    setIsFavorite(newFavoriteState)
+    console.log('Favorite changed:', newFavoriteState)
   }
 
   return (
@@ -264,8 +295,11 @@ function ToolCardExample() {
           tool={tool}
           mode={mode}
           onSave={handleSave}
+          allowedTags={allowedTags}
+          isFavorite={isFavorite}
+          onFavoriteChange={handleFavoriteChange}
         />
-      </CardContent>
+      </CardContent>  
     </Card>
   )
 }

@@ -66,7 +66,7 @@ export default function Tag({
 
   useEffect(() => {
     onChange(mode, selectedTags)
-  }, [selectedTags, onChange])
+  }, [selectedTags])
 
   const handleTagToggle = (tagName: string) => {
     if (mode === 'view') return
@@ -106,7 +106,7 @@ export default function Tag({
   }
 
   return (
-    <div className={`w-full  ${className}`}>
+    <div className={`w-full   ${className}`}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -120,8 +120,10 @@ export default function Tag({
               <div className="flex flex-nowrap  overflow-hidden">
                 {renderTags()}
               </div>
-            ) : (
-              "Select tags..."
+            ) : (<span>
+              {mode === 'view' ? "" :
+                "Select tags..."}
+            </span>
             )}
             {mode !== 'view' &&
               <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />}

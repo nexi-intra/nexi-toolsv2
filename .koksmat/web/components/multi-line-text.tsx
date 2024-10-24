@@ -62,7 +62,7 @@ export default function MultiLineText({
   return (
     <div className={`w-full ${className}`}>
       {mode === 'view' ? (
-        <div className="p-2 bg-gray-100 rounded-md">{renderViewMode()}</div>
+        <div className="p-2  rounded-md">{renderViewMode()}</div>
       ) : (
         <textarea
           value={value}

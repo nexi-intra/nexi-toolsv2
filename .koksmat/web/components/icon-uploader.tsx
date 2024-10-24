@@ -113,8 +113,8 @@ export default function IconUploader({
   return (
     <div className={`flex flex-col items-center space-y-4 ${className}`} ref={containerRef}>
       <div
-        className={`relative border-2 ${mode === 'view' ? 'border-solid' : 'border-dashed'
-          } rounded-lg overflow-hidden ${isDragging ? 'border-primary' : 'border-gray-300'
+        className={`relative  ${mode === 'view' ? '' : 'border-dashed'
+          } rounded-lg overflow-hidden ${isDragging ? '' : ''
           } ${icon ? 'bg-white' : 'bg-gray-50'} ${mode !== 'view' ? 'cursor-pointer group' : ''}`}
         style={{ width: `${size}px`, height: `${size}px` }}
         onDragOver={mode !== 'view' ? handleDragOver : undefined}
