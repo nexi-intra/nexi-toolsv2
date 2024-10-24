@@ -20,8 +20,8 @@ const navLinks = [
   { href: '/docs/components/tag', label: 'Tag' },
   { href: '/docs/components/oneline', label: 'One line text' },
   { href: '/docs/components/multiline', label: 'Multi line text' },
-  { href: '/docs/components/toolcard', label: 'Tool Card' },
-  { href: '/docs/components/keyvalue', label: 'Key Value' },
+
+  { href: '/docs/components/lookup', label: 'Lookup' },
 
   { href: '/docs/components/keyvalue-largelist', label: 'Key Value Large list' },
 

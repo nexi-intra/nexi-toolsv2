@@ -4,7 +4,7 @@
 import React, { } from 'react';
 
 import { ComponentDoc, ComponentDocumentationHub } from '@/components/component-documentation-hub';
-import { examplesKeyValueSelector } from '@/components/key-value-selector';
+import { examplesKeyValueSelector } from '@/components/lookup';
 
 
 

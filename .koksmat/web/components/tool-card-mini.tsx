@@ -9,14 +9,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import ToolCard from './tool-card'
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import Tag from './tag'
+import Tag, { TagType } from './tag'
 import { ComponentDoc } from './component-documentation-hub'
 import { FavoriteComponent } from './favorite'
+import TagSelector from './tag'
 
 interface ToolCardMediumProps {
   tool: Tool
   onFavoriteChange: (isFavorite: boolean) => void
-  allowedTags: { name: string; color: string; description: string }[]
+  allowedTags: TagType[]
 }
 
 export function ToolCardMiniComponent({ tool, onFavoriteChange, allowedTags }: ToolCardMediumProps) {
@@ -33,17 +34,16 @@ export function ToolCardMiniComponent({ tool, onFavoriteChange, allowedTags }: T
       <CardContent className="flex-grow p-4">
         <div className="flex justify-between items-start mb-4">
           <div className="flex flex-wrap gap-1">
-            <Tag
+            <TagSelector
               tags={allowedTags}
-              selectedTags={tool.tags.map(tag => tag.key)}
+              initialSelectedTags={tool.tags}
               allowMulti={false}
               required={false}
-              mode={'view'}
-              // onChange={(_, selectedTags) => handleChange('tags', selectedTags)}
-              canEditTagList={false}
-              className='right-0' onChange={function (mode: 'view' | 'new' | 'edit', selectedTags: string[]): void {
-                // throw new Error('Function not implemented.')
-              }} />
+              mode="view"
+            //onChange={(_, selected) => handleChange('tags', selected)}
+
+            // className='right-0'
+            />
           </div>
           <FavoriteComponent
             mode="view"
@@ -120,10 +120,11 @@ Telefono
   })
 
   const allowedTags = [
-    { name: 'tag1', color: '#ff0000', description: 'Tag 1' },
-    { name: 'tag2', color: '#00ff00', description: 'Tag 2' },
-    { name: 'tag3', color: '#0000ff', description: 'Tag 3' },
+    { id: 'tag1', value: 'tag1', color: '#ff0000', description: 'Tag 1', order: "1" },
+    { id: 'tag2', value: 'tag2', color: '#00ff00', description: 'Tag 2', order: "2" },
+    { id: 'tag3', value: 'tag2', color: '#0000ff', description: 'Tag 3', order: "3" },
   ]
+
 
   const handleFavoriteChange = (isFavorite: boolean) => {
     setTool(prevTool => ({

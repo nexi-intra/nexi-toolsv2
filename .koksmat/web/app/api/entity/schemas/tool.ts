@@ -17,21 +17,22 @@ export const ToolSchema = SharedAttributes.extend({
   purposes: z
     .array(
       z.object({
-        key: z.string(),
+        id: z.string(),
         value: z.string(),
         order: z.string(),
       })
     )
-    .describe("List of purposes, each with a key, value, and order"),
+    .describe("List of purposes, each with a id, value, and order"),
   tags: z
     .array(
       z.object({
-        key: z.string(),
+        id: z.string(),
         value: z.string(),
         order: z.string(),
+        color: z.string(),
       })
     )
-    .describe("List of tags, each with a key, value, and order"),
+    .describe("List of tags, each with a id, value, and order"),
   version: z.string().describe("Current version of the tool"),
   status: ToolStatus.describe("Current status of the tool"),
   icon: z
@@ -47,7 +48,7 @@ export const ToolSchema = SharedAttributes.extend({
   supportContact: z
     .array(
       z.object({
-        key: z.string(),
+        id: z.string(),
         value: z.string(),
         order: z.string(),
       })
@@ -57,7 +58,7 @@ export const ToolSchema = SharedAttributes.extend({
   license: z
     .array(
       z.object({
-        key: z.string(),
+        id: z.string(),
         value: z.string(),
         order: z.string(),
       })
@@ -75,7 +76,7 @@ export const ToolSchema = SharedAttributes.extend({
   relatedToolIds: z
     .array(
       z.object({
-        key: z.string(),
+        id: z.string(),
         value: z.string(),
         order: z.string(),
       })
@@ -86,7 +87,7 @@ export const ToolSchema = SharedAttributes.extend({
   countries: z
     .array(
       z.object({
-        key: z.string(),
+        id: z.string(),
         value: z.string(),
         order: z.string(),
       })
@@ -101,7 +102,7 @@ export const ToolSchema = SharedAttributes.extend({
   collaborationType: z
     .array(
       z.object({
-        key: z.string(),
+        id: z.string(),
         value: z.string(),
         order: z.string(),
       })
@@ -124,7 +125,7 @@ export const ToolSchema = SharedAttributes.extend({
   primaryFocus: z
     .array(
       z.object({
-        key: z.string(),
+        id: z.string(),
         value: z.string(),
         order: z.string(),
       })

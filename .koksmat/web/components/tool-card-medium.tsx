@@ -9,14 +9,14 @@ import Link from 'next/link'
 import Image from 'next/image'
 import ToolCard from './tool-card'
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import Tag from './tag'
+import Tag, { TagType } from './tag'
 import { ComponentDoc } from './component-documentation-hub'
 import { FavoriteComponent } from './favorite'
 
 interface ToolCardMediumProps {
   tool: Tool
   onFavoriteChange: (isFavorite: boolean) => void
-  allowedTags: { name: string; color: string; description: string }[]
+  allowedTags: TagType[]
 }
 
 export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }: ToolCardMediumProps) {
@@ -31,19 +31,18 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
   return (
     <Card className="w-64 h-80 flex flex-col">
       <CardContent className="flex-grow p-4">
-        <div className="flex justify-between items-start mb-4">
+        <div className="flex justify-between items-start mb-4 ">
           <div className="flex flex-wrap gap-1">
             <Tag
               tags={allowedTags}
-              selectedTags={tool.tags.map(tag => tag.key)}
+              initialSelectedTags={tool.tags}
               allowMulti={false}
               required={false}
               mode={'view'}
-              // onChange={(_, selectedTags) => handleChange('tags', selectedTags)}
-              canEditTagList={false}
-              className='right-0' onChange={function (mode: 'view' | 'new' | 'edit', selectedTags: string[]): void {
-                // throw new Error('Function not implemented.')
-              }} />
+            // onChange={(_, selectedTags) => handleChange('tags', selectedTags)}
+
+
+            />
           </div>
           <FavoriteComponent
             mode="view"
@@ -77,8 +76,7 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
               mode="view"
               allowedTags={allowedTags}
               isFavorite={isFavorite}
-              onFavoriteChange={onFavoriteChange}
-            />
+              onFavoriteChange={onFavoriteChange} allowedPurposes={[]} allowedCountries={[]} />
           </DialogContent>
         </Dialog>
         <Link href={tool.url} target="_blank" rel="noopener noreferrer">
@@ -113,7 +111,10 @@ Telefono
     url: 'https://nets.service-now.com/sp',
     groupId: 'tools-group',
     purposes: [],
-    tags: [],
+    tags: [{
+      "id": "tag1", "value": "Tag 1", "color": "#ff0000",
+      order: ''
+    }],
     version: '1.0.0',
     status: 'active',
     icon: '/nexiconnect.png',
@@ -136,9 +137,9 @@ Telefono
   })
 
   const allowedTags = [
-    { name: 'tag1', color: '#ff0000', description: 'Tag 1' },
-    { name: 'tag2', color: '#00ff00', description: 'Tag 2' },
-    { name: 'tag3', color: '#0000ff', description: 'Tag 3' },
+    { id: "tag1", value: 'tag1', color: '#ff0000', description: 'Tag 1', order: "1" },
+    { id: "tag2", value: 'tag2', color: '#00ff00', description: 'Tag 2', order: "2" },
+    { id: 'tag3', value: "tag3", color: '#0000ff', description: 'Tag 3', order: "3" },
   ]
 
   const handleFavoriteChange = (isFavorite: boolean) => {
