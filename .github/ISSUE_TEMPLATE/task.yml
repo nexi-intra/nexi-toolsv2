@@ -5,14 +5,14 @@ type: Task
 
 assignees: []
 body:
-- type: dropdown
-  id: type
+- type: checkboxes
+  id: types
   attributes:
-    label: Type of artifact?
+    label: Type of artifacts?
     options:
-      - API
-      - Page
-      - Component
+      - label: API
+      - label: Page
+      - label: Component
 
 - type: textarea
   id: behaviour
