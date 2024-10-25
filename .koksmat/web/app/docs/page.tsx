@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Star, GitFork } from "lucide-react"
+import LandingPage from '@/components/landing-page'
 
 // This would typically come from an API call or environment variables
 const repoInfo = {
@@ -48,13 +49,11 @@ export const metadata: Metadata = {
 }
 
 export default function DocumentationLandingPage() {
-  return <div className="max-w-5xl mx-auto">
-    <h1 className="text-4xl font-bold mb-6">Welcome to Magic Links Documentation</h1>
-  </div>
+
   return (
 
     <div className="max-w-5xl mx-auto">
-      <h1 className="text-4xl font-bold mb-6">Welcome to Magic Links Documentation</h1>
+      <LandingPage />
 
       <Card className="mb-8">
         <CardHeader>

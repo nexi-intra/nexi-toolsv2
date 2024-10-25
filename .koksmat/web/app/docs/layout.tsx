@@ -22,7 +22,7 @@ const navItems = [
   { href: '/docs/components', label: 'Components' },
   { href: '/docs/api', label: 'API' },
   { href: '/', label: 'Try', target: "_blank" },
-  { href: '/about', label: '"Buy"' },
+
 ]
 
 export default function DocumentationLayout({

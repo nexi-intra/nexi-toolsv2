@@ -32,6 +32,7 @@ const NavLinks = ({ className = '', onItemClick = () => { } }) => {
 
   return (
     <nav className={className}>
+      <div>Components</div>
       {navLinks.map((link) => (
         <Link
           key={link.href}
