@@ -1,0 +1,37 @@
+name: "Task Request"
+description: "Submit a request for a artifact ."
+title: "[Task]: "
+labels: 
+  - task
+assignees: []
+body:
+- type: dropdown
+  id: type
+  attributes:
+    label: Type of artifact?
+    options:
+      - API
+      - Page
+      - Component
+
+- type: textarea
+  id: behaviour
+  attributes:
+    label: Behaviour
+    description: "High  level description of the expected flow."
+    value: |
+      1.
+      2.
+      3.
+      ...
+    render: bash
+  validations:
+    required: true      
+
+- type: markdown
+  attributes:
+    value: "## Description"
+- type: markdown
+  attributes:
+    value: |
+      Thanks for taking the time to fill out this bug! If you need real-time help, join us on Discord.
