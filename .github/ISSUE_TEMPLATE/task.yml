@@ -1,8 +1,7 @@
 name: "Task Request"
 description: "Submit a request for a artifact ."
 title: "[Task]: "
-type: 
-  - "Task"
+type: Task
 
 assignees: []
 body:
