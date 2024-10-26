@@ -10,7 +10,7 @@ interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-export class ApiClient<T extends SchemaName> {
+export class DatabaseClient<T extends SchemaName> {
   private entity: T;
   private baseUrl: string;
   private getToken: () => string | Promise<string>;

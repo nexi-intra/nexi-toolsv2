@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ApiClient } from '@/app/api/entity/api-client'
+import { DatabaseClient } from '@/app/api/entity/database-client'
 import { Country } from '@/app/api/entity/schemas'
 
 export default function CountryDetail() {
@@ -12,7 +12,7 @@ export default function CountryDetail() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const countryClient = new ApiClient('country', () => 'YOUR_AUTH_TOKEN')
+    const countryClient = new DatabaseClient('country', () => 'YOUR_AUTH_TOKEN')
 
     const fetchCountry = async () => {
       try {

@@ -22,6 +22,7 @@ const navLinks = [
   { href: '/docs/components/multiline', label: 'Multi line text' },
 
   { href: '/docs/components/lookup', label: 'Lookup' },
+  { href: '/docs/components/translate', label: 'Translation' },
 
   { href: '/docs/components/keyvalue-largelist', label: 'Key Value Large list' },
 

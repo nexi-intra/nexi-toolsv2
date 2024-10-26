@@ -9,7 +9,7 @@ keep: false
 
 -- sure sild
 
-CREATE TABLE public.company
+CREATE TABLE public.category
 (
     id SERIAL PRIMARY KEY,
     created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -18,30 +18,30 @@ CREATE TABLE public.company
     updated_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_by character varying COLLATE pg_catalog."default" ,
 
-    deleted_at timestamp with time zone
+    deleted_at timestamp with time zone,
+    koksmat_masterdataref VARCHAR COLLATE pg_catalog."default",
+    koksmat_masterdata_id VARCHAR COLLATE pg_catalog."default",
+    koksmat_masterdata_etag VARCHAR COLLATE pg_catalog."default",
+    koksmat_compliancetag VARCHAR COLLATE pg_catalog."default",
+    koksmat_state VARCHAR COLLATE pg_catalog."default",
+
+
+    koksmat_bucket JSONB 
+
     ,tenant character varying COLLATE pg_catalog."default"  NOT NULL
     ,searchindex character varying COLLATE pg_catalog."default"  NOT NULL
     ,name character varying COLLATE pg_catalog."default"  NOT NULL
     ,description character varying COLLATE pg_catalog."default" 
-    ,vatnumber character varying COLLATE pg_catalog."default"  NOT NULL
-    ,phonenumber character varying COLLATE pg_catalog."default" 
-    ,address character varying COLLATE pg_catalog."default" 
-    ,city character varying COLLATE pg_catalog."default" 
-    ,postalcode character varying COLLATE pg_catalog."default" 
-    ,country_id int  
+    ,sortOrder character varying COLLATE pg_catalog."default" 
+    ,color character varying COLLATE pg_catalog."default" 
 
 
 );
 
-                ALTER TABLE IF EXISTS public.company
-                ADD FOREIGN KEY (country_id)
-                REFERENCES public.country (id) MATCH SIMPLE
-                ON UPDATE NO ACTION
-                ON DELETE NO ACTION
-                NOT VALID;
+
 
 
 ---- create above / drop below ----
 
-DROP TABLE public.company;
+DROP TABLE public.category;
 

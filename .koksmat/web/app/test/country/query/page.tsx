@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ApiClient } from '@/app/api/entity/api-client'
+import { DatabaseClient } from '@/app/api/entity/database-client'
 import { Country } from '@/app/api/entity/schemas'
 
 export default function QueryCountry() {
@@ -14,7 +14,7 @@ export default function QueryCountry() {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
-    const countryClient = new ApiClient('country', () => 'YOUR_AUTH_TOKEN')
+    const countryClient = new DatabaseClient('country', () => 'YOUR_AUTH_TOKEN')
 
     try {
       const data = await countryClient.query(sql, 1, 100, (row) => row)

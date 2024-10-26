@@ -1,4 +1,4 @@
-'use client';
+
 
 /**
  * ExampleUsageComponent
@@ -13,19 +13,21 @@ import React, { useEffect, useState } from 'react';
 import { Skeleton } from "@/components/ui/skeleton"
 import CodeSamplesPage from '@/components/code-samples-page';
 import { schemaMapObjects, typeNames } from '@/app/api/entity/schemas';
-
+import { generateTranslationApiOpenApiDefinition } from '@/lib/translation-service';
+import { headers } from 'next/headers';
 export default function ExampleUsage() {
-  const [currentHost, setCurrentHost] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Set the current host when the component mounts
-    setCurrentHost(window.location.origin);
-  }, []);
+
+  // Access the incoming request headers
+  const headersList = headers();
+  // Retrieve the 'host' header
+  const host = headersList.get('host') || 'Unknown host';
 
   return (
     <div className="space-y-6 p-6">
-      {currentHost ? (
-        <OpenApiGeneratorComponent server={currentHost} />
+      {host ? (
+        <OpenApiGeneratorComponent server={host}
+          addionalEndpoints={[generateTranslationApiOpenApiDefinition]} />
       ) : (
         <Skeleton className="w-full h-[200px] rounded-lg" />
       )}

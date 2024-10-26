@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ApiClient } from '@/app/api/entity/api-client'
+import { DatabaseClient } from '@/app/api/entity/database-client'
 import { Tool } from '@/app/api/entity/schemas'
 
 export default function ToolList() {
@@ -13,7 +13,7 @@ export default function ToolList() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const toolClient = new ApiClient('tool', () => 'YOUR_AUTH_TOKEN')
+    const toolClient = new DatabaseClient('tool', () => 'YOUR_AUTH_TOKEN')
 
     const fetchTools = async () => {
       try {

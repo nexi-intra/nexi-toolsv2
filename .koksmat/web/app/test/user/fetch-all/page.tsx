@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ApiClient } from '@/app/api/entity/api-client'
+import { DatabaseClient } from '@/app/api/entity/database-client'
 import { User } from '@/app/api/entity/schemas'
 
 export default function UserList() {
@@ -13,7 +13,7 @@ export default function UserList() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const userClient = new ApiClient('user', () => 'YOUR_AUTH_TOKEN')
+    const userClient = new DatabaseClient('user', () => 'YOUR_AUTH_TOKEN')
 
     const fetchUsers = async () => {
       try {

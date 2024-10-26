@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ApiClient } from '@/app/api/entity/api-client'
+import { DatabaseClient } from '@/app/api/entity/database-client'
 import { Purpose } from '@/app/api/entity/schemas'
 
 export default function PurposeList() {
@@ -13,7 +13,7 @@ export default function PurposeList() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const purposeClient = new ApiClient('purpose', () => 'YOUR_AUTH_TOKEN')
+    const purposeClient = new DatabaseClient('purpose', () => 'YOUR_AUTH_TOKEN')
 
     const fetchPurposes = async () => {
       try {

@@ -1,133 +1,11 @@
 # https://locize.com/blog/next-app-dir-i18n/
-name: people
+name: tools
 type: magicservice
 organisation: magicbutton
 magicappversion: v0.0.1
 description: |
-  Application focusing on having a single point of entry in the form of a `person` to find all related information 
-  - Users, Companies, Groups, Relations, Systems, Countries
-react:
-  templates:
-    formfield: &formfield
-      markup: |
-        <FormField
-         control={form.control}
-         name="##NAME##"
-         render={({ field }) => (
-           <FormItem>
-             <FormLabel>##LABEL##</FormLabel>
-             <FormControl>
-               ##FORMCONTROL##
-             </FormControl>
-             <FormDescription>
-               ##DESCRIPTION##
-             </FormDescription>
-             <FormMessage />
-           </FormItem>
-         )}
-        />
-  components:
-    stringformfield: &StringFormField
-      name: formfield
-      template: *formfield
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
+  Application focusing on having a single point of entry in the form of a `tool` to find all related information
 
-    numberformfield: &NumberFormField
-      name: formfield
-      template: *formfield
-
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-    intformfield: &IntFormField
-      name: formfield
-      template: *formfield
-
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-    datetimeformfield: &DateTimeFormField
-      name: formfield
-      template: *formfield
-
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-    booleanformfield: &BooleanFormField
-      name: formfield
-      template: *formfield
-      markup: |
-        <div>Boolean not implemented</div>
-      # markup: |
-      #   <Input placeholder="##PLACEHOLDER##" {...field} />
-    arrayformfield: &ArrayFormField
-      name: formfield
-      template: *formfield
-
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-    lookupformfield: &LookupFormField
-      name: formfield
-      template: *formfield
-
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-    referenceformfield: &ReferenceFormField
-      name: formfield
-      template: *formfield
-
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-
-    jsonformfield: &JSONFormField
-      name: formfield
-      template: *formfield
-
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-    viewitem: &ViewItem
-      name: viewitem
-      markup: |
-        export function ViewItem<T>(props: {caption:string, value:T}) {
-        const {caption, value} = props;
-        return (
-        <div>
-          <div className="font-bold">{caption}</h1>
-          <div >{value}</h1>
-        </div>
-        )
-        }
-    formitem: &EditItem
-      name: formitem
-      markup: |
-        export function EditItem<T>(props: { caption:string, FormField : FormFieldType<T>, value:T, onChange: (value:T) => void}) {
-        const {caption, value,ForField} = props;
-        return (
-        <div>
-          <div className="font-bold">{caption}</h1>
-          <div ><FormField<T> onChange={onChange} value={value} /></h1>
-        </div>
-        )
-        }
-defaults:
-  viewitem: *ViewItem
-  edititem: *EditItem
-  primitive:
-    json:
-      formfield: *JSONFormField
-
-    string:
-      formfield: *StringFormField
-    number:
-      formfield: *NumberFormField
-    datetime:
-      formfield: *DateTimeFormField
-    int:
-      formfield: *IntFormField
-    boolean:
-      formfield: *BooleanFormField
-    array:
-      formfield: *ArrayFormField
-    reference:
-      formfield: *LookupFormField
 baseattributes:
   record:
     &recordAttributes # Id + Created + Updated + CreatedBy + UpdatedBy are implicit
@@ -153,145 +31,222 @@ baseattributes:
       required: false
 
 entities:
-  group: &group
-    name: group
-    description: Group
+  language: &language
+    name: language
+    description: Language
     baselineattributes: *recordAttributes
     additionalattributes:
-      - name: hidden
-        displayname: Hidden
-        type: boolean
-        required: false
-      - name: notesid
-        displayname: NotesId
+      # ISO code for language
+      - name: code
+        displayname: Code
         type: string
         required: true
+      - name: sortOrder
+        displayname: Sort Order
+        type: string
+        required: false
+
+  translation: &translation
+    name: translation
+    description: Translation
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: language
+        displayname: Language
+        type: reference
+        required: true
+        entity: *language
+      - name: translation
+        displayname: Translation
+        type: string
+        required: true
+
+  category: &category
+    name: category
+    description: Category of a tool
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: sortOrder
+        displayname: Sort Order
+        type: string
+        required: false
+      - name: color
+        displayname: Color
+        type: string
+        required: false
+
+  purpose: &purpose
+    name: purpose
+    description: Purpose of a tool
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: sortOrder
+        displayname: Sort Order
+        type: string
+        required: false
+
+  region: &region
+    name: region
+    description: Region
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: sortOrder
+        displayname: Sort Order
+        type: string
+        required: false
+
   country: &country
     name: country
-    displayname: Country
-    description: Country
+
     baselineattributes: *recordAttributes
     additionalattributes:
-      - name: code
-        type: string
-        required: true
-  company: &company
-    name: company
-    displayname: Company
-    description: Company
-    baselineattributes: *recordAttributes
-    additionalattributes:
-      - name: vatnumber
-        displayname: Vat Number
-        type: string
-        required: true
-      - name: phonenumber
-        displayname: Phone Number
-        type: string
-        required: false
-      - name: address
-        displayname: Address
-        type: string
-        required: false
-      - name: city
-        displayname: City
-        type: string
-        required: false
-      - name: postalcode
-        displayname: Postal Code
-        type: string
-        required: false
-      - name: country
-        displayname: Country
+      - name: region
         type: reference
-        entity: *country
+        required: true
+        entity: *region
+      - name: sortOrder
+        displayname: Sort Order
+        type: string
         required: false
-  system: &system
-    name: system
-    displayname: System
-    description: System
+
+  tool: &tool
+    name: tool
+    description: Tool
     baselineattributes: *recordAttributes
     additionalattributes:
-      - name: version
-        displayname: Version
+      - name: category
+        displayname: Category
+        type: reference
+        required: true
+        entity: *category
+      - name: countries
+        displayname: Countries
+        type: array
+        required: true
+        entity: *country
+      - name: purposes
+        displayname: Purposes
+        type: array
+        required: true
+        entity: *purpose
+      - name: url
+        displayname: URL
         type: string
         required: true
+      - name: status
+        displayname: Status
+        type: string
+        required: false
+      - name: metadata
+        displayname: Metadata
+        type: json
+        required: false
+
+  toolgroup: &toolgroup
+    name: toolgroup
+    description: Tool Group
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: tools
+        displayname: Tools
+        type: array
+        required: true
+        entity: *tool
+      - name: status
+        displayname: Status
+        type: string
+        required: false
+      - name: metadata
+        displayname: Metadata
+        type: json
+        required: false
 
   user: &user
     name: user
-    displayname: User
     description: User
-    baselineattributes: *recordAttributes
-    additionalattributes:
-      - name: system
-        displayname: System
-        type: reference
-        entity: *system
-        required: true
-      - name: fullname
-        displayname: FullName
-        type: string
-        required: true
-  relation: &relation
-    name: relation
-    displayname: Relation
-    description: Relation
-    baselineattributes: *recordAttributes
-    additionalattributes:
-      - name: relation
-        type: reference
-        displayname: Company Relation
-        entity: *company
-        required: false
-      - name: relationtype
-        displayname: Relation Type
-        type: string
-        required: false
-      - name: groups
-        displayname: Groups
-        type: array
-        entity: *group
-
-  person: &person
-    name: person
-    description: Person
     baselineattributes: *recordAttributes
     additionalattributes:
       - name: email
         displayname: Email
         type: string
-        required: false
-        searchindex: true
-      - name: displayname
-        displayname: DisplayName
-        type: string
-        required: false
-        searchindex: true
+        required: true
       - name: firstname
-        displayname: FirstName
+        displayname: First Name
         type: string
         required: true
       - name: lastname
-        displayname: LastName
+        displayname: Last Name
         type: string
         required: true
-      - name: uniqueid
-        displayname: Unique Id
-        type: string
-        required: true
-        searchindex: true
-
-      - name: nationality
-        displayname: Nationality
+      - name: language
+        displayname: Language
         type: reference
+        required: true
+        entity: *language
+      - name: country
+        displayname: Country
+        type: reference
+        required: true
         entity: *country
-        required: false
-      - name: users
-        displayname: Users
+      - name: region
+        displayname: Region
+        type: reference
+        required: true
+        entity: *region
+
+      - name: status
+        displayname: Status
+        type: string
+        required: true
+      - name: favourites
+        displayname: Favourites
         type: array
-        entity: *relation
+        required: false
+        entity: *tool
+  event: &event
+    name: event
+    description: Event
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: user
+        displayname: User
+        type: reference
+        required: true
+        entity: *user
+      - name: tool
+        displayname: Tool
+        type: reference
+        required: true
+        entity: *tool
+      - name: metadata
+        displayname: Metadata
+        type: json
         required: false
 
+  auditlog: &auditlog
+    name: auditlog
+    displayname: Audit Log
+    description: Audit Log
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: action
+        type: string
+        required: true
+      - name: status
+        type: string
+        required: true
+      - name: entity
+        type: string
+        required: true
+      - name: entityid
+        type: string
+        required: true
+      - name: actor
+        type: string
+        required: true
+      - name: metadata
+        type: json
+        required: false
 models:
   itemMethods: &itemMethods
     - name: read
@@ -344,66 +299,111 @@ models:
         type: page
 
 services:
-  - name: user
-    description: Manage users
+  - name: tool
+    description: Tools
     entity:
       type: record
-      model: user
-      objectname: User
-      entity: *user
+      entity: *tool
+      model: tool
+      objectname: Tool
+
     methods: *itemMethods
 
-  - name: group
-    description: Manage Groups
+  - name: region
+    description: Regions
     entity:
       type: record
-      model: group
-      objectname: Group
-      entity: *group
+      entity: *region
+      model: region
+      objectname: Region
+
     methods: *itemMethods
 
   - name: country
-    description: Manage Countries
+    description: Countries
     entity:
       type: record
+      entity: *country
       model: country
       objectname: Country
-      entity: *country
+
     methods: *itemMethods
 
-  - name: company
-    description: Manage Companies
+  - name: user
+    description: Users
     entity:
       type: record
-      model: company
-      objectname: Company
-      entity: *company
+      entity: *user
+      model: user
+      objectname: User
+
     methods: *itemMethods
 
-  - name: person
-    description: Manage Persons
+  - name: language
+    description: Languages
     entity:
       type: record
-      model: person
-      objectname: Person
-      entity: *person
-    methods: *itemMethods
-    viewitem:
+      entity: *language
+      model: language
+      objectname: Language
 
-  - name: relation
-    description: Manage Relations
-    entity:
-      type: record
-      model: relation
-      objectname: Relation
-      entity: *relation
     methods: *itemMethods
 
-  - name: system
-    description: Manage Systems
+  - name: translation
+    description: Translations
     entity:
       type: record
-      model: system
-      objectname: System
-      entity: *system
+      entity: *translation
+      model: translation
+      objectname: Translation
+
+    methods: *itemMethods
+
+  - name: purpose
+    description: Purposes
+    entity:
+      type: record
+      entity: *purpose
+      model: purpose
+      objectname: Purpose
+
+    methods: *itemMethods
+
+  - name: toolgroup
+    description: Tool Groups
+    entity:
+      type: record
+      entity: *toolgroup
+      model: toolgroup
+      objectname: Tool Group
+
+    methods: *itemMethods
+  - name: event
+    description: Events
+    entity:
+      type: record
+      entity: *event
+      model: event
+      objectname: Event
+
+    methods: *itemMethods
+
+  - name: auditlog
+    description: Audit Logs
+    entity:
+      type: record
+      entity: *auditlog
+      model: auditlog
+      objectname: Audit Log
+
+    methods: *itemMethods
+
+  - name: category
+    description: Categories
+    entity:
+      type: record
+      entity: *category
+      model: category
+      objectname: Category
+
     methods: *itemMethods

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ApiClient } from '@/app/api/entity/api-client'
+import { DatabaseClient } from '@/app/api/entity/database-client'
 import { Tag } from '@/app/api/entity/schemas'
 
 export default function TagList() {
@@ -13,7 +13,7 @@ export default function TagList() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const tagClient = new ApiClient('tag', () => 'YOUR_AUTH_TOKEN')
+    const tagClient = new DatabaseClient('tag', () => 'YOUR_AUTH_TOKEN')
 
     const fetchTags = async () => {
       try {

@@ -9,7 +9,7 @@ keep: false
 
 -- sure sild
 
-CREATE TABLE public.user
+CREATE TABLE public.auditlog
 (
     id SERIAL PRIMARY KEY,
     created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -18,26 +18,34 @@ CREATE TABLE public.user
     updated_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_by character varying COLLATE pg_catalog."default" ,
 
-    deleted_at timestamp with time zone
+    deleted_at timestamp with time zone,
+    koksmat_masterdataref VARCHAR COLLATE pg_catalog."default",
+    koksmat_masterdata_id VARCHAR COLLATE pg_catalog."default",
+    koksmat_masterdata_etag VARCHAR COLLATE pg_catalog."default",
+    koksmat_compliancetag VARCHAR COLLATE pg_catalog."default",
+    koksmat_state VARCHAR COLLATE pg_catalog."default",
+
+
+    koksmat_bucket JSONB 
+
     ,tenant character varying COLLATE pg_catalog."default"  NOT NULL
     ,searchindex character varying COLLATE pg_catalog."default"  NOT NULL
     ,name character varying COLLATE pg_catalog."default"  NOT NULL
     ,description character varying COLLATE pg_catalog."default" 
-    ,system_id int   NOT NULL
-    ,fullname character varying COLLATE pg_catalog."default"  NOT NULL
+    ,action character varying COLLATE pg_catalog."default"  NOT NULL
+    ,status character varying COLLATE pg_catalog."default"  NOT NULL
+    ,entity character varying COLLATE pg_catalog."default"  NOT NULL
+    ,entityid character varying COLLATE pg_catalog."default"  NOT NULL
+    ,actor character varying COLLATE pg_catalog."default"  NOT NULL
+    ,metadata JSONB  
 
 
 );
 
-                ALTER TABLE IF EXISTS public.user
-                ADD FOREIGN KEY (system_id)
-                REFERENCES public.system (id) MATCH SIMPLE
-                ON UPDATE NO ACTION
-                ON DELETE NO ACTION
-                NOT VALID;
+
 
 
 ---- create above / drop below ----
 
-DROP TABLE public.user;
+DROP TABLE public.auditlog;
 

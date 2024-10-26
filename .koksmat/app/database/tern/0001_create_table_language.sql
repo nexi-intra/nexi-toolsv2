@@ -9,7 +9,7 @@ keep: false
 
 -- sure sild
 
-CREATE TABLE public.country
+CREATE TABLE public.language
 (
     id SERIAL PRIMARY KEY,
     created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -18,12 +18,22 @@ CREATE TABLE public.country
     updated_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_by character varying COLLATE pg_catalog."default" ,
 
-    deleted_at timestamp with time zone
+    deleted_at timestamp with time zone,
+    koksmat_masterdataref VARCHAR COLLATE pg_catalog."default",
+    koksmat_masterdata_id VARCHAR COLLATE pg_catalog."default",
+    koksmat_masterdata_etag VARCHAR COLLATE pg_catalog."default",
+    koksmat_compliancetag VARCHAR COLLATE pg_catalog."default",
+    koksmat_state VARCHAR COLLATE pg_catalog."default",
+
+
+    koksmat_bucket JSONB 
+
     ,tenant character varying COLLATE pg_catalog."default"  NOT NULL
     ,searchindex character varying COLLATE pg_catalog."default"  NOT NULL
     ,name character varying COLLATE pg_catalog."default"  NOT NULL
     ,description character varying COLLATE pg_catalog."default" 
     ,code character varying COLLATE pg_catalog."default"  NOT NULL
+    ,sortOrder character varying COLLATE pg_catalog."default" 
 
 
 );
@@ -33,5 +43,5 @@ CREATE TABLE public.country
 
 ---- create above / drop below ----
 
-DROP TABLE public.country;
+DROP TABLE public.language;
 

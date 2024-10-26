@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ApiClient } from '@/app/api/entity/api-client'
+import { DatabaseClient } from '@/app/api/entity/database-client'
 import { ToolGroup } from '@/app/api/entity/schemas'
 
 export default function ToolGroupList() {
@@ -13,7 +13,7 @@ export default function ToolGroupList() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const toolgroupClient = new ApiClient('toolgroup', () => 'YOUR_AUTH_TOKEN')
+    const toolgroupClient = new DatabaseClient('toolgroup', () => 'YOUR_AUTH_TOKEN')
 
     const fetchToolGroups = async () => {
       try {

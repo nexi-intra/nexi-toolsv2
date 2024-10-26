@@ -1,11 +1,11 @@
 "use client"
-import { ApiClient } from '@/app/api/entity/api-client'
+import { DatabaseClient } from '@/app/api/entity/database-client'
 
 import React, { useMemo } from 'react'
 
 export default function Page() {
   const countries = useMemo(async () => {
-    const countryTable = new ApiClient("country", async () => "token")
+    const countryTable = new DatabaseClient("country", async () => "token")
     const response: any = await countryTable.getAll()
     // debugger
     return response.data.items
