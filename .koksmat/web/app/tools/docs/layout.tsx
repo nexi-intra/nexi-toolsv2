@@ -16,11 +16,13 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Moon, Sun, Github, Search } from "lucide-react"
 import { useTheme } from "next-themes"
+import { Sidebar_03 } from '@/components/components-sidebar-03'
+import { Sidebar_07 } from '@/components/components-sidebar-07'
 
 const navItems = [
-  { href: '/docs/use-cases', label: 'Use Cases' },
-  { href: '/docs/components', label: 'Components' },
-  { href: '/docs/api', label: 'API' },
+  { href: '/tools/docs/use-cases', label: 'Use Cases' },
+  { href: '/tools/docs/components', label: 'Components' },
+  { href: '/tools/docs/api', label: 'API' },
   { href: '/', label: 'Try', target: "_blank" },
 
 ]
@@ -39,13 +41,7 @@ export default function DocumentationLayout({
         <div className="container flex h-14 items-center">
           <NavigationMenu>
             <NavigationMenuList>
-              <NavigationMenuItem>
-                <Link href="/docs" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Magic Links
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
+
               {navItems.map((item) => (
                 <NavigationMenuItem key={item.href}>
                   <Link href={item.href} legacyBehavior passHref target={item.target}>

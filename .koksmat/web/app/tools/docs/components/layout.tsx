@@ -7,24 +7,26 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Menu } from "lucide-react"
+import { Sidebar_03 } from '@/components/components-sidebar-03'
 
 // Define the navigation links
 const navLinks = [
 
-  { href: '/docs/components/toolcard-large', label: 'Tool Cards Large' },
-  { href: '/docs/components/toolcard-medium', label: 'Tool Cards Medium' },
-  { href: '/docs/components/toolcard-small', label: 'Tool Cards Small' },
-  { href: '/docs/components/icon', label: 'Icon' },
-  { href: '/docs/components/filelist', label: 'File list' },
-  { href: '/docs/components/favorite', label: 'Favorite' },
-  { href: '/docs/components/tag', label: 'Tag' },
-  { href: '/docs/components/oneline', label: 'One line text' },
-  { href: '/docs/components/multiline', label: 'Multi line text' },
+  { href: '/tools/docs/components/toolcard-large', label: 'Tool Cards Large' },
+  { href: '/tools/docs/components/toolcard-medium', label: 'Tool Cards Medium' },
+  { href: '/tools/docs/components/toolcard-small', label: 'Tool Cards Small' },
+  { href: '/tools/docs/components/icon', label: 'Icon' },
+  { href: '/tools/docs/components/filelist', label: 'File list' },
+  { href: '/tools/docs/components/favorite', label: 'Favorite' },
+  { href: '/tools/docs/components/tag', label: 'Tag' },
+  { href: '/tools/docs/components/oneline', label: 'One line text' },
+  { href: '/tools/docs/components/multiline', label: 'Multi line text' },
 
-  { href: '/docs/components/lookup', label: 'Lookup' },
-  { href: '/docs/components/translate', label: 'Translation' },
+  { href: '/tools/docs/components/lookup', label: 'Lookup' },
+  { href: '/tools/docs/components/translate', label: 'Translation' },
+  { href: '/tools/docs/components/sidebar', label: 'Sidebar' },
 
-  { href: '/docs/components/keyvalue-largelist', label: 'Key Value Large list' },
+  { href: '/tools/docs/components/keyvalue-largelist', label: 'Key Value Large list' },
 
 ]
 

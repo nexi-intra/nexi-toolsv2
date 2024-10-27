@@ -264,7 +264,7 @@ Telefono
 
   return (
     <>
-      <Card className="w-full max-w-2xl mx-auto">
+      <Card className="w-full  mx-auto">
         <CardHeader>
           <CardTitle>ToolCard Example</CardTitle>
         </CardHeader>
@@ -291,9 +291,9 @@ Telefono
           />
         </CardContent>
       </Card>
-      <pre>
+      {/* <pre>
         {JSON.stringify(tool, null, 2)}
-      </pre>
+      </pre> */}
     </>
   )
 }

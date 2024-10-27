@@ -72,7 +72,7 @@ export function ToolLarge({ tool, badge, isFavourite, toggleFavourite, onClick }
   const defaultLanguage = 'en'; // Assuming English as default language
 
   return (
-    <div className="max-w-md p-4 bg-white rounded-lg shadow-md">
+    <div className="w-full p-4 bg-white rounded-lg shadow-md">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <div className="bg-[#00d8ff] text-white px-2 py-1 rounded-md">
