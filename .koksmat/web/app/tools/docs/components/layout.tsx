@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Menu } from "lucide-react"
-import { Sidebar_03 } from '@/components/components-sidebar-03'
 
 // Define the navigation links
 const navLinks = [
@@ -24,7 +23,7 @@ const navLinks = [
 
   { href: '/tools/docs/components/lookup', label: 'Lookup' },
   { href: '/tools/docs/components/translate', label: 'Translation' },
-  { href: '/tools/docs/components/sidebar', label: 'Sidebar' },
+
 
   { href: '/tools/docs/components/keyvalue-largelist', label: 'Key Value Large list' },
 
