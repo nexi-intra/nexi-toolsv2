@@ -1,4 +1,9 @@
 import { LRUCache } from "lru-cache";
+import {
+  OpenAPIRegistry,
+  OpenApiGeneratorV3,
+} from "@asteasolutions/zod-to-openapi";
+import { z } from "zod";
 
 // Azure Translator endpoint constant
 const AZURE_TRANSLATOR_ENDPOINT =
@@ -427,4 +432,160 @@ export async function translateBatch(
     );
     throw new TranslationError("Failed to translate texts");
   }
+}
+
+/**
+ * Generates the OpenAPI definition for the translation API.
+ * @param registry - The OpenAPI registry
+ */
+export async function generateTranslationApiOpenApiDefinition(
+  registry: OpenAPIRegistry
+) {
+  const LanguageEnum = z.enum([
+    "Afrikaans",
+    "Arabic",
+    "Bulgarian",
+    "Bengali",
+    "Bosnian",
+    "Catalan",
+    "Czech",
+    "Welsh",
+    "Danish",
+    "German",
+    "Greek",
+    "English",
+    "Spanish",
+    "Estonian",
+    "Persian",
+    "Finnish",
+    "Filipino",
+    "Fijian",
+    "French",
+    "Irish",
+    "Hebrew",
+    "Hindi",
+    "Croatian",
+    "Haitian Creole",
+    "Hungarian",
+    "Indonesian",
+    "Icelandic",
+    "Italian",
+    "Japanese",
+    "Korean",
+    "Lithuanian",
+    "Latvian",
+    "Malagasy",
+    "Malay",
+    "Maltese",
+    "Hmong Daw",
+    "Norwegian",
+    "Dutch",
+    "Querétaro Otomi",
+    "Polish",
+    "Portuguese",
+    "Romanian",
+    "Russian",
+    "Slovak",
+    "Slovenian",
+    "Samoan",
+    "Serbian (Cyrillic)",
+    "Serbian (Latin)",
+    "Swedish",
+    "Swahili",
+    "Tamil",
+    "Telugu",
+    "Thai",
+    "Klingon (Latin)",
+    "Tongan",
+    "Turkish",
+    "Tahitian",
+    "Ukrainian",
+    "Urdu",
+    "Vietnamese",
+    "Yucatec Maya",
+    "Cantonese (Traditional)",
+    "Chinese Simplified",
+    "Chinese Traditional",
+  ]);
+
+  const SingleTranslationRequestSchema = z.object({
+    text: z.string().describe("The text to be translated"),
+    sourceLanguage: LanguageEnum.describe("The source language of the text"),
+    targetLanguages: z.array(LanguageEnum).describe("Target languages"),
+  });
+
+  const BatchTranslationRequestSchema = z.object({
+    texts: z.array(z.string()).describe("Array of texts to translate"),
+    sourceLanguage: LanguageEnum.describe("The source language"),
+    targetLanguages: z.array(LanguageEnum).describe("Target languages"),
+  });
+
+  const SingleTranslationResponseSchema = z.object({
+    original: z.string(),
+    translations: z.record(LanguageEnum, z.string()),
+  });
+
+  const BatchTranslationResponseSchema = z.object({
+    original: z.array(z.string()),
+    translations: z.record(LanguageEnum, z.array(z.string())),
+  });
+
+  registry.register("SingleTranslationRequest", SingleTranslationRequestSchema);
+  registry.register("BatchTranslationRequest", BatchTranslationRequestSchema);
+  registry.register(
+    "SingleTranslationResponse",
+    SingleTranslationResponseSchema
+  );
+  registry.register("BatchTranslationResponse", BatchTranslationResponseSchema);
+
+  registry.registerPath({
+    method: "post",
+    path: "/api/translate",
+    description: "Translate text to multiple languages",
+    request: {
+      body: {
+        content: {
+          "application/json": {
+            schema: z.union([
+              SingleTranslationRequestSchema,
+              BatchTranslationRequestSchema,
+            ]),
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: "Successful translation",
+        content: {
+          "application/json": {
+            schema: z.union([
+              SingleTranslationResponseSchema,
+              BatchTranslationResponseSchema,
+            ]),
+          },
+        },
+      },
+      400: {
+        description: "Bad request",
+        content: {
+          "application/json": {
+            schema: z.object({
+              error: z.string(),
+            }),
+          },
+        },
+      },
+      500: {
+        description: "Internal server error",
+        content: {
+          "application/json": {
+            schema: z.object({
+              error: z.string(),
+            }),
+          },
+        },
+      },
+    },
+  });
 }

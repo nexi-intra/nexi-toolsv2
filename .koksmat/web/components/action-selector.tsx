@@ -1,13 +1,12 @@
 'use client'
 
 import React, { useState, useCallback, useMemo } from 'react'
-import { ChevronDown, MoreVertical, Search, Maximize2, Minimize2, Bell, Bookmark, Calendar, Camera, Coffee, Compass, Database, Download, Eye, FilePlus, FileText, Folder, Globe, Heart, Key, Mail, Settings, User, Image, ClipboardCopy } from 'lucide-react'
+import { ChevronDown, MoreVertical, Search, Mail, Settings, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ComponentDoc } from './component-documentation-hub'
 
 type ActionPropertyData = Record<string, any>
@@ -58,8 +57,6 @@ interface ActionType {
   propertyEditor: React.FC<ActionPropertyEditorProps>
 }
 
-type FilterOption = 'all' | 'recent' | 'favorite'
-
 interface ActionSelectorProps {
   actions: ActionType[]
   onActionSelect: (action: ActionType) => void
@@ -78,15 +75,12 @@ const ActionSelector: React.FC<ActionSelectorProps> = ({
   const [selectedAction, setSelectedAction] = useState<ActionType | undefined>(defaultAction)
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const [filterOption, setFilterOption] = useState<FilterOption>('all')
-  const [isMaximized, setIsMaximized] = useState(false)
   const [editMode, setEditMode] = useState(false)
 
   const handleActionSelect = useCallback((action: ActionType) => {
     setSelectedAction(action)
     onActionSelect(action)
     setIsOpen(false)
-    setIsMaximized(false)
     setEditMode(false)
   }, [onActionSelect])
 
@@ -98,25 +92,10 @@ const ActionSelector: React.FC<ActionSelectorProps> = ({
 
   const filteredActions = useMemo(() => {
     return actions.filter(action => {
-      const matchesSearch = action.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      return action.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         action.description.toLowerCase().includes(searchTerm.toLowerCase())
-
-      if (filterOption === 'all') return matchesSearch
-      if (filterOption === 'recent') {
-        // Implement recent filter logic here
-        return matchesSearch // && isRecent(action)
-      }
-      if (filterOption === 'favorite') {
-        // Implement favorite filter logic here
-        return matchesSearch // && isFavorite(action)
-      }
-      return false
     })
-  }, [actions, searchTerm, filterOption])
-
-  const toggleMaximize = () => {
-    setIsMaximized(!isMaximized)
-  }
+  }, [actions, searchTerm])
 
   return (
     <div className={`flex flex-col ${className}`}>
@@ -141,41 +120,16 @@ const ActionSelector: React.FC<ActionSelectorProps> = ({
             <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent
-          className={`p-0 transition-all duration-200 ease-in-out ${isMaximized
-              ? 'fixed inset-0 w-screen h-screen max-w-none max-h-none rounded-none'
-              : 'w-[300px]'
-            }`}
-          style={{
-            transform: isMaximized ? 'none' : undefined,
-            top: isMaximized ? 0 : undefined,
-            left: isMaximized ? 0 : undefined,
-          }}
-        >
-          <div className={`p-2 space-y-2 ${isMaximized ? 'h-full flex flex-col' : ''}`}>
-            <div className="flex space-x-2">
-              <Input
-                type="search"
-                placeholder="Search actions..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-grow"
-              />
-              <Select value={filterOption} onValueChange={(value: FilterOption) => setFilterOption(value)}>
-                <SelectTrigger className="w-[120px]">
-                  <SelectValue placeholder="Filter" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="recent">Recent</SelectItem>
-                  <SelectItem value="favorite">Favorite</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" size="icon" onClick={toggleMaximize}>
-                {isMaximized ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-              </Button>
-            </div>
-            <div className={`overflow-y-auto ${isMaximized ? 'flex-grow' : 'max-h-[300px]'}`}>
+        <PopoverContent className="w-[300px] p-0">
+          <div className="p-2 space-y-2">
+            <Input
+              type="search"
+              placeholder="Search actions..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full"
+            />
+            <div className="max-h-[300px] overflow-y-auto">
               {filteredActions.map((action) => (
                 <Card
                   key={action.id}
@@ -244,7 +198,7 @@ export const examplesActionSelector: ComponentDoc[] = [
   {
     id: 'ActionSelector',
     name: 'ActionSelector',
-    description: 'A component for selecting an action from a list with filtering, search capabilities, and property editing.',
+    description: 'A component for selecting an action from a list with search capabilities and property editing.',
     usage: `
 import ActionSelector from './ActionSelector'
 import { Mail, Settings, User } from 'lucide-react'
