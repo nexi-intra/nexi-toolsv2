@@ -1,6 +1,6 @@
 # v1.0
 
-name: Build Web on Push
+name: Build Web
 
 on:
   push:
@@ -39,7 +39,9 @@ jobs:
         shell: pwsh
         run: |
           $app_name = "${{ github.repository }}-${{ github.ref_name }}".Replace("/", "-")
-          Invoke-RestMethod -Uri "${{ secrets.TEAMS_WEBHOOK_URL }}" -Method Post -Body (@{ text = "Started building commit: ${{ github.sha }} by ${{ github.actor }}" } | ConvertTo-Json)
+          $body = @{ text = "Started building commit: ${{ github.sha }} by ${{ github.actor }}" } | ConvertTo-Json
+          Write-Output "Sending to Microsoft Teams: $body"
+          Invoke-RestMethod -Uri "${{ secrets.TEAMS_WEBHOOK_URL }}" -Method Post -Body $body
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
@@ -158,10 +160,14 @@ jobs:
         shell: pwsh
         run: |
           $dnsname = Get-Content -Path dnsname.txt
-          Invoke-RestMethod -Uri "${{ secrets.TEAMS_WEBHOOK_URL }}" -Method Post -Body (@{ text = "Build and deployment succeeded! Access the application at: https://$dnsname" } | ConvertTo-Json)
+          $body = @{ text = "Build and deployment succeeded! Access the application at: https://$dnsname" } | ConvertTo-Json
+          Write-Output "Sending to Microsoft Teams: $body"
+          Invoke-RestMethod -Uri "${{ secrets.TEAMS_WEBHOOK_URL }}" -Method Post -Body $body
 
       - name: Notify Microsoft Teams - Failure
         if: failure()
         shell: pwsh
         run: |
-          Invoke-RestMethod -Uri "${{ secrets.TEAMS_WEBHOOK_URL }}" -Method Post -Body (@{ text = "Build or deployment failed! Check the instance flow at: https://your-flow-instance-url" } | ConvertTo-Json)
+          $body = @{ text = "Build or deployment failed! Check the instance flow at: https://your-flow-instance-url" } | ConvertTo-Json
+          Write-Output "Sending to Microsoft Teams: $body"
+          Invoke-RestMethod -Uri "${{ secrets.TEAMS_WEBHOOK_URL }}" -Method Post -Body $body
