@@ -22,6 +22,7 @@ const navLinks = [
   { href: '/tools/docs/components/multiline', label: 'Multi line text' },
 
   { href: '/tools/docs/components/lookup', label: 'Lookup' },
+  { href: '/tools/docs/components/tool-search', label: 'Tool Search' },
 
   { href: '/tools/docs/components/actions-selector', label: 'Actions Selector' },
   { href: '/tools/docs/components/tree-editor', label: 'Tree Editor' },
