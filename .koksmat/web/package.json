@@ -76,6 +76,7 @@
     "next": "14.2.15",
     "next-mdx-remote": "^5.0.0",
     "next-themes": "^0.2.1",
+    "node-fetch": "^2.7.0",
     "path": "^0.12.7",
     "prism-react-renderer": "^2.4.0",
     "react": "^18",
@@ -95,6 +96,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.2",
     "@testing-library/react": "^16.0.1",
+    "@types/jest": "^29.5.14",
     "@types/js-yaml": "^4.0.9",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
@@ -110,6 +112,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "whatwg-fetch": "^3.6.20"
   }
 }
