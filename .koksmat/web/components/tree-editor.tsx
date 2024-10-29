@@ -586,7 +586,7 @@ const TreeEditor: React.FC<{
                 htmlFor="dontPrompt"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Don't ask again this session
+                Don&apos;t ask again this session
               </label>
             </div>
           </DialogFooter>
