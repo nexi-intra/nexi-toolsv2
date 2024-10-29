@@ -41,12 +41,15 @@ import {
   EditorMode
 } from './tree-editor-components'
 
+import ActionSelector, { ActionType, ActionPropertyData, getActionIcon, ActionPropertyEditorProps, getPropertyEditor } from './action-selector'
+
 // Main TreeEditor component
 const TreeEditor: React.FC<{
   initialData: EditorData
   onChange: (data: EditorData) => void
   className?: string
-}> = ({ initialData, onChange, className = '' }) => {
+  actions: ActionType[]
+}> = ({ initialData, onChange, className = '', actions }) => {
   const { currentState, updateState, undo, redo, canUndo, canRedo } =
     useUndoRedo(initialData)
   const [mode, setMode] = useState<EditorMode>('view')
@@ -415,7 +418,7 @@ const TreeEditor: React.FC<{
   )
 
   const updateItemProperty = useCallback(
-    (property: string, value: string) => {
+    (property: string, value: string | ActionType) => {
       if (!selectedItem) return
 
       const newData = JSON.parse(JSON.stringify(currentState)) as EditorData
@@ -423,8 +426,12 @@ const TreeEditor: React.FC<{
       const updateItem = (items: TreeNode[]): boolean => {
         for (let item of items) {
           if (item.id === selectedItem) {
-            // @ts-ignore
-            item[property] = value
+            if (property === 'action') {
+              item.action = value as ActionType
+            } else {
+              // @ts-ignore
+              item[property] = value
+            }
             return true
           }
           if (item.children && updateItem(item.children)) {
@@ -443,6 +450,32 @@ const TreeEditor: React.FC<{
   const selectedItemData = selectedItem
     ? findItemById(currentState, selectedItem)
     : null
+
+  const handleActionSelect = (action: ActionType) => {
+    updateItemProperty('action', action)
+  }
+
+  const handleUpdateProperties = (actionId: string, updatedProperties: ActionPropertyData) => {
+    if (!selectedItem) return
+
+    const newData = JSON.parse(JSON.stringify(currentState)) as EditorData
+
+    const updateItem = (items: TreeNode[]): boolean => {
+      for (let item of items) {
+        if (item.id === selectedItem && item.action && item.action.id === actionId) {
+          item.action.properties = updatedProperties
+          return true
+        }
+        if (item.children && updateItem(item.children)) {
+          return true
+        }
+      }
+      return false
+    }
+
+    updateItem(newData)
+    updateState(newData)
+  }
 
   return (
     <Card className={`w-full max-w-5xl mx-auto ${className}`}>
@@ -499,7 +532,7 @@ const TreeEditor: React.FC<{
           <div className="flex-grow overflow-auto max-h-[600px]">
             {currentState.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-64">
-                <p className="mb-4 text-gray-500">No items to display.</p>
+                <p className="mb-4 text-muted-foreground">No items to display.</p>
                 {mode !== 'view' && (
                   <Button onClick={() => addItem([])}>
                     <Plus className="w-4 h-4 mr-2" />
@@ -559,6 +592,17 @@ const TreeEditor: React.FC<{
                     </SelectContent>
                   </Select>
                 </div>
+                <div>
+                  <Label htmlFor="itemAction">Action</Label>
+                  <ActionSelector
+                    actions={actions}
+                    onActionSelect={handleActionSelect}
+                    onUpdateProperties={handleUpdateProperties}
+                    getActionIcon={getActionIcon}
+                    getPropertyEditor={getPropertyEditor}
+
+                  />
+                </div>
               </div>
             </Card>
           )}
@@ -586,7 +630,7 @@ const TreeEditor: React.FC<{
                 htmlFor="dontPrompt"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Don&apos;t ask again this session
+                Don't ask again this session
               </label>
             </div>
           </DialogFooter>
@@ -702,10 +746,33 @@ const exampleData: EditorData = [
 
 // Export the component
 export default function Component() {
+  // Example actions (you should replace these with your actual actions)
+  const exampleActions: ActionType[] = [
+    {
+      id: 'action1',
+
+      title: 'Action 1',
+      description: 'This is action 1',
+      actionType: 'type1',
+      properties: {},
+
+    },
+    {
+      id: 'action2',
+
+      title: 'Action 2',
+      description: 'This is action 2',
+      actionType: 'type2',
+      properties: {},
+
+    }
+  ]
+
   return (
     <TreeEditor
       initialData={exampleData}
       onChange={(data) => console.log('Structure updated:', data)}
+      actions={exampleActions}
     />
   )
 }

@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react'
 import {
   Folder,
@@ -25,12 +23,16 @@ import {
 } from '@/components/ui/tooltip'
 import { useToast } from '@/components/ui/use-toast'
 
+// Import the ActionType from the actions-selector file
+import { ActionType } from './action-selector'
+
 // Types
 export type TreeNode = {
   id: string
   text: string
   icon: 'folder' | 'file' | 'fileText' | 'fileCode'
   children?: TreeNode[]
+  action?: ActionType // Add the action attribute
 }
 
 export type EditorData = TreeNode[]

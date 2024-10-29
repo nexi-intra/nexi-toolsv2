@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useCallback, useMemo } from 'react'
-import { ChevronDown, MoreVertical, Search, Mail, Settings, User } from 'lucide-react'
+import { ChevronDown, MoreVertical, Search, Mail, Settings, User, LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -9,16 +9,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ComponentDoc } from './component-documentation-hub'
 
-type ActionPropertyData = Record<string, any>
+export type ActionPropertyData = Record<string, any>
 
-interface ActionPropertyEditorProps {
+export interface ActionPropertyEditorProps {
   mode: 'view' | 'edit'
   hideProperties: boolean
   properties: ActionPropertyData
   onUpdateProperties: (updatedProperties: ActionPropertyData) => void
 }
 
-const ActionPropertyEditor: React.FC<ActionPropertyEditorProps> = ({
+export const DefaultPropertyEditor: React.FC<ActionPropertyEditorProps> = ({
   mode,
   hideProperties,
   properties,
@@ -47,20 +47,37 @@ const ActionPropertyEditor: React.FC<ActionPropertyEditorProps> = ({
   )
 }
 
-interface ActionType {
+export interface ActionType {
   id: string
-  icon: JSX.Element
   title: string
   description: string
   actionType: string
   properties: ActionPropertyData
-  propertyEditor: React.FC<ActionPropertyEditorProps>
 }
 
-interface ActionSelectorProps {
+export const getActionIcon = (actionType: string): LucideIcon => {
+  switch (actionType) {
+    case 'send_email':
+      return Mail
+    case 'update_settings':
+      return Settings
+    case 'edit_profile':
+      return User
+    default:
+      return Mail
+  }
+}
+
+export const getPropertyEditor = (actionType: string): React.FC<ActionPropertyEditorProps> => {
+  return DefaultPropertyEditor
+}
+
+export interface ActionSelectorProps {
   actions: ActionType[]
   onActionSelect: (action: ActionType) => void
   onUpdateProperties: (actionId: string, updatedProperties: ActionPropertyData) => void
+  getActionIcon: (actionType: string) => LucideIcon
+  getPropertyEditor: (actionType: string) => React.FC<ActionPropertyEditorProps>
   className?: string
   defaultAction?: ActionType
 }
@@ -69,6 +86,8 @@ const ActionSelector: React.FC<ActionSelectorProps> = ({
   actions,
   onActionSelect,
   onUpdateProperties,
+  getActionIcon,
+  getPropertyEditor,
   className = '',
   defaultAction
 }) => {
@@ -110,7 +129,7 @@ const ActionSelector: React.FC<ActionSelectorProps> = ({
             <div className="flex items-center">
               {selectedAction ? (
                 <>
-                  {selectedAction.icon}
+                  {React.createElement(getActionIcon(selectedAction.actionType), { className: "h-4 w-4" })}
                   <span className="ml-2">{selectedAction.title}</span>
                 </>
               ) : (
@@ -137,7 +156,7 @@ const ActionSelector: React.FC<ActionSelectorProps> = ({
                   onClick={() => handleActionSelect(action)}
                 >
                   <CardHeader className="flex flex-row items-center space-y-0 p-3">
-                    {action.icon}
+                    {React.createElement(getActionIcon(action.actionType), { className: "h-4 w-4" })}
                     <CardTitle className="ml-2 text-sm font-medium">{action.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="p-3 pt-0">
@@ -169,22 +188,22 @@ const ActionSelector: React.FC<ActionSelectorProps> = ({
                   <DialogHeader>
                     <DialogTitle>{selectedAction.title} - All Properties</DialogTitle>
                   </DialogHeader>
-                  <selectedAction.propertyEditor
-                    mode="view"
-                    hideProperties={false}
-                    properties={selectedAction.properties}
-                    onUpdateProperties={handleUpdateProperties}
-                  />
+                  {React.createElement(getPropertyEditor(selectedAction.actionType), {
+                    mode: "view",
+                    hideProperties: false,
+                    properties: selectedAction.properties,
+                    onUpdateProperties: handleUpdateProperties
+                  })}
                 </DialogContent>
               </Dialog>
             </div>
           </div>
-          <selectedAction.propertyEditor
-            mode={editMode ? 'edit' : 'view'}
-            hideProperties={false}
-            properties={selectedAction.properties}
-            onUpdateProperties={handleUpdateProperties}
-          />
+          {React.createElement(getPropertyEditor(selectedAction.actionType), {
+            mode: editMode ? 'edit' : 'view',
+            hideProperties: false,
+            properties: selectedAction.properties,
+            onUpdateProperties: handleUpdateProperties
+          })}
         </div>
       )}
     </div>
@@ -201,12 +220,11 @@ export const examplesActionSelector: ComponentDoc[] = [
     description: 'A component for selecting an action from a list with search capabilities and property editing.',
     usage: `
 import ActionSelector from './ActionSelector'
-import { Mail, Settings, User } from 'lucide-react'
+import { Mail, Settings, User, LucideIcon } from 'lucide-react'
 
 const actions: ActionType[] = [
   {
     id: '1',
-    icon: <Mail className="h-4 w-4" />,
     title: 'Send Email',
     description: 'Compose and send an email',
     actionType: 'send_email',
@@ -214,11 +232,28 @@ const actions: ActionType[] = [
       recipient: '',
       subject: '',
       body: ''
-    },
-    propertyEditor: ActionPropertyEditor
+    }
   },
   // ... (include more actions here)
 ]
+
+const getActionIcon = (actionType: string): LucideIcon => {
+  switch (actionType) {
+    case 'send_email':
+      return Mail
+    case 'update_settings':
+      return Settings
+    case 'edit_profile':
+      return User
+    default:
+      return Mail
+  }
+}
+
+const getPropertyEditor = (actionType: string): React.FC<ActionPropertyEditorProps> => {
+  // You can return different property editors based on the action type
+  return DefaultPropertyEditor
+}
 
 const handleActionSelect = (action: ActionType) => {
   console.log('Selected action:', action)
@@ -232,55 +267,58 @@ const handleUpdateProperties = (actionId: string, updatedProperties: ActionPrope
   actions={actions}
   onActionSelect={handleActionSelect}
   onUpdateProperties={handleUpdateProperties}
+  getActionIcon={getActionIcon}
+  getPropertyEditor={getPropertyEditor}
   className="w-full max-w-md"
 />
     `,
-    example: (
-      <ActionSelector
-        actions={[
-          {
-            id: '1',
-            icon: <Mail className="h-4 w-4" />,
-            title: 'Send Email',
-            description: 'Compose and send an email',
-            actionType: 'send_email',
-            properties: {
-              recipient: '',
-              subject: '',
-              body: ''
-            },
-            propertyEditor: ActionPropertyEditor
-          },
-          {
-            id: '2',
-            icon: <Settings className="h-4 w-4" />,
-            title: 'Update Settings',
-            description: 'Modify application settings',
-            actionType: 'update_settings',
-            properties: {
-              theme: 'light',
-              notifications: true
-            },
-            propertyEditor: ActionPropertyEditor
-          },
-          {
-            id: '3',
-            icon: <User className="h-4 w-4" />,
-            title: 'Edit Profile',
-            description: 'Update user profile information',
-            actionType: 'edit_profile',
-            properties: {
-              name: '',
-              email: '',
-              bio: ''
-            },
-            propertyEditor: ActionPropertyEditor
+    example: (() => {
+      const actions: ActionType[] = [
+        {
+          id: '1',
+          title: 'Send Email',
+          description: 'Compose and send an email',
+          actionType: 'send_email',
+          properties: {
+            recipient: '',
+            subject: '',
+            body: ''
           }
-        ]}
-        onActionSelect={(action) => console.log('Selected action:', action)}
-        onUpdateProperties={(actionId, updatedProperties) => console.log('Updated properties for action', actionId, ':', updatedProperties)}
-        className="w-full max-w-md"
-      />
-    )
+        },
+        {
+          id: '2',
+          title: 'Update Settings',
+          description: 'Modify application settings',
+          actionType: 'update_settings',
+          properties: {
+            theme: 'light',
+            notifications: true
+          }
+        },
+        {
+          id: '3',
+          title: 'Edit Profile',
+          description: 'Update user profile information',
+          actionType: 'edit_profile',
+          properties: {
+            name: '',
+            email: '',
+            bio: ''
+          }
+        }
+      ]
+
+
+      return (
+        <ActionSelector
+          actions={actions}
+          onActionSelect={(action) => console.log('Selected action:', action)}
+          onUpdateProperties={(actionId, updatedProperties) => console.log('Updated properties for action', actionId, ':', updatedProperties)}
+          getActionIcon={getActionIcon}
+          getPropertyEditor={getPropertyEditor}
+          className="w-full max-w-md"
+        />
+      )
+    })()
   }
 ]
