@@ -10,8 +10,6 @@ import Tracer from "@/app/koksmat/components/tracer";
 
 import { leftRailApps } from "../../components/navigation";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { SidebarComponent } from "@/components/components-sidebar";
-import { Sidebar_07 } from "@/components/components-sidebar-07";
 import { ApplicationRoot } from "@/components/components-application-root";
 export default function Layout(props: { children: any }) {
   const { children } = props;
