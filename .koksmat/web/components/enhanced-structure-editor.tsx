@@ -20,7 +20,9 @@ import {
   ClipboardCopy,
   ClipboardPaste,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -42,7 +44,14 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from '@/components/ui/tooltip'
+import { useToast } from '@/components/ui/use-toast'
 
+// Types for our data structure
 type TreeNode = {
   id: string
   text: string
@@ -54,6 +63,7 @@ type EditorData = TreeNode[]
 
 type EditorMode = 'view' | 'edit' | 'new'
 
+// Custom hook for undo/redo functionality
 const useUndoRedo = (initialState: EditorData) => {
   const [currentState, setCurrentState] = useState(initialState)
   const [pastStates, setPastStates] = useState<EditorData[]>([])
@@ -94,6 +104,7 @@ const useUndoRedo = (initialState: EditorData) => {
   return { currentState, updateState, undo, redo, canUndo, canRedo }
 }
 
+// Helper function to get the icon component
 const getIcon = (icon: 'folder' | 'file' | 'fileText' | 'fileCode') => {
   switch (icon) {
     case 'folder':
@@ -107,6 +118,7 @@ const getIcon = (icon: 'folder' | 'file' | 'fileText' | 'fileCode') => {
   }
 }
 
+// TreeNodeComponent
 const TreeNodeComponent: React.FC<{
   node: TreeNode
   depth: number
@@ -118,11 +130,17 @@ const TreeNodeComponent: React.FC<{
   onPasteItem: () => void
   onMoveUp: () => void
   onMoveDown: () => void
+  onPromote: () => void
+  onDemote: () => void
   isSelected: boolean
   hasChildren: boolean
   isCollapsed: boolean
   onToggleCollapse: () => void
   path: number[]
+  disableMoveUp: boolean
+  disableMoveDown: boolean
+  disablePromote: boolean
+  disableDemote: boolean
 }> = ({
   node,
   depth,
@@ -134,122 +152,212 @@ const TreeNodeComponent: React.FC<{
   onPasteItem,
   onMoveUp,
   onMoveDown,
+  onPromote,
+  onDemote,
   isSelected,
   hasChildren,
   isCollapsed,
   onToggleCollapse,
-  path
-}) => (
-    <div
-      className={`relative group flex items-center p-2 mb-1 rounded-md ${mode === 'edit' ? 'hover:bg-accent' : ''
-        } ${isSelected ? 'bg-accent' : ''}`}
-      style={{
-        marginLeft: `${depth * 20}px`
-      }}
-      onDoubleClick={() => mode === 'view' && onToggleCollapse()}
-      onClick={onSelectItem}
-    >
-      {hasChildren && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="p-0 h-6 w-6"
-          onClick={(e) => {
-            e.stopPropagation()
-            onToggleCollapse()
-          }}
-        >
-          <ChevronRight
-            className={`w-4 h-4 transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'
-              }`}
-          />
-        </Button>
-      )}
-      {getIcon(node.icon)}
-      <span className="flex-grow">{node.text}</span>
-      {mode !== 'view' && (
-        <div
-          className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute right-2
-        bg-white dark:bg-gray-800 p-1 rounded-md shadow-md"
-        >
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={(e) => {
-              e.stopPropagation()
-              onAddItem()
-            }}
-          >
-            <Plus className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={(e) => {
-              e.stopPropagation()
-              onDeleteItem()
-            }}
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={(e) => {
-              e.stopPropagation()
-              onCopyItem()
-            }}
-          >
-            <ClipboardCopy className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={(e) => {
-              e.stopPropagation()
-              onPasteItem()
-            }}
-          >
-            <ClipboardPaste className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={(e) => {
-              e.stopPropagation()
-              onMoveUp()
-            }}
-          >
-            <ArrowUp className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={(e) => {
-              e.stopPropagation()
-              onMoveDown()
-            }}
-          >
-            <ArrowDown className="w-4 h-4" />
-          </Button>
-        </div>
-      )}
-      {mode !== 'view' && (
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={(e) => {
-            e.stopPropagation()
-            onSelectItem()
-          }}
-        >
-          <MoreHorizontal className="w-4 h-4" />
-        </Button>
-      )}
-    </div>
-  )
+  path,
+  disableMoveUp,
+  disableMoveDown,
+  disablePromote,
+  disableDemote
+}) => {
+    const { toast } = useToast()
 
+    const handleAction = (action: string) => {
+      toast({ title: `${action} action performed` })
+    }
 
+    return (
+      <div
+        className={`relative group flex items-center p-2 mb-1 rounded-md ${mode === 'edit' ? 'hover:bg-accent' : ''
+          } ${isSelected ? 'bg-accent' : ''}`}
+        style={{
+          marginLeft: `${depth * 20}px`
+        }}
+        onDoubleClick={() => mode === 'view' && onToggleCollapse()}
+        onClick={onSelectItem}
+      >
+        {!!hasChildren && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="p-0 h-6 w-6"
+            onClick={(e) => {
+              e.stopPropagation()
+              onToggleCollapse()
+            }}
+          >
+            <ChevronRight
+              className={`w-4 h-4 transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'
+                }`}
+            />
+          </Button>
+        )}
+        {getIcon(node.icon)}
+        <span className="flex-grow">{node.text}</span>
+        {mode !== 'view' && (
+          <div
+            className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute right-2
+          bg-white dark:bg-gray-800 p-1 rounded-md shadow-md"
+          >
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onAddItem()
+                    handleAction('Add')
+                  }}
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Add Item</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onDeleteItem()
+                    handleAction('Delete')
+                  }}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Delete Item</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onCopyItem()
+                    handleAction('Copy')
+                  }}
+                >
+                  <ClipboardCopy className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Copy Item</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onPasteItem()
+                    handleAction('Paste')
+                  }}
+                >
+                  <ClipboardPaste className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Paste Item</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onPromote()
+                    handleAction('Promote')
+                  }}
+                  disabled={disablePromote}
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Promote</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onDemote()
+                    handleAction('Demote')
+                  }}
+                  disabled={disableDemote}
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Demote</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onMoveUp()
+                    handleAction('Move Up')
+                  }}
+                  disabled={disableMoveUp}
+                >
+                  <ArrowUp className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Move Up</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onMoveDown()
+                    handleAction('Move Down')
+                  }}
+                  disabled={disableMoveDown}
+                >
+                  <ArrowDown className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Move Down</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onSelectItem()
+                    handleAction('Properties')
+                  }}
+                >
+                  <MoreHorizontal className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Properties</TooltipContent>
+            </Tooltip>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+// Main StructureEditor component
 const StructureEditor: React.FC<{
   initialData: EditorData
   onChange: (data: EditorData) => void
@@ -265,6 +373,30 @@ const StructureEditor: React.FC<{
   const [propertiesPanelOpen, setPropertiesPanelOpen] = useState(false)
   const [collapsedItems, setCollapsedItems] = useState<Set<string>>(new Set())
   const [copiedNode, setCopiedNode] = useState<TreeNode | null>(null)
+  const { toast } = useToast()
+  const pasteItem = useCallback(() => {
+    if (copiedNode && selectedItem) {
+      const newData = JSON.parse(JSON.stringify(currentState)) as EditorData
+      const path = findItemPathById(newData, selectedItem)
+      if (path) {
+        let currentLevel: TreeNode[] = newData
+
+        for (let i = 0; i < path.length; i++) {
+          if (!currentLevel[path[i]].children) {
+            currentLevel[path[i]].children = []
+          }
+          currentLevel = currentLevel[path[i]].children!
+        }
+
+        const newNode = JSON.parse(JSON.stringify(copiedNode))
+        assignNewIds(newNode)
+        currentLevel.push(newNode)
+
+        updateState(newData)
+        toast({ title: 'Item pasted' })
+      }
+    }
+  }, [copiedNode, selectedItem, currentState, updateState, toast])
 
   useEffect(() => {
     onChange(currentState)
@@ -289,12 +421,14 @@ const StructureEditor: React.FC<{
             const node = findItemById(currentState, selectedItem)
             if (node) {
               setCopiedNode(JSON.parse(JSON.stringify(node)))
+              toast({ title: 'Item copied' })
             }
           }
         } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') {
           e.preventDefault()
           if (copiedNode) {
             pasteItem()
+            toast({ title: 'Item pasted' })
           }
         }
       }
@@ -304,8 +438,18 @@ const StructureEditor: React.FC<{
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [mode, undo, redo, selectedItem, currentState, copiedNode])
+  }, [
+    mode,
+    undo,
+    redo,
+    selectedItem,
+    currentState,
+    copiedNode,
+    pasteItem,
+    toast
+  ])
 
+  // Helper functions
   const findItemById = (items: TreeNode[], id: string): TreeNode | null => {
     for (let item of items) {
       if (item.id === id) {
@@ -409,34 +553,12 @@ const StructureEditor: React.FC<{
       const node = findItemById(currentState, id)
       if (node) {
         setCopiedNode(JSON.parse(JSON.stringify(node)))
+        toast({ title: 'Item copied' })
       }
     },
-    [currentState]
+    [currentState, toast]
   )
 
-  const pasteItem = useCallback(() => {
-    if (copiedNode && selectedItem) {
-      const newData = JSON.parse(JSON.stringify(currentState)) as EditorData
-      const path = findItemPathById(newData, selectedItem)
-      if (path) {
-        let currentLevel: TreeNode[] = newData
-
-        for (let i = 0; i < path.length; i++) {
-          if (!currentLevel[path[i]].children) {
-            currentLevel[path[i]].children = []
-          }
-          currentLevel = currentLevel[path[i]].children!
-        }
-
-        const newNode = JSON.parse(JSON.stringify(copiedNode))
-        newNode.id = nanoid()
-        assignNewIds(newNode)
-        currentLevel.push(newNode)
-
-        updateState(newData)
-      }
-    }
-  }, [copiedNode, selectedItem, currentState, updateState])
 
   const assignNewIds = (node: TreeNode) => {
     node.id = nanoid()
@@ -488,12 +610,72 @@ const StructureEditor: React.FC<{
     [currentState, updateState]
   )
 
+  const promoteItem = useCallback(
+    (path: number[]) => {
+      if (path.length < 2) return // Cannot promote root level items
+      const newData = JSON.parse(JSON.stringify(currentState)) as EditorData
+
+      let currentLevel: TreeNode[] = newData
+      for (let i = 0; i < path.length - 2; i++) {
+        currentLevel = currentLevel[path[i]].children!
+      }
+
+      const parentIndex = path[path.length - 2]
+      const index = path[path.length - 1]
+      const itemToPromote = currentLevel[parentIndex].children![index]
+
+      // Remove item from current level
+      currentLevel[parentIndex].children!.splice(index, 1)
+
+      // Insert item into parent level after its parent
+      currentLevel.splice(parentIndex + 1, 0, itemToPromote)
+
+      updateState(newData)
+      setSelectedItem(itemToPromote.id)
+    },
+    [currentState, updateState]
+  )
+
+  const demoteItem = useCallback(
+    (path: number[]) => {
+      if (path.length < 1 || path[path.length - 1] === 0) return // Cannot demote if no previous sibling
+      const newData = JSON.parse(JSON.stringify(currentState)) as EditorData
+
+      let currentLevel: TreeNode[] = newData
+      for (let i = 0; i < path.length - 1; i++) {
+        currentLevel = currentLevel[path[i]].children!
+      }
+
+      const index = path[path.length - 1]
+      const prevSibling = currentLevel[index - 1]
+      const itemToDemote = currentLevel[index]
+
+      // Remove item from current level
+      currentLevel.splice(index, 1)
+
+      // Add item as the last child of previous sibling
+      if (!prevSibling.children) {
+        prevSibling.children = []
+      }
+      prevSibling.children.push(itemToDemote)
+
+      updateState(newData)
+      setSelectedItem(itemToDemote.id)
+    },
+    [currentState, updateState]
+  )
+
   const renderItems = useCallback(
     (items: TreeNode[], path: number[] = []) => {
       return items.map((item, index) => {
         const currentPath = [...path, index]
         const isCollapsed = collapsedItems.has(item.id)
         const hasChildren = item.children && item.children.length > 0
+
+        const disableMoveUp = index === 0
+        const disableMoveDown = index === items.length - 1
+        const disablePromote = path.length === 0 // Root level items cannot be promoted
+        const disableDemote = index === 0 // Cannot demote if no previous sibling
 
         return (
           <React.Fragment key={item.id}>
@@ -514,6 +696,8 @@ const StructureEditor: React.FC<{
               }}
               onMoveUp={() => moveItemUp(currentPath)}
               onMoveDown={() => moveItemDown(currentPath)}
+              onPromote={() => promoteItem(currentPath)}
+              onDemote={() => demoteItem(currentPath)}
               isSelected={selectedItem === item.id}
               hasChildren={!!hasChildren}
               isCollapsed={isCollapsed}
@@ -529,6 +713,10 @@ const StructureEditor: React.FC<{
                 })
               }}
               path={currentPath}
+              disableMoveUp={disableMoveUp}
+              disableMoveDown={disableMoveDown}
+              disablePromote={disablePromote}
+              disableDemote={disableDemote}
             />
             {hasChildren && !isCollapsed && (
               <div>{renderItems(item.children!, currentPath)}</div>
@@ -546,7 +734,9 @@ const StructureEditor: React.FC<{
       copyItem,
       pasteItem,
       moveItemUp,
-      moveItemDown
+      moveItemDown,
+      promoteItem,
+      demoteItem
     ]
   )
 
@@ -722,7 +912,7 @@ const StructureEditor: React.FC<{
                 htmlFor="dontPrompt"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Don&apos;t ask again this session
+                Don't ask again this session
               </label>
             </div>
           </DialogFooter>
