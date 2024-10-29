@@ -3,7 +3,7 @@ name: Canary Release
 on:
   push:
     branches:
-      - canary
+      - "**"
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
