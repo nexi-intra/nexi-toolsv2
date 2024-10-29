@@ -41,7 +41,7 @@ jobs:
           $app_name = "${{ github.repository }}-${{ github.ref_name }}".Replace("/", "-")
           $body = @{ text = "Started building commit: ${{ github.sha }} by ${{ github.actor }}" } | ConvertTo-Json
           Write-Output "Sending to Microsoft Teams: $body"
-          Invoke-RestMethod -Uri "${{ secrets.TEAMS_WEBHOOK_URL }}" -Method Post -Body $body
+          Invoke-RestMethod -Uri "${{ secrets.TEAMS_WEBHOOK_URL }}" -Method Post -Body $body -ContentType "application/json"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
@@ -162,7 +162,7 @@ jobs:
           $dnsname = Get-Content -Path dnsname.txt
           $body = @{ text = "Build and deployment succeeded! Access the application at: https://$dnsname" } | ConvertTo-Json
           Write-Output "Sending to Microsoft Teams: $body"
-          Invoke-RestMethod -Uri "${{ secrets.TEAMS_WEBHOOK_URL }}" -Method Post -Body $body
+          Invoke-RestMethod -Uri "${{ secrets.TEAMS_WEBHOOK_URL }}" -Method Post -Body $body -ContentType "application/json"
 
       - name: Notify Microsoft Teams - Failure
         if: failure()
@@ -170,4 +170,4 @@ jobs:
         run: |
           $body = @{ text = "Build or deployment failed! Check the instance flow at: https://your-flow-instance-url" } | ConvertTo-Json
           Write-Output "Sending to Microsoft Teams: $body"
-          Invoke-RestMethod -Uri "${{ secrets.TEAMS_WEBHOOK_URL }}" -Method Post -Body $body
+          Invoke-RestMethod -Uri "${{ secrets.TEAMS_WEBHOOK_URL }}" -Method Post -Body $body -ContentType "application/json"
