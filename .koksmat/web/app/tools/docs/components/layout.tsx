@@ -26,6 +26,7 @@ const navLinks = [
 
   { href: '/tools/docs/components/actions-selector', label: 'Actions Selector' },
   { href: '/tools/docs/components/tree-editor', label: 'Tree Editor' },
+  { href: '/tools/docs/components/yaml-editor', label: 'YAML Editor' },
   { href: '/tools/docs/components/data-mapper', label: 'Data Mapper' },
   { href: '/tools/docs/components/translate', label: 'Translation' },
 

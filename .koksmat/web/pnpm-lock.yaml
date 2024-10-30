@@ -185,6 +185,9 @@ dependencies:
   moment:
     specifier: ^2.30.1
     version: 2.30.1
+  monaco-editor:
+    specifier: ^0.52.0
+    version: 0.52.0
   nanoid:
     specifier: ^5.0.7
     version: 5.0.7
