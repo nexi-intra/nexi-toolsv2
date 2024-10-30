@@ -44,7 +44,7 @@ import {
 import ActionSelector, { ActionType, ActionPropertyData, getActionIcon, ActionPropertyEditorProps, getPropertyEditor } from './action-selector'
 
 // Main TreeEditor component
-const TreeEditor: React.FC<{
+export const TreeEditor: React.FC<{
   initialData: EditorData
   onChange: (data: EditorData) => void
   className?: string
