@@ -769,6 +769,7 @@ export default function Component() {
   ]
 
   return (
+
     <TreeEditor
       initialData={exampleData}
       onChange={(data) => console.log('Structure updated:', data)}

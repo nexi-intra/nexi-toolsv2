@@ -110,27 +110,38 @@ export const TreeNodeComponent: React.FC<{
         className={`relative group flex items-center p-2 mb-1 rounded-md ${mode === 'edit' ? 'hover:bg-accent' : ''
           } ${isSelected ? 'bg-accent' : ''}`}
         style={{
-          marginLeft: `${depth * 20}px`
+          paddingLeft: `${depth * 20 + 24}px` // Adjust padding to ensure alignment
         }}
         onDoubleClick={() => mode === 'view' && onToggleCollapse()}
         onClick={onSelectItem}
       >
-        {!!hasChildren && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="p-0 h-6 w-6"
-            onClick={(e) => {
-              e.stopPropagation()
-              onToggleCollapse()
-            }}
-          >
-            <ChevronRight
-              className={`w-4 h-4 transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'
-                }`}
-            />
-          </Button>
-        )}
+        <div
+          className="absolute left-0"
+          style={{
+            width: '24px',
+            height: '24px',
+            left: `${depth * 20}px` // Position the toggle/icon container
+          }}
+        >
+          {hasChildren ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="p-0 h-6 w-6"
+              onClick={(e) => {
+                e.stopPropagation()
+                onToggleCollapse()
+              }}
+            >
+              <ChevronRight
+                className={`w-4 h-4 transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'
+                  }`}
+              />
+            </Button>
+          ) : (
+            <div className="w-6 h-6" /> // Placeholder to maintain alignment
+          )}
+        </div>
         {getIcon(node.icon)}
         <span className="flex-grow">{node.text}</span>
         {mode !== 'view' && (
@@ -291,7 +302,6 @@ export const TreeNodeComponent: React.FC<{
       </div>
     )
   }
-
 // Custom hook for undo/redo functionality
 export const useUndoRedo = (initialState: EditorData) => {
   const [currentState, setCurrentState] = React.useState(initialState)
