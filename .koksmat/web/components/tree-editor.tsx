@@ -9,7 +9,8 @@ import {
   Edit,
   Eye,
   PlusCircle,
-  X
+  X,
+  Move
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -501,10 +502,11 @@ export const TreeEditor: React.FC<{
                   Edit
                 </div>
               </SelectItem>
-              <SelectItem value="new">
+              <SelectItem value="reorder">
                 <div className="flex items-center">
-                  <PlusCircle className="w-4 h-4 mr-2" />
-                  New
+                  <Move className="w-4 h-4 mr-2" />
+
+                  Reorder
                 </div>
               </SelectItem>
             </SelectContent>
@@ -543,12 +545,12 @@ export const TreeEditor: React.FC<{
             ) : (
               <div>{renderItems(currentState)}</div>
             )}
-            {mode === 'new' && currentState.length > 0 && (
+            {/* {mode === 'edit' && currentState.length === 0 && (
               <Button onClick={() => addItem([])} className="mt-4">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Root Item
               </Button>
-            )}
+            )} */}
           </div>
           {propertiesPanelOpen && selectedItemData && (
             <Card className="w-64 ml-4 p-4">
