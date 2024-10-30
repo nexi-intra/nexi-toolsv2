@@ -15,6 +15,7 @@ import CodeSamplesPage from '@/components/code-samples-page';
 import { schemaMapObjects, typeNames } from '@/app/api/entity/schemas';
 import { generateTranslationApiOpenApiDefinition } from '@/lib/translation-service';
 import { headers } from 'next/headers';
+import { generateFileSystemApiOpenApiDefinition } from '@/components/app-actions-file-system';
 export default function ExampleUsage() {
 
 
@@ -27,7 +28,7 @@ export default function ExampleUsage() {
     <div className="space-y-6 p-6">
       {host ? (
         <OpenApiGeneratorComponent server={host}
-          addionalEndpoints={[generateTranslationApiOpenApiDefinition]} />
+          addionalEndpoints={[generateTranslationApiOpenApiDefinition, generateFileSystemApiOpenApiDefinition]} />
       ) : (
         <Skeleton className="w-full h-[200px] rounded-lg" />
       )}

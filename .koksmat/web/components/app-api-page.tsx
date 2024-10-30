@@ -5,6 +5,7 @@ import { ArrowRight, Book, FileJson } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { typeNames } from '@/app/api/entity/schemas'
+import { APPNAME } from '@/app/global'
 
 export function APILandingPage() {
   return (
@@ -17,17 +18,17 @@ export function APILandingPage() {
         </p>
         <div className="flex justify-center space-x-4">
           <Button asChild>
-            <Link href="/docs/api/swagger">
+            <Link href={`/${APPNAME}/docs/api/swagger`}>
               <FileJson className="mr-2 h-4 w-4" />
               Open API Definition
             </Link>
           </Button>
-          <Button variant="outline" asChild>
+          {/* <Button variant="outline" asChild>
             <Link href="/docs">
               <Book className="mr-2 h-4 w-4" />
               API Documentation
             </Link>
-          </Button>
+          </Button> */}
         </div>
       </section>
 
@@ -48,7 +49,7 @@ export function APILandingPage() {
               </CardContent>
               <CardFooter>
                 <Button variant="ghost" asChild className="w-full">
-                  <Link href={`/docs/api/entity/${key}`}>
+                  <Link href={`/${APPNAME}/docs/api/entity/${key}`}>
                     View Documentation
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>

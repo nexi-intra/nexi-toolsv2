@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { typeNames } from '@/app/api/entity/schemas'
 import { Menu, X } from 'lucide-react'
 import { Button } from "@/components/ui/button"
+import { APPNAME } from '@/app/global'
 
 interface DocsLayoutProps {
   children: React.ReactNode
@@ -42,7 +43,7 @@ export default function DocsLayout({ children }: DocsLayoutProps) {
 
             <li >
               <Link
-                href={`/docs/api/swagger`}
+                href={`/${APPNAME}/docs/api/swagger`}
                 className={cn(
                   "block py-2 px-4 rounded-md transition-colors",
                   pathname === `/docs/api/swagger`
@@ -61,7 +62,7 @@ export default function DocsLayout({ children }: DocsLayoutProps) {
             {Object.entries(typeNames).map(([name, displayName]) => (
               <li key={name}>
                 <Link
-                  href={`/docs/api/entity/${name}`}
+                  href={`/${APPNAME}/docs/api/entity/${name}`}
                   className={cn(
                     "block py-2 px-4 rounded-md transition-colors",
                     pathname === `/docs/api/entity/${name}`
