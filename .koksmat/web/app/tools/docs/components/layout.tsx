@@ -16,6 +16,7 @@ const navLinks = [
   { href: '/tools/docs/components/toolcard-small', label: 'Tool Cards Small' },
   { href: '/tools/docs/components/icon', label: 'Icon' },
   { href: '/tools/docs/components/filelist', label: 'File list' },
+  { href: '/tools/docs/components/filesystem', label: 'File System' },
   { href: '/tools/docs/components/favorite', label: 'Favorite' },
   { href: '/tools/docs/components/tag', label: 'Tag' },
   { href: '/tools/docs/components/oneline', label: 'One line text' },
