@@ -9,7 +9,7 @@ export type TranslatedString = {
 
 export interface Team {
   name: TranslatedString;
-  logo: string;
+  logo: LucidIconName;
   plan: TranslatedString;
 }
 
@@ -31,7 +31,7 @@ export interface Project {
   moreIcon: LucidIconName;
   actions: Array<{
     label: TranslatedString;
-    icon: string;
+    icon: LucidIconName;
   }>;
 }
 
@@ -43,7 +43,7 @@ export interface User {
 
 export interface UserMenuItem {
   label: TranslatedString;
-  icon: string;
+  icon: LucidIconName;
 }
 
 export interface SidebarData {

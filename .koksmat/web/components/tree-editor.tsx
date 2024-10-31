@@ -43,6 +43,7 @@ import {
 } from './tree-editor-components'
 
 import ActionSelector, { ActionType, ActionPropertyData, getActionIcon, ActionPropertyEditorProps, getPropertyEditor } from './action-selector'
+import { IconPicker } from './icon-picker'
 
 // Main TreeEditor component
 export const TreeEditor: React.FC<{
@@ -179,7 +180,7 @@ export const TreeEditor: React.FC<{
       const newItem: TreeNode = {
         id: nanoid(),
         text: 'New Item',
-        icon: 'file',
+        icon: 'File',
         children: []
       }
       currentLevel.push(newItem)
@@ -577,22 +578,8 @@ export const TreeEditor: React.FC<{
                 </div>
                 <div>
                   <Label htmlFor="itemIcon">Icon</Label>
-                  <Select
-                    value={selectedItemData.icon || 'file'}
-                    onValueChange={(value: 'folder' | 'file' | 'fileText' | 'fileCode') =>
-                      updateItemProperty('icon', value)
-                    }
-                  >
-                    <SelectTrigger id="itemIcon">
-                      <SelectValue placeholder="Select icon" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="folder">Folder</SelectItem>
-                      <SelectItem value="file">File</SelectItem>
-                      <SelectItem value="fileText">File Text</SelectItem>
-                      <SelectItem value="fileCode">File Code</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <IconPicker mode={mode === "edit" ? "edit" : "view"} value={selectedItemData.icon} onIconChange={(value) => updateItemProperty('icon', value)} />
+
                 </div>
                 <div>
                   <Label htmlFor="itemAction">Action</Label>
@@ -648,33 +635,34 @@ export const TreeEditor: React.FC<{
 }
 
 // Example data
+
 const exampleData: EditorData = [
   {
     id: nanoid(),
     text: 'Our Group',
-    icon: 'folder',
+    icon: 'Folder',
     children: [
       {
         id: nanoid(),
         text: 'About us',
-        icon: 'file',
+        icon: 'File',
         children: [
           {
             id: nanoid(),
             text: 'Strategic positioning, ambition & purpose',
-            icon: 'fileText',
+            icon: 'FileText',
             children: []
           },
           {
             id: nanoid(),
             text: 'Facts & Figures',
-            icon: 'fileText',
+            icon: 'FileText',
             children: []
           },
           {
             id: nanoid(),
             text: 'Values & Behaviours',
-            icon: 'fileText',
+            icon: 'FileText',
             children: []
           }
         ]
@@ -682,7 +670,7 @@ const exampleData: EditorData = [
       {
         id: nanoid(),
         text: 'New@Nexi: Onboarding Guides',
-        icon: 'file',
+        icon: 'File',
         children: []
       }
     ]
@@ -690,29 +678,29 @@ const exampleData: EditorData = [
   {
     id: nanoid(),
     text: 'Our Organisation',
-    icon: 'folder',
+    icon: 'Folder',
     children: [
       {
         id: nanoid(),
         text: 'Brand Identity',
-        icon: 'file',
+        icon: 'File',
         children: [
           {
             id: nanoid(),
             text: 'Logos & Rules',
-            icon: 'fileText',
+            icon: 'FileText',
             children: []
           },
           {
             id: nanoid(),
             text: 'Web & Social Media',
-            icon: 'fileText',
+            icon: 'FileText',
             children: []
           },
           {
             id: nanoid(),
             text: 'Brand materials & templates',
-            icon: 'fileText',
+            icon: 'FileText',
             children: []
           }
         ]
@@ -720,13 +708,13 @@ const exampleData: EditorData = [
       {
         id: nanoid(),
         text: 'DEI',
-        icon: 'file',
+        icon: 'File',
         children: []
       },
       {
         id: nanoid(),
         text: 'ESG',
-        icon: 'file',
+        icon: 'File',
         children: []
       }
     ]
@@ -734,17 +722,19 @@ const exampleData: EditorData = [
   {
     id: nanoid(),
     text: 'Countries',
-    icon: 'folder',
+    icon: 'Folder',
     children: [
       {
         id: nanoid(),
         text: 'DACH',
-        icon: 'file',
+        icon: 'File',
         children: []
       }
     ]
   }
 ]
+
+
 
 // Export the component
 export default function Component() {

@@ -1,20 +1,5 @@
 import React from 'react'
-import {
-  Folder,
-  File,
-  FileText,
-  FileCode,
-  Plus,
-  MoreHorizontal,
-  Trash2,
-  ChevronRight,
-  ClipboardCopy,
-  ClipboardPaste,
-  ArrowUp,
-  ArrowDown,
-  ArrowLeft,
-  ArrowRight
-} from 'lucide-react'
+import * as LucidIcons from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Tooltip,
@@ -25,34 +10,24 @@ import { useToast } from '@/components/ui/use-toast'
 
 // Import the ActionType from the actions-selector file
 import { ActionType } from './action-selector'
+import { Icon, LucidIconName } from './icon'
 
-// Types
+
+
+// Updated TreeNode type
 export type TreeNode = {
   id: string
   text: string
   translations?: { [key: string]: string }
-  icon: 'folder' | 'file' | 'fileText' | 'fileCode'
+  icon: LucidIconName
   children?: TreeNode[]
-  action?: ActionType // Add the action attribute
+  action?: ActionType
 }
 
 export type EditorData = TreeNode[]
 
 export type EditorMode = 'view' | 'edit' | 'reorder'
 
-// Helper function to get the icon component
-export const getIcon = (icon: 'folder' | 'file' | 'fileText' | 'fileCode') => {
-  switch (icon) {
-    case 'folder':
-      return <Folder className="w-4 h-4 mr-2" />
-    case 'file':
-      return <File className="w-4 h-4 mr-2" />
-    case 'fileText':
-      return <FileText className="w-4 h-4 mr-2" />
-    case 'fileCode':
-      return <FileCode className="w-4 h-4 mr-2" />
-  }
-}
 
 // TreeNodeComponent
 export const TreeNodeComponent: React.FC<{
@@ -111,7 +86,7 @@ export const TreeNodeComponent: React.FC<{
         className={`relative group flex items-center p-2 mb-1 rounded-md ${mode === 'edit' ? 'hover:bg-accent' : ''
           } ${isSelected ? 'bg-accent' : ''}`}
         style={{
-          paddingLeft: `${depth * 20 + 24}px` // Adjust padding to ensure alignment
+          paddingLeft: `${depth * 20 + 24}px`
         }}
         onDoubleClick={() => mode === 'view' && onToggleCollapse()}
         onClick={onSelectItem}
@@ -121,7 +96,7 @@ export const TreeNodeComponent: React.FC<{
           style={{
             width: '24px',
             height: '24px',
-            left: `${depth * 20}px` // Position the toggle/icon container
+            left: `${depth * 20}px`
           }}
         >
           {hasChildren ? (
@@ -134,21 +109,21 @@ export const TreeNodeComponent: React.FC<{
                 onToggleCollapse()
               }}
             >
-              <ChevronRight
+              <LucidIcons.ChevronRight
                 className={`w-4 h-4 transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'
                   }`}
               />
             </Button>
           ) : (
-            <div className="w-6 h-6" /> // Placeholder to maintain alignment
+            <div className="w-6 h-6" />
           )}
         </div>
-        {getIcon(node.icon)}
+        <Icon iconName={node.icon} className='size-5 mr-2' />
         <span className="flex-grow">{node.text}</span>
         {mode !== 'view' && (
           <div
             className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute right-2
-          bg-white dark:bg-gray-800 p-1 rounded-md shadow-md"
+        bg-white dark:bg-gray-800 p-1 rounded-md shadow-md"
           >
             {mode === 'edit' &&
               <>
@@ -163,7 +138,7 @@ export const TreeNodeComponent: React.FC<{
                         handleAction('Add')
                       }}
                     >
-                      <Plus className="w-4 h-4" />
+                      <LucidIcons.Plus className="w-4 h-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Add Item</TooltipContent>
@@ -179,7 +154,7 @@ export const TreeNodeComponent: React.FC<{
                         handleAction('Delete')
                       }}
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <LucidIcons.Trash2 className="w-4 h-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Delete Item</TooltipContent>
@@ -195,7 +170,7 @@ export const TreeNodeComponent: React.FC<{
                         handleAction('Copy')
                       }}
                     >
-                      <ClipboardCopy className="w-4 h-4" />
+                      <LucidIcons.ClipboardCopy className="w-4 h-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Copy Item</TooltipContent>
@@ -211,7 +186,7 @@ export const TreeNodeComponent: React.FC<{
                         handleAction('Paste')
                       }}
                     >
-                      <ClipboardPaste className="w-4 h-4" />
+                      <LucidIcons.ClipboardPaste className="w-4 h-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Paste Item</TooltipContent>
@@ -220,7 +195,6 @@ export const TreeNodeComponent: React.FC<{
             }
             {mode === 'reorder' &&
               <>
-
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
@@ -233,7 +207,7 @@ export const TreeNodeComponent: React.FC<{
                       }}
                       disabled={disablePromote}
                     >
-                      <ArrowLeft className="w-4 h-4" />
+                      <LucidIcons.ArrowLeft className="w-4 h-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Promote</TooltipContent>
@@ -250,7 +224,7 @@ export const TreeNodeComponent: React.FC<{
                       }}
                       disabled={disableDemote}
                     >
-                      <ArrowRight className="w-4 h-4" />
+                      <LucidIcons.ArrowRight className="w-4 h-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Demote</TooltipContent>
@@ -267,7 +241,7 @@ export const TreeNodeComponent: React.FC<{
                       }}
                       disabled={disableMoveUp}
                     >
-                      <ArrowUp className="w-4 h-4" />
+                      <LucidIcons.ArrowUp className="w-4 h-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Move Up</TooltipContent>
@@ -284,7 +258,7 @@ export const TreeNodeComponent: React.FC<{
                       }}
                       disabled={disableMoveDown}
                     >
-                      <ArrowDown className="w-4 h-4" />
+                      <LucidIcons.ArrowDown className="w-4 h-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Move Down</TooltipContent>
@@ -303,7 +277,7 @@ export const TreeNodeComponent: React.FC<{
                       handleAction('Properties')
                     }}
                   >
-                    <MoreHorizontal className="w-4 h-4" />
+                    <LucidIcons.MoreHorizontal className="w-4 h-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Properties</TooltipContent>
@@ -313,6 +287,7 @@ export const TreeNodeComponent: React.FC<{
       </div>
     )
   }
+
 // Custom hook for undo/redo functionality
 export const useUndoRedo = (initialState: EditorData) => {
   const [currentState, setCurrentState] = React.useState(initialState)
@@ -353,3 +328,5 @@ export const useUndoRedo = (initialState: EditorData) => {
 
   return { currentState, updateState, undo, redo, canUndo, canRedo }
 }
+
+export default TreeNodeComponent

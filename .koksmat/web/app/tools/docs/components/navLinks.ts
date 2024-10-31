@@ -28,6 +28,10 @@ export const navLinks = [
     label: "Icon",
   },
   {
+    href: "/tools/docs/components/icon-picker",
+    label: "Icon Picker",
+  },
+  {
     href: "/tools/docs/components/keyvalue-largelist",
     label: "Key Value Large list",
   },
@@ -38,6 +42,10 @@ export const navLinks = [
   {
     href: "/tools/docs/components/multiline",
     label: "Multi line text",
+  },
+  {
+    href: "/tools/docs/components/multi-language-translator",
+    label: "Multi language translator",
   },
   {
     href: "/tools/docs/components/oneline",

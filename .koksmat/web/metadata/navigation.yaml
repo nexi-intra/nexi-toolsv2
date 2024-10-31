@@ -3,7 +3,7 @@
   translations:
     en: Playground
     da: Legeplads
-  icon: fileCode
+  icon: SquareTerminal
   children:
     - id: '#'
       text: History
@@ -28,7 +28,7 @@
   translations:
     en: Models
     da: Modeller
-  icon: folder
+  icon: Bot
   children:
     - id: '#'
       text: Genesis
@@ -53,7 +53,7 @@
   translations:
     en: Documentation
     da: Dokumentation
-  icon: fileText
+  icon: BookOpen
   children:
     - id: '#'
       text: Introduction
@@ -84,7 +84,7 @@
   translations:
     en: Settings
     da: Indstillinger
-  icon: folder
+  icon: Settings2
   children:
     - id: '#'
       text: General

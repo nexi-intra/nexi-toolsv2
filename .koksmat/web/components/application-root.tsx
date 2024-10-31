@@ -53,6 +53,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { SupportedLanguage } from "@/components/lib/types-sidebar-data"
 import { Sun, Moon, ChevronsUpDown, Plus, ChevronRight } from 'lucide-react'
+import { Icon } from "./icon"
+
 
 interface ApplicationRootProps {
   children: React.ReactNode
@@ -195,7 +197,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           className="gap-2 p-2"
                         >
                           <div className="flex size-6 items-center justify-center rounded-sm border">
-                            {team.logo}
+                            <Icon iconName={team.logo} />
                           </div>
                           {team.name[currentLanguage]}
                           <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
@@ -229,7 +231,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                       <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
                           <SidebarMenuButton tooltip={item.title[currentLanguage]}>
-                            {item.icon}
+                            <Icon iconName={item.icon} className="size-5" />
                             <span>{item.title[currentLanguage]}</span>
                             <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                           </SidebarMenuButton>
@@ -259,14 +261,14 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                     <SidebarMenuItem key={item.name.en}>
                       <SidebarMenuButton asChild>
                         <a href={item.url}>
-                          {item.icon}
+                          <Icon iconName={item.icon} className="size-5" />
                           <span>{item.name[currentLanguage]}</span>
                         </a>
                       </SidebarMenuButton>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <SidebarMenuAction showOnHover>
-                            {item.moreIcon}
+                            <Icon iconName={item.moreIcon} className="size-5" />
                             <span className="sr-only">{t.more}</span>
                           </SidebarMenuAction>
                         </DropdownMenuTrigger>
@@ -277,7 +279,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                         >
                           {item.actions.map((action) => (
                             <DropdownMenuItem key={action.label.en}>
-                              {action.icon}
+                              <Icon iconName={action.icon} className="size-5" />
                               <span>{action.label[currentLanguage]}</span>
                             </DropdownMenuItem>
                           ))}
@@ -354,7 +356,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                       <DropdownMenuGroup>
                         {sidebarData.userMenuItems.map((item) => (
                           <DropdownMenuItem key={item.label.en}>
-                            {item.icon}
+                            <Icon iconName={item.icon} className="size-5" />
                             {item.label[currentLanguage]}
                           </DropdownMenuItem>
                         ))}

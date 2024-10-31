@@ -12,7 +12,7 @@ function navItemToTreeNode(navItem: NavItem): TreeNode {
     translations: {
       en: navItem.title.en, // Store English translation as well
     },
-    icon: navItemIconToTreeNodeIcon(navItem.icon),
+    icon: navItem.icon,
   };
 
   // Add translations for all available languages
@@ -33,18 +33,6 @@ function navItemToTreeNode(navItem: NavItem): TreeNode {
   }
 
   return treeNode;
-}
-
-// Helper function to map NavItem icons to TreeNode icons
-function navItemIconToTreeNodeIcon(icon: string): TreeNode["icon"] {
-  switch (icon) {
-    case "SquareTerminal":
-      return "fileCode";
-    case "BookOpen":
-      return "fileText";
-    default:
-      return "folder";
-  }
 }
 
 // Function to convert sidebarData to TreeNode structure
