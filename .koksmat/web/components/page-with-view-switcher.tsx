@@ -1,18 +1,13 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Grid, List, Table } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ComponentDoc } from "./component-documentation-hub";
+import { ApiClient, Tool } from "./app-api-entity-route";
 
 // Define the Tool type
-export interface Tool {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-}
 
 // Define the view modes
 type ViewMode = "cards" | "table" | "list";
@@ -26,18 +21,39 @@ export interface ToolSearchProps {
 }
 
 interface ToolsPageProps {
-  tools: Tool[];
   className?: string;
   SearchComponent: React.ComponentType<ToolSearchProps>;
 }
 
-export function ToolsPage({
-  tools,
-  className = "",
-  SearchComponent,
-}: ToolsPageProps) {
-  const [filteredTools, setFilteredTools] = useState<Tool[]>(tools);
+export function ToolsPage({ className = "", SearchComponent }: ToolsPageProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("cards");
+  const [tools, setTools] = useState<Tool[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const toolClient = new ApiClient("tools", () => "YOUR_AUTH_TOKEN");
+
+    const fetchTools = async () => {
+      try {
+        const data = await toolClient.getAll(page, pageSize);
+        setTools(data.items);
+        setTotalCount(data.totalCount);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTools();
+  }, [page, pageSize]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   const handleSearch = (query: string) => {
     const results = tools.filter(
@@ -45,7 +61,7 @@ export function ToolsPage({
         tool.name.toLowerCase().includes(query.toLowerCase()) ||
         tool.description.toLowerCase().includes(query.toLowerCase())
     );
-    setFilteredTools(results);
+    // setFilteredTools(results);
   };
 
   // Render tools based on view mode
@@ -54,7 +70,7 @@ export function ToolsPage({
       case "cards":
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredTools.map((tool) => (
+            {tools.map((tool) => (
               <Card key={tool.id}>
                 <CardHeader>
                   <CardTitle>{tool.name}</CardTitle>
@@ -62,7 +78,7 @@ export function ToolsPage({
                 <CardContent>
                   <p>{tool.description}</p>
                   <p className="text-sm text-muted-foreground mt-2">
-                    Category: {tool.category}
+                    Category: {tool.name}
                   </p>
                 </CardContent>
               </Card>
@@ -81,11 +97,11 @@ export function ToolsPage({
                 </tr>
               </thead>
               <tbody>
-                {filteredTools.map((tool) => (
+                {tools.map((tool) => (
                   <tr key={tool.id}>
                     <td className="p-2">{tool.name}</td>
                     <td className="p-2">{tool.description}</td>
-                    <td className="p-2">{tool.category}</td>
+                    <td className="p-2">{tool.name}</td>
                   </tr>
                 ))}
               </tbody>
@@ -95,12 +111,12 @@ export function ToolsPage({
       case "list":
         return (
           <ul className="space-y-4">
-            {filteredTools.map((tool) => (
+            {tools.map((tool) => (
               <li key={tool.id} className="border-b pb-4">
                 <h3 className="font-semibold">{tool.name}</h3>
                 <p>{tool.description}</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Category: {tool.category}
+                  Category: {tool.name}
                 </p>
               </li>
             ))}
@@ -114,7 +130,7 @@ export function ToolsPage({
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <SearchComponent
           onSearch={handleSearch}
-          onNewResult={setFilteredTools}
+          onNewResult={() => {}}
           className="w-full sm:w-64"
           tools={tools}
         />
@@ -143,40 +159,6 @@ export function ToolsPage({
     </div>
   );
 }
-
-// Example data
-const exampleTools: Tool[] = [
-  {
-    id: "1",
-    name: "Code Editor",
-    description: "A powerful code editor with syntax highlighting",
-    category: "Development",
-  },
-  {
-    id: "2",
-    name: "Image Processor",
-    description: "Process and edit images with ease",
-    category: "Graphics",
-  },
-  {
-    id: "3",
-    name: "Database Manager",
-    description: "Manage your databases efficiently",
-    category: "Data",
-  },
-  {
-    id: "4",
-    name: "Task Scheduler",
-    description: "Schedule and manage your tasks",
-    category: "Productivity",
-  },
-  {
-    id: "5",
-    name: "Network Analyzer",
-    description: "Analyze and optimize your network",
-    category: "Networking",
-  },
-];
 
 // Example SearchComponent
 const ExampleSearchComponent: React.FC<ToolSearchProps> = ({
@@ -207,12 +189,7 @@ import { YourSearchComponent } from './your-search-component'
 // In your page or component:
 <ToolsPage tools={yourToolsArray} SearchComponent={YourSearchComponent} />
   `,
-    example: (
-      <ToolsPage
-        tools={exampleTools}
-        SearchComponent={ExampleSearchComponent}
-      />
-    ),
+    example: <ToolsPage SearchComponent={ExampleSearchComponent} />,
   },
 ];
 
