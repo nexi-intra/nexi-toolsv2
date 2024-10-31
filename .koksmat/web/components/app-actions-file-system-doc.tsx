@@ -1,6 +1,6 @@
 import { ComponentDoc } from "./component-documentation-hub"
 
-export const SUGGESTED_PATH = 'app/actions/fileSystem.ts'
+
 export const SUGGESTED_FILE = 'fileSystem.ts'
 export const SUGGESTED_DISPLAYNAME = 'File System Actions'
 

@@ -10,7 +10,13 @@
     "start": "next start -p 4444",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "test": "jest"
+    "test": "jest",
+    "build:cli": "tsc -p tsconfig.cli.json",
+    "generate-docs": "node dist/cli.js generate",
+    "generate-docs:win": "node dist\\cli.js generate"
+  },
+  "bin": {
+    "koksmat-web": "./dist/cli.js"
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.14",
@@ -48,6 +54,7 @@
     "@radix-ui/react-toast": "^1.1.5",
     "@radix-ui/react-tooltip": "^1.0.7",
     "@tanstack/react-table": "^8.12.0",
+    "@types/chokidar": "^2.1.7",
     "@types/clipboard": "^2.0.7",
     "@types/mdx": "^2.0.13",
     "@types/react-beautiful-dnd": "^13.1.8",
@@ -55,11 +62,14 @@
     "@types/yaml": "^1.9.7",
     "ai": "^3.1.13",
     "axios": "^1.6.7",
+    "chalk": "4",
     "child_process": "^1.0.2",
+    "chokidar": "^4.0.1",
     "class-variance-authority": "^0.7.0",
     "clipboard": "^2.0.11",
     "clsx": "^2.1.0",
     "cmdk": "^1.0.0",
+    "commander": "^12.1.0",
     "date-fns": "^3.3.1",
     "form-urlencoded": "^6.1.4",
     "framer-motion": "^11.11.10",
