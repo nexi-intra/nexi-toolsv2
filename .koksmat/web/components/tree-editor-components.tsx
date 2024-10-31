@@ -30,6 +30,7 @@ import { ActionType } from './action-selector'
 export type TreeNode = {
   id: string
   text: string
+  translations?: { [key: string]: string }
   icon: 'folder' | 'file' | 'fileText' | 'fileCode'
   children?: TreeNode[]
   action?: ActionType // Add the action attribute

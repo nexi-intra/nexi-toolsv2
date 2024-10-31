@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+import { OutputFormatter, ChalkFormatter } from "./output-formatters";
 
 interface ComponentMetadata {
   suggestedFilename: string;
@@ -14,6 +15,11 @@ interface ComponentInfo {
   hasDocumentation: boolean;
 }
 
+interface NavLink {
+  href: string;
+  label: string;
+}
+
 export class DocumentationManager {
   private _appPath: string;
   private _appShortName: string;
@@ -21,11 +27,13 @@ export class DocumentationManager {
   private _docsPath: string;
   private _verbose: boolean;
   private _force: boolean;
+  private _formatter: OutputFormatter;
 
   constructor(
     appPath: string,
     verbose: boolean = false,
-    force: boolean = false
+    force: boolean = false,
+    formatter: OutputFormatter = new ChalkFormatter()
   ) {
     this._appPath = appPath;
     this._verbose = verbose;
@@ -33,10 +41,17 @@ export class DocumentationManager {
     this._componentsPath = path.join(appPath, "components");
     this._appShortName = ""; // This will be set in the initialize method
     this._docsPath = ""; // This will be set in the initialize method
-    this.initialize();
+    this._formatter = formatter;
+
+    // Call initialize in the constructor
+    this.initialize().catch((error) => {
+      this._formatter.error(
+        `Failed to initialize DocumentationManager: ${error}`
+      );
+    });
   }
 
-  async initialize(): Promise<void> {
+  private async initialize(): Promise<void> {
     try {
       this._appShortName = await this.getAppName();
       this._docsPath = path.join(
@@ -47,11 +62,15 @@ export class DocumentationManager {
         "components"
       );
     } catch (error) {
-      throw new Error(
-        `Failed to initialize DocumentationManager: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
+      if (error instanceof Error) {
+        throw new Error(
+          `Failed to initialize DocumentationManager: ${error.message}`
+        );
+      } else {
+        throw new Error(
+          "Failed to initialize DocumentationManager: Unknown error"
+        );
+      }
     }
   }
 
@@ -59,10 +78,9 @@ export class DocumentationManager {
     const globalFilePath = path.join(this._appPath, "app", "global.ts");
     try {
       const content = await fs.readFile(globalFilePath, "utf-8");
-      const appname = this._extractValue(content, "APPNAME");
-
-      if (appname) {
-        return appname;
+      const match = content.match(/export const APPNAME = ["'](.+)["']/);
+      if (match && match[1]) {
+        return match[1];
       } else {
         throw new Error("APPNAME constant not found in global.ts");
       }
@@ -92,7 +110,7 @@ export class DocumentationManager {
 
   private _log(message: string): void {
     if (this._verbose) {
-      console.log(message);
+      this._formatter.log(message);
     }
   }
 
@@ -105,10 +123,7 @@ export class DocumentationManager {
           const fullPath = path.join(this._componentsPath, file);
           const content = await fs.readFile(fullPath, "utf-8");
           const metadata = this._extractComponentMetadata(content);
-          const docPath = path.join(
-            this._docsPath,
-            file.replace(/\.tsx$/, ".page.tsx")
-          );
+          const docPath = this._getDocPath(metadata?.suggestedFilename);
           const hasDocumentation = await fs
             .stat(docPath)
             .then(() => true)
@@ -131,11 +146,11 @@ export class DocumentationManager {
     const displayName = this._extractValue(content, "SUGGESTED_DISPLAYNAME");
     const exampleFunctionName = this._extractExampleFunctionName(content);
 
-    if (suggestedFilename && displayName) {
+    if (suggestedFilename && displayName && exampleFunctionName) {
       return {
         suggestedFilename,
         displayName,
-        exampleFunctionName: exampleFunctionName || "",
+        exampleFunctionName,
       };
     }
 
@@ -149,43 +164,113 @@ export class DocumentationManager {
   }
 
   private _extractExampleFunctionName(content: string): string | null {
-    const match = content.match(/export const examples(\w+) =/);
+    const match = content.match(/export const (\w+):\s*ComponentDoc\[\]/);
     return match ? match[1] : null;
   }
 
+  private _getDocPath(suggestedFilename: string | undefined): string {
+    if (!suggestedFilename) return this._docsPath;
+
+    const folderName = suggestedFilename
+      .replace(/\.[^/.]+$/, "") // Remove file extension
+      .replace(
+        /([A-Z])/g,
+        (match, p1, offset) => (offset > 0 ? "-" : "") + p1.toLowerCase()
+      ); // Convert camelCase to kebab-case
+
+    return path.join(this._docsPath, folderName);
+  }
+
   private async _createDocumentationPage(
-    component: ComponentMetadata
+    component: ComponentMetadata,
+    sourceFilename: string
   ): Promise<void> {
+    const componentName = path.parse(sourceFilename).name;
     const docContent = `
 'use client';
 
 import React from 'react';
 import { ComponentDoc, ComponentDocumentationHub } from '@/components/component-documentation-hub';
-import { examples${component.exampleFunctionName} } from '@/components/${
-      path.parse(component.suggestedFilename).name
-    }';
+import { ${
+      component.exampleFunctionName
+    } } from '@/components/${componentName}';
 
 export default function ${component.displayName.replace(
       /\s+/g,
       ""
     )}Documentation() {
   const componentDocs: ComponentDoc[] = [
-    ...examples${component.exampleFunctionName}
+    ...${component.exampleFunctionName}
   ];
 
   return <ComponentDocumentationHub components={componentDocs} />;
 }
 `;
 
-    const docPath = path.join(this._docsPath, component.suggestedFilename);
+    const docPath = this._getDocPath(component.suggestedFilename);
+    await fs.mkdir(docPath, { recursive: true });
+    const filePath = path.join(docPath, "page.tsx");
 
-    if (this._force || !(await fs.stat(docPath).catch(() => false))) {
-      await fs.writeFile(docPath, docContent);
-      this._log(`Documentation created for ${component.displayName}`);
-    } else {
-      this._log(
-        `Documentation already exists for ${component.displayName}. Use --force to overwrite.`
+    try {
+      const fileExists = await fs
+        .stat(filePath)
+        .then(() => true)
+        .catch(() => false);
+      if (this._force || !fileExists) {
+        await fs.writeFile(filePath, docContent);
+        this._log(`Documentation created for ${component.displayName}`);
+        await this._updateNavLinks(component);
+      } else {
+        this._log(
+          `Documentation already exists for ${component.displayName}. Use --force to overwrite.`
+        );
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(
+          `Failed to create documentation page: ${error.message}`
+        );
+      } else {
+        throw new Error("Failed to create documentation page: Unknown error");
+      }
+    }
+  }
+
+  private async _updateNavLinks(component: ComponentMetadata): Promise<void> {
+    const navLinksPath = path.join(this._docsPath, "navLinks.ts");
+    try {
+      let content = await fs.readFile(navLinksPath, "utf-8");
+      const navLinks: NavLink[] = eval(
+        content.replace("export const navLinks =", "")
       );
+
+      const newLink: NavLink = {
+        href: `/tools/docs/components/${component.suggestedFilename
+          .toLowerCase()
+          .replace(/\.[^/.]+$/, "")}`,
+        label: component.displayName,
+      };
+
+      if (!navLinks.some((link) => link.href === newLink.href)) {
+        navLinks.push(newLink);
+        navLinks.sort((a, b) => a.label.localeCompare(b.label));
+
+        const updatedContent = `export const navLinks = ${JSON.stringify(
+          navLinks,
+          null,
+          2
+        )};`;
+        await fs.writeFile(navLinksPath, updatedContent);
+        this._log(`Updated navLinks.ts with ${component.displayName}`);
+      } else {
+        this._log(`${component.displayName} already exists in navLinks.ts`);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to update navLinks.ts: ${error.message}`);
+      } else {
+        throw new Error("Failed to update navLinks.ts: Unknown error");
+      }
     }
   }
 
@@ -199,7 +284,14 @@ export default function ${component.displayName.replace(
       const existingMetadata = await fs.readFile(metadataPath, "utf-8");
       metadata = JSON.parse(existingMetadata);
     } catch (error) {
-      // If the file doesn't exist or can't be parsed, we'll create a new metadata object
+      if (
+        error instanceof Error &&
+        "code" in error &&
+        error.code !== "ENOENT"
+      ) {
+        throw new Error(`Failed to read metadata file: ${error.message}`);
+      }
+      // If the file doesn't exist, we'll create a new metadata object
     }
 
     for (const component of newComponents) {
@@ -209,8 +301,16 @@ export default function ${component.displayName.replace(
       };
     }
 
-    await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
-    this._log("Metadata file updated");
+    try {
+      await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
+      this._log("Metadata file updated");
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to write metadata file: ${error.message}`);
+      } else {
+        throw new Error("Failed to write metadata file: Unknown error");
+      }
+    }
   }
 
   public async generateDocumentation(componentName?: string): Promise<void> {
@@ -223,14 +323,14 @@ export default function ${component.displayName.replace(
           (c) => c.metadata?.displayName === componentName
         );
         if (componentsToGenerate.length === 0) {
-          console.error(`Component "${componentName}" not found.`);
+          this._formatter.error(`Component "${componentName}" not found.`);
           return;
         }
       }
 
       await Promise.all(
         componentsToGenerate.map((component) =>
-          this._createDocumentationPage(component.metadata!)
+          this._createDocumentationPage(component.metadata!, component.filename)
         )
       );
 
@@ -238,27 +338,38 @@ export default function ${component.displayName.replace(
         componentsToGenerate.map((c) => c.metadata!)
       );
 
-      console.log(
+      this._formatter.success(
         `Documentation generated for ${componentsToGenerate.length} component(s).`
       );
     } catch (error) {
-      console.error("Error generating documentation:", error);
+      if (error instanceof Error) {
+        this._formatter.error(
+          `Error generating documentation: ${error.message}`
+        );
+      } else {
+        this._formatter.error("Error generating documentation: Unknown error");
+      }
     }
   }
 
   public async checkIfDocumentationNeedsUpdate(
     componentName: string
   ): Promise<boolean> {
-    const componentPath = path.join(
-      this._componentsPath,
-      `${componentName}.tsx`
-    );
-    const docPath = path.join(this._docsPath, `${componentName}.page.tsx`);
-
     try {
+      const componentPath = path.join(
+        this._componentsPath,
+        `${componentName}.tsx`
+      );
+      const content = await fs.readFile(componentPath, "utf-8");
+      const metadata = this._extractComponentMetadata(content);
+      if (!metadata) return false;
+
+      const docPath = this._getDocPath(metadata.suggestedFilename);
+      const filePath = path.join(docPath, "page.tsx");
+
       const [componentStat, docStat] = await Promise.all([
         fs.stat(componentPath),
-        fs.stat(docPath),
+        fs.stat(filePath),
       ]);
 
       // If the component file is newer than the doc file, an update is needed
@@ -267,36 +378,32 @@ export default function ${component.displayName.replace(
       }
 
       // Check if the content has changed
-      const [componentContent, docContent] = await Promise.all([
-        fs.readFile(componentPath, "utf-8"),
-        fs.readFile(docPath, "utf-8"),
-      ]);
-
-      const componentMetadata =
-        this._extractComponentMetadata(componentContent);
-      if (!componentMetadata) {
-        return false; // If we can't extract metadata, assume no update is needed
-      }
+      const docContent = await fs.readFile(filePath, "utf-8");
 
       // Check if the extracted metadata matches the current documentation
-      const docMetadataRegex = new RegExp(
-        `examples${componentMetadata.exampleFunctionName}`
-      );
+      const docMetadataRegex = new RegExp(`${metadata.exampleFunctionName}`);
       if (!docMetadataRegex.test(docContent)) {
         return true;
       }
 
       return false; // No update needed
     } catch (error) {
-      // If the doc file doesn't exist, an update is needed
       if (
         error instanceof Error &&
         "code" in error &&
         error.code === "ENOENT"
       ) {
-        return true;
+        return true; // If the doc file doesn't exist, an update is needed
       }
-      throw error;
+      if (error instanceof Error) {
+        throw new Error(
+          `Failed to check if documentation needs update: ${error.message}`
+        );
+      } else {
+        throw new Error(
+          "Failed to check if documentation needs update: Unknown error"
+        );
+      }
     }
   }
 }

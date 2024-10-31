@@ -3,12 +3,16 @@
     "target": "es2018",
     "module": "commonjs",
     "outDir": "./dist",
-    "rootDir": "./cli",
+    "rootDir": ".",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+     "@/*": ["./*"]
+    }
   },
-  "include": ["cli/**/*"],
+  "include": ["cli/**/*",
+],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

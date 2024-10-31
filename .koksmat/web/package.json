@@ -16,7 +16,10 @@
     "generate-docs:win": "node dist\\cli.js generate"
   },
   "bin": {
-    "koksmat-web": "./dist/cli.js"
+    "koksmat-web": "./dist/cli/cli.js"
+  },
+  "_moduleAliases": {
+    "@": "dist"
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.14",
@@ -56,6 +59,8 @@
     "@tanstack/react-table": "^8.12.0",
     "@types/chokidar": "^2.1.7",
     "@types/clipboard": "^2.0.7",
+    "@types/figlet": "^1.7.0",
+    "@types/inquirer": "^9.0.7",
     "@types/mdx": "^2.0.13",
     "@types/react-beautiful-dnd": "^13.1.8",
     "@types/react-syntax-highlighter": "^15.5.11",
@@ -71,11 +76,13 @@
     "cmdk": "^1.0.0",
     "commander": "^12.1.0",
     "date-fns": "^3.3.1",
+    "figlet": "^1.8.0",
     "form-urlencoded": "^6.1.4",
     "framer-motion": "^11.11.10",
     "fs": "0.0.1-security",
     "html2canvas": "^1.4.1",
     "http": "0.0.1-security",
+    "inquirer": "^12.0.1",
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.1.0",
@@ -83,11 +90,13 @@
     "lru-cache": "^11.0.1",
     "lucide-react": "^0.378.0",
     "marked": "^14.1.2",
+    "module-alias": "^2.2.3",
     "moment": "^2.30.1",
     "monaco-editor": "^0.52.0",
     "nanoid": "^5.0.7",
     "nats": "^2.21.0",
     "next": "14.2.15",
+    "next-i18next": "^15.3.1",
     "next-mdx-remote": "^5.0.0",
     "next-themes": "^0.2.1",
     "node-fetch": "^2.7.0",

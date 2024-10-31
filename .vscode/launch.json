@@ -40,7 +40,7 @@
             "type": "node",
             "request": "launch",
             "program": "${workspaceFolder}/.koksmat/web/dist/cli.js",
-            "args": ["docs", "components", "list"],
+            "args": ["nav", "export", "sidebar"],
             "cwd": "${workspaceFolder}/.koksmat/web",
             "preLaunchTask": "build:cli",
             "outFiles": ["${workspaceFolder}/.koksmat/web/dist/**/*.js"],
