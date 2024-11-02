@@ -83,4 +83,8 @@ export const navLinks = [
     href: "/tools/docs/components/koksmat-web",
     label: "koksmat-web",
   },
+  {
+    href: "/tools/docs/components/yaml-treeeditor",
+    label: "yaml-treeeditor",
+  },
 ];

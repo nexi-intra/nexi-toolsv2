@@ -11,7 +11,7 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "test": "jest",
-    "build:cli": "tsc -p tsconfig.cli.json",
+    "build:cli": "tsc -p tsconfig.cli.json --resolveJsonModule",
     "generate-docs": "node dist/cli.js generate",
     "generate-docs:win": "node dist\\cli.js generate"
   },

@@ -193,7 +193,7 @@ export default function ToolCard({
 function ToolCardExample() {
   const [mode, setMode] = useState<'view' | 'edit' | 'new'>('view')
   const [tool, setTool] = useState<Tool>({
-    id: '1',
+    id: 1,
     createdAt: new Date(),
     createdBy: 'John Doe',
     updatedAt: new Date(),

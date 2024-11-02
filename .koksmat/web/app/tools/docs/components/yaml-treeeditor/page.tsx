@@ -1,16 +1,10 @@
-//TODO: Add drag and drop functionality to reorder the files
-//TODO: support paste and drop
 'use client';
 
 import React, { } from 'react';
 
 import { ComponentDoc, ComponentDocumentationHub } from '@/components/component-documentation-hub';
-import { examplesMultiLanguageTranslator } from '@/components/multi-language-translator';
 
-
-
-
-
+import { examplesYamlTreeEditor } from '@/components/yaml-tree-editor';
 
 
 
@@ -19,7 +13,7 @@ import { examplesMultiLanguageTranslator } from '@/components/multi-language-tra
 // Example usage
 export default function ExampleUsage() {
   const componentDocs: ComponentDoc[] = [
-    ...examplesMultiLanguageTranslator
+    ...examplesYamlTreeEditor
   ];
 
   return <ComponentDocumentationHub components={componentDocs} />;

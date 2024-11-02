@@ -54,6 +54,8 @@ import { Button } from "@/components/ui/button"
 import { SupportedLanguage } from "@/components/lib/types-sidebar-data"
 import { Sun, Moon, ChevronsUpDown, Plus, ChevronRight } from 'lucide-react'
 import { Icon } from "./icon"
+import Link from "next/link"
+import Logo from "@/app/koksmat/components/logo"
 
 
 interface ApplicationRootProps {
@@ -168,7 +170,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                         className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                       >
                         <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                          {activeTeam.logo}
+                          <Icon iconName={activeTeam.logo} className="size-5" />
                         </div>
                         <div className="grid flex-1 text-left text-sm leading-tight">
                           <span className="truncate font-semibold">
@@ -241,9 +243,9 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             {item.items?.map((subItem) => (
                               <SidebarMenuSubItem key={subItem.title.en}>
                                 <SidebarMenuSubButton asChild>
-                                  <a href={subItem.url}>
+                                  <Link href={subItem.url}>
                                     <span>{subItem.title[currentLanguage]}</span>
-                                  </a>
+                                  </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>
                             ))}
@@ -254,16 +256,16 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                   ))}
                 </SidebarMenu>
               </SidebarGroup>
-              <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+              <SidebarGroup className="group-data-[collapsible=icon]:hidden hidden">
                 <SidebarGroupLabel>{t.projects}</SidebarGroupLabel>
                 <SidebarMenu>
                   {sidebarData.projects.map((item) => (
                     <SidebarMenuItem key={item.name.en}>
                       <SidebarMenuButton asChild>
-                        <a href={item.url}>
+                        <Link href={item.url}>
                           <Icon iconName={item.icon} className="size-5" />
                           <span>{item.name[currentLanguage]}</span>
-                        </a>
+                        </Link>
                       </SidebarMenuButton>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -307,19 +309,19 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                       >
                         <Avatar className="h-8 w-8 rounded-lg">
                           <AvatarImage
-                            src={sidebarData.user.avatar}
-                            alt={sidebarData.user.name}
+                            src={sidebarData.user?.avatar}
+                            alt={sidebarData.user?.name}
                           />
                           <AvatarFallback className="rounded-lg">
-                            {sidebarData.user.name.split(' ').map(n => n[0]).join('')}
+                            {sidebarData.user?.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
                         <div className="grid flex-1 text-left text-sm leading-tight">
                           <span className="truncate font-semibold">
-                            {sidebarData.user.name}
+                            {sidebarData.user?.name}
                           </span>
                           <span className="truncate text-xs">
-                            {sidebarData.user.email}
+                            {sidebarData.user?.email}
                           </span>
                         </div>
                         <ChevronsUpDown className="ml-auto size-4" />
@@ -335,19 +337,19 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                         <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                           <Avatar className="h-8 w-8 rounded-lg">
                             <AvatarImage
-                              src={sidebarData.user.avatar}
-                              alt={sidebarData.user.name}
+                              src={sidebarData.user?.avatar}
+                              alt={sidebarData.user?.name}
                             />
                             <AvatarFallback className="rounded-lg">
-                              {sidebarData.user.name.split(' ').map(n => n[0]).join('')}
+                              {sidebarData.user?.name.split(' ').map(n => n[0]).join('')}
                             </AvatarFallback>
                           </Avatar>
                           <div className="grid flex-1 text-left text-sm leading-tight">
                             <span className="truncate font-semibold">
-                              {sidebarData.user.name}
+                              {sidebarData.user?.name}
                             </span>
                             <span className="truncate text-xs">
-                              {sidebarData.user.email}
+                              {sidebarData.user?.email}
                             </span>
                           </div>
                         </div>
@@ -370,11 +372,12 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
           </Sidebar>
         )}
         <SidebarInset>
-          {!hideBreadcrumb && (
-            <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-              <div className="flex items-center gap-2 px-4">
-                <SidebarTrigger className="-ml-1" />
-                <Separator orientation="vertical" className="mr-2 h-4" />
+
+          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+            <div className="flex items-center gap-2 px-4">
+              <SidebarTrigger className="-ml-1" />
+              <Separator orientation="vertical" className="mr-2 h-4" />
+              {!hideBreadcrumb && (
                 <Breadcrumb>
                   <BreadcrumbList>
                     <BreadcrumbItem className="hidden md:block">
@@ -388,9 +391,10 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                     </BreadcrumbItem>
                   </BreadcrumbList>
                 </Breadcrumb>
-              </div>
-            </header>
-          )}
+              )}
+            </div>
+          </header>
+
           <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
             <div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min w-full">
               {children}

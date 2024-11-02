@@ -1,0 +1,84 @@
+{
+  "language": "en",
+  "teams": [
+    {
+      "name": {
+        "en": "Links",
+        "da": "Links"
+      },
+      "logo": "Link",
+      "plan": {
+        "en": "Preview",
+        "da": "Test udgave"
+      }
+    }
+  ],
+  "navMain": [
+    {
+      "title": {
+        "en": "Integration Pages",
+        "da": "Integrationssider"
+      },
+      "url": "#",
+      "icon": "SquareTerminal",
+      "isActive": true,
+      "items": [
+        {
+          "title": {
+            "en": "Explorer",
+            "da": "Historik"
+          },
+          "url": "#"
+        },
+        {
+          "title": {
+            "en": "Favourites",
+            "da": "Stjernemarkeret"
+          },
+          "url": "#"
+        }
+      ]
+    },
+    {
+      "title": {
+        "en": "Documentation",
+        "da": "Dokumentation"
+      },
+      "url": "#",
+      "icon": "BookOpen",
+      "items": [
+        {
+          "title": {
+            "en": "Use cases",
+            "da": "Introduktion"
+          },
+          "url": "/tools/docs/use-cases"
+        },
+        {
+          "title": {
+            "en": "Components",
+            "da": "Kom i gang"
+          },
+          "url": "/tools/docs/components"
+        }
+      ]
+    },
+    {
+      "title": {
+        "en": "Settings",
+        "da": "Indstillinger"
+      },
+      "url": "#",
+      "icon": "Settings2",
+      "items": [
+        {
+          "title": {
+            "en": "General",
+            "da": "Generelt"
+          },
+          "url": "#"
+        }
+      ]
+    }
+  ]
+}

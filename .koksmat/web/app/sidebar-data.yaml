@@ -1,0 +1,98 @@
+language: "en"
+teams:
+  - name:
+      en: "Links"
+      da: "Links"
+    logo: "Link"
+    plan:
+      en: "Preview"
+      da: "Test udgave"
+  # - name:
+  #     en: "Tools"
+  #     da: "Acme Corp."
+  #   logo: "AudioWaveform"
+  #   plan:
+  #     en: "Startup"
+  #     da: "Opstart"
+navMain:
+  - title:
+      en: "Integration Pages"
+      da: "Integrationssider"
+    url: "#"
+    icon: "SquareTerminal"
+    isActive: true
+    items:
+      - title:
+          en: "Explorer"
+          da: "Historik"
+        url: "#"
+      - title:
+          en: "Favourites"
+          da: "Stjernemarkeret"
+        url: "#"
+      # - title:
+      #     en: "Settings"
+      #     da: "Indstillinger"
+      #   url: "#"
+  # - title:
+  #     en: "Models"
+  #     da: "Modeller"
+  #   url: "#"
+  #   icon: "Bot"
+  #   items:
+  #     - title:
+  #         en: "Genesis"
+  #         da: "Genesis"
+  #       url: "#"
+  #     - title:
+  #         en: "Explorer"
+  #         da: "Udforskeren"
+  #       url: "#"
+  #     - title:
+  #         en: "Quantum"
+  #         da: "Kvantum"
+  #       url: "#"
+  - title:
+      en: "Documentation"
+      da: "Dokumentation"
+    url: "#"
+    icon: "BookOpen"
+    items:
+      - title:
+          en: "Use cases"
+          da: "Introduktion"
+        url: "/tools/docs/use-cases"
+      - title:
+          en: "Components"
+          da: "Kom i gang"
+        url: "/tools/docs/components"
+      # - title:
+      #     en: "API"
+      #     da: "Vejledninger"
+      #   url: "/tools/docs/api"
+      # - title:
+      #     en: "Changelog"
+      #     da: "Ændringslog"
+      #   url: "#"
+  - title:
+      en: "Settings"
+      da: "Indstillinger"
+    url: "#"
+    icon: "Settings2"
+    items:
+      - title:
+          en: "General"
+          da: "Generelt"
+        url: "#"
+      # - title:
+      #     en: "Team"
+      #     da: "Hold"
+      #   url: "#"
+      # - title:
+      #     en: "Billing"
+      #     da: "Fakturering"
+      #   url: "#"
+      # - title:
+      #     en: "Limits"
+      #     da: "Begrænsninger"
+      #   url: "#"

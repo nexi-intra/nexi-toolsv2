@@ -7,6 +7,7 @@ import { setupDocsCommand } from "./command-docs";
 import { setupNavCommand } from "./command-nav";
 import { setupComponentCommand } from "./command-component";
 const program = new Command();
+import packageJson from "@/package.json";
 
 const displayAsciiArt = () => {
   console.log(
@@ -15,9 +16,8 @@ const displayAsciiArt = () => {
 };
 
 const displayVersionInfo = () => {
-  const packageJson = require("../package.json");
   console.log(chalk.cyan(`Version: ${packageJson.version}`));
-  console.log(chalk.cyan(`Description: ${packageJson.description}`));
+  //console.log(chalk.cyan(`Description: ${packageJson.description}`));
 };
 
 program

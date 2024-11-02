@@ -43,7 +43,7 @@ export default function Layout(props: { children: any }) {
   return (
     <SidebarProvider>
       <AppProvider>
-        <ApplicationRoot>
+        <ApplicationRoot hideBreadcrumb  >
 
           {children}
         </ApplicationRoot>

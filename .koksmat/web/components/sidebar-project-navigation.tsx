@@ -101,114 +101,7 @@ export default function ProjectStructure({
   ]
 
   const initialData: EditorData = defaultValue.length ? defaultValue : [
-    {
-      id: 'use-cases',
-      text: 'Use Cases',
-      icon: 'folder',
-      children: [
-        {
-          id: 'use-cases-overview',
-          text: 'Overview',
-          icon: 'fileText',
-          action: projectActions[0]
-        }
-      ]
-    },
-    {
-      id: 'documentation',
-      text: 'Documentation',
-      icon: 'folder',
-      children: [
-        {
-          id: 'documentation-components',
-          text: 'Components',
-          icon: 'folder',
-          action: projectActions[1],
-          children: []
-        },
-        {
-          id: 'documentation-api',
-          text: 'API',
-          icon: 'folder',
-          action: projectActions[2],
-          children: []
-        }
-      ]
-    },
-    {
-      id: 'issues',
-      text: 'Issues',
-      icon: 'folder',
-      children: [
-        {
-          id: 'issues-features',
-          text: 'Features',
-          icon: 'folder',
-          action: projectActions[3],
 
-        },
-        {
-          id: 'issues-tasks',
-          text: 'Tasks',
-          icon: 'folder',
-          action: projectActions[3],
-
-        },
-        {
-          id: 'issues-bugs',
-          text: 'Bugs',
-          icon: 'folder',
-          action: projectActions[3],
-
-        }
-      ]
-    },
-    {
-      id: 'branches',
-      text: 'Code Branches',
-      icon: 'folder',
-      action: projectActions[4],
-      children: [
-        {
-          id: 'branches-main',
-          text: 'main',
-          icon: 'fileText',
-          action: projectActions[0]
-        },
-        {
-          id: 'branches-canary',
-          text: 'canary',
-          icon: 'fileText',
-          action: projectActions[0]
-        },
-        {
-          id: 'branches-next',
-          text: 'next',
-          icon: 'fileText',
-          action: projectActions[0]
-        },
-        {
-          id: 'branches-latest',
-          text: 'latest',
-          icon: 'fileText',
-          action: projectActions[0]
-        }
-      ]
-    },
-    {
-      id: 'instances',
-      text: 'Instances',
-      icon: 'folder',
-      action: projectActions[5],
-      children: [
-        {
-          id: 'instances-dns',
-          text: 'DNS',
-          icon: 'folder',
-          children: []
-        }
-      ]
-    }
   ]
 
   const [activeData, setActiveData] = React.useState<EditorData>(initialData)
@@ -257,7 +150,7 @@ function PreviewNavigation({ items }: { items: EditorData }) {
       {items.map((item) => (
         <div key={item.id}>
           <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-2">
-            {item.icon === 'folder' ? (
+            {item.icon === 'Folder' ? (
               <FolderOpen className="h-4 w-4" />
             ) : (
               <FileText className="h-4 w-4" />
@@ -310,7 +203,7 @@ function PreviewItem({ item }: { item: EditorData[0] }) {
       case 'dns':
         return <Globe className="h-4 w-4" />
       default:
-        return item.icon === 'folder' ? (
+        return item.icon === 'Folder' ? (
           <FolderOpen className="h-4 w-4" />
         ) : (
           <FileText className="h-4 w-4" />

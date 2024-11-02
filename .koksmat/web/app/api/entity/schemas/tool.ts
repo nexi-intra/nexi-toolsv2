@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const SharedAttributes = z.object({
-  id: z.union([z.string(), z.number()]).describe("Unique identifier"),
+  id: z.number().describe("Unique identifier"),
   createdAt: z.date().describe("Creation timestamp"),
   createdBy: z.string().describe("ID of the user who created this entity"),
   updatedAt: z.date().describe("Last update timestamp"),
@@ -149,7 +149,7 @@ export const ToolSchema = SharedAttributes.extend({
 export type Tool = z.infer<typeof ToolSchema>;
 export const mockdata: Tool[] = [
   {
-    id: "tool1",
+    id: 1,
     createdAt: new Date("2021-01-01T00:00:00Z"),
     createdBy: "user_admin",
     updatedAt: new Date("2021-06-01T00:00:00Z"),
@@ -188,7 +188,7 @@ export const mockdata: Tool[] = [
     primaryFocus: [{ id: "focus1", value: "Communication", order: "1" }],
   },
   {
-    id: "tool2",
+    id: 2,
     createdAt: new Date("2021-02-01T00:00:00Z"),
     createdBy: "user_admin",
     updatedAt: new Date("2021-06-15T00:00:00Z"),
@@ -221,7 +221,7 @@ export const mockdata: Tool[] = [
   },
   // Google Workspace Tools
   {
-    id: "tool3",
+    id: 3,
     createdAt: new Date("2021-03-01T00:00:00Z"),
     createdBy: "user_admin",
     updatedAt: new Date("2021-07-01T00:00:00Z"),
@@ -253,7 +253,7 @@ export const mockdata: Tool[] = [
     primaryFocus: [{ id: "focus1", value: "Productivity", order: "1" }],
   },
   {
-    id: "tool4",
+    id: 4,
     createdAt: new Date("2021-04-01T00:00:00Z"),
     createdBy: "user_admin",
     updatedAt: new Date("2021-07-15T00:00:00Z"),
@@ -292,7 +292,7 @@ export const mockdata: Tool[] = [
   },
   // Adobe Creative Cloud Tools
   {
-    id: "tool5",
+    id: 5,
     createdAt: new Date("2021-05-01T00:00:00Z"),
     createdBy: "user_admin",
     updatedAt: new Date("2021-08-01T00:00:00Z"),
@@ -325,7 +325,7 @@ export const mockdata: Tool[] = [
     primaryFocus: [{ id: "focus1", value: "Design", order: "1" }],
   },
   {
-    id: "tool6",
+    id: 6,
     createdAt: new Date("2021-06-01T00:00:00Z"),
     createdBy: "user_admin",
     updatedAt: new Date("2021-08-15T00:00:00Z"),
@@ -359,7 +359,7 @@ export const mockdata: Tool[] = [
   },
   // Slack Tools
   {
-    id: "tool7",
+    id: 7,
     createdAt: new Date("2021-07-01T00:00:00Z"),
     createdBy: "user_admin",
     updatedAt: new Date("2021-09-01T00:00:00Z"),
@@ -390,7 +390,7 @@ export const mockdata: Tool[] = [
   },
   // Atlassian Suite Tools
   {
-    id: "tool8",
+    id: 8,
     createdAt: new Date("2021-08-01T00:00:00Z"),
     createdBy: "user_admin",
     updatedAt: new Date("2021-09-15T00:00:00Z"),
@@ -425,7 +425,7 @@ export const mockdata: Tool[] = [
     primaryFocus: [{ id: "focus2", value: "Project Management", order: "1" }],
   },
   {
-    id: "tool9",
+    id: 9,
     createdAt: new Date("2021-09-01T00:00:00Z"),
     createdBy: "user_admin",
     updatedAt: new Date("2021-10-01T00:00:00Z"),
@@ -466,7 +466,7 @@ export const mockdata: Tool[] = [
   },
   // Additional Tools
   {
-    id: "tool10",
+    id: 10,
     createdAt: new Date("2021-10-01T00:00:00Z"),
     createdBy: "user_admin",
     updatedAt: new Date("2021-11-01T00:00:00Z"),

@@ -52,6 +52,6 @@ export interface SidebarData {
   navMain: NavItem[];
   projects: Project[];
   moreProjectsIcon: LucidIconName;
-  user: User;
+  user?: User;
   userMenuItems: UserMenuItem[];
 }

@@ -79,7 +79,7 @@ export function ToolCardMiniComponent({ tool, onFavoriteChange, allowedTags }: T
 // Example usage
 function ToolCardMiniExample() {
   const [tool, setTool] = useState<Tool>({
-    id: '1',
+    id: 1,
     createdAt: new Date(),
     createdBy: 'John Doe',
     updatedAt: new Date(),

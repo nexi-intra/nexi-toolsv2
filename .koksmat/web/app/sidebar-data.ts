@@ -1,9 +1,97 @@
+import * as LucidIcons from "lucide-react";
 import type {
   SidebarData,
   SupportedLanguage,
 } from "@/components/lib/types-sidebar-data";
+import data from "./sidebar-data.json";
 
-export const sidebarData: SidebarData = {
+type JSONSidebarData = {
+  language: SupportedLanguage;
+  teams: Array<{
+    name: { [key in SupportedLanguage]: string };
+    logo: string;
+    plan: { [key in SupportedLanguage]: string };
+  }>;
+  navMain: Array<{
+    title: { [key in SupportedLanguage]: string };
+    url: string;
+    icon: string;
+    isActive?: boolean;
+    items?: Array<{
+      title: { [key in SupportedLanguage]: string };
+      url: string;
+    }>;
+  }>;
+  projects?: Array<{
+    name: { [key in SupportedLanguage]: string };
+    url: string;
+    icon: string;
+    moreIcon: string;
+    actions: Array<{
+      label: { [key in SupportedLanguage]: string };
+      icon: string;
+    }>;
+  }>;
+  moreProjectsIcon?: string;
+  user?: {
+    name: string;
+    email: string;
+    avatar: string;
+  };
+  userMenuItems?: Array<{
+    label: { [key in SupportedLanguage]: string };
+    icon: string;
+  }>;
+};
+
+export function loadSidebarData(data: JSONSidebarData): SidebarData {
+  return {
+    language: data.language,
+    teams: data.teams.map((team) => ({
+      name: team.name,
+      logo: team.logo as keyof typeof LucidIcons,
+      plan: team.plan,
+    })),
+    navMain: data.navMain.map((navItem) => ({
+      title: navItem.title,
+      url: navItem.url,
+      icon: navItem.icon as keyof typeof LucidIcons,
+      isActive: navItem.isActive,
+      items: navItem.items?.map((item) => ({
+        title: item.title,
+        url: item.url,
+      })),
+    })),
+    projects:
+      data.projects?.map((project) => ({
+        name: project.name,
+        url: project.url,
+        icon: project.icon as keyof typeof LucidIcons,
+        moreIcon: project.moreIcon as keyof typeof LucidIcons,
+        actions: project.actions.map((action) => ({
+          label: action.label,
+          icon: action.icon as keyof typeof LucidIcons,
+        })),
+      })) || [],
+    moreProjectsIcon: data.moreProjectsIcon as keyof typeof LucidIcons,
+    user: data.user
+      ? {
+          name: data.user.name,
+          email: data.user.email,
+          avatar: data.user.avatar,
+        }
+      : undefined,
+    userMenuItems:
+      data.userMenuItems?.map((item) => ({
+        label: item.label,
+        icon: item.icon as keyof typeof LucidIcons,
+      })) || [],
+  };
+}
+export const sidebarData: SidebarData = loadSidebarData(
+  data as JSONSidebarData
+);
+export const sidebarData2: SidebarData = {
   language: "en" as SupportedLanguage,
   teams: [
     {
@@ -24,7 +112,7 @@ export const sidebarData: SidebarData = {
   ],
   navMain: [
     {
-      title: { en: "Playground", da: "Legeplads" },
+      title: { en: "Landing Pages", da: "Legeplads" },
       url: "#",
       icon: "SquareTerminal",
       isActive: true,

@@ -39,7 +39,7 @@ export function createEntity<T extends z.ZodObject<any>>(
   const now = new Date();
   id++;
   const sharedData = {
-    id: id.toString(),
+    id: id,
     createdAt: now,
     createdBy: userId,
     updatedAt: now,
