@@ -77,6 +77,23 @@
             "da": "Generelt"
           },
           "url": "#"
+        },
+        {
+          "title": {
+            "en": "Mapping",
+            "da": "Mapping"
+          },
+          "url": "#",
+          "icon": "BookOpen",
+          "items": [
+            {
+              "title": {
+                "en": "Tools",
+                "da": "Tools"
+              },
+              "url": "/tools/admin/mapping/tools"
+            }
+          ]
         }
       ]
     }

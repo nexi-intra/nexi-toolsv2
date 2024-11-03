@@ -8,6 +8,10 @@ export const navLinks = [
     label: "Data Mapper",
   },
   {
+    href: "/tools/docs/components/integration-designer",
+    label: "Integration Designer",
+  },
+  {
     href: "/tools/docs/components/favorite",
     label: "Favorite",
   },
@@ -94,5 +98,9 @@ export const navLinks = [
   {
     href: "/tools/docs/components/sql-editor",
     label: "SQL Editor",
+  },
+  {
+    href: "/tools/docs/components/zod-mapping-demo",
+    label: "ZOD Mapping Demo",
   },
 ];

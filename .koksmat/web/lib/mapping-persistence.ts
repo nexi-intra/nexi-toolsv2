@@ -8,55 +8,24 @@ interface MappingWithComments extends Mapping {
   __comment: string;
 }
 
-type MappingType =
-  | "serverToClient"
-  | "clientToServerCreate"
-  | "clientToServerUpdate";
-
-export function saveMappingsToYaml(
-  mappings: Record<MappingType, Mapping>
-): string {
-  const mappingsWithComments: Record<MappingType, MappingWithComments> = {
-    serverToClient: {
-      __comment: "Mapping from server to client",
-      ...mappings.serverToClient,
-    },
-    clientToServerCreate: {
-      __comment: "Mapping from client to server for create operations",
-      ...mappings.clientToServerCreate,
-    },
-    clientToServerUpdate: {
-      __comment: "Mapping from client to server for update operations",
-      ...mappings.clientToServerUpdate,
-    },
+export function saveMappingsToYaml(mapping: Mapping): string {
+  const mappingWithComments: MappingWithComments = {
+    __comment: "Mapping from source to target",
+    ...mapping,
   };
 
-  return yaml.dump(mappingsWithComments, { lineWidth: -1 });
+  return yaml.dump(mappingWithComments, { lineWidth: -1 });
 }
 
-export function loadMappingsFromYaml(
-  yamlString: string
-): Record<MappingType, Mapping> {
-  const loadedMappings = yaml.load(yamlString) as Record<
-    MappingType,
-    MappingWithComments
-  >;
+export function loadMappingsFromYaml(yamlString: string): Mapping {
+  const loadedMapping = yaml.load(yamlString) as MappingWithComments;
 
-  const cleanedMappings: Record<MappingType, Mapping> = {
-    serverToClient: {},
-    clientToServerCreate: {},
-    clientToServerUpdate: {},
-  };
-
-  for (const [key, value] of Object.entries(loadedMappings)) {
-    const cleanedMapping: Mapping = {};
-    for (const [field, mapping] of Object.entries(value)) {
-      if (field !== "__comment") {
-        cleanedMapping[field] = mapping;
-      }
+  const cleanedMapping: Mapping = {};
+  for (const [field, value] of Object.entries(loadedMapping)) {
+    if (field !== "__comment") {
+      cleanedMapping[field] = value;
     }
-    cleanedMappings[key as MappingType] = cleanedMapping;
   }
 
-  return cleanedMappings;
+  return cleanedMapping;
 }

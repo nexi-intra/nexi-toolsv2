@@ -36,6 +36,7 @@ const SqlQueryEditorSchema = z.object({
   mode: z.enum(["view", "new", "edit"]),
   className: z.string().optional(),
   onModeChange: z.function().args(z.enum(["view", "new", "edit"]), z.any()),
+  onNewInterface: z.function().args(z.any(), z.string())
 })
 
 // Infer the type from the schema
@@ -48,6 +49,7 @@ export function SqlQueryEditor(props: SqlQueryEditorProps) {
     mode,
     className,
     onModeChange,
+    onNewInterface
   } = props
 
   const [error, setError] = useState<string>("")
@@ -99,6 +101,9 @@ export function SqlQueryEditor(props: SqlQueryEditorProps) {
     interfaceGenerator.setjson(JSON.stringify(result.data.Result, null, 2))
     setLog((prevLog) => [...prevLog, logEntry])
     setSqlResult(logEntry.result)
+
+    // Call onNewInterface with the current dataset and derived interface
+    onNewInterface(result.data.Result, interfaceGenerator.interfaceDefintions)
   }
 
   const handleSqlChange = (newSql: string | undefined) => {
@@ -113,8 +118,6 @@ export function SqlQueryEditor(props: SqlQueryEditorProps) {
   }
 
   return (
-
-
     <div className={`sql-query-editor ${className || ""}`}>
       <ZeroTrust
         schema={SqlQueryEditorSchema}
@@ -202,7 +205,6 @@ export function SqlQueryEditor(props: SqlQueryEditorProps) {
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
-
   )
 }
 
@@ -223,10 +225,11 @@ import { SqlQueryEditor } from "./sql-query-editor"
   onChange={(newSql) => console.log(newSql)}
   mode="view"
   onModeChange={(mode, data) => console.log(mode, data)}
+  onNewInterface={(dataset, interfaceDefinition) => {
+    console.log("New dataset:", dataset);
+    console.log("New interface definition:", interfaceDefinition);
+  }}
 />
-
-
-
 `,
     example: (
       <SqlQueryEditor
@@ -236,6 +239,10 @@ import { SqlQueryEditor } from "./sql-query-editor"
         onChange={(newSql) => console.log(newSql)}
         mode="edit"
         onModeChange={(mode, data) => console.log(mode, data)}
+        onNewInterface={(dataset, interfaceDefinition) => {
+          console.log("New dataset:", dataset);
+          console.log("New interface definition:", interfaceDefinition);
+        }}
       />
     ),
   },
