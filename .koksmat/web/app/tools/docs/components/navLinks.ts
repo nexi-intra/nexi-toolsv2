@@ -87,4 +87,12 @@ export const navLinks = [
     href: "/tools/docs/components/yaml-treeeditor",
     label: "yaml-treeeditor",
   },
+  {
+    href: "/tools/docs/components/zerotrust",
+    label: "Zero trust",
+  },
+  {
+    href: "/tools/docs/components/sql-editor",
+    label: "SQL Editor",
+  },
 ];
