@@ -8,6 +8,7 @@ import { https, Result } from "@/app/koksmat/httphelper";
 import { z, ZodObject } from "zod";
 
 import { run } from "@/app/koksmat/magicservices";
+import { APPNAME } from "@/app/global";
 
 export const version = 1;
 
@@ -35,11 +36,16 @@ export async function execute(
     JSON.stringify(payload, null, 2),
   ];
 
-  const response: any = await https<string>(token, "POST", "/api/run", {
-    args,
-    channel: servicename,
-    timeout: 600,
-  });
+  const response: any = await https<string>(
+    token,
+    "POST",
+    "/" + APPNAME + "/api/run",
+    {
+      args,
+      channel: servicename,
+      timeout: 600,
+    }
+  );
 
   const result: Result<string> = {
     data: response.data,

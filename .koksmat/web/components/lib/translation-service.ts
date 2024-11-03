@@ -472,6 +472,7 @@ import {
   OpenApiGeneratorV3,
 } from "@asteasolutions/zod-to-openapi";
 import { z } from "zod";
+import { APPNAME } from "@/app/global";
 
 export async function generateTranslationApiOpenApiDefinition(
   registry: OpenAPIRegistry
@@ -586,7 +587,7 @@ export async function generateTranslationApiOpenApiDefinition(
   // Define the translation endpoint
   registry.registerPath({
     method: "post",
-    path: "/api/translate",
+    path: "/" + APPNAME + "/api/translate",
     description: "Translate text to multiple languages",
     request: {
       body: {

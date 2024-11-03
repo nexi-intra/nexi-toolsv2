@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { DatabaseClient } from '@/app/api/entity/database-client'
-import { User } from '@/app/api/entity/schemas'
+import { DatabaseClient } from '@/app/tools/api/entity/database-client'
+import { User } from '@/app/tools/api/entity/schemas'
 
 export default function UserList() {
   const [users, setUsers] = useState<User[]>([])

@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { DatabaseClient } from '@/app/api/entity/database-client'
-import { ToolGroup } from '@/app/api/entity/schemas'
+import { DatabaseClient } from '@/app/tools/api/entity/database-client'
+import { ToolGroup } from '@/app/tools/api/entity/schemas'
 
 export default function ToolGroupDetail() {
   // TODO: Replace '2' with the actual ID you want to fetch

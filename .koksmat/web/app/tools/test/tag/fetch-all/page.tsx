@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { DatabaseClient } from '@/app/api/entity/database-client'
-import { Tag } from '@/app/api/entity/schemas'
+import { DatabaseClient } from '@/app/tools/api/entity/database-client'
+import { Tag } from '@/app/tools/api/entity/schemas'
 
 export default function TagList() {
   const [tags, setTags] = useState<Tag[]>([])

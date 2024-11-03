@@ -35,7 +35,7 @@ const initialMappings = {
 }
 
 import React from 'react'
-import { ToolSchema } from '@/app/api/entity/schemas/tool'
+import { ToolSchema } from '@/app/tools/api/entity/schemas/tool'
 function handleSave({ mode, mappings, sqlQuery }: { mode: string, mappings: any, sqlQuery: string }) {
   console.log('Mode:', mode)
   console.log('Mappings saved:', mappings)

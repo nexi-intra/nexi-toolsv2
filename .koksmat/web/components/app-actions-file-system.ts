@@ -282,7 +282,7 @@ export async function generateFileSystemApiOpenApiDefinition(
   // GET endpoints
   registry.registerPath({
     method: "get",
-    path: "/api/filesystem/getcwd",
+    path: "/" + APPNAME + "/api/filesystem/getcwd",
     description: "Get the current working directory",
     responses: {
       200: {
@@ -300,7 +300,7 @@ export async function generateFileSystemApiOpenApiDefinition(
 
   registry.registerPath({
     method: "get",
-    path: "/api/filesystem/readfile/{filePath}",
+    path: "/" + APPNAME + "/api/filesystem/readfile/{filePath}",
     description: "Read the contents of a file",
     request: {
       params: z.object({
@@ -323,7 +323,7 @@ export async function generateFileSystemApiOpenApiDefinition(
 
   registry.registerPath({
     method: "get",
-    path: "/api/filesystem/fileexists/{filePath}",
+    path: "/" + APPNAME + "/api/filesystem/fileexists/{filePath}",
     description: "Check if a file exists",
     request: {
       params: z.object({
@@ -346,7 +346,7 @@ export async function generateFileSystemApiOpenApiDefinition(
 
   registry.registerPath({
     method: "get",
-    path: "/api/filesystem/scancomponent/{componentPath}",
+    path: "/" + APPNAME + "/api/filesystem/scancomponent/{componentPath}",
     description: "Scan a component file for metadata",
     request: {
       params: z.object({
@@ -369,7 +369,7 @@ export async function generateFileSystemApiOpenApiDefinition(
 
   registry.registerPath({
     method: "get",
-    path: "/api/filesystem/getappname",
+    path: "/" + APPNAME + "/api/filesystem/getappname",
     description: "Get the application name",
     responses: {
       200: {
@@ -388,7 +388,7 @@ export async function generateFileSystemApiOpenApiDefinition(
   // POST endpoints
   registry.registerPath({
     method: "post",
-    path: "/api/filesystem/writefile/{filePath}",
+    path: "/" + APPNAME + "/api/filesystem/writefile/{filePath}",
     description: "Write content to a file",
     request: {
       params: z.object({
@@ -420,7 +420,7 @@ export async function generateFileSystemApiOpenApiDefinition(
 
   registry.registerPath({
     method: "post",
-    path: "/api/filesystem/appendfile/{filePath}",
+    path: "/" + APPNAME + "/api/filesystem/appendfile/{filePath}",
     description: "Append content to a file",
     request: {
       params: z.object({
@@ -452,7 +452,7 @@ export async function generateFileSystemApiOpenApiDefinition(
 
   registry.registerPath({
     method: "post",
-    path: "/api/filesystem/deletefile/{filePath}",
+    path: "/" + APPNAME + "/api/filesystem/deletefile/{filePath}",
     description: "Delete a file",
     request: {
       params: z.object({
@@ -475,7 +475,8 @@ export async function generateFileSystemApiOpenApiDefinition(
 
   registry.registerPath({
     method: "post",
-    path: "/api/filesystem/generatedocumentation/{componentPath}",
+    path:
+      "/" + APPNAME + "/api/filesystem/generatedocumentation/{componentPath}",
     description: "Generate documentation for a component",
     request: {
       params: z.object({

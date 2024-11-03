@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { TranslatorClient, Language } from '@/app/api/translate/translator-client'
+import { TranslatorClient, Language } from '@/app/tools/api/translate/translator-client'
 import { ComponentDoc } from './component-documentation-hub'
 import { TranslationResult } from '@/lib/translation-service'
 

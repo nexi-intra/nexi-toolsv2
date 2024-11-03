@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { DatabaseClient } from '@/app/api/entity/database-client'
-import { Purpose } from '@/app/api/entity/schemas'
+import { DatabaseClient } from '@/app/tools/api/entity/database-client'
+import { Purpose } from '@/app/tools/api/entity/schemas'
 
 export default function PurposeList() {
   const [purposes, setPurposes] = useState<Purpose[]>([])

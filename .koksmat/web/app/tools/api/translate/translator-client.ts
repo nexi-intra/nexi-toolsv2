@@ -1,3 +1,5 @@
+import { APPNAME } from "@/app/global";
+
 export type Language =
   | "Afrikaans"
   | "Arabic"
@@ -74,7 +76,7 @@ export class TranslatorClient {
   private getToken: () => string | Promise<string>;
 
   constructor(getToken: () => string | Promise<string>) {
-    this.baseUrl = "/api/translate";
+    this.baseUrl = "/" + APPNAME + "/api/translate";
     this.getToken = getToken;
   }
 

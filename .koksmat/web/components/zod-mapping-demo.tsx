@@ -35,7 +35,7 @@ const sampleItem = {
   is_active: true
 }
 
-const initialMapping: { fullName: string; age: string; emailAddress: string; isActiveUser: string } = {
+const initialMapping: any = {
   fullName: "item.first_name + ' ' + item.last_name",
   age: "new Date().getFullYear() - new Date(item.birth_date).getFullYear()",
   emailAddress: "item.email",
@@ -111,14 +111,18 @@ export function ZodMappingDemoComponent({ className = '' }: ZodMappingDemoProps)
   }, [dynamicZodObject])
 
   const zodSchemaCode = useMemo(() => {
+    const schemaEntries = Object.entries(targetSchema.shape).map(([key, value]) => {
+      const originalType = value._def.typeName
+      const mappingLogic = mapping[key]
+      return `  ${key}: z.${originalType}().transform(item => ${mappingLogic})`
+    })
+
     return `import { z } from 'zod';
 
-const dynamicSchema = z.object({
-${Object.entries(dynamicZodObject.shape)
-        .map(([key, value]) => `  ${key}: ${value._def.typeName},`)
-        .join('\n')}
+const transformationSchema = z.object({
+${schemaEntries.join(',\n')}
 });`
-  }, [dynamicZodObject])
+  }, [mapping, targetSchema])
 
   const handleCopy = () => {
     navigator.clipboard.writeText(zodSchemaCode)
@@ -144,7 +148,7 @@ ${Object.entries(dynamicZodObject.shape)
           className="border p-4 rounded"
         />
         <div className="mt-4">
-          <h3 className="text-lg font-semibold mb-2">Dynamic Zod Schema:</h3>
+          <h3 className="text-lg font-semibold mb-2">Transformation Zod Schema:</h3>
           <div className="relative">
             <SyntaxHighlighter
               language="typescript"
@@ -193,7 +197,7 @@ export const examplesZodMappingDemo: ComponentDoc[] = [
   {
     id: 'ZodMappingDemo',
     name: 'ZodMappingDemo',
-    description: 'A component that demonstrates dynamic Zod object creation and parsing based on EntityDataMapping.',
+    description: 'A component that demonstrates dynamic Zod object creation with transformation logic based on EntityDataMapping.',
     usage: `
 <ZodMappingDemo className="custom-class" />
     `,
