@@ -47,6 +47,7 @@ export default function IntegrationDesigner({
   const [currentMode, setCurrentMode] = useState(mode)
   const [mappings, setMappings] = useState(initialMapping)
   const [sqlQuery, setSqlQuery] = useState(sql)
+  const [sampleItem, setsampleItem] = useState<any | null>(null)
   const [yamlSource, setYamlSource] = useState('')
   const [showClearMappingDialog, setShowClearMappingDialog] = useState(false)
   const [newInterfaceData, setNewInterfaceData] = useState<{ dataset: any, interfaceDefinition: any } | null>(null)
@@ -60,9 +61,9 @@ export default function IntegrationDesigner({
     setYamlSource(yamlString)
   }, [mappings])
 
-  const handleMappingSave = ({ mode, mappings: newMappings }: { mode: 'view' | 'edit' | 'new', mappings: z.infer<typeof MappingsSchema> }) => {
-    setMappings(newMappings)
-    onSave({ mode, mappings: newMappings, sqlQuery })
+  const handleMappingSave = (mappings: any) => {
+    // setMappings(newMappings)
+    // onSave({ mode, mappings: newMappings, sqlQuery })
   }
 
   const handleSqlChange = (newSql: string) => {
@@ -114,9 +115,8 @@ export default function IntegrationDesigner({
           </TabsList>
           <TabsContent value="mapping">
             <EntityDataMapping
-              initialMappings={mappings}
-              onChange={handleMappingSave}
-              mode={currentMode}
+              initialMapping={{}}
+              onChange={handleMappingSave} targetSchema={clientDataSchema} sampleItem={sampleItem}
             />
           </TabsContent>
           <TabsContent value="sql">

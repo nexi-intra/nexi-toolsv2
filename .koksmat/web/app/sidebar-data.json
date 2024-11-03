@@ -83,17 +83,8 @@
             "en": "Mapping",
             "da": "Mapping"
           },
-          "url": "#",
-          "icon": "BookOpen",
-          "items": [
-            {
-              "title": {
-                "en": "Tools",
-                "da": "Tools"
-              },
-              "url": "/tools/admin/mapping/tools"
-            }
-          ]
+          "url": "/tools/admin/mapping",
+          "icon": "BookOpen"
         }
       ]
     }

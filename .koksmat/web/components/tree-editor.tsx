@@ -10,7 +10,11 @@ import {
   Eye,
   PlusCircle,
   X,
-  Move
+  Move,
+  LucideIcon,
+  Mail,
+  Settings,
+  User
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -42,8 +46,21 @@ import {
   EditorMode
 } from './tree-editor-components'
 
-import ActionSelector, { ActionType, ActionPropertyData, getActionIcon, ActionPropertyEditorProps, getPropertyEditor } from './action-selector'
+import ActionSelector, { ActionPropertyEditorProps, ActionType, DefaultPropertyEditor } from './action-selector'
 import { IconPicker } from './icon-picker'
+const getActionIcon = (actionType: string): LucideIcon => {
+  switch (actionType) {
+    case 'send_email':
+      return Mail
+    case 'update_settings':
+      return Settings
+    case 'edit_profile':
+      return User
+    default:
+      return Mail
+  }
+}
+
 
 // Main TreeEditor component
 export const TreeEditor: React.FC<{
@@ -456,8 +473,11 @@ export const TreeEditor: React.FC<{
   const handleActionSelect = (action: ActionType) => {
     updateItemProperty('action', action)
   }
-
-  const handleUpdateProperties = (actionId: string, updatedProperties: ActionPropertyData) => {
+  const getPropertyEditor = (actionType: string): React.FC<ActionPropertyEditorProps> => {
+    // You can return different property editors based on the action type
+    return DefaultPropertyEditor
+  }
+  const handleUpdateProperties = (actionId: string, updatedProperties: any) => {
     if (!selectedItem) return
 
     const newData = JSON.parse(JSON.stringify(currentState)) as EditorData
@@ -588,8 +608,7 @@ export const TreeEditor: React.FC<{
                     onActionSelect={handleActionSelect}
                     onUpdateProperties={handleUpdateProperties}
                     getActionIcon={getActionIcon}
-                    getPropertyEditor={getPropertyEditor}
-
+                    getPropertyEditor={getPropertyEditor} mode={'view'}
                   />
                 </div>
               </div>

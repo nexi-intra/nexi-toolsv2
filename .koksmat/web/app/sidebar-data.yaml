@@ -87,13 +87,8 @@ navMain:
       - title:
           en: "Mapping"
           da: "Mapping"
-        url: "#"
+        url: "/tools/admin/mapping"
         icon: "BookOpen"
-        items:
-          - title:
-              en: "Tools"
-              da: "Tools"
-            url: "/tools/admin/mapping/tools"
 
       # - title:
       #     en: "Team"

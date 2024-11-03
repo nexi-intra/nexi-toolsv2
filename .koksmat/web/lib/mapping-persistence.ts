@@ -8,7 +8,7 @@ interface MappingWithComments extends Mapping {
   __comment: string;
 }
 
-export function saveMappingsToYaml(mapping: Mapping): string {
+export function saveMappingsToYaml(mapping: any): string {
   const mappingWithComments: MappingWithComments = {
     __comment: "Mapping from source to target",
     ...mapping,

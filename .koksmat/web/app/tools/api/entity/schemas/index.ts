@@ -5,6 +5,14 @@ import { PurposeSchema } from "./purpose";
 import { UserSchema } from "./user";
 import { ToolGroupSchema } from "./toolGroup";
 import { TagSchema } from "./tag";
+export const schemasMap = {
+  ToolSchema,
+  CountrySchema,
+  PurposeSchema,
+  UserSchema,
+  ToolGroupSchema,
+  TagSchema,
+};
 
 // Define SharedAttributes
 

@@ -42,12 +42,12 @@ const ActionSelectorPropsSchema = z.object({
 
 // Infer TypeScript types from Zod schemas
 type ActionPropertyData = z.infer<typeof ActionPropertyDataSchema>
-type ActionType = z.infer<typeof ActionTypeSchema>
-type ActionPropertyEditorProps = z.infer<typeof ActionPropertyEditorPropsSchema>
+export type ActionType = z.infer<typeof ActionTypeSchema>
+export type ActionPropertyEditorProps = z.infer<typeof ActionPropertyEditorPropsSchema>
 type ActionSelectorProps = z.infer<typeof ActionSelectorPropsSchema>
 
 // DefaultPropertyEditor component
-const DefaultPropertyEditor: React.FC<ActionPropertyEditorProps> = ({
+export const DefaultPropertyEditor: React.FC<ActionPropertyEditorProps> = ({
   mode,
   hideProperties,
   properties,

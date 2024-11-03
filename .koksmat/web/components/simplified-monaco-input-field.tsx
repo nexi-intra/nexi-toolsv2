@@ -2,16 +2,15 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { Editor } from '@monaco-editor/react'
-import { z } from 'zod'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown, ChevronUp, Edit } from 'lucide-react'
 import { ComponentDoc } from './component-documentation-hub'
 
 /**
  * SimplifiedMonacoInputField is a versatile input component that supports both single-line and multi-line input modes.
  * It uses Monaco Editor for the multi-line mode, providing features like syntax highlighting and auto-completion.
- * The component supports real-time evaluation of JavaScript expressions based on a provided Zod schema,
+ * The component supports real-time evaluation of JavaScript expressions based on a provided source object,
  * and correctly preserves multi-line input with comments while providing a derived single-line view.
  *
  * @component
@@ -21,8 +20,8 @@ interface SimplifiedMonacoInputFieldProps {
   value: string;
   /** Callback function to handle value changes */
   onChange: (value: string) => void;
-  /** Optional Zod schema for providing auto-completion and expression evaluation */
-  sourceSchema?: z.ZodObject<any>;
+  /** Source object for providing auto-completion and expression evaluation */
+  sourceItem: object;
   /** Label for the input field */
   label: string;
   /** Additional CSS classes to apply to the component */
@@ -32,7 +31,7 @@ interface SimplifiedMonacoInputFieldProps {
 export default function SimplifiedMonacoInputField({
   value,
   onChange,
-  sourceSchema,
+  sourceItem,
   label,
   className = ''
 }: SimplifiedMonacoInputFieldProps) {
@@ -48,28 +47,24 @@ export default function SimplifiedMonacoInputField({
 
   useEffect(() => {
     evaluateExpression(multiLineValue)
-  }, [multiLineValue])
+  }, [multiLineValue, sourceItem])
 
   const evaluateExpression = (expression: string) => {
     setError(null)
     setEvaluatedResult(null)
 
-    if (!sourceSchema) {
-      setError('Source schema is undefined')
+    if (!sourceItem) {
+      setError('Source item is undefined')
       return
     }
 
     try {
-      const mockItem = Object.fromEntries(
-        Object.entries(sourceSchema.shape).map(([key, value]) => [key, `mock_${key}`])
-      )
-
       const cleanExpression = expression.split('\n').map(line => {
         const commentIndex = line.indexOf('//')
         return commentIndex !== -1 ? line.slice(0, commentIndex).trim() : line.trim()
       }).join(' ')
 
-      const result = new Function('item', `return ${cleanExpression}`)(mockItem)
+      const result = new Function('item', `return ${cleanExpression}`)(sourceItem)
       setEvaluatedResult(JSON.stringify(result))
     } catch (err) {
       setError((err as Error).message)
@@ -79,17 +74,17 @@ export default function SimplifiedMonacoInputField({
   const handleEditorDidMount = (editor: any, monaco: any) => {
     editorRef.current = editor
 
-    if (!sourceSchema) {
-      console.warn('Source schema is undefined. Auto-completion will not be available.')
+    if (!sourceItem) {
+      console.warn('Source item is undefined. Auto-completion will not be available.')
       return
     }
 
-    const schemaProperties = Object.keys(sourceSchema.shape)
-    const completionItems = schemaProperties.map(prop => ({
+    const itemProperties = Object.keys(sourceItem)
+    const completionItems = itemProperties.map(prop => ({
       label: prop,
       kind: monaco.languages.CompletionItemKind.Property,
       insertText: prop,
-      detail: `(property) ${prop}: ${sourceSchema.shape[prop].constructor.name}`,
+      detail: `(property) ${prop}: ${typeof (sourceItem as any)[prop]}`,
     }))
 
     monaco.languages.registerCompletionItemProvider('javascript', {
@@ -104,7 +99,7 @@ export default function SimplifiedMonacoInputField({
 
         if (textUntilPosition.endsWith('item.')) {
           return {
-            suggestions: completionItems.map(item => ({
+            suggestions: completionItems.map((item: any) => ({
               ...item,
               range: {
                 startLineNumber: position.lineNumber,
@@ -169,6 +164,7 @@ export default function SimplifiedMonacoInputField({
             placeholder={label}
             className="pr-10"
             aria-labelledby={`${label}-label`}
+            readOnly
           />
         )}
         <Button
@@ -178,7 +174,7 @@ export default function SimplifiedMonacoInputField({
           onClick={toggleMode}
           aria-label={isMultiLine ? "Switch to single-line mode" : "Switch to multi-line mode"}
         >
-          {isMultiLine ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          {isMultiLine ? <ChevronUp className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
         </Button>
         {isMultiLine && (
           <div className="absolute left-0 right-0 bottom-[-1.5em] text-sm">
@@ -195,11 +191,11 @@ export default function SimplifiedMonacoInputField({
 }
 
 // Example usage and documentation
-const exampleSchema = z.object({
-  name: z.string(),
-  age: z.number(),
-  email: z.string().email(),
-})
+const exampleItem = {
+  name: 'John Doe',
+  age: 30,
+  email: 'john@example.com',
+}
 
 export const examplesSimplifiedMonacoInputField: ComponentDoc[] = [
   {
@@ -208,14 +204,13 @@ export const examplesSimplifiedMonacoInputField: ComponentDoc[] = [
     description: 'A versatile input field component with single-line and multi-line modes, supporting real-time JavaScript expression evaluation. It preserves multi-line input with comments while providing a derived single-line view.',
     usage: `
 import SimplifiedMonacoInputField from './SimplifiedMonacoInputField'
-import { z } from 'zod'
 import { useState } from 'react'
 
-const exampleSchema = z.object({
-  name: z.string(),
-  age: z.number(),
-  email: z.string().email(),
-})
+const exampleItem = {
+  name: 'John Doe',
+  age: 30,
+  email: 'john@example.com',
+}
 
 function MyComponent() {
   const [value, setValue] = useState('item.name // Get the name\\nitem.age // Get the age')
@@ -224,7 +219,7 @@ function MyComponent() {
     <SimplifiedMonacoInputField
       value={value}
       onChange={setValue}
-      sourceSchema={exampleSchema}
+      sourceItem={exampleItem}
       label="Expression Input"
     />
   )
@@ -234,7 +229,7 @@ function MyComponent() {
       <SimplifiedMonacoInputField
         value="item.name // Get the name\nitem.age // Get the age"
         onChange={(value) => console.log(value)}
-        sourceSchema={exampleSchema}
+        sourceItem={exampleItem}
         label="Expression Input"
       />
     ),

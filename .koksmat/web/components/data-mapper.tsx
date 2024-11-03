@@ -21,7 +21,7 @@ const ZodObjectWithShape = z.custom<z.ZodObject<any, any>>((val) => {
 
 const EntityDataMappingSchema = z.object({
   targetSchema: ZodObjectWithShape,
-  sourceSchema: ZodObjectWithShape,
+
   sampleItem: z.record(z.string(), z.any()),
   initialMapping: z.record(z.string(), z.string()).optional(),
   onChange: z.function().args(z.object({ mapping: z.record(z.string(), z.string()) })).returns(z.void()),
@@ -64,7 +64,7 @@ export function EntityDataMapping(props: EntityDataMappingProps) {
         <SimplifiedMonacoInputField
           value={mapping[field] || ''}
           onChange={(value) => handleMappingChange(field, value)}
-          sourceSchema={props.sourceSchema}
+          sourceItem={props.sampleItem}
           label={`${field} Mapping`}
         />
       </div>
@@ -110,14 +110,6 @@ const targetSchema = z.object({
   isActiveUser: z.boolean()
 })
 
-const sourceSchema = z.object({
-  id: z.number(),
-  first_name: z.string(),
-  last_name: z.string(),
-  birth_date: z.string(),
-  email: z.string().email(),
-  is_active: z.boolean()
-})
 
 const sampleItem = {
   id: 1,
@@ -143,7 +135,7 @@ function handleChange({  mapping }) {
 
 <EntityDataMapping
   targetSchema={targetSchema}
-  sourceSchema={sourceSchema}
+  
   sampleItem={sampleItem}
   initialMapping={initialMapping}
   onChange={handleChange}
@@ -157,14 +149,6 @@ function handleChange({  mapping }) {
           age: z.number(),
           emailAddress: z.string().email(),
           isActiveUser: z.boolean()
-        })}
-        sourceSchema={z.object({
-          id: z.number(),
-          first_name: z.string(),
-          last_name: z.string(),
-          birth_date: z.string(),
-          email: z.string().email(),
-          is_active: z.boolean()
         })}
         sampleItem={{
           id: 1,

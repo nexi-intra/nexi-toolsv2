@@ -141,7 +141,7 @@ ${schemaEntries.join(',\n')}
       <div className={`space-y-4 ${className}`}>
         <EntityDataMapping
           targetSchema={targetSchema}
-          sourceSchema={sourceSchema}
+
           sampleItem={sampleItem}
           initialMapping={initialMapping}
           onChange={handleChange}
