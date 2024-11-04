@@ -107,4 +107,8 @@ export const navLinks = [
     href: "/tools/docs/components/advanced-search",
     label: "Field with token support",
   },
+  {
+    href: "/tools/docs/components/2-column-layout",
+    label: "2-column-layout",
+  },
 ];
