@@ -103,4 +103,8 @@ export const navLinks = [
     href: "/tools/docs/components/zod-mapping-demo",
     label: "ZOD Mapping Demo",
   },
+  {
+    href: "/tools/docs/components/advanced-search",
+    label: "Field with token support",
+  },
 ];
