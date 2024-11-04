@@ -32,6 +32,10 @@ export const navLinks = [
     label: "Icon",
   },
   {
+    href: "/tools/docs/components/tool-search",
+    label: "Tool Search",
+  },
+  {
     href: "/tools/docs/components/icon-picker",
     label: "Icon Picker",
   },

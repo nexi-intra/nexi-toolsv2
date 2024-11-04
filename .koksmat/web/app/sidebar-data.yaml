@@ -25,7 +25,7 @@ navMain:
       - title:
           en: "Explorer"
           da: "Historik"
-        url: "#"
+        url: "/tools/integration/explorer"
       - title:
           en: "Favourites"
           da: "Stjernemarkeret"
