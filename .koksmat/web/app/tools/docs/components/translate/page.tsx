@@ -5,7 +5,8 @@
 import React, { } from 'react';
 
 import { ComponentDoc, ComponentDocumentationHub } from '@/components/component-documentation-hub';
-import { examplesTranslationShowcase } from '@/components/components-translation-showcase';
+import { examplesMultiLanguageTranslator } from '@/components/multi-language-translator';
+
 
 
 
@@ -18,7 +19,7 @@ import { examplesTranslationShowcase } from '@/components/components-translation
 // Example usage
 export default function ExampleUsage() {
   const componentDocs: ComponentDoc[] = [
-    ...examplesTranslationShowcase
+    ...examplesMultiLanguageTranslator
   ];
 
   return <ComponentDocumentationHub components={componentDocs} />;

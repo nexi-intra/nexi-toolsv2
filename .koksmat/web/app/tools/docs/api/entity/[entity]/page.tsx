@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Skeleton } from "@/components/ui/skeleton"
 import CodeSamplesPage from '@/components/code-samples-page';
-import { schemaMapObjects, SchemaName, typeNames } from '@/app/api/entity/schemas';
+import { schemaMapObjects, SchemaName, typeNames } from '@/app/tools/api/entity/schemas';
 import ZodSchemaDocumentation from '@/components/zod-schema-documentation';
 
 

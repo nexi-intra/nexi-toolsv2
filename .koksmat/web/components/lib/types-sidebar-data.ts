@@ -1,4 +1,5 @@
-import { ReactElement } from "react";
+import * as LucidIcons from "lucide-react";
+type LucidIconName = keyof typeof LucidIcons;
 
 export type SupportedLanguage = "en" | "da";
 
@@ -8,14 +9,14 @@ export type TranslatedString = {
 
 export interface Team {
   name: TranslatedString;
-  logo: ReactElement;
+  logo: LucidIconName;
   plan: TranslatedString;
 }
 
 export interface NavItem {
   title: TranslatedString;
   url: string;
-  icon: ReactElement;
+  icon: LucidIconName;
   isActive?: boolean;
   items?: Array<{
     title: TranslatedString;
@@ -26,11 +27,11 @@ export interface NavItem {
 export interface Project {
   name: TranslatedString;
   url: string;
-  icon: ReactElement;
-  moreIcon: ReactElement;
+  icon: LucidIconName;
+  moreIcon: LucidIconName;
   actions: Array<{
     label: TranslatedString;
-    icon: ReactElement;
+    icon: LucidIconName;
   }>;
 }
 
@@ -42,7 +43,7 @@ export interface User {
 
 export interface UserMenuItem {
   label: TranslatedString;
-  icon: ReactElement;
+  icon: LucidIconName;
 }
 
 export interface SidebarData {
@@ -50,7 +51,7 @@ export interface SidebarData {
   teams: Team[];
   navMain: NavItem[];
   projects: Project[];
-  moreProjectsIcon: ReactElement;
-  user: User;
+  moreProjectsIcon: LucidIconName;
+  user?: User;
   userMenuItems: UserMenuItem[];
 }

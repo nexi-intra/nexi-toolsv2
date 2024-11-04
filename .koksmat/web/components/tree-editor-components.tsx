@@ -1,22 +1,5 @@
-'use client'
-
 import React from 'react'
-import {
-  Folder,
-  File,
-  FileText,
-  FileCode,
-  Plus,
-  MoreHorizontal,
-  Trash2,
-  ChevronRight,
-  ClipboardCopy,
-  ClipboardPaste,
-  ArrowUp,
-  ArrowDown,
-  ArrowLeft,
-  ArrowRight
-} from 'lucide-react'
+import * as LucidIcons from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Tooltip,
@@ -25,31 +8,26 @@ import {
 } from '@/components/ui/tooltip'
 import { useToast } from '@/components/ui/use-toast'
 
-// Types
+// Import the ActionType from the actions-selector file
+import { ActionType } from './action-selector'
+import { Icon, LucidIconName } from './icon'
+
+
+
+// Updated TreeNode type
 export type TreeNode = {
   id: string
   text: string
-  icon: 'folder' | 'file' | 'fileText' | 'fileCode'
+  translations?: { [key: string]: string }
+  icon: LucidIconName
   children?: TreeNode[]
+  action?: ActionType
 }
 
 export type EditorData = TreeNode[]
 
-export type EditorMode = 'view' | 'edit' | 'new'
+export type EditorMode = 'view' | 'edit' | 'reorder'
 
-// Helper function to get the icon component
-export const getIcon = (icon: 'folder' | 'file' | 'fileText' | 'fileCode') => {
-  switch (icon) {
-    case 'folder':
-      return <Folder className="w-4 h-4 mr-2" />
-    case 'file':
-      return <File className="w-4 h-4 mr-2" />
-    case 'fileText':
-      return <FileText className="w-4 h-4 mr-2" />
-    case 'fileCode':
-      return <FileCode className="w-4 h-4 mr-2" />
-  }
-}
 
 // TreeNodeComponent
 export const TreeNodeComponent: React.FC<{
@@ -108,182 +86,202 @@ export const TreeNodeComponent: React.FC<{
         className={`relative group flex items-center p-2 mb-1 rounded-md ${mode === 'edit' ? 'hover:bg-accent' : ''
           } ${isSelected ? 'bg-accent' : ''}`}
         style={{
-          marginLeft: `${depth * 20}px`
+          paddingLeft: `${depth * 20 + 24}px`
         }}
         onDoubleClick={() => mode === 'view' && onToggleCollapse()}
         onClick={onSelectItem}
       >
-        {!!hasChildren && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="p-0 h-6 w-6"
-            onClick={(e) => {
-              e.stopPropagation()
-              onToggleCollapse()
-            }}
-          >
-            <ChevronRight
-              className={`w-4 h-4 transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'
-                }`}
-            />
-          </Button>
-        )}
-        {getIcon(node.icon)}
+        <div
+          className="absolute left-0"
+          style={{
+            width: '24px',
+            height: '24px',
+            left: `${depth * 20}px`
+          }}
+        >
+          {hasChildren ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="p-0 h-6 w-6"
+              onClick={(e) => {
+                e.stopPropagation()
+                onToggleCollapse()
+              }}
+            >
+              <LucidIcons.ChevronRight
+                className={`w-4 h-4 transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'
+                  }`}
+              />
+            </Button>
+          ) : (
+            <div className="w-6 h-6" />
+          )}
+        </div>
+        <Icon iconName={node.icon} className='size-5 mr-2' />
         <span className="flex-grow">{node.text}</span>
         {mode !== 'view' && (
           <div
             className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute right-2
-          bg-white dark:bg-gray-800 p-1 rounded-md shadow-md"
+        bg-white dark:bg-gray-800 p-1 rounded-md shadow-md"
           >
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onAddItem()
-                    handleAction('Add')
-                  }}
-                >
-                  <Plus className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Add Item</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onDeleteItem()
-                    handleAction('Delete')
-                  }}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Delete Item</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onCopyItem()
-                    handleAction('Copy')
-                  }}
-                >
-                  <ClipboardCopy className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Copy Item</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onPasteItem()
-                    handleAction('Paste')
-                  }}
-                >
-                  <ClipboardPaste className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Paste Item</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onPromote()
-                    handleAction('Promote')
-                  }}
-                  disabled={disablePromote}
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Promote</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onDemote()
-                    handleAction('Demote')
-                  }}
-                  disabled={disableDemote}
-                >
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Demote</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onMoveUp()
-                    handleAction('Move Up')
-                  }}
-                  disabled={disableMoveUp}
-                >
-                  <ArrowUp className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Move Up</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onMoveDown()
-                    handleAction('Move Down')
-                  }}
-                  disabled={disableMoveDown}
-                >
-                  <ArrowDown className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Move Down</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onSelectItem()
-                    handleAction('Properties')
-                  }}
-                >
-                  <MoreHorizontal className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Properties</TooltipContent>
-            </Tooltip>
+            {mode === 'edit' &&
+              <>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onAddItem()
+                        handleAction('Add')
+                      }}
+                    >
+                      <LucidIcons.Plus className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Add Item</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onDeleteItem()
+                        handleAction('Delete')
+                      }}
+                    >
+                      <LucidIcons.Trash2 className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Delete Item</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onCopyItem()
+                        handleAction('Copy')
+                      }}
+                    >
+                      <LucidIcons.ClipboardCopy className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Copy Item</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onPasteItem()
+                        handleAction('Paste')
+                      }}
+                    >
+                      <LucidIcons.ClipboardPaste className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Paste Item</TooltipContent>
+                </Tooltip>
+              </>
+            }
+            {mode === 'reorder' &&
+              <>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onPromote()
+                        handleAction('Promote')
+                      }}
+                      disabled={disablePromote}
+                    >
+                      <LucidIcons.ArrowLeft className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Promote</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onDemote()
+                        handleAction('Demote')
+                      }}
+                      disabled={disableDemote}
+                    >
+                      <LucidIcons.ArrowRight className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Demote</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onMoveUp()
+                        handleAction('Move Up')
+                      }}
+                      disabled={disableMoveUp}
+                    >
+                      <LucidIcons.ArrowUp className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Move Up</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onMoveDown()
+                        handleAction('Move Down')
+                      }}
+                      disabled={disableMoveDown}
+                    >
+                      <LucidIcons.ArrowDown className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Move Down</TooltipContent>
+                </Tooltip>
+              </>
+            }
+            {mode === 'edit' &&
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onSelectItem()
+                      handleAction('Properties')
+                    }}
+                  >
+                    <LucidIcons.MoreHorizontal className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Properties</TooltipContent>
+              </Tooltip>}
           </div>
         )}
       </div>
@@ -330,3 +328,5 @@ export const useUndoRedo = (initialState: EditorData) => {
 
   return { currentState, updateState, undo, redo, canUndo, canRedo }
 }
+
+export default TreeNodeComponent

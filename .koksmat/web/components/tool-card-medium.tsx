@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Tool } from '@/app/api/entity/schemas'
+import { Tool } from '@/app/tools/api/entity/schemas'
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Heart, ExternalLink } from 'lucide-react'
@@ -93,7 +93,7 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
 // Example usage
 function ToolCardMediumExample() {
   const [tool, setTool] = useState<Tool>({
-    id: '1',
+    id: 1,
     createdAt: new Date(),
     createdBy: 'John Doe',
     updatedAt: new Date(),

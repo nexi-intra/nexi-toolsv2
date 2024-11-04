@@ -10,7 +10,7 @@ import Tracer from "@/app/koksmat/components/tracer";
 
 import { leftRailApps } from "../../components/navigation";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { ApplicationRoot } from "@/components/components-application-root";
+import { ApplicationRoot } from "@/components/application-root";
 export default function Layout(props: { children: any }) {
   const { children } = props;
   const magicbox = useContext(MagicboxContext);
@@ -43,7 +43,7 @@ export default function Layout(props: { children: any }) {
   return (
     <SidebarProvider>
       <AppProvider>
-        <ApplicationRoot>
+        <ApplicationRoot hideBreadcrumb  >
 
           {children}
         </ApplicationRoot>

@@ -1,47 +1,16 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Menu } from "lucide-react";
+import React, { useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Menu } from "lucide-react"
+import { navLinks } from './navLinks'
 
-// Define the navigation links
-const navLinks = [
-  { href: "/tools/docs/components/toolcard-large", label: "Tool Cards Large" },
-  {
-    href: "/tools/docs/components/toolcard-medium",
-    label: "Tool Cards Medium",
-  },
-  { href: "/tools/docs/components/toolcard-small", label: "Tool Cards Small" },
-  { href: "/tools/docs/components/icon", label: "Icon" },
-  { href: "/tools/docs/components/filelist", label: "File list" },
-  { href: "/tools/docs/components/favorite", label: "Favorite" },
-  { href: "/tools/docs/components/tag", label: "Tag" },
-  { href: "/tools/docs/components/oneline", label: "One line text" },
-  { href: "/tools/docs/components/multiline", label: "Multi line text" },
-
-  { href: "/tools/docs/components/lookup", label: "Lookup" },
-  { href: "/tools/docs/components/tool-search", label: "Tool Search" },
-
-  {
-    href: "/tools/docs/components/actions-selector",
-    label: "Actions Selector",
-  },
-  { href: "/tools/docs/components/tree-editor", label: "Tree Editor" },
-  { href: "/tools/docs/components/translate", label: "Translation" },
-  { href: "/tools/docs/components/tools-explorer", label: "Tools Explorer" },
-
-  {
-    href: "/tools/docs/components/keyvalue-largelist",
-    label: "Key Value Large list",
-  },
-];
-
-const NavLinks = ({ className = "", onItemClick = () => {} }) => {
-  const pathname = usePathname();
+const NavLinks = ({ className = '', onItemClick = () => { } }) => {
+  const pathname = usePathname()
 
   return (
     <nav className={className}>
@@ -50,25 +19,25 @@ const NavLinks = ({ className = "", onItemClick = () => {} }) => {
         <Link
           key={link.href}
           href={link.href}
-          className={`block py-2 px-4 text-sm hover:bg-gray-100 ${
-            pathname === link.href ? "font-bold" : ""
-          }`}
-          onClick={onItemClick}>
+          className={`block py-2 px-4 text-sm hover:bg-gray-100 ${pathname === link.href ? 'font-bold' : ''
+            }`}
+          onClick={onItemClick}
+        >
           {link.label}
         </Link>
       ))}
     </nav>
-  );
-};
+  )
+}
 
 export default function ComponentDocumentationLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
-  const closeSheet = () => setIsOpen(false);
+  const closeSheet = () => setIsOpen(false)
 
   return (
     <div className="flex min-h-screen">
@@ -82,10 +51,7 @@ export default function ComponentDocumentationLayout({
       {/* Mobile sidebar */}
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
-          <Button
-            variant="outline"
-            size="icon"
-            className="md:hidden fixed top-4 left-4 z-40">
+          <Button variant="outline" size="icon" className="md:hidden fixed top-4 left-4 z-40">
             <Menu className="h-4 w-4" />
             <span className="sr-only">Toggle menu</span>
           </Button>
@@ -98,7 +64,9 @@ export default function ComponentDocumentationLayout({
       </Sheet>
 
       {/* Main content */}
-      <main className="flex-1 p-6 md:p-12 overflow-y-auto">{children}</main>
+      <main className="flex-1 p-6 md:p-12 overflow-y-auto">
+        {children}
+      </main>
     </div>
-  );
+  )
 }

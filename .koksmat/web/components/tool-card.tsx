@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { ComponentDoc } from './component-documentation-hub'
-import { Tool } from '@/app/api/entity/schemas'
+import { Tool } from '@/app/tools/api/entity/schemas'
 import IconUploader from './icon-uploader'
 import TagSelector, { TagType } from './tag'
 import OneLineTextComponent from './one-line-text'
@@ -193,7 +193,7 @@ export default function ToolCard({
 function ToolCardExample() {
   const [mode, setMode] = useState<'view' | 'edit' | 'new'>('view')
   const [tool, setTool] = useState<Tool>({
-    id: '1',
+    id: 1,
     createdAt: new Date(),
     createdBy: 'John Doe',
     updatedAt: new Date(),

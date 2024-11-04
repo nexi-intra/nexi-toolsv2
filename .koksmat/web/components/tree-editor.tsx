@@ -9,7 +9,12 @@ import {
   Edit,
   Eye,
   PlusCircle,
-  X
+  X,
+  Move,
+  LucideIcon,
+  Mail,
+  Settings,
+  User
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -41,12 +46,29 @@ import {
   EditorMode
 } from './tree-editor-components'
 
+import ActionSelector, { ActionPropertyEditorProps, ActionType, DefaultPropertyEditor } from './action-selector'
+import { IconPicker } from './icon-picker'
+const getActionIcon = (actionType: string): LucideIcon => {
+  switch (actionType) {
+    case 'send_email':
+      return Mail
+    case 'update_settings':
+      return Settings
+    case 'edit_profile':
+      return User
+    default:
+      return Mail
+  }
+}
+
+
 // Main TreeEditor component
-const TreeEditor: React.FC<{
+export const TreeEditor: React.FC<{
   initialData: EditorData
   onChange: (data: EditorData) => void
   className?: string
-}> = ({ initialData, onChange, className = '' }) => {
+  actions: ActionType[]
+}> = ({ initialData, onChange, className = '', actions }) => {
   const { currentState, updateState, undo, redo, canUndo, canRedo } =
     useUndoRedo(initialData)
   const [mode, setMode] = useState<EditorMode>('view')
@@ -175,7 +197,7 @@ const TreeEditor: React.FC<{
       const newItem: TreeNode = {
         id: nanoid(),
         text: 'New Item',
-        icon: 'file',
+        icon: 'File',
         children: []
       }
       currentLevel.push(newItem)
@@ -415,7 +437,7 @@ const TreeEditor: React.FC<{
   )
 
   const updateItemProperty = useCallback(
-    (property: string, value: string) => {
+    (property: string, value: string | ActionType) => {
       if (!selectedItem) return
 
       const newData = JSON.parse(JSON.stringify(currentState)) as EditorData
@@ -423,8 +445,12 @@ const TreeEditor: React.FC<{
       const updateItem = (items: TreeNode[]): boolean => {
         for (let item of items) {
           if (item.id === selectedItem) {
-            // @ts-ignore
-            item[property] = value
+            if (property === 'action') {
+              item.action = value as ActionType
+            } else {
+              // @ts-ignore
+              item[property] = value
+            }
             return true
           }
           if (item.children && updateItem(item.children)) {
@@ -443,6 +469,35 @@ const TreeEditor: React.FC<{
   const selectedItemData = selectedItem
     ? findItemById(currentState, selectedItem)
     : null
+
+  const handleActionSelect = (action: ActionType) => {
+    updateItemProperty('action', action)
+  }
+  const getPropertyEditor = (actionType: string): React.FC<ActionPropertyEditorProps> => {
+    // You can return different property editors based on the action type
+    return DefaultPropertyEditor
+  }
+  const handleUpdateProperties = (actionId: string, updatedProperties: any) => {
+    if (!selectedItem) return
+
+    const newData = JSON.parse(JSON.stringify(currentState)) as EditorData
+
+    const updateItem = (items: TreeNode[]): boolean => {
+      for (let item of items) {
+        if (item.id === selectedItem && item.action && item.action.id === actionId) {
+          item.action.properties = updatedProperties
+          return true
+        }
+        if (item.children && updateItem(item.children)) {
+          return true
+        }
+      }
+      return false
+    }
+
+    updateItem(newData)
+    updateState(newData)
+  }
 
   return (
     <Card className={`w-full max-w-5xl mx-auto ${className}`}>
@@ -468,10 +523,11 @@ const TreeEditor: React.FC<{
                   Edit
                 </div>
               </SelectItem>
-              <SelectItem value="new">
+              <SelectItem value="reorder">
                 <div className="flex items-center">
-                  <PlusCircle className="w-4 h-4 mr-2" />
-                  New
+                  <Move className="w-4 h-4 mr-2" />
+
+                  Reorder
                 </div>
               </SelectItem>
             </SelectContent>
@@ -499,7 +555,7 @@ const TreeEditor: React.FC<{
           <div className="flex-grow overflow-auto max-h-[600px]">
             {currentState.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-64">
-                <p className="mb-4 text-gray-500">No items to display.</p>
+                <p className="mb-4 text-muted-foreground">No items to display.</p>
                 {mode !== 'view' && (
                   <Button onClick={() => addItem([])}>
                     <Plus className="w-4 h-4 mr-2" />
@@ -510,12 +566,12 @@ const TreeEditor: React.FC<{
             ) : (
               <div>{renderItems(currentState)}</div>
             )}
-            {mode === 'new' && currentState.length > 0 && (
+            {/* {mode === 'edit' && currentState.length === 0 && (
               <Button onClick={() => addItem([])} className="mt-4">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Root Item
               </Button>
-            )}
+            )} */}
           </div>
           {propertiesPanelOpen && selectedItemData && (
             <Card className="w-64 ml-4 p-4">
@@ -542,22 +598,18 @@ const TreeEditor: React.FC<{
                 </div>
                 <div>
                   <Label htmlFor="itemIcon">Icon</Label>
-                  <Select
-                    value={selectedItemData.icon || 'file'}
-                    onValueChange={(value: 'folder' | 'file' | 'fileText' | 'fileCode') =>
-                      updateItemProperty('icon', value)
-                    }
-                  >
-                    <SelectTrigger id="itemIcon">
-                      <SelectValue placeholder="Select icon" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="folder">Folder</SelectItem>
-                      <SelectItem value="file">File</SelectItem>
-                      <SelectItem value="fileText">File Text</SelectItem>
-                      <SelectItem value="fileCode">File Code</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <IconPicker mode={mode === "edit" ? "edit" : "view"} value={selectedItemData.icon} onIconChange={(value) => updateItemProperty('icon', value)} />
+
+                </div>
+                <div>
+                  <Label htmlFor="itemAction">Action</Label>
+                  <ActionSelector
+                    actions={actions}
+                    onActionSelect={handleActionSelect}
+                    onUpdateProperties={handleUpdateProperties}
+                    getActionIcon={getActionIcon}
+                    getPropertyEditor={getPropertyEditor} mode={'view'}
+                  />
                 </div>
               </div>
             </Card>
@@ -602,33 +654,34 @@ const TreeEditor: React.FC<{
 }
 
 // Example data
+
 const exampleData: EditorData = [
   {
     id: nanoid(),
     text: 'Our Group',
-    icon: 'folder',
+    icon: 'Folder',
     children: [
       {
         id: nanoid(),
         text: 'About us',
-        icon: 'file',
+        icon: 'File',
         children: [
           {
             id: nanoid(),
             text: 'Strategic positioning, ambition & purpose',
-            icon: 'fileText',
+            icon: 'FileText',
             children: []
           },
           {
             id: nanoid(),
             text: 'Facts & Figures',
-            icon: 'fileText',
+            icon: 'FileText',
             children: []
           },
           {
             id: nanoid(),
             text: 'Values & Behaviours',
-            icon: 'fileText',
+            icon: 'FileText',
             children: []
           }
         ]
@@ -636,7 +689,7 @@ const exampleData: EditorData = [
       {
         id: nanoid(),
         text: 'New@Nexi: Onboarding Guides',
-        icon: 'file',
+        icon: 'File',
         children: []
       }
     ]
@@ -644,29 +697,29 @@ const exampleData: EditorData = [
   {
     id: nanoid(),
     text: 'Our Organisation',
-    icon: 'folder',
+    icon: 'Folder',
     children: [
       {
         id: nanoid(),
         text: 'Brand Identity',
-        icon: 'file',
+        icon: 'File',
         children: [
           {
             id: nanoid(),
             text: 'Logos & Rules',
-            icon: 'fileText',
+            icon: 'FileText',
             children: []
           },
           {
             id: nanoid(),
             text: 'Web & Social Media',
-            icon: 'fileText',
+            icon: 'FileText',
             children: []
           },
           {
             id: nanoid(),
             text: 'Brand materials & templates',
-            icon: 'fileText',
+            icon: 'FileText',
             children: []
           }
         ]
@@ -674,13 +727,13 @@ const exampleData: EditorData = [
       {
         id: nanoid(),
         text: 'DEI',
-        icon: 'file',
+        icon: 'File',
         children: []
       },
       {
         id: nanoid(),
         text: 'ESG',
-        icon: 'file',
+        icon: 'File',
         children: []
       }
     ]
@@ -688,24 +741,50 @@ const exampleData: EditorData = [
   {
     id: nanoid(),
     text: 'Countries',
-    icon: 'folder',
+    icon: 'Folder',
     children: [
       {
         id: nanoid(),
         text: 'DACH',
-        icon: 'file',
+        icon: 'File',
         children: []
       }
     ]
   }
 ]
 
+
+
 // Export the component
 export default function Component() {
+  // Example actions (you should replace these with your actual actions)
+  const exampleActions: ActionType[] = [
+    {
+      id: 'action1',
+
+      title: 'Action 1',
+      description: 'This is action 1',
+      actionType: 'type1',
+      properties: {},
+
+    },
+    {
+      id: 'action2',
+
+      title: 'Action 2',
+      description: 'This is action 2',
+      actionType: 'type2',
+      properties: {},
+
+    }
+  ]
+
   return (
+
     <TreeEditor
       initialData={exampleData}
       onChange={(data) => console.log('Structure updated:', data)}
+      actions={exampleActions}
     />
   )
 }
