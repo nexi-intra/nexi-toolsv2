@@ -8,18 +8,16 @@ import React from 'react'
 export default function page() {
   return (
     <div> <UseCaseDetails
-      useCase={useCases.find(useCase => useCase.id === 3)!}>
+      useCase={useCases.find(useCase => useCase.id === 8)!}>
       <><DocumentationSection title="Design">
         <p>
-          This is implemented by having data stored in database with the relations to countries and roles
+          This is implemented by having easy access to the tools and the ability to search for tools, cross link using
+          country, category and purpose
         </p>
       </DocumentationSection>
-        <DocumentationSection title="Data model">
-          Supported by the following tables:
-          <ul>
 
-            <li>Tool table https://magic.intra.nexigroup.com/studio/database/tools/table/tool/item</li>
-          </ul>
+        <DocumentationSection title="Data model">
+          Supported by basically all data in the system
         </DocumentationSection>
 
       </>
