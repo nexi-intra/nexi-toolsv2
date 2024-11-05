@@ -9,7 +9,7 @@ keep: false
 
 -- sure sild
 
-CREATE TABLE public.region
+CREATE TABLE public.event
 (
     id SERIAL PRIMARY KEY,
     created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -32,15 +32,28 @@ CREATE TABLE public.region
     ,searchindex character varying COLLATE pg_catalog."default"  NOT NULL
     ,name character varying COLLATE pg_catalog."default"  NOT NULL
     ,description character varying COLLATE pg_catalog."default" 
-    ,sortOrder character varying COLLATE pg_catalog."default" 
+    ,Translations JSONB  
+    ,user_id int   NOT NULL
+    ,tool_id int   NOT NULL
+    ,metadata JSONB  
 
 
 );
 
-
+                ALTER TABLE IF EXISTS public.event
+                ADD FOREIGN KEY (user_id)
+                REFERENCES public.user (id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION
+                NOT VALID;                ALTER TABLE IF EXISTS public.event
+                ADD FOREIGN KEY (tool_id)
+                REFERENCES public.tool (id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION
+                NOT VALID;
 
 
 ---- create above / drop below ----
 
-DROP TABLE public.region;
+DROP TABLE public.event;
 

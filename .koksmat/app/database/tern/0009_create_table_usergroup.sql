@@ -9,7 +9,7 @@ keep: false
 
 -- sure sild
 
-CREATE TABLE public.user
+CREATE TABLE public.usergroup
 (
     id SERIAL PRIMARY KEY,
     created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -32,34 +32,14 @@ CREATE TABLE public.user
     ,searchindex character varying COLLATE pg_catalog."default"  NOT NULL
     ,name character varying COLLATE pg_catalog."default"  NOT NULL
     ,description character varying COLLATE pg_catalog."default" 
-    ,email character varying COLLATE pg_catalog."default"  NOT NULL
-    ,firstname character varying COLLATE pg_catalog."default"  NOT NULL
-    ,lastname character varying COLLATE pg_catalog."default"  NOT NULL
-    ,language_id int   NOT NULL
-    ,country_id int   NOT NULL
-    ,region_id int   NOT NULL
-    ,status character varying COLLATE pg_catalog."default"  NOT NULL
+    ,Translations JSONB  
+    ,sortOrder character varying COLLATE pg_catalog."default" 
 
 
 );
 
-                ALTER TABLE IF EXISTS public.user
-                ADD FOREIGN KEY (language_id)
-                REFERENCES public.language (id) MATCH SIMPLE
-                ON UPDATE NO ACTION
-                ON DELETE NO ACTION
-                NOT VALID;                ALTER TABLE IF EXISTS public.user
-                ADD FOREIGN KEY (country_id)
-                REFERENCES public.country (id) MATCH SIMPLE
-                ON UPDATE NO ACTION
-                ON DELETE NO ACTION
-                NOT VALID;                ALTER TABLE IF EXISTS public.user
-                ADD FOREIGN KEY (region_id)
-                REFERENCES public.region (id) MATCH SIMPLE
-                ON UPDATE NO ACTION
-                ON DELETE NO ACTION
-                NOT VALID;                -- lollipop
-                CREATE TABLE public.user_m2m_tool (
+                -- lollipop
+                CREATE TABLE public.usergroup_m2m_tool (
                 id SERIAL PRIMARY KEY,
                 created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 created_by character varying COLLATE pg_catalog."default"  ,
@@ -73,7 +53,7 @@ CREATE TABLE public.user
                 koksmat_state VARCHAR COLLATE pg_catalog."default",
 
                 koksmat_bucket JSONB 
-                    ,user_id int  
+                    ,usergroup_id int  
  
                     ,tool_id int  
  
@@ -81,14 +61,14 @@ CREATE TABLE public.user
                 );
             
 
-                ALTER TABLE public.user_m2m_tool
-                ADD FOREIGN KEY (user_id)
-                REFERENCES public.user (id) MATCH SIMPLE
+                ALTER TABLE public.usergroup_m2m_tool
+                ADD FOREIGN KEY (usergroup_id)
+                REFERENCES public.usergroup (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;
 
-                ALTER TABLE public.user_m2m_tool
+                ALTER TABLE public.usergroup_m2m_tool
                 ADD FOREIGN KEY (tool_id)
                 REFERENCES public.tool (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
@@ -97,6 +77,6 @@ CREATE TABLE public.user
 
 
 ---- create above / drop below ----
-DROP TABLE IF EXISTS public.user_m2m_tool;
-DROP TABLE public.user;
+DROP TABLE IF EXISTS public.usergroup_m2m_tool;
+DROP TABLE public.usergroup;
 

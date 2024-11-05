@@ -9,7 +9,7 @@ keep: false
 
 -- sure sild
 
-CREATE TABLE public.auditlog
+CREATE TABLE public.userrole
 (
     id SERIAL PRIMARY KEY,
     created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -32,12 +32,8 @@ CREATE TABLE public.auditlog
     ,searchindex character varying COLLATE pg_catalog."default"  NOT NULL
     ,name character varying COLLATE pg_catalog."default"  NOT NULL
     ,description character varying COLLATE pg_catalog."default" 
-    ,action character varying COLLATE pg_catalog."default"  NOT NULL
-    ,status character varying COLLATE pg_catalog."default"  NOT NULL
-    ,entity character varying COLLATE pg_catalog."default"  NOT NULL
-    ,entityid character varying COLLATE pg_catalog."default"  NOT NULL
-    ,actor character varying COLLATE pg_catalog."default"  NOT NULL
-    ,metadata JSONB  
+    ,Translations JSONB  
+    ,sortOrder character varying COLLATE pg_catalog."default" 
 
 
 );
@@ -47,5 +43,5 @@ CREATE TABLE public.auditlog
 
 ---- create above / drop below ----
 
-DROP TABLE public.auditlog;
+DROP TABLE public.userrole;
 

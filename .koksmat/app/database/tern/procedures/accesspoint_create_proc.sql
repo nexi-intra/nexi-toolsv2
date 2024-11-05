@@ -9,7 +9,7 @@ keep: false
 
 -- tomat sild
 -- TODO: Figure out why i had this in the public schmea and not in the proc schema 
-CREATE OR REPLACE FUNCTION proc.create_translation(
+CREATE OR REPLACE FUNCTION proc.create_accesspoint(
     p_actor_name VARCHAR,
     p_params JSONB,
     p_koksmat_sync JSONB DEFAULT NULL
@@ -23,8 +23,7 @@ v_tenant VARCHAR COLLATE pg_catalog."default" ;
     v_searchindex VARCHAR COLLATE pg_catalog."default" ;
     v_name VARCHAR COLLATE pg_catalog."default" ;
     v_description VARCHAR COLLATE pg_catalog."default";
-    v_language_id INTEGER;
-    v_translation VARCHAR;
+    v_sortOrder VARCHAR;
     v_id INTEGER;
         v_audit_id integer;  -- Variable to hold the OUT parameter value
     p_auditlog_params jsonb;
@@ -35,11 +34,10 @@ BEGIN
     v_searchindex := p_params->>'searchindex';
     v_name := p_params->>'name';
     v_description := p_params->>'description';
-    v_language_id := p_params->>'language_id';
-    v_translation := p_params->>'translation';
+    v_sortOrder := p_params->>'sortOrder';
          
     
-    INSERT INTO public.translation (
+    INSERT INTO public.accesspoint (
     id,
     created_at,
     updated_at,
@@ -49,8 +47,7 @@ BEGIN
         searchindex,
         name,
         description,
-        language_id,
-        translation
+        sortOrder
     )
     VALUES (
         DEFAULT,
@@ -62,8 +59,7 @@ BEGIN
         v_searchindex,
         v_name,
         v_description,
-        v_language_id,
-        v_translation
+        v_sortOrder
     )
     RETURNING id INTO v_id;
 
@@ -72,11 +68,11 @@ BEGIN
        p_auditlog_params := jsonb_build_object(
         'tenant', '',
         'searchindex', '',
-        'name', 'create_translation',
+        'name', 'create_accesspoint',
         'status', 'success',
         'description', '',
-        'action', 'create_translation',
-        'entity', 'translation',
+        'action', 'create_accesspoint',
+        'entity', 'accesspoint',
         'entityid', -1,
         'actor', p_actor_name,
         'metadata', p_params
@@ -88,7 +84,7 @@ BEGIN
    
   "type": "object",
 
-  "title": "Create Translation",
+  "title": "Create Access Point",
   "description": "Create operation",
 
   "properties": {
@@ -105,10 +101,7 @@ BEGIN
     "description": { 
     "type": "string",
     "description":"" },
-    "language_id": { 
-    "type": "number",
-    "description":"" },
-    "translation": { 
+    "sortOrder": { 
     "type": "string",
     "description":"" }
 

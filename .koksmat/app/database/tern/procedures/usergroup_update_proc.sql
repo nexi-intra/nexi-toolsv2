@@ -9,7 +9,7 @@ keep: false
 
 -- sherry sild
 
-CREATE OR REPLACE FUNCTION proc.update_translation(
+CREATE OR REPLACE FUNCTION proc.update_usergroup(
     p_actor_name VARCHAR,
     p_params JSONB,
     p_koksmat_sync JSONB DEFAULT NULL
@@ -24,8 +24,7 @@ v_tenant VARCHAR COLLATE pg_catalog."default" ;
     v_searchindex VARCHAR COLLATE pg_catalog."default" ;
     v_name VARCHAR COLLATE pg_catalog."default" ;
     v_description VARCHAR COLLATE pg_catalog."default";
-    v_language_id INTEGER;
-    v_translation VARCHAR;
+    v_sortOrder VARCHAR;
         v_audit_id integer;  -- Variable to hold the OUT parameter value
     p_auditlog_params jsonb;
 
@@ -37,38 +36,36 @@ BEGIN
     v_searchindex := p_params->>'searchindex';
     v_name := p_params->>'name';
     v_description := p_params->>'description';
-    v_language_id := p_params->>'language_id';
-    v_translation := p_params->>'translation';
+    v_sortOrder := p_params->>'sortOrder';
          
     
 
         
-    UPDATE public.translation
+    UPDATE public.usergroup
     SET updated_by = p_actor_name,
         updated_at = CURRENT_TIMESTAMP,
         tenant = v_tenant,
         searchindex = v_searchindex,
         name = v_name,
         description = v_description,
-        language_id = v_language_id,
-        translation = v_translation
+        sortOrder = v_sortOrder
     WHERE id = v_id;
 
     GET DIAGNOSTICS v_rows_updated = ROW_COUNT;
     
     IF v_rows_updated < 1 THEN
-        RAISE EXCEPTION 'No records updated. translation ID % not found', v_id ;
+        RAISE EXCEPTION 'No records updated. usergroup ID % not found', v_id ;
     END IF;
 
 
            p_auditlog_params := jsonb_build_object(
         'tenant', '',
         'searchindex', '',
-        'name', 'update_translation',
+        'name', 'update_usergroup',
         'status', 'success',
         'description', '',
-        'action', 'update_translation',
-        'entity', 'translation',
+        'action', 'update_usergroup',
+        'entity', 'usergroup',
         'entityid', -1,
         'actor', p_actor_name,
         'metadata', p_params
@@ -81,7 +78,7 @@ BEGIN
   "type": "object",
 
   "properties": {
-    "title": "Update Translation",
+    "title": "Update User Group",
   "description": "Update operation",
   
     "tenant": { 
@@ -96,10 +93,7 @@ BEGIN
     "description": { 
     "type": "string",
     "description":"" },
-    "language_id": { 
-    "type": "number",
-    "description":"" },
-    "translation": { 
+    "sortOrder": { 
     "type": "string",
     "description":"" }
 

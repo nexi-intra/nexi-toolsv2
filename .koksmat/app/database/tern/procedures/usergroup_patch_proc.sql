@@ -9,7 +9,7 @@ keep: false
  
  -- tuna fish
  
- CREATE OR REPLACE FUNCTION proc.patch_translation(
+ CREATE OR REPLACE FUNCTION proc.patch_usergroup(
      p_actor_name VARCHAR,
       p_id integer,
     p_fields jsonb,
@@ -45,7 +45,7 @@ BEGIN
     v_set_clause := rtrim(v_set_clause, ',');
 
     -- Build the final query
-    v_query := format('UPDATE public.translation SET %s, updated_by = %L, updated_at = CURRENT_TIMESTAMP WHERE id = %L',
+    v_query := format('UPDATE public.usergroup SET %s, updated_by = %L, updated_at = CURRENT_TIMESTAMP WHERE id = %L',
                       v_set_clause, p_actor_name, p_id);
     
     -- Execute the dynamic query
@@ -56,16 +56,16 @@ BEGIN
 
     -- If no rows were updated, raise an exception
     IF v_rows_updated < 1 THEN
-        RAISE EXCEPTION 'No records updated.  ID % not found in table translation', p_id;
+        RAISE EXCEPTION 'No records updated.  ID % not found in table usergroup', p_id;
     END IF;
        p_auditlog_params := jsonb_build_object(
         'tenant', '',
         'searchindex', '',
-        'name', 'patch_translation',
+        'name', 'patch_usergroup',
         'status', 'success',
         'description', '',
-        'action', 'patch_translation',
-        'entity', 'translation',
+        'action', 'patch_usergroup',
+        'entity', 'usergroup',
         'entityid', -1,
         'actor', p_actor_name,
         'metadata', p_fields

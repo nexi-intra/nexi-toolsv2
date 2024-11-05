@@ -32,6 +32,7 @@ CREATE TABLE public.toolgroup
     ,searchindex character varying COLLATE pg_catalog."default"  NOT NULL
     ,name character varying COLLATE pg_catalog."default"  NOT NULL
     ,description character varying COLLATE pg_catalog."default" 
+    ,Translations JSONB  
     ,status character varying COLLATE pg_catalog."default" 
     ,metadata JSONB  
 

@@ -9,7 +9,7 @@ keep: false
 
 -- sherry sild
 
-CREATE OR REPLACE FUNCTION proc.update_tool(
+CREATE OR REPLACE FUNCTION proc.update_userrole(
     p_actor_name VARCHAR,
     p_params JSONB,
     p_koksmat_sync JSONB DEFAULT NULL
@@ -24,11 +24,7 @@ v_tenant VARCHAR COLLATE pg_catalog."default" ;
     v_searchindex VARCHAR COLLATE pg_catalog."default" ;
     v_name VARCHAR COLLATE pg_catalog."default" ;
     v_description VARCHAR COLLATE pg_catalog."default";
-    v_category_id INTEGER;
-    v_url VARCHAR;
-    v_status VARCHAR;
-    v_Documents JSONB;
-    v_metadata JSONB;
+    v_sortOrder VARCHAR;
         v_audit_id integer;  -- Variable to hold the OUT parameter value
     p_auditlog_params jsonb;
 
@@ -40,44 +36,36 @@ BEGIN
     v_searchindex := p_params->>'searchindex';
     v_name := p_params->>'name';
     v_description := p_params->>'description';
-    v_category_id := p_params->>'category_id';
-    v_url := p_params->>'url';
-    v_status := p_params->>'status';
-    v_Documents := p_params->>'Documents';
-    v_metadata := p_params->>'metadata';
+    v_sortOrder := p_params->>'sortOrder';
          
     
 
         
-    UPDATE public.tool
+    UPDATE public.userrole
     SET updated_by = p_actor_name,
         updated_at = CURRENT_TIMESTAMP,
         tenant = v_tenant,
         searchindex = v_searchindex,
         name = v_name,
         description = v_description,
-        category_id = v_category_id,
-        url = v_url,
-        status = v_status,
-        Documents = v_Documents,
-        metadata = v_metadata
+        sortOrder = v_sortOrder
     WHERE id = v_id;
 
     GET DIAGNOSTICS v_rows_updated = ROW_COUNT;
     
     IF v_rows_updated < 1 THEN
-        RAISE EXCEPTION 'No records updated. tool ID % not found', v_id ;
+        RAISE EXCEPTION 'No records updated. userrole ID % not found', v_id ;
     END IF;
 
 
            p_auditlog_params := jsonb_build_object(
         'tenant', '',
         'searchindex', '',
-        'name', 'update_tool',
+        'name', 'update_userrole',
         'status', 'success',
         'description', '',
-        'action', 'update_tool',
-        'entity', 'tool',
+        'action', 'update_userrole',
+        'entity', 'userrole',
         'entityid', -1,
         'actor', p_actor_name,
         'metadata', p_params
@@ -90,7 +78,7 @@ BEGIN
   "type": "object",
 
   "properties": {
-    "title": "Update Tool",
+    "title": "Update User Role",
   "description": "Update operation",
   
     "tenant": { 
@@ -105,20 +93,8 @@ BEGIN
     "description": { 
     "type": "string",
     "description":"" },
-    "category_id": { 
-    "type": "number",
-    "description":"" },
-    "url": { 
+    "sortOrder": { 
     "type": "string",
-    "description":"" },
-    "status": { 
-    "type": "string",
-    "description":"" },
-    "Documents": { 
-    "type": "object",
-    "description":"" },
-    "metadata": { 
-    "type": "object",
     "description":"" }
 
     }

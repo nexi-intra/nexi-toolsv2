@@ -9,7 +9,7 @@ keep: false
 
 -- sure sild
 
-CREATE TABLE public.purpose
+CREATE TABLE public.category
 (
     id SERIAL PRIMARY KEY,
     created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -32,7 +32,9 @@ CREATE TABLE public.purpose
     ,searchindex character varying COLLATE pg_catalog."default"  NOT NULL
     ,name character varying COLLATE pg_catalog."default"  NOT NULL
     ,description character varying COLLATE pg_catalog."default" 
+    ,Translations JSONB  
     ,sortOrder character varying COLLATE pg_catalog."default" 
+    ,color character varying COLLATE pg_catalog."default" 
 
 
 );
@@ -42,5 +44,5 @@ CREATE TABLE public.purpose
 
 ---- create above / drop below ----
 
-DROP TABLE public.purpose;
+DROP TABLE public.category;
 

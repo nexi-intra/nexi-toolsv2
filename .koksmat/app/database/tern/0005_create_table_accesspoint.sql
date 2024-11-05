@@ -9,7 +9,7 @@ keep: false
 
 -- sure sild
 
-CREATE TABLE public.country
+CREATE TABLE public.accesspoint
 (
     id SERIAL PRIMARY KEY,
     created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -32,21 +32,16 @@ CREATE TABLE public.country
     ,searchindex character varying COLLATE pg_catalog."default"  NOT NULL
     ,name character varying COLLATE pg_catalog."default"  NOT NULL
     ,description character varying COLLATE pg_catalog."default" 
-    ,region_id int   NOT NULL
+    ,Translations JSONB  
     ,sortOrder character varying COLLATE pg_catalog."default" 
 
 
 );
 
-                ALTER TABLE IF EXISTS public.country
-                ADD FOREIGN KEY (region_id)
-                REFERENCES public.region (id) MATCH SIMPLE
-                ON UPDATE NO ACTION
-                ON DELETE NO ACTION
-                NOT VALID;
+
 
 
 ---- create above / drop below ----
 
-DROP TABLE public.country;
+DROP TABLE public.accesspoint;
 

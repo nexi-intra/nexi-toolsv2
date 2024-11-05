@@ -9,7 +9,7 @@ keep: false
 
 -- sure sild
 
-CREATE TABLE public.translation
+CREATE TABLE public.country
 (
     id SERIAL PRIMARY KEY,
     created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -32,15 +32,16 @@ CREATE TABLE public.translation
     ,searchindex character varying COLLATE pg_catalog."default"  NOT NULL
     ,name character varying COLLATE pg_catalog."default"  NOT NULL
     ,description character varying COLLATE pg_catalog."default" 
-    ,language_id int   NOT NULL
-    ,translation character varying COLLATE pg_catalog."default"  NOT NULL
+    ,Translations JSONB  
+    ,region_id int   NOT NULL
+    ,sortOrder character varying COLLATE pg_catalog."default" 
 
 
 );
 
-                ALTER TABLE IF EXISTS public.translation
-                ADD FOREIGN KEY (language_id)
-                REFERENCES public.language (id) MATCH SIMPLE
+                ALTER TABLE IF EXISTS public.country
+                ADD FOREIGN KEY (region_id)
+                REFERENCES public.region (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;
@@ -48,5 +49,5 @@ CREATE TABLE public.translation
 
 ---- create above / drop below ----
 
-DROP TABLE public.translation;
+DROP TABLE public.country;
 
