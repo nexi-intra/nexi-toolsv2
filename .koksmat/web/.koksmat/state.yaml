@@ -1,0 +1,222 @@
+logs:
+  - timestamp: 2024-11-05T05:21:00.854Z
+    level: 1
+    messages:
+      - 'Creating new session with prefix: koksmat'
+  - timestamp: 2024-11-05T05:21:00.855Z
+    level: 1
+    messages:
+      - 'Created new session: koksmat_20241105T052100'
+  - timestamp: 2024-11-05T05:21:00.881Z
+    level: 1
+    messages:
+      - 'Creating new session with prefix: koksmat'
+  - timestamp: 2024-11-05T05:21:00.883Z
+    level: 1
+    messages:
+      - 'Created new session: koksmat_20241105T052100'
+  - timestamp: 2024-11-05T05:21:00.905Z
+    level: 1
+    messages:
+      - Listing all sessions
+  - timestamp: 2024-11-05T05:21:00.906Z
+    level: 1
+    messages:
+      - Listed 1 sessions
+  - timestamp: 2024-11-05T05:22:00.854Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:23:00.856Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:24:00.856Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:25:00.858Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:26:00.858Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:27:00.860Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:27:17.026Z
+    level: 0
+    messages:
+      - Translation request
+      - >-
+        {"text":"Hello,
+        world!","sourceLanguage":"English","targetLanguages":["Spanish","French","German","Italian"]}
+    correlationId: translate
+  - timestamp: 2024-11-05T05:28:11.307Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:29:11.308Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:29:22.016Z
+    level: 0
+    messages:
+      - Translation request
+      - >-
+        {"text":"string","sourceLanguage":"English","targetLanguages":["Lithuanian","Hmong
+        Daw"]}
+    correlationId: translate
+  - timestamp: 2024-11-05T05:30:13.998Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:31:13.975Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:32:13.972Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:33:13.975Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:34:13.977Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:35:13.978Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:36:13.978Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:37:13.980Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:38:13.981Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:39:19.204Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:39:45.540Z
+    level: 0
+    messages:
+      - Translation request
+      - >-
+        {"text":"Hello,
+        world!","sourceLanguage":"English","targetLanguages":["Spanish","French","German","Italian"]}
+    correlationId: translate
+  - timestamp: 2024-11-05T05:39:46.815Z
+    level: 0
+    messages:
+      - Translation result
+      - >-
+        {"original":"Hello, world!","translations":{"French":"Salut tout le
+        monde!","German":"Hallo Welt!","Italian":"Salve,
+        mondo!","Spanish":"¡Hola mundo!"}}
+    correlationId: translate
+  - timestamp: 2024-11-05T05:40:42.485Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:41:42.485Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:42:42.487Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:43:42.487Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:44:42.489Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:45:42.491Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:46:42.492Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:47:42.493Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:48:42.495Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:49:42.496Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:50:42.498Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:51:42.499Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:52:42.501Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:53:42.501Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:54:42.503Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:55:42.505Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:56:42.507Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:57:42.508Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:58:42.509Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T05:59:42.510Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T06:00:42.511Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T06:01:42.487Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.
+  - timestamp: 2024-11-05T06:02:42.487Z
+    level: 0
+    messages:
+      - Cleanup completed. Removed 0 log entries.

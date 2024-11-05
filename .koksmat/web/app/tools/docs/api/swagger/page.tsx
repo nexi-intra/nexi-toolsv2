@@ -28,7 +28,7 @@ export default function ExampleUsage() {
     <div className="space-y-6 p-6">
       {host ? (
         <OpenApiGeneratorComponent server={host}
-          addionalEndpoints={[generateTranslationApiOpenApiDefinition, generateFileSystemApiOpenApiDefinition]} />
+          addionalEndpoints={[generateTranslationApiOpenApiDefinition]} />
       ) : (
         <Skeleton className="w-full h-[200px] rounded-lg" />
       )}

@@ -6,6 +6,7 @@ import { ServiceInspector } from "@/app/koksmat/components/service-inspector";
 
 import { ToastProvider } from "@/components/ui/toast";
 import KoksmatClient from "@/components/koksmat-client";
+import { KoksmatSessionProvider } from "@/components/koksmat-provider";
 
 export default function RootLayoutClientSide({
   children,
@@ -16,9 +17,10 @@ export default function RootLayoutClientSide({
 
     <MagicboxProvider>
       <MSALWrapper>
-        {children}
+        <KoksmatSessionProvider>{children}
+        </KoksmatSessionProvider>
         <TailwindIndicator />
-        <ServiceInspector />
+        {/* <ServiceInspector /> */}
         <ToastProvider />
         <KoksmatClient />
       </MSALWrapper>

@@ -15,6 +15,7 @@ import {
   updateInputSchema
 } from '@/app/tools/api/entity/schemas'
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+import { APPNAME } from '@/app/global'
 
 // Call this once in your app's entry point
 extendZodWithOpenApi(z);
@@ -108,7 +109,7 @@ export function OpenApiGeneratorComponent({ server, addionalEndpoints }: { serve
 
       registry.registerPath({
         method: 'get',
-        path: `/api/entity/${schemaName}`,
+        path: `/${APPNAME}/api/entity/${schemaName}`,
         summary: `Get all ${schemaName}`,
         request: {
           query: z.object({
@@ -141,7 +142,7 @@ export function OpenApiGeneratorComponent({ server, addionalEndpoints }: { serve
 
       registry.registerPath({
         method: 'get',
-        path: `/api/entity/${schemaName}/{id}`,
+        path: `/${APPNAME}/api/entity/${schemaName}/{id}`,
         summary: `Get a specific ${singularEntity}`,
         request: {
           params: z.object({
@@ -166,7 +167,7 @@ export function OpenApiGeneratorComponent({ server, addionalEndpoints }: { serve
 
       registry.registerPath({
         method: 'post',
-        path: `/api/entity/${schemaName}`,
+        path: `/${APPNAME}/api/entity/${schemaName}`,
         summary: `Create a new ${singularEntity}`,
         request: {
           body: {
@@ -191,7 +192,7 @@ export function OpenApiGeneratorComponent({ server, addionalEndpoints }: { serve
 
       registry.registerPath({
         method: 'put',
-        path: `/api/entity/${schemaName}/{id}`,
+        path: `/${APPNAME}/api/entity/${schemaName}/{id}`,
         summary: `Update a ${singularEntity}`,
         request: {
           params: z.object({
@@ -219,7 +220,7 @@ export function OpenApiGeneratorComponent({ server, addionalEndpoints }: { serve
 
       registry.registerPath({
         method: 'delete',
-        path: `/api/entity/${schemaName}/{id}`,
+        path: `/${APPNAME}/api/entity/${schemaName}/{id}`,
         summary: `Delete a ${singularEntity}`,
         request: {
           params: z.object({
