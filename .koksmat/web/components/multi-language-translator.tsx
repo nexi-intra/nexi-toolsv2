@@ -8,7 +8,16 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { TranslatorClient, Language } from '@/app/tools/api/translate/translator-client'
 import { ComponentDoc } from './component-documentation-hub'
-import { TranslationResult } from '@/lib/translation-service'
+import { z } from 'zod'
+import { ZeroTrust } from '@/components/zero-trust'
+import { APPNAME } from '@/app/global'
+
+/**
+ * MultiLanguageTranslator is a versatile React component for managing and editing translations across multiple languages.
+ * It integrates with a TranslatorClient for performing translations, supports view and edit modes, individual language locking,
+ * and provides a user-friendly interface for managing multilingual content.
+ * The component is designed to be responsive, accessible, and type-safe, adhering to best practices in React development.
+ */
 
 // Function to get the authentication token (replace with your actual implementation)
 const getToken = () => localStorage.getItem('authToken') || ''
@@ -16,24 +25,33 @@ const getToken = () => localStorage.getItem('authToken') || ''
 // Create an instance of TranslatorClient
 const translator = new TranslatorClient(getToken)
 
-interface Translation {
-  language: Language
-  value: string
-  isLocked: boolean
-}
+const TranslationSchema = z.object({
+  language: z.enum([
+    "Afrikaans", "Arabic", "Bulgarian", "Bengali", "Bosnian", "Catalan", "Czech", "Welsh", "Danish", "German",
+    "Greek", "English", "Spanish", "Estonian", "Persian", "Finnish", "Filipino", "Fijian", "French", "Irish",
+    "Hebrew", "Hindi", "Croatian", "Haitian Creole", "Hungarian", "Indonesian", "Icelandic", "Italian", "Japanese",
+    "Korean", "Lithuanian", "Latvian", "Malagasy", "Malay", "Maltese", "Hmong Daw", "Norwegian", "Dutch",
+    "Querétaro Otomi", "Polish", "Portuguese", "Romanian", "Russian", "Slovak", "Slovenian", "Samoan",
+    "Serbian (Cyrillic)", "Serbian (Latin)", "Swedish", "Swahili", "Tamil", "Telugu", "Thai", "Klingon (Latin)",
+    "Tongan", "Turkish", "Tahitian", "Ukrainian", "Urdu", "Vietnamese", "Yucatec Maya", "Cantonese (Traditional)",
+    "Chinese Simplified", "Chinese Traditional"
+  ]),
+  value: z.string(),
+  isLocked: z.boolean()
+})
 
+const MultiLanguageTranslatorSchema = z.object({
+  supportedLanguages: z.array(TranslationSchema.shape.language),
+  masterValue: z.string(),
+  masterLanguage: TranslationSchema.shape.language,
+  initialTranslations: z.array(TranslationSchema).optional(),
+  initialMode: z.enum(['view', 'edit']).optional(),
+  className: z.string().optional(),
+  onSave: z.function(z.tuple([z.array(TranslationSchema)]), z.void()),
+  onMasterLanguageChange: z.function(z.tuple([TranslationSchema.shape.language]), z.void())
+})
 
-
-interface MultiLanguageTranslatorProps {
-  supportedLanguages: Language[]
-  masterValue: string
-  masterLanguage: Language
-  initialTranslations?: Translation[]
-  initialMode?: 'view' | 'edit'
-  className?: string
-  onSave: (translations: Translation[]) => void
-  onMasterLanguageChange: (language: Language) => void
-}
+type MultiLanguageTranslatorProps = z.infer<typeof MultiLanguageTranslatorSchema>
 
 export default function MultiLanguageTranslator({
   supportedLanguages,
@@ -45,9 +63,10 @@ export default function MultiLanguageTranslator({
   onSave,
   onMasterLanguageChange,
 }: MultiLanguageTranslatorProps) {
-  const [translations, setTranslations] = useState<Translation[]>(initialTranslations)
+  const [translations, setTranslations] = useState<z.infer<typeof TranslationSchema>[]>(initialTranslations)
   const [isTranslating, setIsTranslating] = useState(false)
   const [mode, setMode] = useState<'view' | 'edit'>(initialMode)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (initialTranslations.length === 0) {
@@ -63,6 +82,7 @@ export default function MultiLanguageTranslator({
 
   const handleTranslateAll = useCallback(async () => {
     setIsTranslating(true)
+    setError(null)
     try {
       const languagesToTranslate = translations
         .filter((t) => !t.isLocked && t.language !== masterLanguage)
@@ -77,14 +97,14 @@ export default function MultiLanguageTranslator({
       setTranslations((prevTranslations) =>
         prevTranslations.map((t) => {
           if (!t.isLocked && t.language !== masterLanguage) {
-            return { ...t, value: (result as TranslationResult).translations[t.language] || t.value }
+            return { ...t, value: result.translations[t.language] || t.value }
           }
           return t
         })
       )
     } catch (error) {
       console.error('Translation error:', error)
-      // Here you might want to show an error message to the user
+      setError('An error occurred while translating. Please try again.')
     } finally {
       setIsTranslating(false)
     }
@@ -92,20 +112,21 @@ export default function MultiLanguageTranslator({
 
   const handleTranslateSingle = useCallback(async (language: Language) => {
     setIsTranslating(true)
+    setError(null)
     try {
       const result = await translator.translateText(masterValue, masterLanguage, [language])
 
       setTranslations((prevTranslations) =>
         prevTranslations.map((t) => {
           if (t.language === language) {
-            return { ...t, value: (result as TranslationResult).translations[language] || t.value }
+            return { ...t, value: result.translations[language] || t.value }
           }
           return t
         })
       )
     } catch (error) {
       console.error('Translation error:', error)
-      // Here you might want to show an error message to the user
+      setError(`An error occurred while translating to ${language}. Please try again.`)
     } finally {
       setIsTranslating(false)
     }
@@ -143,78 +164,100 @@ export default function MultiLanguageTranslator({
   }, [])
 
   return (
-    <div className={`space-y-4 ${className}`}>
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Multi-Language Translator</h2>
-        <div className="space-x-2">
-          <Button onClick={toggleMode} variant="outline">
-            {mode === 'view' ? (
-              <>
-                <Edit2 className="mr-2 h-4 w-4" /> Edit
-              </>
-            ) : (
-              <>
-                <Eye className="mr-2 h-4 w-4" /> View
-              </>
-            )}
-          </Button>
-          {mode === 'edit' && (
-            <Button onClick={handleTranslateAll} disabled={isTranslating}>
-              {isTranslating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Globe className="mr-2 h-4 w-4" />}
-              Translate All
-            </Button>
-          )}
-        </div>
-      </div>
-      <div className="space-y-4">
-        {translations.map((translation) => (
-          <div key={translation.language} className="flex items-center space-x-2">
-            <Label htmlFor={`translation-${translation.language}`} className="w-24">
-              {translation.language}:
-            </Label>
-            <div className="relative flex-grow">
-              <Input
-                id={`translation-${translation.language}`}
-                value={translation.value}
-                onChange={(e) => handleInputChange(translation.language, e.target.value)}
-                disabled={mode === 'view' || isTranslating || translation.isLocked}
-                className={isTranslating ? 'opacity-50' : ''}
-              />
-              {isTranslating && (
-                <div className="absolute inset-0 flex items-center justify-center bg-background/50">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                </div>
+    <>
+      <ZeroTrust
+        schema={MultiLanguageTranslatorSchema}
+        props={{
+          supportedLanguages,
+          masterValue,
+          masterLanguage,
+          initialTranslations,
+          initialMode,
+          className,
+          onSave,
+          onMasterLanguageChange,
+        }}
+        actionLevel="error"
+        componentName="MultiLanguageTranslator"
+      />
+      <div className={`space-y-4 ${className}`}>
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold">Multi-Language Translator</h2>
+          <div className="space-x-2">
+            <Button onClick={toggleMode} variant="outline">
+              {mode === 'view' ? (
+                <>
+                  <Edit2 className="mr-2 h-4 w-4" /> Edit
+                </>
+              ) : (
+                <>
+                  <Eye className="mr-2 h-4 w-4" /> View
+                </>
               )}
-            </div>
+            </Button>
             {mode === 'edit' && (
-              <>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={() => handleToggleLock(translation.language)}
-                  disabled={isTranslating}
-                >
-                  {translation.isLocked ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
-                </Button>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={() => handleTranslateSingle(translation.language)}
-                  disabled={isTranslating || translation.isLocked}
-                >
-                  <RefreshCw className="h-4 w-4" />
-                </Button>
-              </>
+              <Button onClick={handleTranslateAll} disabled={isTranslating}>
+                {isTranslating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Globe className="mr-2 h-4 w-4" />}
+                Translate All
+              </Button>
             )}
           </div>
-        ))}
+        </div>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
+        <div className="space-y-4">
+          {translations.map((translation) => (
+            <div key={translation.language} className="flex items-center space-x-2">
+              <Label htmlFor={`translation-${translation.language}`} className="w-24">
+                {translation.language}:
+              </Label>
+              <div className="relative flex-grow">
+                <Input
+                  id={`translation-${translation.language}`}
+                  value={translation.value}
+                  onChange={(e) => handleInputChange(translation.language, e.target.value)}
+                  disabled={mode === 'view' || isTranslating || translation.isLocked}
+                  className={isTranslating ? 'opacity-50' : ''}
+                />
+                {isTranslating && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-background/50">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  </div>
+                )}
+              </div>
+              {mode === 'edit' && (
+                <>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={() => handleToggleLock(translation.language)}
+                    disabled={isTranslating}
+                  >
+                    {translation.isLocked ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={() => handleTranslateSingle(translation.language)}
+                    disabled={isTranslating || translation.isLocked}
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                  </Button>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+        {mode === 'edit' && (
+          <Button onClick={handleSave} disabled={isTranslating}>
+            Save Translations
+          </Button>
+        )}
       </div>
-      {mode === 'edit' && (
-        <Button onClick={handleSave} disabled={isTranslating}>
-          Save Translations
-        </Button>
-      )}
-    </div>
+    </>
   )
 }
 
@@ -230,20 +273,19 @@ import MultiLanguageTranslator from './multi-language-translator'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Language } from '@/app/api/translate/translator-client'
 
 const TranslatorExample = () => {
-  const supportedLanguages: Language[] = ['English', 'Spanish', 'French', 'German', 'Italian']
+  const supportedLanguages = ['English', 'Spanish', 'French', 'German', 'Italian']
   const [masterValue, setMasterValue] = useState('Hello, world!')
-  const [masterLanguage, setMasterLanguage] = useState<Language>('English')
-  const [savedTranslations, setSavedTranslations] = useState<Translation[]>([])
+  const [masterLanguage, setMasterLanguage] = useState('English')
+  const [savedTranslations, setSavedTranslations] = useState([])
 
-  const handleSave = (translations: Translation[]) => {
+  const handleSave = (translations) => {
     console.log('Saved translations:', translations)
     setSavedTranslations(translations)
   }
 
-  const handleMasterLanguageChange = (language: Language) => {
+  const handleMasterLanguageChange = (language) => {
     setMasterLanguage(language)
   }
 
@@ -297,69 +339,14 @@ const TranslatorExample = () => {
 export default TranslatorExample
     `,
     example: (
-      <TranslatorExample />
+      <MultiLanguageTranslator
+        supportedLanguages={['English', 'Spanish', 'French', 'German', 'Italian']}
+        masterValue="Hello, world!"
+        masterLanguage="English"
+        initialMode="view"
+        onSave={() => { }}
+        onMasterLanguageChange={() => { }}
+      />
     ),
   },
 ]
-
-function TranslatorExample() {
-  const supportedLanguages: Language[] = ['English', 'Spanish', 'French', 'German', 'Italian']
-  const [masterValue, setMasterValue] = useState('Hello, world!')
-  const [masterLanguage, setMasterLanguage] = useState<Language>('English')
-  const [savedTranslations, setSavedTranslations] = useState<Translation[]>([])
-
-  const handleSave = (translations: Translation[]) => {
-    console.log('Saved translations:', translations)
-    setSavedTranslations(translations)
-  }
-
-  const handleMasterLanguageChange = (language: Language) => {
-    setMasterLanguage(language)
-  }
-
-  return (
-    <div className="p-4 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4">Translator Example</h1>
-      <div className="mb-4 space-y-2">
-        <Label htmlFor="master-text">Master Text:</Label>
-        <Input
-          id="master-text"
-          value={masterValue}
-          onChange={(e) => setMasterValue(e.target.value)}
-          className="w-full"
-        />
-      </div>
-      <div className="mb-4">
-        <Label htmlFor="master-language">Master Language:</Label>
-        <Select value={masterLanguage} onValueChange={handleMasterLanguageChange}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select master language" />
-          </SelectTrigger>
-          <SelectContent>
-            {supportedLanguages.map((lang) => (
-              <SelectItem key={lang} value={lang}>
-                {lang}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <MultiLanguageTranslator
-        supportedLanguages={supportedLanguages}
-        masterValue={masterValue}
-        masterLanguage={masterLanguage}
-        initialMode="view"
-        onSave={handleSave}
-        onMasterLanguageChange={handleMasterLanguageChange}
-      />
-      {savedTranslations.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-2">Saved Translations:</h2>
-          <pre className="bg-gray-100 p-4 rounded">
-            {JSON.stringify(savedTranslations, null, 2)}
-          </pre>
-        </div>
-      )}
-    </div>
-  )
-}

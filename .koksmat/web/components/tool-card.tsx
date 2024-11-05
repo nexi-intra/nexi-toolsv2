@@ -306,7 +306,7 @@ export const examplesToolCard: ComponentDoc[] = [
     description: 'ToolCard component with view/edit/new mode selector, allowed tags, and favorite management',
     usage: `
 import React, { useState } from 'react'
-import { Tool } from '@/app/api/entity/schemas'
+import { Tool } from '@/app/tools/api/entity/schemas'
 import ToolCard from './ToolCard'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

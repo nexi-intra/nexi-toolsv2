@@ -52,7 +52,6 @@ export function useKoksmat() {
 
 // ZeroTrust schema for the KoksmatProvider
 import { z } from 'zod'
-import { ZeroTrust } from '@/components/zero-trust'
 
 const KoksmatProviderSchema = z.object({
   children: z.any(),
@@ -62,12 +61,6 @@ const KoksmatProviderSchema = z.object({
 export function KoksmatSessionProvider({ children }: KoksmatProviderProps) {
   return (
     <>
-      <ZeroTrust
-        schema={KoksmatProviderSchema}
-        props={{ children }}
-        actionLevel="error"
-        componentName="KoksmatProvider"
-      />
       <KoksmatProvider>{children}</KoksmatProvider>
     </>
   )

@@ -168,7 +168,7 @@ export const examplesToolCardMedium: ComponentDoc[] = [
     description: 'A medium-sized card for tools with a pop-up detailed view',
     usage: `
 import React, { useState } from 'react'
-import { Tool } from '@/app/api/entity/schemas'
+import { Tool } from '@/app/tools/api/entity/schemas'
 import ToolCardMedium from './ToolCardMedium'
 
 function ToolCardMediumExample() {
