@@ -5,3 +5,4 @@ workdir
 .koksmat/app/__debug*
 .koksmat/app/database/tern/tern.conf
 .koksmat/web/tests_output/*/**
+.koksmat/web/.koksmat/state.yaml
