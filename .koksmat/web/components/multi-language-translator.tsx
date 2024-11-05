@@ -54,21 +54,23 @@ const MultiLanguageTranslatorSchema = z.object({
 type MultiLanguageTranslatorProps = z.infer<typeof MultiLanguageTranslatorSchema>
 
 // Subcomponent for individual translation
-const TranslationItem = React.memo(({
+type TranslationItemProps = {
+  translation: z.infer<typeof TranslationSchema>;
+  mode: 'view' | 'edit';
+  isTranslating: boolean;
+  onInputChange: (language: Language, value: string) => void;
+  onToggleLock: (language: Language) => void;
+  onTranslateSingle: (language: Language) => void;
+};
+
+const TranslationItem = React.memo(function TranslationItem({
   translation,
   mode,
   isTranslating,
   onInputChange,
   onToggleLock,
-  onTranslateSingle
-}: {
-  translation: z.infer<typeof TranslationSchema>,
-  mode: 'view' | 'edit',
-  isTranslating: boolean,
-  onInputChange: (language: Language, value: string) => void,
-  onToggleLock: (language: Language) => void,
-  onTranslateSingle: (language: Language) => void
-}) => {
+  onTranslateSingle,
+}: TranslationItemProps) {
   return (
     <div className="flex items-center space-x-2">
       <Label htmlFor={`translation-${translation.language}`} className="w-24">
@@ -109,8 +111,9 @@ const TranslationItem = React.memo(({
         </>
       )}
     </div>
-  )
-})
+  );
+});
+
 
 export default function MultiLanguageTranslator({
   supportedLanguages,
