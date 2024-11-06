@@ -41,35 +41,11 @@
     },
     {
       "title": {
-        "en": "Documentation",
-        "da": "Dokumentation"
-      },
-      "url": "#",
-      "icon": "BookOpen",
-      "items": [
-        {
-          "title": {
-            "en": "Use cases",
-            "da": "Introduktion"
-          },
-          "url": "/tools/docs/use-cases"
-        },
-        {
-          "title": {
-            "en": "Components",
-            "da": "Kom i gang"
-          },
-          "url": "/tools/docs/components"
-        }
-      ]
-    },
-    {
-      "title": {
         "en": "Tables",
         "da": "Indstillinger"
       },
       "url": "#",
-      "icon": "Settings2",
+      "icon": "Database",
       "items": [
         {
           "title": {
@@ -93,6 +69,14 @@
             "da": "Categories"
           },
           "url": "/tools/admin/data/categories",
+          "icon": "BookOpen"
+        },
+        {
+          "title": {
+            "en": "Access Points",
+            "da": "Categories"
+          },
+          "url": "/tools/admin/data/access-points",
           "icon": "BookOpen"
         },
         {
@@ -175,6 +159,30 @@
           },
           "url": "/tools/admin/mapping",
           "icon": "BookOpen"
+        }
+      ]
+    },
+    {
+      "title": {
+        "en": "Documentation",
+        "da": "Dokumentation"
+      },
+      "url": "#",
+      "icon": "BookOpen",
+      "items": [
+        {
+          "title": {
+            "en": "Use cases",
+            "da": "Introduktion"
+          },
+          "url": "/tools/docs/use-cases"
+        },
+        {
+          "title": {
+            "en": "Components",
+            "da": "Kom i gang"
+          },
+          "url": "/tools/docs/components"
         }
       ]
     }

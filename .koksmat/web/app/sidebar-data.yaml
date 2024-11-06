@@ -53,32 +53,10 @@ navMain:
   #         da: "Kvantum"
   #       url: "#"
   - title:
-      en: "Documentation"
-      da: "Dokumentation"
-    url: "#"
-    icon: "BookOpen"
-    items:
-      - title:
-          en: "Use cases"
-          da: "Introduktion"
-        url: "/tools/docs/use-cases"
-      - title:
-          en: "Components"
-          da: "Kom i gang"
-        url: "/tools/docs/components"
-      # - title:
-      #     en: "API"
-      #     da: "Vejledninger"
-      #   url: "/tools/docs/api"
-      # - title:
-      #     en: "Changelog"
-      #     da: "Ændringslog"
-      #   url: "#"
-  - title:
       en: "Tables"
       da: "Indstillinger"
     url: "#"
-    icon: "Settings2"
+    icon: "Database"
     items:
       - title:
           en: "Regions"
@@ -162,4 +140,26 @@ navMain:
       # - title:
       #     en: "Limits"
       #     da: "Begrænsninger"
+      #   url: "#"
+  - title:
+      en: "Documentation"
+      da: "Dokumentation"
+    url: "#"
+    icon: "BookOpen"
+    items:
+      - title:
+          en: "Use cases"
+          da: "Introduktion"
+        url: "/tools/docs/use-cases"
+      - title:
+          en: "Components"
+          da: "Kom i gang"
+        url: "/tools/docs/components"
+      # - title:
+      #     en: "API"
+      #     da: "Vejledninger"
+      #   url: "/tools/docs/api"
+      # - title:
+      #     en: "Changelog"
+      #     da: "Ændringslog"
       #   url: "#"

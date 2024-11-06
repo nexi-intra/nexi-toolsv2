@@ -1,7 +1,7 @@
 
 import UserRoleEditor from "@/components/form-userrole";
 
-export default function RegionEditorPage() {
+export default function Page() {
 
 
   return (
