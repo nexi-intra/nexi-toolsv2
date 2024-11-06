@@ -8,7 +8,9 @@ keep: false
 
 import { z } from 'zod';
 
-export const PatchEventSchema = z.object({    tenant: z.string().optional(),
+
+export const schema = z.object({
+    tenant: z.string().optional(),
     searchindex: z.string().optional(),
     name: z.string().optional(),
     description: z.string().optional(),
@@ -16,4 +18,5 @@ export const PatchEventSchema = z.object({    tenant: z.string().optional(),
     user_id: z.number().int().optional(),
     tool_id: z.number().int().optional(),
     metadata: z.object({}).passthrough().optional()});
-export type PatchEvent = z.infer<typeof PatchEventSchema>;
+
+export const tablename = 'event';

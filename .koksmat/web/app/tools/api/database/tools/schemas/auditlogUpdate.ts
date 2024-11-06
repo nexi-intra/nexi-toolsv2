@@ -8,7 +8,9 @@ keep: false
 
 import { z } from 'zod';
 
-export const UpdateAuditlogSchema = z.object({    tenant: z.string().optional(),
+
+export const schema = z.object({
+    tenant: z.string().optional(),
     searchindex: z.string().optional(),
     name: z.string().optional(),
     description: z.string().optional(),
@@ -19,4 +21,5 @@ export const UpdateAuditlogSchema = z.object({    tenant: z.string().optional(),
     entityid: z.string().optional(),
     actor: z.string().optional(),
     metadata: z.object({}).passthrough().optional()});
-export type UpdateAuditlog = z.infer<typeof UpdateAuditlogSchema>;
+
+export const tablename = 'auditlog';

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { natsBackendServiceFactory } from "../backend-service";
 import { mockBackendServiceFactory } from "../mock-backend-service";
 import { BackendService } from "../BackendService";
+import { kError, kInfo, kVerbose } from "@/lib/koksmat-logger-client";
 
 type BackendServiceFactory = () => BackendService;
 
@@ -25,7 +26,7 @@ function getBackendServiceFactory(): BackendServiceFactory {
 const serviceFactory: BackendServiceFactory = getBackendServiceFactory();
 
 function handleError(error: unknown): NextResponse<ErrorResponse> {
-  console.error("An error occurred:", error);
+  kError("An error occurred:", error);
   const errorMessage =
     error instanceof Error ? error.message : "An unknown error occurred";
   return NextResponse.json(
@@ -46,11 +47,13 @@ export async function GET(
     const pageSize = parseInt(searchParams.get("pageSize") || "10");
 
     const service = serviceFactory();
-
+    kVerbose(`Fetching entities of type ${entityType}`);
     if (id) {
+      kVerbose(`Fetching entity with id ${id}`);
       const entity = await service.getById(entityType, id);
       return NextResponse.json(entity);
     } else {
+      kVerbose(`Fetching all entities `);
       const result = await service.getAll(entityType, page, pageSize);
       return NextResponse.json(result);
     }
@@ -68,11 +71,13 @@ export async function POST(
     const [entityType] = params.slug;
     const body = await req.json();
 
+    kInfo(`Creating a new entity of type ${entityType}`);
     const service = serviceFactory();
     const newEntity = await service.create(entityType, body);
-
+    kInfo(`Entity created successfully`, newEntity);
     return NextResponse.json(newEntity, { status: 201 });
   } catch (error) {
+    kError("An error occurred:", error);
     return handleError(error);
   }
 }
@@ -85,12 +90,13 @@ export async function PUT(
   try {
     const [entityType, id] = params.slug;
     const body = await req.json();
-
+    kInfo(`Updating entity with id ${id}`);
     const service = serviceFactory();
     const updatedEntity = await service.update(entityType, id, body);
-
+    kInfo(`Entity updated successfully`, updatedEntity);
     return NextResponse.json(updatedEntity);
   } catch (error) {
+    kError("An error occurred:", error);
     return handleError(error);
   }
 }
@@ -102,10 +108,10 @@ export async function DELETE(
 ) {
   try {
     const [entityType, id] = params.slug;
-
+    kInfo(`Deleting entity with id ${id}`);
     const service = serviceFactory();
     await service.delete(entityType, id);
-
+    kInfo(`Entity deleted successfully`);
     return NextResponse.json({
       success: true,
       message: "Entity deleted successfully",

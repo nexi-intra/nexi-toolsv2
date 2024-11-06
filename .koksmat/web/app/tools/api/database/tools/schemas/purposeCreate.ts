@@ -8,10 +8,13 @@ keep: false
 
 import { z } from 'zod';
 
-export const CreatePurposeSchema = z.object({    tenant: z.string(),
+
+export const schema = z.object({
+    tenant: z.string(),
     searchindex: z.string(),
     name: z.string(),
     description: z.string().optional(),
     Translations: z.object({}).passthrough().optional(),
     sortOrder: z.string().optional()});
-export type CreatePurpose = z.infer<typeof CreatePurposeSchema>;
+
+export const tablename = 'purpose';

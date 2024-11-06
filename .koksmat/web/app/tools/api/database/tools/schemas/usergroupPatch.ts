@@ -8,10 +8,13 @@ keep: false
 
 import { z } from 'zod';
 
-export const PatchUsergroupSchema = z.object({    tenant: z.string().optional(),
+
+export const schema = z.object({
+    tenant: z.string().optional(),
     searchindex: z.string().optional(),
     name: z.string().optional(),
     description: z.string().optional(),
     Translations: z.object({}).passthrough().optional(),
     sortOrder: z.string().optional()});
-export type PatchUsergroup = z.infer<typeof PatchUsergroupSchema>;
+
+export const tablename = 'usergroup';

@@ -8,7 +8,9 @@ keep: false
 
 import { z } from 'zod';
 
-export const CreateEventSchema = z.object({    tenant: z.string(),
+
+export const schema = z.object({
+    tenant: z.string(),
     searchindex: z.string(),
     name: z.string(),
     description: z.string().optional(),
@@ -16,4 +18,5 @@ export const CreateEventSchema = z.object({    tenant: z.string(),
     user_id: z.number().int(),
     tool_id: z.number().int(),
     metadata: z.object({}).passthrough().optional()});
-export type CreateEvent = z.infer<typeof CreateEventSchema>;
+
+export const tablename = 'event';

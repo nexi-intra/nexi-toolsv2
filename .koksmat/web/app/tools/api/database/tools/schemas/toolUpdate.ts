@@ -8,7 +8,9 @@ keep: false
 
 import { z } from 'zod';
 
-export const UpdateToolSchema = z.object({    tenant: z.string().optional(),
+
+export const schema = z.object({
+    tenant: z.string().optional(),
     searchindex: z.string().optional(),
     name: z.string().optional(),
     description: z.string().optional(),
@@ -18,4 +20,5 @@ export const UpdateToolSchema = z.object({    tenant: z.string().optional(),
     status: z.string().optional(),
     Documents: z.object({}).passthrough().optional(),
     metadata: z.object({}).passthrough().optional()});
-export type UpdateTool = z.infer<typeof UpdateToolSchema>;
+
+export const tablename = 'tool';

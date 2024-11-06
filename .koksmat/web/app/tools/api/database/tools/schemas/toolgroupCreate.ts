@@ -8,11 +8,14 @@ keep: false
 
 import { z } from 'zod';
 
-export const CreateToolgroupSchema = z.object({    tenant: z.string(),
+
+export const schema = z.object({
+    tenant: z.string(),
     searchindex: z.string(),
     name: z.string(),
     description: z.string().optional(),
     Translations: z.object({}).passthrough().optional(),
     status: z.string().optional(),
     metadata: z.object({}).passthrough().optional()});
-export type CreateToolgroup = z.infer<typeof CreateToolgroupSchema>;
+
+export const tablename = 'toolgroup';

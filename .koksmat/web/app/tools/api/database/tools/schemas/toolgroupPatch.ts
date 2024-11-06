@@ -8,11 +8,14 @@ keep: false
 
 import { z } from 'zod';
 
-export const PatchToolgroupSchema = z.object({    tenant: z.string().optional(),
+
+export const schema = z.object({
+    tenant: z.string().optional(),
     searchindex: z.string().optional(),
     name: z.string().optional(),
     description: z.string().optional(),
     Translations: z.object({}).passthrough().optional(),
     status: z.string().optional(),
     metadata: z.object({}).passthrough().optional()});
-export type PatchToolgroup = z.infer<typeof PatchToolgroupSchema>;
+
+export const tablename = 'toolgroup';

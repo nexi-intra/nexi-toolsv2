@@ -8,6 +8,9 @@ keep: false
 
 import { z } from 'zod';
 
-export const DeleteAuditlogSchema = z.object({    // Indicates a hard delete (true) or soft delete (false)
+
+export const schema = z.object({
+    // Indicates a hard delete (true) or soft delete (false)
     hard: z.boolean().optional()});
-export type DeleteAuditlog = z.infer<typeof DeleteAuditlogSchema>;
+
+export const tablename = 'auditlog';

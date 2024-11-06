@@ -8,11 +8,14 @@ keep: false
 
 import { z } from 'zod';
 
-export const CreateCountrySchema = z.object({    tenant: z.string(),
+
+export const schema = z.object({
+    tenant: z.string(),
     searchindex: z.string(),
     name: z.string(),
     description: z.string().optional(),
     Translations: z.object({}).passthrough().optional(),
     region_id: z.number().int(),
     sortOrder: z.string().optional()});
-export type CreateCountry = z.infer<typeof CreateCountrySchema>;
+
+export const tablename = 'country';

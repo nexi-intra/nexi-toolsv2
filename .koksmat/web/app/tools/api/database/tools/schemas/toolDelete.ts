@@ -8,6 +8,9 @@ keep: false
 
 import { z } from 'zod';
 
-export const DeleteToolSchema = z.object({    // Indicates a hard delete (true) or soft delete (false)
+
+export const schema = z.object({
+    // Indicates a hard delete (true) or soft delete (false)
     hard: z.boolean().optional()});
-export type DeleteTool = z.infer<typeof DeleteToolSchema>;
+
+export const tablename = 'tool';

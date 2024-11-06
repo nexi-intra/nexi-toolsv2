@@ -1,16 +1,24 @@
 "use client"
-import { CreateRegion, CreateRegionSchema } from '@/app/tools/api/database/tools/schemas/regionCreate'
+import { CreateRegion, schema } from '@/app/tools/api/database/tools/schemas/regionCreate'
 import SchemaForm from '@/components/schema-form'
 import { Button } from '@/components/ui/button'
-import { kInfo } from '@/lib/koksmat-logger-client'
+import { kInfo, kVerbose } from '@/lib/koksmat-logger-client'
 import React, { useState } from 'react'
+import { databases } from "@/app/tools/api/database"
+export default function RegionEditor(props: {
 
-export default function RegionEditor() {
+}) {
 
   const [mode, setMode] = useState<'view' | 'edit' | 'new'>('view')
   const [data, setData] = useState<CreateRegion>()
   const [isValid, setisValid] = useState(false)
   const [errors, seterrors] = useState<Array<{ field: string; message: string }>>([])
+
+  const handleSave = async () => {
+    kVerbose("Save data", data)
+    const databaseSchema = databases.tools.regionCreate
+    kVerbose("databaseSchema", databaseSchema)
+  }
 
   const handleChange = (isValid: boolean, newData: CreateRegion, errors: Array<{ field: string; message: string }>) => {
     setData(newData)
@@ -19,16 +27,17 @@ export default function RegionEditor() {
     kInfo(`Data updated in ${mode} mode:`, { isValid, data: newData, errors })
   }
 
+
   return (
     <div className="space-y-4 p-6 bg-gray-100 dark:bg-gray-900 rounded-lg w-full">
       <div className="space-x-2">
         <Button onClick={() => setMode('view')} variant={mode === 'view' ? 'default' : 'outline'}>View</Button>
         <Button onClick={() => setMode('edit')} variant={mode === 'edit' ? 'default' : 'outline'}>Edit</Button>
         <Button onClick={() => setMode('new')} variant={mode === 'new' ? 'default' : 'outline'}>New</Button>
-        <Button variant={"secondary"} onClick={() => alert("saving")}> Save</Button>
+        <Button variant={"secondary"} onClick={handleSave}> Save</Button>
       </div>
       <SchemaForm
-        schema={CreateRegionSchema}
+        schema={schema}
         initialData={data}
         mode={mode}
         onChange={handleChange}
@@ -45,7 +54,7 @@ export default function RegionEditor() {
           {JSON.stringify(data, null, 2)}
         </pre>
       </div>
-    </div>
+    </div >
   )
 }
 
