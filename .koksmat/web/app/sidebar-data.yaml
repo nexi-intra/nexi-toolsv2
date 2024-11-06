@@ -1,8 +1,8 @@
 language: "en"
 teams:
   - name:
-      en: "Links"
-      da: "Links"
+      en: "Tools"
+      da: "Tools"
     logo: "Link"
     plan:
       en: "Preview"
@@ -74,6 +74,67 @@ navMain:
       #     en: "Changelog"
       #     da: "Ændringslog"
       #   url: "#"
+  - title:
+      en: "Tables"
+      da: "Indstillinger"
+    url: "#"
+    icon: "Settings2"
+    items:
+      - title:
+          en: "Regions"
+          da: "Regions"
+        url: "/tools/admin/data/regions"
+        icon: "BookOpen"
+      - title:
+          en: "Countries"
+          da: "Countries"
+        url: "/tools/admin/data/countries"
+        icon: "BookOpen"
+      - title:
+          en: "Categories"
+          da: "Categories"
+        url: "/tools/admin/data/categories"
+        icon: "BookOpen"
+      - title:
+          en: "Access Points"
+          da: "Categories"
+        url: "/tools/admin/data/access-points"
+        icon: "BookOpen"
+      - title:
+          en: "Languages"
+          da: "Categories"
+        url: "/tools/admin/data/languages"
+        icon: "BookOpen"
+      - title:
+          en: "Purposes"
+          da: "Categories"
+        url: "/tools/admin/data/purposes"
+        icon: "BookOpen"
+      - title:
+          en: "Tool Groups"
+          da: "Categories"
+        url: "/tools/admin/data/tool-groups"
+        icon: "BookOpen"
+      - title:
+          en: "Tools"
+          da: "Categories"
+        url: "/tools/admin/data/tools"
+        icon: "BookOpen"
+      - title:
+          en: "User Groups"
+          da: "Categories"
+        url: "/tools/admin/data/user-groups"
+        icon: "BookOpen"
+      - title:
+          en: "Users"
+          da: "Categories"
+        url: "/tools/admin/data/users"
+        icon: "BookOpen"
+      - title:
+          en: "User Roles"
+          da: "Categories"
+        url: "/tools/admin/data/user-roles"
+        icon: "BookOpen"
   - title:
       en: "Settings"
       da: "Indstillinger"

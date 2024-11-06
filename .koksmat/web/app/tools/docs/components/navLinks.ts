@@ -111,4 +111,12 @@ export const navLinks = [
     href: "/tools/docs/components/2-column-layout",
     label: "2-column-layout",
   },
+  {
+    href: "/tools/docs/components/generic-form",
+    label: "Generic Form",
+  },
+  {
+    href: "/tools/docs/components/log-viewer",
+    label: "Log Viewer",
+  },
 ];
