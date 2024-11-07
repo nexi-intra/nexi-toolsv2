@@ -55,7 +55,7 @@ import { SupportedLanguage } from "@/components/lib/types-sidebar-data"
 import { Sun, Moon, ChevronsUpDown, Plus, ChevronRight } from 'lucide-react'
 import { Icon } from "./icon"
 import Link from "next/link"
-import Logo from "@/app/koksmat/components/logo"
+import Logo from "@/app/koksmat0/components/logo"
 
 
 interface ApplicationRootProps {

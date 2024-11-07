@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { kError, kInfo, kVerbose } from '@/lib/koksmat-logger-client'
 import React, { useState } from 'react'
 import { DatabaseClient } from '@/app/tools/api/view/database-client'
+import { regionTable } from '@/app/tools/databases'
 
 export default function RegionEditor(props: {
 
@@ -17,11 +18,15 @@ export default function RegionEditor(props: {
   const [errors, seterrors] = useState<Array<{ field: string; message: string }>>([])
 
   const handleSave = async () => {
-    const database = new DatabaseClient('country', () => 'YOUR_AUTH_TOKEN')
-    kVerbose("Save data", data)
+
     try {
-      //await database.create(data)
-      kInfo("Data saved")
+      kVerbose("Starting save operation");
+      const x = await regionTable().create({
+        name: "test",
+        tenant: "",
+        searchindex: "",
+      });
+
 
     } catch (error) {
       kError("An error occurred:", error);

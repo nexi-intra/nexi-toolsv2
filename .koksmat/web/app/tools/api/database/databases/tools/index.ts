@@ -26,6 +26,8 @@ export type User = z.infer<typeof user.schema>;
 import * as usergroup from "./schemas/usergroup";
 export type Usergroup = z.infer<typeof usergroup.schema>;
 import * as userrole from "./schemas/userrole";
+import { kInfo } from "@/lib/koksmat-logger-client";
+import { version } from "@/app/koksmat";
 export type Userrole = z.infer<typeof userrole.schema>;
 export const table = {
   accesspoint,

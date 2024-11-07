@@ -1,7 +1,7 @@
 "use client";
 import { EditIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { run } from "@/app/koksmat/server";
+import { run } from "@/app/koksmat0/server";
 import BreadcrumbNavigator from "./BreadcrumbNavigator";
 import { useContext } from "react";
 import { MagicDevContext } from "../contextdefinition";

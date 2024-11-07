@@ -1,8 +1,8 @@
 "use client"
-import { MagicboxProvider } from "@/app/koksmat/magicbox-providers";
-import { MSALWrapper } from "@/app/koksmat/msal/auth";
+import { MagicboxProvider } from "@/app/koksmat0/magicbox-providers";
+import { MSALWrapper } from "@/app/koksmat0/msal/auth";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
-import { ServiceInspector } from "@/app/koksmat/components/service-inspector";
+import { ServiceInspector } from "@/app/koksmat0/components/service-inspector";
 
 import { ToastProvider } from "@/components/ui/toast";
 import KoksmatClient from "@/components/koksmat-client";

@@ -1,5 +1,5 @@
 // Import necessary modules and types
-import { Result } from "@/app/koksmat/httphelper";
+import { Result } from "@/app/koksmat0/httphelper";
 import { NatsConnection, connect, StringCodec } from "nats";
 import { z } from "zod";
 import { schemaMapObjects, SchemaName } from "./schemas";
