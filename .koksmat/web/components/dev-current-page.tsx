@@ -10,13 +10,14 @@ export default function DevCurrentPage(props: { children: React.ReactNode }) {
 
   const [pageName, setPageName] = useState("");
   const openInVSCode = async (pageName: string) => {
+
     const body = JSON.stringify({
       sessionid: "sessionid",
       action: "open",
       command: "code",
       args: [pageName],
     });
-    const result = await fetch("/api/autopilot/exec", {
+    const result = await fetch("/koksmat/api/autopilot/openincode", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +32,7 @@ export default function DevCurrentPage(props: { children: React.ReactNode }) {
       const pageInfo = await https<string>(
         "",
         "POST",
-        "/api/autopilot/pageinfo",
+        "/koksmat/api/autopilot/pageinfo",
         {
           url: pathname,
         }
@@ -46,6 +47,7 @@ export default function DevCurrentPage(props: { children: React.ReactNode }) {
     <div>
       <div
         onClick={() => {
+
           openInVSCode(pageName);
         }}
       >

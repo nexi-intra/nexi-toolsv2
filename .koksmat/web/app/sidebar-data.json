@@ -28,14 +28,39 @@
             "en": "Explorer",
             "da": "Historik"
           },
-          "url": "#"
+          "url": "/tools/pages/explorer"
         },
         {
           "title": {
             "en": "Favourites",
             "da": "Stjernemarkeret"
           },
-          "url": "#"
+          "url": "/tools/pages/profile"
+        }
+      ]
+    },
+    {
+      "title": {
+        "en": "Adoption",
+        "da": "Integrationssider"
+      },
+      "url": "#",
+      "icon": "BookCheck",
+      "isActive": true,
+      "items": [
+        {
+          "title": {
+            "en": "Learn",
+            "da": "Historik"
+          },
+          "url": "/tools/learn"
+        },
+        {
+          "title": {
+            "en": "Test cases",
+            "da": "Stjernemarkeret"
+          },
+          "url": "/tools/test"
         }
       ]
     },

@@ -28,27 +28,55 @@ async function kLog(
 }
 
 export async function kVerbose(
+  //correlationId: string | undefined,
+  ...args: any[]
+): Promise<void> {
+  await kLog("verbose", "", ...args);
+}
+
+export async function kInfo(
+  //correlationId: string | undefined,
+  ...args: any[]
+): Promise<void> {
+  await kLog("info", "", ...args);
+}
+
+export async function kWarn(
+  //correlationId: string | undefined,
+  ...args: any[]
+): Promise<void> {
+  await kLog("warning", "", ...args);
+}
+
+export async function kError(
+  //correlationId: string | undefined,
+  ...args: any[]
+): Promise<void> {
+  await kLog("error", "", ...args);
+}
+
+export async function kVerboseTracking(
   correlationId: string | undefined,
   ...args: any[]
 ): Promise<void> {
   await kLog("verbose", correlationId, ...args);
 }
 
-export async function kInfo(
+export async function kInfoTracking(
   correlationId: string | undefined,
   ...args: any[]
 ): Promise<void> {
   await kLog("info", correlationId, ...args);
 }
 
-export async function kWarn(
+export async function kWarnTracking(
   correlationId: string | undefined,
   ...args: any[]
 ): Promise<void> {
   await kLog("warning", correlationId, ...args);
 }
 
-export async function kError(
+export async function kErrorTracking(
   correlationId: string | undefined,
   ...args: any[]
 ): Promise<void> {

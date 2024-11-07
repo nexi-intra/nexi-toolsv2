@@ -13,7 +13,7 @@ import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { CalendarIcon } from 'lucide-react'
 import { format } from 'date-fns'
-import { ComponentDoc } from './component-documentation-hub'
+import { ComponentDoc } from '../../../../../components/component-documentation-hub'
 import { kVerbose, kWarn, kInfo, kError } from "@/lib/koksmat-logger-client"
 
 // AI-friendly component description:
@@ -63,7 +63,7 @@ type SchemaFormProps<T extends z.ZodObject<any, any>> = {
   omit?: string[];
 }
 
-export default function SchemaForm<T extends z.ZodObject<any, any>>({
+export function SchemaForm<T extends z.ZodObject<any, any>>({
   schema,
   initialData,
   mode,

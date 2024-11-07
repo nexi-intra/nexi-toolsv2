@@ -1,18 +1,26 @@
 import { z } from "zod";
 import { kError, kInfo, kVerbose } from "@/lib/koksmat-logger-client";
 
-interface MessageProvider {
-  send(
-    callback: () => {
-      token: string;
-      subject: string;
-      targetData: any;
-      payload: any;
-    }
-  ): Promise<any>;
+export interface DatabaseMessageType {
+  token: string;
+  subject: string;
+  targetData: any;
+  payload: any;
 }
 
-export class DatabaseHandler<T extends z.ZodObject<any>> {
+interface MessageProvider {
+  send(callback: () => DatabaseMessageType): Promise<any>;
+}
+export type DatabaseHandlerType<T extends z.ZodObject<any>> = {
+  create(data: z.infer<T>): Promise<any>;
+  update(id: number, data: z.infer<T>): Promise<any>;
+  patch(id: number, data: Partial<z.infer<T>>): Promise<any>;
+  delete(id: number, hardDelete?: boolean): Promise<any>;
+  restore(id: number): Promise<any>;
+};
+export class DatabaseHandler<T extends z.ZodObject<any>>
+  implements DatabaseHandlerType<T>
+{
   private _schema: T;
   private _messageProvider: MessageProvider;
   private _getToken: () => string;

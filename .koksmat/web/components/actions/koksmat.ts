@@ -24,6 +24,13 @@ import fs from "fs";
 import path from "path";
 import { EventEmitter } from "events";
 import yaml from "js-yaml";
+import {
+  kErrorTracking,
+  kInfoTracking,
+  kVerbose,
+  kVerboseTracking,
+  kWarnTracking,
+} from "@/lib/koksmat-logger-client";
 
 // Define log levels
 enum LogLevel {
@@ -51,7 +58,7 @@ interface KoksmatProps {
   retentionMinutes: number;
 }
 
-class Koksmat {
+export class Koksmat {
   private static instance: Koksmat;
   private _logs: LogEntry[] = [];
   private _retentionMinutes: number;
@@ -159,18 +166,18 @@ class Koksmat {
       const now = new Date();
       const initialLogCount = this._logs.length;
       const cleanupDetails: string[] = [];
-
+      let itemsRemoved = 0;
       this._logs = this._logs.filter((log) => {
         const diff = (now.getTime() - log.timestamp.getTime()) / (1000 * 60);
         const keep = diff <= this._retentionMinutes;
         if (!keep) {
-          cleanupDetails.push(
-            `Removed log: [${log.timestamp.toISOString()}] [${
-              LogLevel[log.level]
-            }] ${
-              log.correlationId ? `[${log.correlationId}] ` : ""
-            }${log.messages.join(" ")}`
-          );
+          // cleanupDetails.push(
+          //   `Removed log: [${log.timestamp.toISOString()}] [${
+          //     LogLevel[log.level]
+          //   }] ${
+          //     log.correlationId ? `[${log.correlationId}] ` : ""
+          //   }${log.messages.join(" ")}`
+          // );
         }
         return keep;
       });
@@ -254,23 +261,24 @@ class Koksmat {
   }
 
   public verbose(correlationId: string | undefined, ...messages: any[]): void {
-    this._log(LogLevel.VERBOSE, correlationId, ...messages);
+    kVerboseTracking(correlationId, ...messages);
   }
 
   public info(correlationId: string | undefined, ...messages: any[]): void {
-    this._log(LogLevel.INFO, correlationId, ...messages);
+    kInfoTracking(correlationId, ...messages);
   }
 
   public warning(correlationId: string | undefined, ...messages: any[]): void {
-    this._log(LogLevel.WARNING, correlationId, ...messages);
+    kWarnTracking(correlationId, ...messages);
   }
 
   public error(correlationId: string | undefined, ...messages: any[]): void {
-    this._log(LogLevel.ERROR, correlationId, ...messages);
+    kErrorTracking(correlationId, ...messages);
   }
 
   public fatal(correlationId: string | undefined, ...messages: any[]): void {
-    this._log(LogLevel.FATAL, correlationId, ...messages);
+    kErrorTracking(correlationId, ...messages);
+    throw messages.join(" ");
   }
 
   public filterLogs(minLevel: LogLevel, correlationId?: string): LogEntry[] {
