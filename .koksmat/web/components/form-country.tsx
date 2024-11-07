@@ -1,6 +1,7 @@
 "use client"
 
-import { CreateCountry, CreateCountrySchema } from '@/app/tools/api/database/tools/schemas/countryCreate'
+
+import { databases } from '@/app/tools/api/database'
 import SchemaForm from '@/components/schema-form'
 import { Button } from '@/components/ui/button'
 import { kInfo } from '@/lib/koksmat-logger-client'
@@ -9,11 +10,11 @@ import React, { useState } from 'react'
 export default function CountryEditor() {
 
   const [mode, setMode] = useState<'view' | 'edit' | 'new'>('view')
-  const [data, setData] = useState<CreateCountry>()
+  const [data, setData] = useState<databases.tools.Country>()
   const [isValid, setisValid] = useState(false)
   const [errors, seterrors] = useState<Array<{ field: string; message: string }>>([])
 
-  const handleChange = (isValid: boolean, newData: CreateCountry, errors: Array<{ field: string; message: string }>) => {
+  const handleChange = (isValid: boolean, newData: databases.tools.Country, errors: Array<{ field: string; message: string }>) => {
     setData(newData)
     setisValid(isValid)
     seterrors(errors)
@@ -29,7 +30,7 @@ export default function CountryEditor() {
         <Button variant={"secondary"} onClick={() => alert("saving")}> Save</Button>
       </div>
       <SchemaForm
-        schema={CreateCountrySchema}
+        schema={databases.tools.table.country.schema}
         initialData={data}
         mode={mode}
         onChange={handleChange}

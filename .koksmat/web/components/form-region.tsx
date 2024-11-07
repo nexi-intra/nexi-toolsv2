@@ -1,26 +1,35 @@
 "use client"
-import { CreateRegion, schema } from '@/app/tools/api/database/tools/schemas/regionCreate'
+import { databases } from '@/app/tools/api/database'
 import SchemaForm from '@/components/schema-form'
 import { Button } from '@/components/ui/button'
-import { kInfo, kVerbose } from '@/lib/koksmat-logger-client'
+import { kError, kInfo, kVerbose } from '@/lib/koksmat-logger-client'
 import React, { useState } from 'react'
-import { databases } from "@/app/tools/api/database"
+import { DatabaseClient } from '@/app/tools/api/view/database-client'
+
 export default function RegionEditor(props: {
 
 }) {
+  type DataType = databases.tools.Region
 
   const [mode, setMode] = useState<'view' | 'edit' | 'new'>('view')
-  const [data, setData] = useState<CreateRegion>()
+  const [data, setData] = useState<DataType>()
   const [isValid, setisValid] = useState(false)
   const [errors, seterrors] = useState<Array<{ field: string; message: string }>>([])
 
   const handleSave = async () => {
+    const database = new DatabaseClient('country', () => 'YOUR_AUTH_TOKEN')
     kVerbose("Save data", data)
-    const databaseSchema = databases.tools.regionCreate
-    kVerbose("databaseSchema", databaseSchema)
+    try {
+      //await database.create(data)
+      kInfo("Data saved")
+
+    } catch (error) {
+      kError("An error occurred:", error);
+    }
+
   }
 
-  const handleChange = (isValid: boolean, newData: CreateRegion, errors: Array<{ field: string; message: string }>) => {
+  const handleChange = (isValid: boolean, newData: DataType, errors: Array<{ field: string; message: string }>) => {
     setData(newData)
     setisValid(isValid)
     seterrors(errors)
@@ -37,7 +46,7 @@ export default function RegionEditor(props: {
         <Button variant={"secondary"} onClick={handleSave}> Save</Button>
       </div>
       <SchemaForm
-        schema={schema}
+        schema={databases.tools.table.region.schema}
         initialData={data}
         mode={mode}
         onChange={handleChange}

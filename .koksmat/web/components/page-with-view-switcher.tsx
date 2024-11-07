@@ -5,7 +5,7 @@ import { Grid, List, Table } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ToolCardMediumComponent } from "./tool-card-medium";
-import { Tool } from "@/app/tools/api/entity/schemas";
+import { Tool } from "@/app/tools/api/view/schemas";
 import { ComponentDoc } from "./component-documentation-hub";
 import { ToolSearchProps } from "./tool-search";
 

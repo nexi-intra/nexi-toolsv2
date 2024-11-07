@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { DatabaseClient } from '@/app/tools/api/entity/database-client'
-import { Country } from '@/app/tools/api/entity/schemas'
+import { DatabaseClient } from '@/app/tools/api/view/database-client'
+import { Country } from '@/app/tools/api/view/schemas'
 
 export default function QueryCountry() {
   const [sql, setSql] = useState<string>('')

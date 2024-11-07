@@ -1,5 +1,6 @@
 "use client"
-import { CreateTool, CreateToolSchema } from '@/app/tools/api/database/tools/schemas/toolCreate'
+
+import { databases } from '@/app/tools/api/database'
 import SchemaForm from '@/components/schema-form'
 import { Button } from '@/components/ui/button'
 import { kInfo } from '@/lib/koksmat-logger-client'
@@ -8,11 +9,11 @@ import React, { useState } from 'react'
 export default function ToolEditor() {
 
   const [mode, setMode] = useState<'view' | 'edit' | 'new'>('view')
-  const [data, setData] = useState<CreateTool>()
+  const [data, setData] = useState<databases.tools.Tool>()
   const [isValid, setisValid] = useState(false)
   const [errors, seterrors] = useState<Array<{ field: string; message: string }>>([])
 
-  const handleChange = (isValid: boolean, newData: CreateTool, errors: Array<{ field: string; message: string }>) => {
+  const handleChange = (isValid: boolean, newData: databases.tools.Tool, errors: Array<{ field: string; message: string }>) => {
     setData(newData)
     setisValid(isValid)
     seterrors(errors)
@@ -28,7 +29,7 @@ export default function ToolEditor() {
         <Button variant={"secondary"} onClick={() => alert("saving")}> Save</Button>
       </div>
       <SchemaForm
-        schema={CreateToolSchema}
+        schema={databases.tools.table.tool.schema}
         initialData={data}
         mode={mode}
         onChange={handleChange}

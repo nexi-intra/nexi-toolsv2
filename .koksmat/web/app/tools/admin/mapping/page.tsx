@@ -2,7 +2,7 @@
 import { FrontendDataMapper } from '@/components/frontend-data-mapper'
 import React from 'react'
 import { useSidebar } from '@/components/ui/sidebar'
-import { schemasMap } from '../../api/entity/schemas'
+import { schemasMap } from '../../api/view/schemas'
 
 export default function Page() {
   const { state } = useSidebar()

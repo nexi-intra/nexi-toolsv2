@@ -1,5 +1,7 @@
 "use client"
-import { CreateUsergroup, CreateUsergroupSchema } from '@/app/tools/api/database/tools/schemas/usergroupCreate'
+
+import { database } from '@/actions/database/works/activityModel'
+import { databases } from '@/app/tools/api/database'
 import SchemaForm from '@/components/schema-form'
 import { Button } from '@/components/ui/button'
 import { kInfo } from '@/lib/koksmat-logger-client'
@@ -8,11 +10,11 @@ import React, { useState } from 'react'
 export default function UserGroupEditor() {
 
   const [mode, setMode] = useState<'view' | 'edit' | 'new'>('view')
-  const [data, setData] = useState<CreateUsergroup>()
+  const [data, setData] = useState<databases.tools.Usergroup>()
   const [isValid, setisValid] = useState(false)
   const [errors, seterrors] = useState<Array<{ field: string; message: string }>>([])
 
-  const handleChange = (isValid: boolean, newData: CreateUsergroup, errors: Array<{ field: string; message: string }>) => {
+  const handleChange = (isValid: boolean, newData: databases.tools.Usergroup, errors: Array<{ field: string; message: string }>) => {
     setData(newData)
     setisValid(isValid)
     seterrors(errors)
@@ -28,7 +30,7 @@ export default function UserGroupEditor() {
         <Button variant={"secondary"} onClick={() => alert("saving")}> Save</Button>
       </div>
       <SchemaForm
-        schema={CreateUsergroupSchema}
+        schema={databases.tools.table.usergroup.schema}
         initialData={data}
         mode={mode}
         onChange={handleChange}
