@@ -18,9 +18,11 @@ export interface NavItem {
   url: string;
   icon: LucidIconName;
   isActive?: boolean;
+  label?: string;
   items?: Array<{
     title: TranslatedString;
     url: string;
+    label?: string;
   }>;
 }
 

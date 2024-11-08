@@ -8,7 +8,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import { MagicboxContext } from "@/app/koksmat/magicbox-context"
+import { MagicboxContext } from "@/app/koksmat0/magicbox-context"
 import { run } from "@/actions/server"
 import { LogObject } from "./log-viewer"
 import { useInterfaceFromJson } from "./hooks/useInterfaceFromJson"

@@ -4,10 +4,10 @@ version: 1
 ---*/
 "use client";
 
-import { https, Result } from "@/app/koksmat/httphelper";
+import { https, Result } from "@/app/koksmat0/httphelper";
 import { z, ZodObject } from "zod";
 
-import { run } from "@/app/koksmat/magicservices";
+import { run } from "@/app/koksmat0/magicservices";
 import { APPNAME } from "@/app/global";
 
 export const version = 1;

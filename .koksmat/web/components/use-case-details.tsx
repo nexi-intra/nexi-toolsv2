@@ -28,6 +28,9 @@ const UseCaseDetailsProps = z.object({
   useCase: UseCaseSchema,
   className: z.string().optional(),
   children: z.custom<React.ReactNode>(),
+  mode: z.enum(['view', 'new', 'edit']).default('view'),
+  onModeChange: z.function().args(z.enum(['view', 'new', 'edit'])).optional(),
+  onSave: z.function().args(UseCaseSchema).optional(),
 });
 
 type UseCaseDetailsProps = z.infer<typeof UseCaseDetailsProps>;
@@ -39,15 +42,24 @@ type UseCaseDetailsProps = z.infer<typeof UseCaseDetailsProps>;
  * It includes an action panel, a table of contents (ToC), and the main content.
  * The ToC is sticky and scroll-spied on desktop, and appears as a sticky combobox on mobile.
  * The action panel appears as a burger menu on mobile.
+ * 
+ * Features:
+ * - Responsive design (desktop/mobile layouts)
+ * - View, New, and Edit modes
+ * - Scroll-spy for table of contents
+ * - Zero Trust implementation with Zod schema validation
+ * - Accessibility considerations (ARIA attributes, semantic HTML)
+ * - Performance optimizations (useCallback, useMemo where appropriate)
  */
-export function UseCaseDetails({ useCase, className = '', children }: UseCaseDetailsProps) {
+export const UseCaseDetails: React.FC<UseCaseDetailsProps> = React.memo(({ useCase, className = '', children, mode = 'view', onModeChange, onSave }) => {
   const [activeSection, setActiveSection] = useState('');
   const [isMobile, setIsMobile] = useState(false);
+  const [localUseCase, setLocalUseCase] = useState(useCase);
   const contentRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
-  const sections = React.Children.toArray(children)
+  const sections = React.useMemo(() => React.Children.toArray(children)
     .filter((child): child is React.ReactElement => React.isValidElement(child) && child.type === DocumentationSection)
-    .map(child => ({ title: child.props.title }));
+    .map(child => ({ title: child.props.title })), [children]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -76,11 +88,24 @@ export function UseCaseDetails({ useCase, className = '', children }: UseCaseDet
     return () => observer.disconnect();
   }, [sections]);
 
+  const handleSave = React.useCallback(() => {
+    if (onSave) {
+      onSave(localUseCase);
+    }
+    if (onModeChange) {
+      onModeChange('view');
+    }
+  }, [localUseCase, onSave, onModeChange]);
+
+  const handleInputChange = React.useCallback((field: keyof UseCase, value: string | number) => {
+    setLocalUseCase(prev => ({ ...prev, [field]: value }));
+  }, []);
+
   return (
     <>
       <ZeroTrust
         schema={UseCaseDetailsProps}
-        props={{ useCase, className, children }}
+        props={{ useCase, className, children, mode, onModeChange, onSave }}
         actionLevel="error"
         componentName="UseCaseDetails"
       />
@@ -90,16 +115,36 @@ export function UseCaseDetails({ useCase, className = '', children }: UseCaseDet
             <header className="mb-8">
               <div className="flex items-center space-x-4 mb-4">
                 <div className="p-2 bg-primary/10 rounded-full">
-                  <Icon iconName={useCase.icon as LucidIconName} className="h-8 w-8" />
+                  <Icon iconName={localUseCase.icon as LucidIconName} className="h-8 w-8" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold">{useCase.title}</h1>
-                  <p className="text-lg text-gray-600">{useCase.description}</p>
+                  {mode === 'view' ? (
+                    <>
+                      <h1 className="text-3xl font-bold">{localUseCase.title}</h1>
+                      <p className="text-lg text-gray-600">{localUseCase.description}</p>
+                    </>
+                  ) : (
+                    <>
+                      <input
+                        type="text"
+                        value={localUseCase.title}
+                        onChange={(e) => handleInputChange('title', e.target.value)}
+                        className="text-3xl font-bold w-full mb-2"
+                        aria-label="Use Case Title"
+                      />
+                      <textarea
+                        value={localUseCase.description}
+                        onChange={(e) => handleInputChange('description', e.target.value)}
+                        className="text-lg text-gray-600 w-full"
+                        aria-label="Use Case Description"
+                      />
+                    </>
+                  )}
                 </div>
               </div>
               {isMobile && (
                 <div className="flex justify-between items-center">
-                  <ActionPanel useCase={useCase} />
+                  <ActionPanel useCase={localUseCase} mode={mode} onSave={handleSave} onModeChange={onModeChange} />
                   <TocCombobox sections={sections} activeSection={activeSection} setActiveSection={setActiveSection} />
                 </div>
               )}
@@ -107,9 +152,12 @@ export function UseCaseDetails({ useCase, className = '', children }: UseCaseDet
             <main>
               {React.Children.map(children, (child) => {
                 if (React.isValidElement(child) && child.type === DocumentationSection) {
+
                   const ClonedElement = React.forwardRef<HTMLDivElement, any>((props, ref) =>
-                    React.cloneElement(child, { ...props, ref })
+                    React.cloneElement(child, { ...props, ref, mode })
                   );
+                  ClonedElement.displayName = 'ClonedElement';
+
                   return (
                     <ClonedElement
                       ref={(el: HTMLDivElement | null) => {
@@ -126,7 +174,7 @@ export function UseCaseDetails({ useCase, className = '', children }: UseCaseDet
           {!isMobile && (
             <aside className="w-full md:w-1/4 mt-8 md:mt-0">
               <div className="sticky top-4 space-y-4">
-                <ActionPanel useCase={useCase} />
+                <ActionPanel useCase={localUseCase} mode={mode} onSave={handleSave} onModeChange={onModeChange} />
                 <TableOfContents sections={sections} activeSection={activeSection} setActiveSection={setActiveSection} />
               </div>
             </aside>
@@ -135,20 +183,42 @@ export function UseCaseDetails({ useCase, className = '', children }: UseCaseDet
       </div>
     </>
   );
-}
+});
 
-function ActionPanel({ useCase }: { useCase: UseCase }) {
+UseCaseDetails.displayName = 'UseCaseDetails';
+
+function ActionPanel({ useCase, mode, onSave, onModeChange }: { useCase: UseCase, mode: 'view' | 'new' | 'edit', onSave?: () => void, onModeChange?: (mode: 'view' | 'new' | 'edit') => void }) {
   return (
     <div className="bg-gray-100 p-4 rounded-lg">
       <h3 className="text-lg font-semibold mb-2">Actions</h3>
-      <Button
-        variant="outline"
-        onClick={() => window.open(useCase.githubIssueUrl, '_blank')}
-        className="w-full mb-2"
-      >
-        <Github className="mr-2 h-4 w-4" />
-        View GitHub Issue
-      </Button>
+      {mode === 'view' ? (
+        <>
+          <Button
+            variant="outline"
+            onClick={() => window.open(useCase.githubIssueUrl, '_blank')}
+            className="w-full mb-2"
+          >
+            <Github className="mr-2 h-4 w-4" />
+            View GitHub Issue
+          </Button>
+          {onModeChange && (
+            <Button onClick={() => onModeChange('edit')} className="w-full">
+              Edit
+            </Button>
+          )}
+        </>
+      ) : (
+        <>
+          <Button onClick={onSave} className="w-full mb-2">
+            Save
+          </Button>
+          {onModeChange && (
+            <Button variant="outline" onClick={() => onModeChange('view')} className="w-full">
+              Cancel
+            </Button>
+          )}
+        </>
+      )}
     </div>
   );
 }
@@ -245,7 +315,20 @@ const exampleUseCase = {
   githubIssueUrl: "https://github.com/example/repo/issues/1",
 };
 
-<UseCaseDetails useCase={exampleUseCase}>
+const handleSave = (updatedUseCase) => {
+  console.log('Saving use case:', updatedUseCase);
+};
+
+const handleModeChange = (newMode) => {
+  console.log('Changing mode to:', newMode);
+};
+
+<UseCaseDetails 
+  useCase={exampleUseCase}
+  mode="view"
+  onSave={handleSave}
+  onModeChange={handleModeChange}
+>
   <DocumentationSection title="Overview">
     <p>Magic Links should work across different regions and comply with international regulations.</p>
   </DocumentationSection>
@@ -255,13 +338,6 @@ const exampleUseCase = {
   <DocumentationSection title="Challenges">
     <p>Address varying legal requirements and cultural norms across different countries.</p>
   </DocumentationSection>
-  <div className="mt-8 p-4 bg-gray-100 rounded-lg">
-    <h2 className="text-xl font-semibold mb-2">Additional Resources</h2>
-    <ul className="list-disc pl-5">
-      <li>Global Accessibility Guidelines</li>
-      <li>International Compliance Checklist</li>
-    </ul>
-  </div>
 </UseCaseDetails>
 `,
     example: (
@@ -273,6 +349,9 @@ const exampleUseCase = {
           icon: "Globe",
           githubIssueUrl: "https://github.com/example/repo/issues/1",
         }}
+        mode="view"
+        onSave={(updatedUseCase) => console.log('Saving use case:', updatedUseCase)}
+        onModeChange={(newMode) => console.log('Changing mode to:', newMode)}
       >
         <DocumentationSection title="Overview">
           <p>Magic Links should work across different regions and comply with international regulations.</p>
@@ -283,13 +362,6 @@ const exampleUseCase = {
         <DocumentationSection title="Challenges">
           <p>Address varying legal requirements and cultural norms across different countries.</p>
         </DocumentationSection>
-        <div className="mt-8 p-4 bg-gray-100 rounded-lg">
-          <h2 className="text-xl font-semibold mb-2">Additional Resources</h2>
-          <ul className="list-disc pl-5">
-            <li>Global Accessibility Guidelines</li>
-            <li>International Compliance Checklist</li>
-          </ul>
-        </div>
       </UseCaseDetails>
     ),
   }

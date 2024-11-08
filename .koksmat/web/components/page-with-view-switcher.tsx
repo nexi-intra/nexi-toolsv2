@@ -5,7 +5,7 @@ import { Grid, List, Table } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ToolCardMediumComponent } from "./tool-card-medium";
-import { Tool } from "@/app/api/entity/schemas";
+import { Tool } from "@/app/tools/api/view/schemas";
 import { ComponentDoc } from "./component-documentation-hub";
 import { ToolSearchProps } from "./tool-search";
 
@@ -14,7 +14,7 @@ import { ToolSearchProps } from "./tool-search";
 // Mock data
 const mockTools: Tool[] = [
   {
-    id: "1",
+    id: 1,
     name: "Microsoft Teams",
     description: "Team collaboration and communication platform",
     url: "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software",
@@ -53,7 +53,7 @@ const mockTools: Tool[] = [
     deletedBy: null,
   },
   {
-    id: "2",
+    id: 2,
     name: "Slack",
     description: "Business communication platform",
     url: "https://slack.com",

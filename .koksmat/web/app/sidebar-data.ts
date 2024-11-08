@@ -17,9 +17,11 @@ type JSONSidebarData = {
     url: string;
     icon: string;
     isActive?: boolean;
+    label?: string;
     items?: Array<{
       title: { [key in SupportedLanguage]: string };
       url: string;
+      label?: string;
     }>;
   }>;
   projects?: Array<{
@@ -57,9 +59,11 @@ export function loadSidebarData(data: JSONSidebarData): SidebarData {
       url: navItem.url,
       icon: navItem.icon as keyof typeof LucidIcons,
       isActive: navItem.isActive,
+      label: navItem.label,
       items: navItem.items?.map((item) => ({
         title: item.title,
         url: item.url,
+        label: item.label,
       })),
     })),
     projects:

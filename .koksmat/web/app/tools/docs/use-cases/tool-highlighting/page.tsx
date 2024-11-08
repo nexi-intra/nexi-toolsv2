@@ -8,7 +8,7 @@ import React from 'react'
 export default function page() {
   return (
     <div> <UseCaseDetails
-      useCase={useCases.find(useCase => useCase.id === 7)!}>
+      useCase={useCases.find(useCase => useCase.id === 7)!} mode={'view'}>
       <><DocumentationSection title="Design">
         <p>
           This is implemented on all tools renderings - small, medium and large - with highligtning of

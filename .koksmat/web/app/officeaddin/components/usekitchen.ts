@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { run } from "@/app/officeaddin/server";
-import { Result } from "@/app/koksmat/httphelper";
+import { Result } from "@/app/koksmat0/httphelper";
 
 export const version = 1;
 
