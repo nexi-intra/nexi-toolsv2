@@ -8,7 +8,7 @@ import React from 'react'
 export default function page() {
   return (
     <div> <UseCaseDetails
-      useCase={useCases.find(useCase => useCase.id === 3)!}>
+      useCase={useCases.find(useCase => useCase.id === 3)!} mode={'view'}>
       <><DocumentationSection title="Design">
         <p>
           This is implemented by having data stored in database with the relations to countries and roles

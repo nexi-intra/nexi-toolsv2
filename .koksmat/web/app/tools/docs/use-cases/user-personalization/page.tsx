@@ -8,7 +8,7 @@ import React from 'react'
 export default function page() {
   return (
     <div> <UseCaseDetails
-      useCase={useCases.find(useCase => useCase.id === 6)!}>
+      useCase={useCases.find(useCase => useCase.id === 6)!} mode={'view'}>
       <><DocumentationSection title="Design">
         <p>
           This is implemented as a single page (INSERT LINK) which can be embedded in SharePoint or Teams, or accessed directly in a browser.

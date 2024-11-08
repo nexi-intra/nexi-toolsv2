@@ -27,6 +27,7 @@ v_tenant VARCHAR COLLATE pg_catalog."default" ;
     v_category_id INTEGER;
     v_url VARCHAR;
     v_status VARCHAR;
+    v_Documents JSONB;
     v_metadata JSONB;
         v_audit_id integer;  -- Variable to hold the OUT parameter value
     p_auditlog_params jsonb;
@@ -42,6 +43,7 @@ BEGIN
     v_category_id := p_params->>'category_id';
     v_url := p_params->>'url';
     v_status := p_params->>'status';
+    v_Documents := p_params->>'Documents';
     v_metadata := p_params->>'metadata';
          
     
@@ -57,6 +59,7 @@ BEGIN
         category_id = v_category_id,
         url = v_url,
         status = v_status,
+        Documents = v_Documents,
         metadata = v_metadata
     WHERE id = v_id;
 
@@ -110,6 +113,9 @@ BEGIN
     "description":"" },
     "status": { 
     "type": "string",
+    "description":"" },
+    "Documents": { 
+    "type": "object",
     "description":"" },
     "metadata": { 
     "type": "object",

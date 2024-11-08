@@ -12,7 +12,7 @@ import { OpenApiGeneratorComponent } from '@/components/app-components-open-api-
 import React, { useEffect, useState } from 'react';
 import { Skeleton } from "@/components/ui/skeleton"
 import CodeSamplesPage from '@/components/code-samples-page';
-import { schemaMapObjects, typeNames } from '@/app/tools/api/entity/schemas';
+import { schemaMapObjects, typeNames } from '@/app/tools/api/view/schemas';
 import { APILandingPage } from '@/components/app-api-page';
 
 export default function ExampleUsage() {

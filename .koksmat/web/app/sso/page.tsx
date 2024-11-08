@@ -18,8 +18,8 @@ description: Single Sign On endpoint
  
  */
 
-import { https } from "@/app/koksmat/httphelper";
-import { MagicboxContext } from "@/app/koksmat/magicbox-context";
+import { https } from "@/app/koksmat0/httphelper";
+import { MagicboxContext } from "@/app/koksmat0/magicbox-context";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import jwt from "jsonwebtoken";

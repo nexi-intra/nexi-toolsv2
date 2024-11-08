@@ -34,13 +34,13 @@ export default function ZodSchemaDocumentation({
   const [aiPromptCopied, setAiPromptCopied] = useState(false)
   const schemaString = zodToTs(schema, name)
   const fullSchemaString = typename
-    ? `import { ${typename} } from '@/app/api/entity/schemas'\n\n${schemaString}`
+    ? `import { ${typename} } from '@/app/tools/api/entity/schemas'\n\n${schemaString}`
     : schemaString
 
   const aiPromptString = `To use this type in your code, follow these steps:
 
 1. Import the type:
-   import { ${typename || name} } from '@/app/api/entity/schemas'
+   import { ${typename || name} } from '@/app/tools/api/entity/schemas'
 
 2. Use the type in your code:
    const myVariable: ${typename || name} = {

@@ -29,6 +29,10 @@ baseattributes:
       displayname: Description
       type: string
       required: false
+    - name: Translations
+      displayname: Translations
+      type: json
+      required: false
 
 entities:
   language: &language
@@ -45,21 +49,6 @@ entities:
         displayname: Sort Order
         type: string
         required: false
-
-  translation: &translation
-    name: translation
-    description: Translation
-    baselineattributes: *recordAttributes
-    additionalattributes:
-      - name: language
-        displayname: Language
-        type: reference
-        required: true
-        entity: *language
-      - name: translation
-        displayname: Translation
-        type: string
-        required: true
 
   category: &category
     name: category
@@ -78,6 +67,26 @@ entities:
   purpose: &purpose
     name: purpose
     description: Purpose of a tool
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: sortOrder
+        displayname: Sort Order
+        type: string
+        required: false
+
+  userrole: &userrole
+    name: userrole
+    description: Role of a user
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: sortOrder
+        displayname: Sort Order
+        type: string
+        required: false
+
+  accesspoint: &accesspoint
+    name: accesspoint
+    description: Accesspoint of a Tool
     baselineattributes: *recordAttributes
     additionalattributes:
       - name: sortOrder
@@ -137,10 +146,39 @@ entities:
         displayname: Status
         type: string
         required: false
+      - name: Documents
+        displayname: Documents
+        type: json
+        required: false
       - name: metadata
         displayname: Metadata
         type: json
         required: false
+      - name: userroles
+        displayname: User Roles
+        type: array
+        required: true
+        entity: *userrole
+      - name: accesspoints
+        displayname: Access Points
+        type: array
+        required: true
+        entity: *accesspoint
+
+  usergroup: &usergroup
+    name: usergroup
+    description: Groups of users
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: sortOrder
+        displayname: Sort Order
+        type: string
+        required: false
+      - name: tools
+        displayname: Tools
+        type: array
+        required: true
+        entity: *tool
 
   toolgroup: &toolgroup
     name: toolgroup
@@ -203,6 +241,22 @@ entities:
         type: array
         required: false
         entity: *tool
+      - name: userroles
+        displayname: User Roles
+        type: array
+        required: true
+        entity: *userrole
+      - name: accesspoints
+        displayname: Access Points
+        type: array
+        required: true
+        entity: *accesspoint
+      - name: Groups
+        displayname: Groups
+        type: array
+        required: false
+        entity: *usergroup
+
   event: &event
     name: event
     description: Event
@@ -349,16 +403,6 @@ services:
 
     methods: *itemMethods
 
-  - name: translation
-    description: Translations
-    entity:
-      type: record
-      entity: *translation
-      model: translation
-      objectname: Translation
-
-    methods: *itemMethods
-
   - name: purpose
     description: Purposes
     entity:
@@ -405,5 +449,35 @@ services:
       entity: *category
       model: category
       objectname: Category
+
+    methods: *itemMethods
+
+  - name: userrole
+    description: User Roles
+    entity:
+      type: record
+      entity: *userrole
+      model: userrole
+      objectname: User Role
+
+    methods: *itemMethods
+
+  - name: accesspoint
+    description: Access Points
+    entity:
+      type: record
+      entity: *accesspoint
+      model: accesspoint
+      objectname: Access Point
+
+    methods: *itemMethods
+
+  - name: usergroup
+    description: User Groups
+    entity:
+      type: record
+      entity: *usergroup
+      model: usergroup
+      objectname: User Group
 
     methods: *itemMethods

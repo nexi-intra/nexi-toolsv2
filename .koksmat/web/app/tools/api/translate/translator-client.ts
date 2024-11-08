@@ -1,75 +1,89 @@
+import { z } from "zod";
 import { APPNAME } from "@/app/global";
 
-export type Language =
-  | "Afrikaans"
-  | "Arabic"
-  | "Bulgarian"
-  | "Bengali"
-  | "Bosnian"
-  | "Catalan"
-  | "Czech"
-  | "Welsh"
-  | "Danish"
-  | "German"
-  | "Greek"
-  | "English"
-  | "Spanish"
-  | "Estonian"
-  | "Persian"
-  | "Finnish"
-  | "Filipino"
-  | "Fijian"
-  | "French"
-  | "Irish"
-  | "Hebrew"
-  | "Hindi"
-  | "Croatian"
-  | "Haitian Creole"
-  | "Hungarian"
-  | "Indonesian"
-  | "Icelandic"
-  | "Italian"
-  | "Japanese"
-  | "Korean"
-  | "Lithuanian"
-  | "Latvian"
-  | "Malagasy"
-  | "Malay"
-  | "Maltese"
-  | "Hmong Daw"
-  | "Norwegian"
-  | "Dutch"
-  | "Querétaro Otomi"
-  | "Polish"
-  | "Portuguese"
-  | "Romanian"
-  | "Russian"
-  | "Slovak"
-  | "Slovenian"
-  | "Samoan"
-  | "Serbian (Cyrillic)"
-  | "Serbian (Latin)"
-  | "Swedish"
-  | "Swahili"
-  | "Tamil"
-  | "Telugu"
-  | "Thai"
-  | "Klingon (Latin)"
-  | "Tongan"
-  | "Turkish"
-  | "Tahitian"
-  | "Ukrainian"
-  | "Urdu"
-  | "Vietnamese"
-  | "Yucatec Maya"
-  | "Cantonese (Traditional)"
-  | "Chinese Simplified"
-  | "Chinese Traditional";
+// Define the Language type using Zod
+const LanguageSchema = z.enum([
+  "Afrikaans",
+  "Arabic",
+  "Bulgarian",
+  "Bengali",
+  "Bosnian",
+  "Catalan",
+  "Czech",
+  "Welsh",
+  "Danish",
+  "German",
+  "Greek",
+  "English",
+  "Spanish",
+  "Estonian",
+  "Persian",
+  "Finnish",
+  "Filipino",
+  "Fijian",
+  "French",
+  "Irish",
+  "Hebrew",
+  "Hindi",
+  "Croatian",
+  "Haitian Creole",
+  "Hungarian",
+  "Indonesian",
+  "Icelandic",
+  "Italian",
+  "Japanese",
+  "Korean",
+  "Lithuanian",
+  "Latvian",
+  "Malagasy",
+  "Malay",
+  "Maltese",
+  "Hmong Daw",
+  "Norwegian",
+  "Dutch",
+  "Querétaro Otomi",
+  "Polish",
+  "Portuguese",
+  "Romanian",
+  "Russian",
+  "Slovak",
+  "Slovenian",
+  "Samoan",
+  "Serbian (Cyrillic)",
+  "Serbian (Latin)",
+  "Swedish",
+  "Swahili",
+  "Tamil",
+  "Telugu",
+  "Thai",
+  "Klingon (Latin)",
+  "Tongan",
+  "Turkish",
+  "Tahitian",
+  "Ukrainian",
+  "Urdu",
+  "Vietnamese",
+  "Yucatec Maya",
+  "Cantonese (Traditional)",
+  "Chinese Simplified",
+  "Chinese Traditional",
+]);
 
-interface TranslationResult {
-  original: string;
-  translations: Record<Language, string>;
-}
+export type Language = z.infer<typeof LanguageSchema>;
+
+// Define the TranslationResult schema
+const TranslationResultSchema = z.object({
+  original: z.string(),
+  translations: z.record(LanguageSchema, z.string()),
+});
+
+type TranslationResult = z.infer<typeof TranslationResultSchema>;
+
+// Define the TranslatorClient schema
+const TranslatorClientSchema = z.object({
+  baseUrl: z.string(),
+  getToken: z.function().returns(z.union([z.string(), z.promise(z.string())])),
+});
 
 export class TranslatorClient {
   private baseUrl: string;
@@ -78,6 +92,8 @@ export class TranslatorClient {
   constructor(getToken: () => string | Promise<string>) {
     this.baseUrl = "/" + APPNAME + "/api/translate";
     this.getToken = getToken;
+
+    // Validate the instance using ZeroTrust
   }
 
   private async fetchWithAuth(
@@ -106,7 +122,8 @@ export class TranslatorClient {
       method: "POST",
       body: JSON.stringify({ text, sourceLanguage, targetLanguages }),
     });
-    return response.json();
+    const result = await response.json();
+    return TranslationResultSchema.parse(result);
   }
 
   async translateBatch(
@@ -118,6 +135,7 @@ export class TranslatorClient {
       method: "POST",
       body: JSON.stringify({ texts, sourceLanguage, targetLanguages }),
     });
-    return response.json();
+    const results = await response.json();
+    return z.array(TranslationResultSchema).parse(results);
   }
 }

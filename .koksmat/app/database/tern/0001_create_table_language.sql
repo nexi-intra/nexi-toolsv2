@@ -32,6 +32,7 @@ CREATE TABLE public.language
     ,searchindex character varying COLLATE pg_catalog."default"  NOT NULL
     ,name character varying COLLATE pg_catalog."default"  NOT NULL
     ,description character varying COLLATE pg_catalog."default" 
+    ,Translations JSONB  
     ,code character varying COLLATE pg_catalog."default"  NOT NULL
     ,sortOrder character varying COLLATE pg_catalog."default" 
 

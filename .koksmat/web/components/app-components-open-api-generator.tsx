@@ -13,8 +13,9 @@ import {
   SchemaName,
   createInputSchema,
   updateInputSchema
-} from '@/app/tools/api/entity/schemas'
+} from '@/app/tools/api/view/schemas'
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+import { APPNAME } from '@/app/global'
 
 // Call this once in your app's entry point
 extendZodWithOpenApi(z);
@@ -97,18 +98,18 @@ export function OpenApiGeneratorComponent({ server, addionalEndpoints }: { serve
       if (!entitySchema) {
         throw new Error(`Schema for ${capitalizedEntity} not found.`);
       }
-      const createEntitySchema = schemaMap[`Create${capitalizedEntity}Input`];
-      if (!createEntitySchema) {
-        throw new Error(`Schema for Create${capitalizedEntity}Input not found.`);
-      }
-      const updateEntitySchema = schemaMap[`Update${capitalizedEntity}Input`];
-      if (!updateEntitySchema) {
-        throw new Error(`Schema for Update${capitalizedEntity}Input not found.`);
-      }
+      // const createEntitySchema = schemaMap[`Create${capitalizedEntity}Input`];
+      // if (!createEntitySchema) {
+      //   throw new Error(`Schema for Create${capitalizedEntity}Input not found.`);
+      // }
+      // const updateEntitySchema = schemaMap[`Update${capitalizedEntity}Input`];
+      // if (!updateEntitySchema) {
+      //   throw new Error(`Schema for Update${capitalizedEntity}Input not found.`);
+      // }
 
       registry.registerPath({
         method: 'get',
-        path: `/api/entity/${schemaName}`,
+        path: `/${APPNAME}/api/entity/${schemaName}`,
         summary: `Get all ${schemaName}`,
         request: {
           query: z.object({
@@ -141,7 +142,7 @@ export function OpenApiGeneratorComponent({ server, addionalEndpoints }: { serve
 
       registry.registerPath({
         method: 'get',
-        path: `/api/entity/${schemaName}/{id}`,
+        path: `/${APPNAME}/api/entity/${schemaName}/{id}`,
         summary: `Get a specific ${singularEntity}`,
         request: {
           params: z.object({
@@ -164,82 +165,82 @@ export function OpenApiGeneratorComponent({ server, addionalEndpoints }: { serve
         },
       })
 
-      registry.registerPath({
-        method: 'post',
-        path: `/api/entity/${schemaName}`,
-        summary: `Create a new ${singularEntity}`,
-        request: {
-          body: {
-            content: {
-              'application/json': {
-                schema: createEntitySchema, // Updated here
-              },
-            },
-          },
-        },
-        responses: {
-          201: {
-            description: `Successfully created ${singularEntity}`,
-            content: {
-              'application/json': {
-                schema: entitySchema, // Updated here
-              },
-            },
-          },
-        },
-      })
+      // registry.registerPath({
+      //   method: 'post',
+      //   path: `/${APPNAME}/api/entity/${schemaName}`,
+      //   summary: `Create a new ${singularEntity}`,
+      //   request: {
+      //     body: {
+      //       content: {
+      //         'application/json': {
+      //           schema: createEntitySchema, // Updated here
+      //         },
+      //       },
+      //     },
+      //   },
+      //   responses: {
+      //     201: {
+      //       description: `Successfully created ${singularEntity}`,
+      //       content: {
+      //         'application/json': {
+      //           schema: entitySchema, // Updated here
+      //         },
+      //       },
+      //     },
+      //   },
+      // })
 
-      registry.registerPath({
-        method: 'put',
-        path: `/api/entity/${schemaName}/{id}`,
-        summary: `Update a ${singularEntity}`,
-        request: {
-          params: z.object({
-            id: z.string(),
-          }),
-          body: {
-            content: {
-              'application/json': {
-                schema: updateEntitySchema, // Updated here
-              },
-            },
-          },
-        },
-        responses: {
-          200: {
-            description: `Successfully updated ${singularEntity}`,
-            content: {
-              'application/json': {
-                schema: entitySchema, // Updated here
-              },
-            },
-          },
-        },
-      })
+      // registry.registerPath({
+      //   method: 'put',
+      //   path: `/${APPNAME}/api/entity/${schemaName}/{id}`,
+      //   summary: `Update a ${singularEntity}`,
+      //   request: {
+      //     params: z.object({
+      //       id: z.string(),
+      //     }),
+      //     body: {
+      //       content: {
+      //         'application/json': {
+      //           schema: updateEntitySchema, // Updated here
+      //         },
+      //       },
+      //     },
+      //   },
+      //   responses: {
+      //     200: {
+      //       description: `Successfully updated ${singularEntity}`,
+      //       content: {
+      //         'application/json': {
+      //           schema: entitySchema, // Updated here
+      //         },
+      //       },
+      //     },
+      //   },
+      // })
 
-      registry.registerPath({
-        method: 'delete',
-        path: `/api/entity/${schemaName}/{id}`,
-        summary: `Delete a ${singularEntity}`,
-        request: {
-          params: z.object({
-            id: z.string(),
-          }),
-        },
-        responses: {
-          200: {
-            description: `Successfully deleted ${singularEntity}`,
-            content: {
-              'application/json': {
-                schema: z.object({
-                  success: z.boolean(),
-                  message: z.string(),
-                }),
-              },
-            },
-          },
-        },
-      })
+      // registry.registerPath({
+      //   method: 'delete',
+      //   path: `/${APPNAME}/api/entity/${schemaName}/{id}`,
+      //   summary: `Delete a ${singularEntity}`,
+      //   request: {
+      //     params: z.object({
+      //       id: z.string(),
+      //     }),
+      //   },
+      //   responses: {
+      //     200: {
+      //       description: `Successfully deleted ${singularEntity}`,
+      //       content: {
+      //         'application/json': {
+      //           schema: z.object({
+      //             success: z.boolean(),
+      //             message: z.string(),
+      //           }),
+      //         },
+      //       },
+      //     },
+      //   },
+      // })
     })
 
     const generator = new OpenApiGeneratorV3(registry.definitions)

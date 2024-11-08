@@ -1,8 +1,8 @@
 language: "en"
 teams:
   - name:
-      en: "Links"
-      da: "Links"
+      en: "Tools"
+      da: "Tools"
     logo: "Link"
     plan:
       en: "Preview"
@@ -25,11 +25,15 @@ navMain:
       - title:
           en: "Explorer"
           da: "Historik"
+
         url: "/tools/integration/explorer"
+        label: coming
+
       - title:
           en: "Favourites"
           da: "Stjernemarkeret"
-        url: "#"
+        label: coming
+        url: "/tools/pages/profile"
       # - title:
       #     en: "Settings"
       #     da: "Indstillinger"
@@ -52,6 +56,114 @@ navMain:
   #         en: "Quantum"
   #         da: "Kvantum"
   #       url: "#"
+  # - title:
+  #     en: "Adoption"
+  #     da: "Integrationssider"
+  #   label: coming
+  #   url: "#"
+  #   icon: "BookCheck"
+  #   isActive: true
+  #   items:
+  #     - title:
+  #         en: "Learn"
+  #         da: "Historik"
+  #       url: "/tools/learn"
+  #     - title:
+  #         en: "Test cases"
+  #         da: "Stjernemarkeret"
+  #       url: "/tools/test"
+  - title:
+      en: "Tables"
+      da: "Indstillinger"
+    url: "#"
+    icon: "Database"
+    label: preview
+    items:
+      - title:
+          en: "Regions"
+          da: "Regions"
+        url: "/tools/admin/data/regions"
+        icon: "BookOpen"
+      - title:
+          en: "Countries"
+          da: "Countries"
+        url: "/tools/admin/data/countries"
+        icon: "BookOpen"
+      - title:
+          en: "Categories"
+          da: "Categories"
+        url: "/tools/admin/data/categories"
+        icon: "BookOpen"
+      - title:
+          en: "Access Points"
+          da: "Categories"
+        url: "/tools/admin/data/access-points"
+        icon: "BookOpen"
+      - title:
+          en: "Languages"
+          da: "Categories"
+        url: "/tools/admin/data/languages"
+        icon: "BookOpen"
+      - title:
+          en: "Purposes"
+          da: "Categories"
+        url: "/tools/admin/data/purposes"
+        icon: "BookOpen"
+      - title:
+          en: "Tool Groups"
+          da: "Categories"
+        url: "/tools/admin/data/tool-groups"
+        icon: "BookOpen"
+      - title:
+          en: "Tools"
+          da: "Categories"
+        url: "/tools/admin/data/tools"
+        icon: "BookOpen"
+      - title:
+          en: "User Groups"
+          da: "Categories"
+        url: "/tools/admin/data/user-groups"
+        icon: "BookOpen"
+      - title:
+          en: "Users"
+          da: "Categories"
+        url: "/tools/admin/data/users"
+        icon: "BookOpen"
+      - title:
+          en: "User Roles"
+          da: "Categories"
+        url: "/tools/admin/data/user-roles"
+        icon: "BookOpen"
+  - title:
+      en: "Settings"
+      da: "Indstillinger"
+    #label: coming
+    url: "#"
+    icon: "Settings2"
+    items:
+      # - title:
+      #     en: "General"
+      #     da: "Generelt"
+      #   url: "#"
+      - title:
+          en: "Mapping"
+          da: "Mapping"
+        url: "/tools/admin/mapping"
+        label: "alpha"
+        icon: "BookOpen"
+
+      # - title:
+      #     en: "Team"
+      #     da: "Hold"
+      #   url: "#"
+      # - title:
+      #     en: "Billing"
+      #     da: "Fakturering"
+      #   url: "#"
+      # - title:
+      #     en: "Limits"
+      #     da: "Begrænsninger"
+      #   url: "#"
   - title:
       en: "Documentation"
       da: "Dokumentation"
@@ -73,32 +185,4 @@ navMain:
       # - title:
       #     en: "Changelog"
       #     da: "Ændringslog"
-      #   url: "#"
-  - title:
-      en: "Settings"
-      da: "Indstillinger"
-    url: "#"
-    icon: "Settings2"
-    items:
-      - title:
-          en: "General"
-          da: "Generelt"
-        url: "#"
-      - title:
-          en: "Mapping"
-          da: "Mapping"
-        url: "/tools/admin/mapping"
-        icon: "BookOpen"
-
-      # - title:
-      #     en: "Team"
-      #     da: "Hold"
-      #   url: "#"
-      # - title:
-      #     en: "Billing"
-      #     da: "Fakturering"
-      #   url: "#"
-      # - title:
-      #     en: "Limits"
-      #     da: "Begrænsninger"
       #   url: "#"

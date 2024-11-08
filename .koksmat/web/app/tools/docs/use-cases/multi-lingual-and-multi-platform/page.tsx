@@ -8,7 +8,7 @@ import React from 'react'
 export default function page() {
   return (
     <div> <UseCaseDetails
-      useCase={useCases.find(useCase => useCase.id === 1)!}>
+      useCase={useCases.find(useCase => useCase.id === 1)!} mode={'view'}>
       <><DocumentationSection title="Design">
         <p>
           Multi lingual support is implemented by using for end user orientated componennts and for end user orientated data.
