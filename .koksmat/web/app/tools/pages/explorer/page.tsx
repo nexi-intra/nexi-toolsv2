@@ -1,7 +1,8 @@
+import ToolsPage from '@/components/page-with-view-switcher'
 import React from 'react'
 
 export default function Page() {
   return (
-    <div>Explorer</div>
+    <div className='w-full'><ToolsPage /></div>
   )
 }

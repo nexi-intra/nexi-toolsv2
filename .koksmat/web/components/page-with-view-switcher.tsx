@@ -9,8 +9,6 @@ import { Tool } from "@/app/tools/api/view/schemas";
 import { ComponentDoc } from "./component-documentation-hub";
 import { ToolSearchProps } from "./tool-search";
 
-// Define the Tool type based on the provided schema
-
 // Mock data
 const mockTools: Tool[] = [
   {
@@ -118,22 +116,21 @@ export function ToolsPage({ className = "" }: ToolsPageProps) {
     switch (viewMode) {
       case "cards":
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
             {filteredTools.map((tool) => (
               <ToolCardMediumComponent
                 key={tool.id}
                 tool={tool}
-                onFavoriteChange={function (isFavorite: boolean): void {
-                  throw new Error("Function not implemented.");
-                }}
+                onFavoriteChange={() => { }}
                 allowedTags={[]}
+
               />
             ))}
           </div>
         );
       case "table":
         return (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto w-full">
             <table className="w-full">
               <thead>
                 <tr>
@@ -158,9 +155,9 @@ export function ToolsPage({ className = "" }: ToolsPageProps) {
         );
       case "list":
         return (
-          <ul className="space-y-4">
+          <ul className="space-y-4 w-full">
             {filteredTools.map((tool) => (
-              <li key={tool.id} className="border-b pb-4">
+              <li key={tool.id} className="border-b pb-4 w-full">
                 <h3 className="font-semibold">{tool.name}</h3>
                 <p>{tool.description}</p>
                 <p className="text-sm text-muted-foreground mt-1">
@@ -174,31 +171,34 @@ export function ToolsPage({ className = "" }: ToolsPageProps) {
   };
 
   return (
-    <div className={`space-y-4 ${className}`}>
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+    <div className={`space-y-4 ${className} w-full`}>
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full">
         <Input
           type="text"
           placeholder="Search tools..."
           onChange={(e) => handleSearch(e.target.value)}
-          className="w-full sm:w-64"
+          className="w-full flex-grow"
         />
         <div className="flex gap-2">
           <Button
             variant={viewMode === "cards" ? "default" : "outline"}
             onClick={() => setViewMode("cards")}
-            aria-label="Card view">
+            aria-label="Card view"
+          >
             <Grid className="w-4 h-4" />
           </Button>
           <Button
             variant={viewMode === "table" ? "default" : "outline"}
             onClick={() => setViewMode("table")}
-            aria-label="Table view">
+            aria-label="Table view"
+          >
             <Table className="w-4 h-4" />
           </Button>
           <Button
             variant={viewMode === "list" ? "default" : "outline"}
             onClick={() => setViewMode("list")}
-            aria-label="List view">
+            aria-label="List view"
+          >
             <List className="w-4 h-4" />
           </Button>
         </div>
@@ -218,7 +218,7 @@ const ExampleSearchComponent: React.FC<ToolSearchProps> = ({
       type="text"
       placeholder="Search tools..."
       onChange={(e) => onSearch(e.target.value)}
-      className={`p-2 border rounded ${className}`}
+      className={`p-2 border rounded w-full ${className}`}
     />
   );
 };
@@ -231,12 +231,12 @@ export const examplesToolsPage: ComponentDoc[] = [
     description:
       "A component for displaying and searching tools with multiple view modes.",
     usage: `
-import { ToolsPage } from './tools-page'
-import { YourSearchComponent } from './your-search-component'
+import { ToolsPage } from './tools-page';
+import { YourSearchComponent } from './your-search-component';
 
 // In your page or component:
-<ToolsPage tools={yourToolsArray} SearchComponent={YourSearchComponent} />
-  `,
+<ToolsPage tools={yourToolsArray} SearchComponent={YourSearchComponent} />;
+    `,
     example: <ToolsPage />,
   },
 ];

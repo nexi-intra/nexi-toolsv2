@@ -127,4 +127,8 @@ export const navLinks = [
     href: "/tools/docs/components/koksmat-database",
     label: "Koksmat Database",
   },
+  {
+    href: "/tools/docs/components/tools-explorer",
+    label: "Tools Explorer",
+  },
 ];
