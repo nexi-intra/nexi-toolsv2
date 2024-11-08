@@ -4,12 +4,12 @@
     {
       "name": {
         "en": "Tools",
-        "da": "Tools"
+        "da": "Værktøjer"
       },
       "logo": "Link",
       "plan": {
         "en": "Preview",
-        "da": "Test udgave"
+        "da": "Forhåndsvisning"
       }
     }
   ],
@@ -26,15 +26,14 @@
         {
           "title": {
             "en": "Explorer",
-            "da": "Historik"
+            "da": "Udforsker"
           },
-          "label": "coming",
-          "url": "/tools/pages/explorer"
+          "url": "/tools/integration/explorer"
         },
         {
           "title": {
             "en": "Favourites",
-            "da": "Stjernemarkeret"
+            "da": "Favoritter"
           },
           "label": "coming",
           "url": "/tools/pages/profile"
@@ -44,7 +43,7 @@
     {
       "title": {
         "en": "Tables",
-        "da": "Indstillinger"
+        "da": "Tabeller"
       },
       "url": "#",
       "icon": "Database",
@@ -53,7 +52,7 @@
         {
           "title": {
             "en": "Regions",
-            "da": "Regions"
+            "da": "Regioner"
           },
           "url": "/tools/admin/data/regions",
           "icon": "BookOpen"
@@ -61,7 +60,7 @@
         {
           "title": {
             "en": "Countries",
-            "da": "Countries"
+            "da": "Lande"
           },
           "url": "/tools/admin/data/countries",
           "icon": "BookOpen"
@@ -69,7 +68,7 @@
         {
           "title": {
             "en": "Categories",
-            "da": "Categories"
+            "da": "Kategorier"
           },
           "url": "/tools/admin/data/categories",
           "icon": "BookOpen"
@@ -77,7 +76,7 @@
         {
           "title": {
             "en": "Access Points",
-            "da": "Categories"
+            "da": "Adgangspunkter"
           },
           "url": "/tools/admin/data/access-points",
           "icon": "BookOpen"
@@ -85,7 +84,7 @@
         {
           "title": {
             "en": "Languages",
-            "da": "Categories"
+            "da": "Sprog"
           },
           "url": "/tools/admin/data/languages",
           "icon": "BookOpen"
@@ -93,7 +92,7 @@
         {
           "title": {
             "en": "Purposes",
-            "da": "Categories"
+            "da": "Formål"
           },
           "url": "/tools/admin/data/purposes",
           "icon": "BookOpen"
@@ -101,7 +100,7 @@
         {
           "title": {
             "en": "Tool Groups",
-            "da": "Categories"
+            "da": "Værktøjsgrupper"
           },
           "url": "/tools/admin/data/tool-groups",
           "icon": "BookOpen"
@@ -109,7 +108,7 @@
         {
           "title": {
             "en": "Tools",
-            "da": "Categories"
+            "da": "Værktøjer"
           },
           "url": "/tools/admin/data/tools",
           "icon": "BookOpen"
@@ -117,7 +116,7 @@
         {
           "title": {
             "en": "User Groups",
-            "da": "Categories"
+            "da": "Brugergrupper"
           },
           "url": "/tools/admin/data/user-groups",
           "icon": "BookOpen"
@@ -125,7 +124,7 @@
         {
           "title": {
             "en": "Users",
-            "da": "Categories"
+            "da": "Brugere"
           },
           "url": "/tools/admin/data/users",
           "icon": "BookOpen"
@@ -133,7 +132,7 @@
         {
           "title": {
             "en": "User Roles",
-            "da": "Categories"
+            "da": "Brugerroller"
           },
           "url": "/tools/admin/data/user-roles",
           "icon": "BookOpen"
@@ -151,7 +150,7 @@
         {
           "title": {
             "en": "Mapping",
-            "da": "Mapping"
+            "da": "Kortlægning"
           },
           "url": "/tools/admin/mapping",
           "label": "alpha",
@@ -170,14 +169,14 @@
         {
           "title": {
             "en": "Use cases",
-            "da": "Introduktion"
+            "da": "Brugsscenarier"
           },
           "url": "/tools/docs/use-cases"
         },
         {
           "title": {
             "en": "Components",
-            "da": "Kom i gang"
+            "da": "Komponenter"
           },
           "url": "/tools/docs/components"
         }

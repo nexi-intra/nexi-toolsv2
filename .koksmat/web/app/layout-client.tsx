@@ -20,7 +20,11 @@ export default function RootLayoutClientSide({
     <MagicboxProvider>
       <MSALWrapper>
         <BreadcrumbProvider lookupHandlers={[useExampleHook()]}>
-          <KoksmatSessionProvider>{children}
+          <KoksmatSessionProvider>
+            <div className=" w-full min-w-full min-h-full">
+              {children}
+            </div>
+
           </KoksmatSessionProvider>
         </BreadcrumbProvider>
         <TailwindIndicator />

@@ -53,7 +53,7 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
         </div>
         <div className="flex flex-col items-center mb-4">
           <div className="w-16 h-16 mb-2">
-            <Image
+            <img
               src={tool.icon || '/placeholder.svg'}
               alt={tool.name}
               width={64}

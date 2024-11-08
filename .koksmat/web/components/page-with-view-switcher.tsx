@@ -8,88 +8,7 @@ import { ToolCardMediumComponent } from "./tool-card-medium";
 import { Tool } from "@/app/tools/api/view/schemas";
 import { ComponentDoc } from "./component-documentation-hub";
 import { ToolSearchProps } from "./tool-search";
-
-// Mock data
-const mockTools: Tool[] = [
-  {
-    id: 1,
-    name: "Microsoft Teams",
-    description: "Team collaboration and communication platform",
-    url: "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software",
-    groupId: "group1",
-    purposes: [
-      { id: "purpose1", value: "Collaboration", order: "1" },
-      { id: "purpose2", value: "Communication", order: "2" },
-    ],
-    tags: [
-      { id: "tag1", value: "Productivity", order: "1", color: "#0078D7" },
-      { id: "tag2", value: "Teamwork", order: "2", color: "#0078D7" },
-    ],
-    version: "1.5.00.8070",
-    status: "active",
-    icon: "/placeholder.svg",
-    documentationUrl: "https://docs.microsoft.com/en-us/microsoftteams/",
-    supportContact: [
-      { id: "email", value: "support@microsoft.com", order: "1" },
-    ],
-    license: [{ id: "commercial", value: "Commercial", order: "1" }],
-    compatiblePlatforms: ["Windows", "macOS", "iOS", "Android", "Web"],
-    systemRequirements: "Windows 10 or later, macOS 10.14 or later",
-    countries: [{ id: "country1", value: "USA", order: "1" }],
-    repositoryUrl: "https://github.com/microsoft/teams",
-    collaborationType: [{ id: "type1", value: "Proprietary", order: "1" }],
-    documents: [
-      { name: "User Guide", url: "https://example.com/teams-user-guide.pdf" },
-    ],
-    teamSize: 500,
-    primaryFocus: [{ id: "focus1", value: "Communication", order: "1" }],
-    createdAt: new Date(),
-    createdBy: "",
-    updatedAt: new Date(),
-    updatedBy: "",
-    deletedAt: null,
-    deletedBy: null,
-  },
-  {
-    id: 2,
-    name: "Slack",
-    description: "Business communication platform",
-    url: "https://slack.com",
-    groupId: "group1",
-    purposes: [
-      { id: "purpose1", value: "Communication", order: "1" },
-      { id: "purpose2", value: "Collaboration", order: "2" },
-    ],
-    tags: [
-      { id: "tag1", value: "Messaging", order: "1", color: "#36C5F0" },
-      { id: "tag2", value: "Teamwork", order: "2", color: "#36C5F0" },
-    ],
-    version: "4.0.0",
-    status: "active",
-    icon: "/placeholder.svg",
-    documentationUrl: "https://slack.com/help",
-    supportContact: [{ id: "email", value: "feedback@slack.com", order: "1" }],
-    license: [{ id: "freemium", value: "Freemium", order: "1" }],
-    compatiblePlatforms: ["Windows", "macOS", "iOS", "Android", "Web"],
-    systemRequirements: "Modern web browser",
-    countries: [{ id: "country1", value: "USA", order: "1" }],
-    repositoryUrl: "https://github.com/slackapi",
-    collaborationType: [{ id: "type1", value: "Cloud-Based", order: "1" }],
-    documents: [
-      { name: "API Documentation", url: "https://api.slack.com/docs" },
-    ],
-    teamSize: 1000,
-    primaryFocus: [
-      { id: "focus1", value: "Business Communication", order: "1" },
-    ],
-    createdAt: new Date(),
-    createdBy: "",
-    updatedAt: new Date(),
-    updatedBy: "",
-    deletedAt: null,
-    deletedBy: null,
-  },
-];
+import { mockTools } from "./mockTools";
 
 type ViewMode = "cards" | "table" | "list";
 
@@ -116,7 +35,7 @@ export function ToolsPage({ className = "" }: ToolsPageProps) {
     switch (viewMode) {
       case "cards":
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5  gap-4">
             {filteredTools.map((tool) => (
               <ToolCardMediumComponent
                 key={tool.id}

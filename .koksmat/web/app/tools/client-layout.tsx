@@ -52,7 +52,10 @@ export default function AppClientLayout(props: { children: any }) {
         <ApplicationRoot hideBreadcrumb  >
           <KoksmatDatabaseProvider initialMessageProvider={new MessageToKoksmatDatabase(async () => "NEED REAL TOKEN HERE")}>
             <GlobalBreadcrumb />
-            {children}
+            <div className="w-ful">
+
+              {children}
+            </div>
 
             <KoksmatSession />
           </KoksmatDatabaseProvider>
