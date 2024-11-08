@@ -7,3 +7,4 @@ workdir
 .koksmat/web/tests_output/*/**
 .koksmat/web/.koksmat/state.yaml
 .koksmat/web/.koksmat/state.yaml
+.koksmat/web/koksmat.log

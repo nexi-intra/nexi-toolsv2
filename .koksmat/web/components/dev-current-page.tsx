@@ -1,54 +1,31 @@
-//"use client";
+"use client";
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
-import { https } from "@/app/koksmat0/httphelper";
-import { LayersIcon, MessageCircleIcon } from "lucide-react";
+import { findFilePathForUrl, openInCode } from "./actions/dev-manager";
+
 export default function DevCurrentPage(props: { children: React.ReactNode }) {
   const children = props.children;
   const pathname = usePathname();
 
-  const [pageName, setPageName] = useState("");
-  const openInVSCode = async (pageName: string) => {
+  const [fileName, setFileName] = useState("");
 
-    const body = JSON.stringify({
-      sessionid: "sessionid",
-      action: "open",
-      command: "code",
-      args: [pageName],
-    });
-    const result = await fetch("/koksmat/api/autopilot/openincode", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body,
-    });
-
-    const j = await result.json();
-  };
   useEffect(() => {
-    const fetchPageName = async () => {
-      const pageInfo = await https<string>(
-        "",
-        "POST",
-        "/koksmat/api/autopilot/pageinfo",
-        {
-          url: pathname,
-        }
-      );
-      setPageName(pageInfo.data!);
-    };
+    if (!pathname) return;
 
-    fetchPageName();
+    const load = async () => {
+      setFileName((await findFilePathForUrl(pathname, "app")))
+    }
+    load()
   }, [pathname]);
+
   if (process.env.NODE_ENV === "production") return null;
   return (
     <div>
       <div
         onClick={() => {
 
-          openInVSCode(pageName);
+          openInCode(fileName);
         }}
       >
         {children}

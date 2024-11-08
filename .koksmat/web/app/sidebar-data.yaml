@@ -25,10 +25,12 @@ navMain:
       - title:
           en: "Explorer"
           da: "Historik"
+        label: coming
         url: "/tools/pages/explorer"
       - title:
           en: "Favourites"
           da: "Stjernemarkeret"
+        label: coming
         url: "/tools/pages/profile"
       # - title:
       #     en: "Settings"
@@ -52,26 +54,28 @@ navMain:
   #         en: "Quantum"
   #         da: "Kvantum"
   #       url: "#"
-  - title:
-      en: "Adoption"
-      da: "Integrationssider"
-    url: "#"
-    icon: "BookCheck"
-    isActive: true
-    items:
-      - title:
-          en: "Learn"
-          da: "Historik"
-        url: "/tools/learn"
-      - title:
-          en: "Test cases"
-          da: "Stjernemarkeret"
-        url: "/tools/test"
+  # - title:
+  #     en: "Adoption"
+  #     da: "Integrationssider"
+  #   label: coming
+  #   url: "#"
+  #   icon: "BookCheck"
+  #   isActive: true
+  #   items:
+  #     - title:
+  #         en: "Learn"
+  #         da: "Historik"
+  #       url: "/tools/learn"
+  #     - title:
+  #         en: "Test cases"
+  #         da: "Stjernemarkeret"
+  #       url: "/tools/test"
   - title:
       en: "Tables"
       da: "Indstillinger"
     url: "#"
     icon: "Database"
+    label: preview
     items:
       - title:
           en: "Regions"
@@ -131,17 +135,19 @@ navMain:
   - title:
       en: "Settings"
       da: "Indstillinger"
+    #label: coming
     url: "#"
     icon: "Settings2"
     items:
-      - title:
-          en: "General"
-          da: "Generelt"
-        url: "#"
+      # - title:
+      #     en: "General"
+      #     da: "Generelt"
+      #   url: "#"
       - title:
           en: "Mapping"
           da: "Mapping"
         url: "/tools/admin/mapping"
+        label: "alpha"
         icon: "BookOpen"
 
       # - title:

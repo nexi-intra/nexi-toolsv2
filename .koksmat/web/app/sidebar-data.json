@@ -28,6 +28,7 @@
             "en": "Explorer",
             "da": "Historik"
           },
+          "label": "coming",
           "url": "/tools/pages/explorer"
         },
         {
@@ -35,32 +36,8 @@
             "en": "Favourites",
             "da": "Stjernemarkeret"
           },
+          "label": "coming",
           "url": "/tools/pages/profile"
-        }
-      ]
-    },
-    {
-      "title": {
-        "en": "Adoption",
-        "da": "Integrationssider"
-      },
-      "url": "#",
-      "icon": "BookCheck",
-      "isActive": true,
-      "items": [
-        {
-          "title": {
-            "en": "Learn",
-            "da": "Historik"
-          },
-          "url": "/tools/learn"
-        },
-        {
-          "title": {
-            "en": "Test cases",
-            "da": "Stjernemarkeret"
-          },
-          "url": "/tools/test"
         }
       ]
     },
@@ -71,6 +48,7 @@
       },
       "url": "#",
       "icon": "Database",
+      "label": "preview",
       "items": [
         {
           "title": {
@@ -172,17 +150,11 @@
       "items": [
         {
           "title": {
-            "en": "General",
-            "da": "Generelt"
-          },
-          "url": "#"
-        },
-        {
-          "title": {
             "en": "Mapping",
             "da": "Mapping"
           },
           "url": "/tools/admin/mapping",
+          "label": "alpha",
           "icon": "BookOpen"
         }
       ]

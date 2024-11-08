@@ -8,9 +8,10 @@ export interface DatabaseMessageType {
   payload: any;
 }
 
-interface MessageProvider {
-  send(callback: () => DatabaseMessageType): Promise<any>;
+export interface MessageProvider {
+  send(message: DatabaseMessageType): Promise<any>;
 }
+
 export type DatabaseHandlerType<T extends z.ZodObject<any>> = {
   create(data: z.infer<T>): Promise<any>;
   update(id: number, data: z.infer<T>): Promise<any>;
@@ -18,6 +19,7 @@ export type DatabaseHandlerType<T extends z.ZodObject<any>> = {
   delete(id: number, hardDelete?: boolean): Promise<any>;
   restore(id: number): Promise<any>;
 };
+
 export class DatabaseHandler<T extends z.ZodObject<any>>
   implements DatabaseHandlerType<T>
 {
@@ -49,19 +51,17 @@ export class DatabaseHandler<T extends z.ZodObject<any>>
       const parsedData = result.data;
       kVerbose("Data validated successfully for create operation");
 
-      // Prepare the callback function
-      const callback = () => {
-        const token = this._getToken();
-        const subject = "create";
-        const targetData = null;
-        const payload = parsedData;
-
-        return { token, subject, targetData, payload };
+      // Build the message object
+      const message: DatabaseMessageType = {
+        token: this._getToken(),
+        subject: "create",
+        targetData: null,
+        payload: parsedData,
       };
 
       kVerbose("Dispatching create message via message provider");
 
-      const response = await this._messageProvider.send(callback);
+      const response = await this._messageProvider.send(message);
 
       kInfo("Create operation completed successfully");
       return response;
@@ -88,19 +88,17 @@ export class DatabaseHandler<T extends z.ZodObject<any>>
       const parsedData = result.data;
       kVerbose(`Data validated successfully for update operation on id ${id}`);
 
-      // Prepare the callback function
-      const callback = () => {
-        const token = this._getToken();
-        const subject = "update";
-        const targetData = { id };
-        const payload = parsedData;
-
-        return { token, subject, targetData, payload };
+      // Build the message object
+      const message: DatabaseMessageType = {
+        token: this._getToken(),
+        subject: "update",
+        targetData: { id },
+        payload: parsedData,
       };
 
       kVerbose(`Dispatching update message via message provider for id ${id}`);
 
-      const response = await this._messageProvider.send(callback);
+      const response = await this._messageProvider.send(message);
 
       kInfo(`Update operation completed successfully for id ${id}`);
       return response;
@@ -128,19 +126,17 @@ export class DatabaseHandler<T extends z.ZodObject<any>>
       const parsedData = result.data;
       kVerbose(`Data validated successfully for patch operation on id ${id}`);
 
-      // Prepare the callback function
-      const callback = () => {
-        const token = this._getToken();
-        const subject = "patch";
-        const targetData = { id };
-        const payload = parsedData;
-
-        return { token, subject, targetData, payload };
+      // Build the message object
+      const message: DatabaseMessageType = {
+        token: this._getToken(),
+        subject: "patch",
+        targetData: { id },
+        payload: parsedData,
       };
 
       kVerbose(`Dispatching patch message via message provider for id ${id}`);
 
-      const response = await this._messageProvider.send(callback);
+      const response = await this._messageProvider.send(message);
 
       kInfo(`Patch operation completed successfully for id ${id}`);
       return response;
@@ -156,21 +152,19 @@ export class DatabaseHandler<T extends z.ZodObject<any>>
         `Starting delete operation for id ${id} with hardDelete=${hardDelete}`
       );
 
-      // Prepare the callback function
-      const callback = () => {
-        const token = this._getToken();
-        const subject = "delete";
-        const targetData = { id };
-        const payload = { hardDelete };
-
-        return { token, subject, targetData, payload };
+      // Build the message object
+      const message: DatabaseMessageType = {
+        token: this._getToken(),
+        subject: "delete",
+        targetData: { id },
+        payload: { hardDelete },
       };
 
       kVerbose(
         `Dispatching delete message via message provider for id ${id} with hardDelete=${hardDelete}`
       );
 
-      const response = await this._messageProvider.send(callback);
+      const response = await this._messageProvider.send(message);
 
       kInfo(
         `Delete operation completed successfully for id ${id} with hardDelete=${hardDelete}`
@@ -186,19 +180,17 @@ export class DatabaseHandler<T extends z.ZodObject<any>>
     try {
       kVerbose(`Starting restore operation for id ${id}`);
 
-      // Prepare the callback function
-      const callback = () => {
-        const token = this._getToken();
-        const subject = "restore";
-        const targetData = { id };
-        const payload = null;
-
-        return { token, subject, targetData, payload };
+      // Build the message object
+      const message: DatabaseMessageType = {
+        token: this._getToken(),
+        subject: "restore",
+        targetData: { id },
+        payload: null,
       };
 
       kVerbose(`Dispatching restore message via message provider for id ${id}`);
 
-      const response = await this._messageProvider.send(callback);
+      const response = await this._messageProvider.send(message);
 
       kInfo(`Restore operation completed successfully for id ${id}`);
       return response;

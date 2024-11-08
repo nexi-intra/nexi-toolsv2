@@ -9,6 +9,7 @@ import React, { useState } from 'react'
 
 
 import { DatabaseHandlerType } from '../lib/database-handler'
+import { useKoksmatDatabase } from './database-context-provider'
 
 type GenericTableFormProps<T extends z.ZodObject<any, any>> = {
   schema: T;
@@ -22,6 +23,8 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
   showJSON = true,
   databaseHandler
 }: GenericTableFormProps<T>) {
+
+  const table = useKoksmatDatabase().table('test', schema)
   const [mode, setMode] = useState<'view' | 'edit' | 'new'>('new')
   const [data, setData] = useState<z.TypeOf<T>>()
   const [isValid, setisValid] = useState(false)
@@ -32,7 +35,8 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
     try {
       kVerbose("Starting save operation");
       if (data && databaseHandler) {
-        const x = await databaseHandler.create(data);
+        const x = await table.create(data)
+        //const x = await databaseHandler.create(data);
       } else {
         kError("Data is undefined, cannot create region");
       }

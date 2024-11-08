@@ -3,11 +3,8 @@ import { z } from "zod";
 import fs from "fs/promises";
 import path from "path";
 import { exec } from "child_process";
-import createKoksmat from "./koksmat";
-
-// Initialize Koksmat
-const koksmat = createKoksmat({ retentionMinutes: 120 });
-
+import { getKoksmat } from "./koksmat"; // Adjust the path as necessary
+import { findPageFileForUrl } from "@/lib/findPage";
 // Define the base path for sessions
 const SESSION_BASE_PATH = path.join(process.cwd(), ".session");
 
@@ -55,12 +52,12 @@ type OpenInCodeInput = z.infer<typeof OpenInCodeSchema>;
  */
 export async function listSessions(correlationId?: string): Promise<string[]> {
   try {
-    koksmat.info(correlationId, "Listing all sessions");
+    getKoksmat().info(correlationId, "Listing all sessions");
     const sessions = await fs.readdir(SESSION_BASE_PATH);
-    koksmat.info(correlationId, `Listed ${sessions.length} sessions`);
+    getKoksmat().info(correlationId, `Listed ${sessions.length} sessions`);
     return sessions;
   } catch (error) {
-    koksmat.error(correlationId, "Error listing sessions:", error);
+    getKoksmat().error(correlationId, "Error listing sessions:", error);
     throw new Error("Failed to list sessions");
   }
 }
@@ -75,7 +72,10 @@ export async function createSession(
 ): Promise<string> {
   const { prefix, correlationId } = CreateSessionSchema.parse(input);
   try {
-    koksmat.info(correlationId, `Creating new session with prefix: ${prefix}`);
+    getKoksmat().info(
+      correlationId,
+      `Creating new session with prefix: ${prefix}`
+    );
     const timestamp = new Date()
       .toISOString()
       .replace(/[-:]/g, "")
@@ -84,10 +84,10 @@ export async function createSession(
     const sessionPath = path.join(SESSION_BASE_PATH, sessionId);
 
     await fs.mkdir(sessionPath, { recursive: true });
-    koksmat.info(correlationId, `Created new session: ${sessionId}`);
+    getKoksmat().info(correlationId, `Created new session: ${sessionId}`);
     return sessionId;
   } catch (error) {
-    koksmat.error(correlationId, "Error creating session:", error);
+    getKoksmat().error(correlationId, "Error creating session:", error);
     throw new Error("Failed to create session");
   }
 }
@@ -100,11 +100,11 @@ export async function deleteSession(input: DeleteSessionInput): Promise<void> {
   const { sessionId, correlationId } = DeleteSessionSchema.parse(input);
   try {
     const sessionPath = path.join(SESSION_BASE_PATH, sessionId);
-    koksmat.info(correlationId, `Deleting session: ${sessionId}`);
+    getKoksmat().info(correlationId, `Deleting session: ${sessionId}`);
     await fs.rm(sessionPath, { recursive: true, force: true });
-    koksmat.info(correlationId, `Deleted session: ${sessionId}`);
+    getKoksmat().info(correlationId, `Deleted session: ${sessionId}`);
   } catch (error) {
-    koksmat.error(correlationId, "Error deleting session:", error);
+    getKoksmat().error(correlationId, "Error deleting session:", error);
     throw new Error("Failed to delete session");
   }
 }
@@ -119,12 +119,12 @@ export async function createFile(input: CreateFileInput): Promise<string> {
     CreateFileSchema.parse(input);
   try {
     const filePath = path.join(SESSION_BASE_PATH, sessionId, fileName);
-    koksmat.info(correlationId, `Creating file: ${filePath}`);
+    getKoksmat().info(correlationId, `Creating file: ${filePath}`);
     await fs.writeFile(filePath, content);
-    koksmat.info(correlationId, `Created file: ${filePath}`);
+    getKoksmat().info(correlationId, `Created file: ${filePath}`);
     return filePath;
   } catch (error) {
-    koksmat.error(correlationId, "Error creating file:", error);
+    getKoksmat().error(correlationId, "Error creating file:", error);
     throw new Error("Failed to create file");
   }
 }
@@ -141,42 +141,47 @@ export async function executeFile(
   const { sessionId, fileName, correlationId } = ExecuteFileSchema.parse(input);
   try {
     const filePath = path.join(SESSION_BASE_PATH, sessionId, fileName);
-    koksmat.info(correlationId, `Executing file: ${filePath}`);
+    getKoksmat().info(correlationId, `Executing file: ${filePath}`);
 
     return new Promise((resolve, reject) => {
       const child = exec(`node ${filePath}`);
 
       child.stdout?.on("data", (data) => {
         const output = data.toString();
-        koksmat.verbose(correlationId, `File execution output: ${output}`);
+        getKoksmat().verbose(correlationId, `File execution output: ${output}`);
         onOutput(output);
       });
 
       child.stderr?.on("data", (data) => {
         const errorOutput = `Error: ${data.toString()}`;
-        koksmat.error(correlationId, `File execution error: ${errorOutput}`);
+        getKoksmat().error(
+          correlationId,
+          `File execution error: ${errorOutput}`,
+          data
+        );
         onOutput(errorOutput);
       });
 
       child.on("close", (code) => {
         if (code === 0) {
-          koksmat.info(
+          getKoksmat().info(
             correlationId,
             `File execution completed successfully: ${filePath}`
           );
           resolve();
         } else {
           const errorMessage = `Process exited with code ${code}`;
-          koksmat.error(
+          getKoksmat().error(
             correlationId,
-            `File execution failed: ${errorMessage}`
+            `File execution failed: ${errorMessage}`,
+            code
           );
           reject(new Error(errorMessage));
         }
       });
     });
   } catch (error) {
-    koksmat.error(correlationId, "Error executing file:", error);
+    getKoksmat().error(correlationId, "Error executing file:", error);
     throw new Error("Failed to execute file");
   }
 }
@@ -190,22 +195,23 @@ export async function openInCode(input: OpenInCodeInput): Promise<void> {
   const { sessionId, fileName, correlationId } = OpenInCodeSchema.parse(input);
   try {
     const filePath = path.join(SESSION_BASE_PATH, sessionId, fileName);
-    koksmat.info(correlationId, `Opening file in VS Code: ${filePath}`);
+    getKoksmat().info(correlationId, `Opening file in VS Code: ${filePath}`);
 
     return new Promise((resolve, reject) => {
       exec(`code ${filePath}`, (error, stdout, stderr) => {
         if (error) {
-          koksmat.error(
+          getKoksmat().error(
             correlationId,
-            `Error opening file in VS Code: ${error.message}`
+            `Error opening file in VS Code: ${error.message}`,
+            error
           );
           reject(new Error(`Failed to open file in VS Code: ${error.message}`));
           return;
         }
         if (stderr) {
-          koksmat.warning(correlationId, `VS Code stderr: ${stderr}`);
+          getKoksmat().warning(correlationId, `VS Code stderr: ${stderr}`);
         }
-        koksmat.info(
+        getKoksmat().info(
           correlationId,
           `File opened successfully in VS Code: ${filePath}`
         );
@@ -213,7 +219,14 @@ export async function openInCode(input: OpenInCodeInput): Promise<void> {
       });
     });
   } catch (error) {
-    koksmat.error(correlationId, "Error opening file in VS Code:", error);
+    getKoksmat().error(correlationId, "Error opening file in VS Code:", error);
     throw new Error("Failed to open file in VS Code");
   }
+}
+
+export async function findFilePathForUrl(
+  url: string,
+  appPath: string
+): Promise<string> {
+  return findPageFileForUrl(url, appPath);
 }

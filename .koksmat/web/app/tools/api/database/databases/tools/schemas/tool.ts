@@ -11,11 +11,16 @@ import { z } from "zod";
 export const schema = z.object({
   tenant: z.string(),
   searchindex: z.string(),
-  name: z.string().describe("Name of the tool"),
-  description: z.string().optional().describe("Description of the tool"),
+  name: z.string().describe("Name of the tool\nMake a short and clear title"),
+  description: z
+    .string()
+    .optional()
+    .describe(
+      "Description of the tool\nNote that you can add links for documentation in other formats"
+    ),
   Translations: z.object({}).passthrough().optional().describe("Translations"),
   category_id: z.number().int().describe("Category ID"),
-  url: z.string().describe("URL of the tool"),
+  url: z.string().url().describe("URL of the tool"),
   status: z.string().optional().describe("Status of the tool"),
   Documents: z.object({}).passthrough().optional().describe("Documents"),
   metadata: z.object({}).passthrough().optional().describe("Metadata"),

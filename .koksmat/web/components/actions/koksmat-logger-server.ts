@@ -1,9 +1,6 @@
 "use server";
 
-import createKoksmat from "./koksmat";
-
-// Initialize Koksmat
-const koksmat = createKoksmat({ retentionMinutes: 120 });
+import { getKoksmat } from "./koksmat"; // Adjust the path as necessary
 
 // Koksmat logger levels
 type LogLevel = "verbose" | "info" | "warning" | "error" | "fatal";
@@ -20,22 +17,22 @@ export async function koksmatLogServer(input: LogInput): Promise<void> {
   try {
     switch (level) {
       case "verbose":
-        await koksmat.verbose(correlationId, ...args);
+        await getKoksmat().verbose(correlationId, args.join(" "));
         break;
       case "info":
-        await koksmat.info(correlationId, ...args);
+        await getKoksmat().info(correlationId, args.join(" "));
         break;
       case "warning":
-        await koksmat.warning(correlationId, ...args);
+        await getKoksmat().warning(correlationId, args.join(" "));
         break;
       case "error":
-        await koksmat.error(correlationId, ...args);
+        await getKoksmat().error(correlationId, args.join(" "), "");
         break;
-      case "fatal":
-        await koksmat.fatal(correlationId, ...args);
-        break;
+      // case "fatal":
+      //   await getKoksmat().fatal(correlationId, ...args);
+      //   break;
       default:
-        await koksmat.info(correlationId, ...args);
+        await getKoksmat().info(correlationId, args.join(" "));
     }
   } catch (error) {
     console.error(`[ERROR] ${correlationId}: Failed to log message:`, error);

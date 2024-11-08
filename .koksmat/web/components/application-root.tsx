@@ -57,7 +57,14 @@ import { Icon } from "./icon"
 import Link from "next/link"
 import Logo from "@/app/koksmat0/components/logo"
 
-
+function MenuItemLabel(props: { title: string, label?: string }) {
+  const { title, label } = props
+  return <div className="flex">
+    <div>{title}</div>
+    <span className="grow" />
+    {label && <span className="bg-yellow-400">{label}</span>}
+  </div>
+}
 interface ApplicationRootProps {
   children: React.ReactNode
   hideTopNav?: boolean
@@ -235,6 +242,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           <SidebarMenuButton tooltip={item.title[currentLanguage]}>
                             <Icon iconName={item.icon} className="size-5" />
                             <span>{item.title[currentLanguage]}</span>
+                            {item.label && <span className="bg-yellow-400">{item.label}</span>}
                             <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                           </SidebarMenuButton>
                         </CollapsibleTrigger>
@@ -244,7 +252,10 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                               <SidebarMenuSubItem key={subItem.title.en}>
                                 <SidebarMenuSubButton asChild>
                                   <Link href={subItem.url}>
-                                    <span>{subItem.title[currentLanguage]}</span>
+
+                                    <span>{subItem.title[currentLanguage]} </span>
+                                    {subItem.label && <span className="bg-yellow-400">{subItem.label}</span>}
+
                                   </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>
@@ -402,6 +413,10 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
           </div>
         </SidebarInset>
       </SidebarProvider>
+      {/* <pre>
+        {JSON.stringify(sidebarData.navMain, null, 2)}
+
+      </pre> */}
     </div>
   )
 }
