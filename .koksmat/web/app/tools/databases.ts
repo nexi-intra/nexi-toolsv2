@@ -3,7 +3,7 @@ import { databases } from "@/app/tools/api/database";
 import { kWarn } from "@/lib/koksmat-logger-client";
 import { DatabaseMessageType } from "../koksmat/src/v.next/lib/database-handler";
 
-function send(): (callback: () => DatabaseMessageType) => Promise<any> {
+function send(): (message: DatabaseMessageType) => Promise<any> {
   return () => {
     kWarn("send not implemented", __dirname, __filename);
     return Promise.resolve("dummy");
