@@ -115,4 +115,8 @@ export const navLinks = [
     href: "/tools/docs/components/2-column-layout",
     label: "2-column-layout",
   },
+  {
+    href: "/tools/docs/components/tools-explorer",
+    label: "Tools Explorer",
+  },
 ];

@@ -1,50 +1,49 @@
-'use client'
+"use client";
 
-import * as React from 'react'
-import { ComponentDoc } from './component-documentation-hub'
-import { Check, ChevronDown, ChevronsUpDown, Plus, Search, X } from 'lucide-react'
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { ComponentDoc } from "./component-documentation-hub";
+import {
+  Check,
+  ChevronDown,
+  ChevronsUpDown,
+  Plus,
+  Search,
+  X,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { useCallback, useEffect, useState } from 'react'
-import { Badge } from './ui/badge'
-import { Input } from './ui/input'
-
+} from "@/components/ui/popover";
+import { useCallback, useEffect, useState } from "react";
+import { Badge } from "./ui/badge";
+import { Input } from "./ui/input";
 
 interface TagProps {
-  tags?: TagType[]
-  selectedTags: string[]
-  allowMulti: boolean
-  required: boolean
-  mode: 'view' | 'new' | 'edit'
-  onChange: (mode: 'view' | 'new' | 'edit', selectedTags: string[]) => void
-  className?: string
-  canEditTagList?: boolean
-  onEditTagList?: () => void
+  tags?: TagType[];
+  selectedTags: string[];
+  allowMulti: boolean;
+  required: boolean;
+  mode: "view" | "new" | "edit";
+  onChange: (mode: "view" | "new" | "edit", selectedTags: string[]) => void;
+  className?: string;
+  canEditTagList?: boolean;
+  onEditTagList?: () => void;
 }
-
-
-
-
-
-
-
 
 // Define the Tag interface
 export interface TagType {
   id: string;
-  value: string
+  value: string;
   color: string;
   order: string;
 }
@@ -55,7 +54,7 @@ interface TagSelectorProps {
   initialSelectedTags?: TagType[]; // Initially selected tags
   allowMulti?: boolean; // Allow multiple selections or not
   required?: boolean; // At least one tag should be selected
-  mode: 'view' | 'edit' | 'new'; // Display mode of the component
+  mode: "view" | "edit" | "new"; // Display mode of the component
   canAddNewTags?: boolean; // Can new tags be added
   onChange?: (selectedTags: TagType[]) => void; // Callback when selected tags change
 }
@@ -65,18 +64,19 @@ const TagSelector: React.FC<TagSelectorProps> = ({
   initialSelectedTags = [],
   allowMulti = true,
   required = false,
-  mode = 'edit',
+  mode = "edit",
   canAddNewTags = true,
   onChange,
 }) => {
   // State for selected tags
-  const [selectedTags, setSelectedTags] = useState<TagType[]>(initialSelectedTags);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTags, setSelectedTags] =
+    useState<TagType[]>(initialSelectedTags);
+  const [searchQuery, setSearchQuery] = useState("");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Filtered tags based on search query
-  const filteredTags = tags.filter(tag =>
+  const filteredTags = tags.filter((tag) =>
     tag.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -87,21 +87,21 @@ const TagSelector: React.FC<TagSelectorProps> = ({
 
   // Function to toggle tag selection
   const toggleTag = (tag: TagType) => {
-    if (mode === 'view') return; // Prevent editing in view mode
+    if (mode === "view") return; // Prevent editing in view mode
 
-    if (selectedTags.find(t => t.id === tag.id)) {
+    if (selectedTags.find((t) => t.id === tag.id)) {
       // Remove tag if it exists
       if (required && selectedTags.length === 1) {
-        setError('At least one tag must be selected.');
+        setError("At least one tag must be selected.");
         return;
       }
-      setSelectedTags(prev => prev.filter(t => t.id !== tag.id));
+      setSelectedTags((prev) => prev.filter((t) => t.id !== tag.id));
     } else {
       // Add tag if it doesn't exist
       if (!allowMulti) {
         setSelectedTags([tag]); // Replace with a single tag if allowMulti is false
       } else {
-        setSelectedTags(prev => [...prev, tag]);
+        setSelectedTags((prev) => [...prev, tag]);
       }
     }
     setError(null);
@@ -110,58 +110,51 @@ const TagSelector: React.FC<TagSelectorProps> = ({
   // Function to add a new tag
   const addNewTag = () => {
     const newTagName = searchQuery.trim();
-    if (newTagName === '' || tags.find(tag => tag.id === newTagName)) return;
+    if (newTagName === "" || tags.find((tag) => tag.id === newTagName)) return;
 
     const newTag: TagType = {
       id: newTagName,
-      color: '#000000',
+      color: "#000000",
       value: newTagName,
       order: newTagName,
     };
 
     // Update tags list and select the new tag
     tags.push(newTag);
-    setSelectedTags(prev => [...prev, newTag]);
-    setSearchQuery('');
+    setSelectedTags((prev) => [...prev, newTag]);
+    setSearchQuery("");
   };
 
   return (
     <div className="w-full">
       {/* Selected Tags Display */}
       <div className="flex items-center gap-2 mb-2">
-        {selectedTags.length > 0 ? (
-          selectedTags.map(tag => (
-            <Badge
-              key={tag.id}
-              style={{ backgroundColor: tag.color }}
-              className="flex items-center text-white"
-            >
-              {tag.id}
-              {mode === 'edit' && (
-                <button
-                  onClick={() => toggleTag(tag)}
-                  className="ml-1 focus:outline-none"
-                  aria-label={`Remove ${tag.id}`}
-                >
-                  <X size={12} />
-                </button>
-              )}
-            </Badge>
-          ))
-        ) : (
-          mode === 'edit' && (
-            <span className="text-gray-500">
-              {allowMulti ? 'Add tags' : 'Add tag'}
-            </span>
-          )
-        )}
+        {selectedTags.length > 0
+          ? selectedTags.map((tag) => (
+              <Badge
+                key={tag.id}
+                style={{ backgroundColor: tag.color }}
+                className="flex items-center text-white">
+                {tag.value}
+                {mode === "edit" && (
+                  <button
+                    onClick={() => toggleTag(tag)}
+                    className="ml-1 focus:outline-none"
+                    aria-label={`Remove ${tag.id}`}>
+                    <X size={12} />
+                  </button>
+                )}
+              </Badge>
+            ))
+          : mode === "edit" && (
+              <span className="text-gray-500">
+                {allowMulti ? "Add tags" : "Add tag"}
+              </span>
+            )}
 
         {/* Edit Button as ChevronDown */}
-        {mode === 'edit' && (
-          <Popover
-            open={isPopoverOpen}
-            onOpenChange={setIsPopoverOpen}
-          >
+        {mode === "edit" && (
+          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverTrigger asChild>
               <Button variant="ghost" className="flex items-center">
                 <ChevronDown className="h-5 w-5" />
@@ -174,11 +167,14 @@ const TagSelector: React.FC<TagSelectorProps> = ({
                 <Input
                   placeholder="Search or add new tag"
                   value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="flex-1"
                 />
                 {canAddNewTags && (
-                  <Button variant="ghost" onClick={addNewTag} disabled={!searchQuery.trim()}>
+                  <Button
+                    variant="ghost"
+                    onClick={addNewTag}
+                    disabled={!searchQuery.trim()}>
                     <Plus className="h-4 w-4" />
                   </Button>
                 )}
@@ -186,12 +182,11 @@ const TagSelector: React.FC<TagSelectorProps> = ({
 
               {/* Tags List */}
               <div className="max-h-48 overflow-y-auto">
-                {filteredTags.map(tag => (
+                {filteredTags.map((tag) => (
                   <div
                     key={tag.id}
                     className="flex items-center justify-between p-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => toggleTag(tag)}
-                  >
+                    onClick={() => toggleTag(tag)}>
                     <div className="flex items-center">
                       <div
                         className="w-3 h-3 rounded-full mr-2"
@@ -199,7 +194,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({
                       />
                       <span>{tag.id}</span>
                     </div>
-                    {selectedTags.find(t => t.id === tag.id) && (
+                    {selectedTags.find((t) => t.id === tag.id) && (
                       <X size={16} className="text-red-500" />
                     )}
                   </div>
@@ -214,28 +209,26 @@ const TagSelector: React.FC<TagSelectorProps> = ({
       </div>
 
       {/* Error Message if required */}
-      {error && (
-        <p className="text-red-500 text-xs mt-1">{error}</p>
-      )}
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
     </div>
-  )
-}
-export default TagSelector
+  );
+};
+export default TagSelector;
 // Utility function to determine text color based on background color
 function getContrastColor(hexColor: string) {
-  const r = parseInt(hexColor.slice(1, 3), 16)
-  const g = parseInt(hexColor.slice(3, 5), 16)
-  const b = parseInt(hexColor.slice(5, 7), 16)
-  const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000
-  return (yiq >= 128) ? 'black' : 'white'
+  const r = parseInt(hexColor.slice(1, 3), 16);
+  const g = parseInt(hexColor.slice(3, 5), 16);
+  const b = parseInt(hexColor.slice(5, 7), 16);
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+  return yiq >= 128 ? "black" : "white";
 }
 
 // Example usage and documentation
 export const examplesTag: ComponentDoc[] = [
   {
-    id: 'TagDropdown',
-    name: 'Tag (Dropdown Style)',
-    description: 'Tag component with a dropdown interface for selecting tags.',
+    id: "TagDropdown",
+    name: "Tag (Dropdown Style)",
+    description: "Tag component with a dropdown interface for selecting tags.",
     usage: `
       <TagSelector
         tags={[
@@ -261,15 +254,50 @@ export const examplesTag: ComponentDoc[] = [
     example: (
       <TagSelector
         tags={[
-          { id: 'bug', color: '#d73a4a', value: 'Something isn\'t working', order: '1' },
-          { id: 'documentation', color: '#0075ca', value: 'Improvements or additions to documentation', order: '2' },
-          { id: 'duplicate', color: '#cfd3d7', value: 'This issue or pull request already exists', order: '3' },
-          { id: 'enhancement', color: '#a2eeef', value: 'New feature or request', order: '4' },
-          { id: 'good first issue', color: '#7057ff', value: 'Good for newcomers', order: '5' }
+          {
+            id: "bug",
+            color: "#d73a4a",
+            value: "Something isn't working",
+            order: "1",
+          },
+          {
+            id: "documentation",
+            color: "#0075ca",
+            value: "Improvements or additions to documentation",
+            order: "2",
+          },
+          {
+            id: "duplicate",
+            color: "#cfd3d7",
+            value: "This issue or pull request already exists",
+            order: "3",
+          },
+          {
+            id: "enhancement",
+            color: "#a2eeef",
+            value: "New feature or request",
+            order: "4",
+          },
+          {
+            id: "good first issue",
+            color: "#7057ff",
+            value: "Good for newcomers",
+            order: "5",
+          },
         ]}
         initialSelectedTags={[
-          { id: 'bug', color: '#d73a4a', value: 'Something isn\'t working', order: '1' },
-          { id: 'documentation', color: '#0075ca', value: 'Improvements or additions to documentation', order: '2' }
+          {
+            id: "bug",
+            color: "#d73a4a",
+            value: "Something isn't working",
+            order: "1",
+          },
+          {
+            id: "documentation",
+            color: "#0075ca",
+            value: "Improvements or additions to documentation",
+            order: "2",
+          },
         ]}
         allowMulti={true}
         required={false}
@@ -277,8 +305,8 @@ export const examplesTag: ComponentDoc[] = [
         // onChange={(mode, selectedTags) => console.log(mode, selectedTags)}
         canAddNewTags
 
-      // onEditTagList={() => console.log('Edit tag list clicked')}
+        // onEditTagList={() => console.log('Edit tag list clicked')}
       />
     ),
   },
-]
+];

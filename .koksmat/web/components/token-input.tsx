@@ -1,44 +1,40 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from "react"
-import { FaCircle, FaSquare, FaStar } from "react-icons/fa"
-import { ComponentDoc } from './component-documentation-hub'
-import TokenInputInternal from "./token-input-internal"
+import React, { useState, useEffect } from "react";
+import { FaCircle, FaSquare, FaStar } from "react-icons/fa";
+import { ComponentDoc } from "./component-documentation-hub";
+import TokenInputInternal from "./token-input-internal";
 
 interface PropertyValue {
-  value: string
-  icon: React.ReactNode
-  color: string
+  value: string;
+  icon: React.ReactNode;
+  color: string;
 }
 
 interface Property {
-  name: string
-  values: PropertyValue[]
+  name: string;
+  values: PropertyValue[];
 }
 
 interface ErrorDetail {
-  token: string
-  message: string
+  token: string;
+  message: string;
 }
 
 interface TokenInputProps {
-  properties: Property[]
-  value: string
-  onChange: (
-    value: string,
-    hasErrors: boolean,
-    errors: ErrorDetail[]
-  ) => void
-  mode?: 'view' | 'new' | 'edit'
-  className?: string
+  properties: Property[];
+  value: string;
+  onChange: (value: string, hasErrors: boolean, errors: ErrorDetail[]) => void;
+  mode?: "view" | "new" | "edit";
+  className?: string;
 }
 
 /**
  * TokenInput Component
- * 
+ *
  * This component is a wrapper around TokenInputInternal, providing a simplified interface
  * for inputting and managing tokens with predefined properties.
- * 
+ *
  * @param properties - An array of Property objects defining the available tokens
  * @param value - The current value of the input
  * @param onChange - Callback function triggered when the input value changes
@@ -49,44 +45,42 @@ const TokenInput: React.FC<TokenInputProps> = ({
   properties,
   value,
   onChange,
-  mode = 'edit',
-  className = ""
+  mode = "edit",
+  className = "",
 }) => {
-  const [internalValue, setInternalValue] = useState(value)
+  const [internalValue, setInternalValue] = useState(value);
 
   useEffect(() => {
-    setInternalValue(value)
-  }, [value])
+    setInternalValue(value);
+  }, [value]);
 
   const handleChange = (
     newValue: string,
     hasErrors: boolean,
     errors: ErrorDetail[]
   ) => {
-    setInternalValue(newValue)
-    onChange(newValue, hasErrors, errors)
-  }
+    setInternalValue(newValue);
+    onChange(newValue, hasErrors, errors);
+  };
 
   return (
     <TokenInputInternal
       properties={properties}
       value={internalValue}
       onChange={handleChange}
-
-
     />
-  )
-}
+  );
+};
 
-export default TokenInput
+export default TokenInput;
 
 // Example usage and documentation
 const ExampleComponent: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>(
     "color:blue shape:square shape:star other"
-  )
-  const [hasErrors, setHasErrors] = useState<boolean>(false)
-  const [errors, setErrors] = useState<ErrorDetail[]>([])
+  );
+  const [hasErrors, setHasErrors] = useState<boolean>(false);
+  const [errors, setErrors] = useState<ErrorDetail[]>([]);
 
   const properties = [
     {
@@ -127,17 +121,17 @@ const ExampleComponent: React.FC = () => {
         },
       ],
     },
-  ]
+  ];
 
   const handleTokenInputChange = (
     value: string,
     hasErrors: boolean,
     errors: ErrorDetail[]
   ) => {
-    setInputValue(value)
-    setHasErrors(hasErrors)
-    setErrors(errors)
-  }
+    setInputValue(value);
+    setHasErrors(hasErrors);
+    setErrors(errors);
+  };
 
   return (
     <div className="container mx-auto mt-10 p-4">
@@ -156,14 +150,15 @@ const ExampleComponent: React.FC = () => {
         </pre>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export const examplesTokenInput: ComponentDoc[] = [
   {
-    id: 'TokenInput',
-    name: 'TokenInput',
-    description: 'A component for inputting and managing tokens with predefined properties.',
+    id: "TokenInput",
+    name: "TokenInput",
+    description:
+      "A component for inputting and managing tokens with predefined properties.",
     usage: `
 import React, { useState } from 'react'
 import TokenInput from '@/components/token-input'
@@ -247,8 +242,6 @@ const ExampleComponent: React.FC = () => {
   )
 }
     `,
-    example: (
-      <ExampleComponent />
-    ),
-  }
-]
+    example: <ExampleComponent />,
+  },
+];

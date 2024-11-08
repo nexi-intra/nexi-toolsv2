@@ -5,16 +5,25 @@ import { Grid, List, Table } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ToolCardMediumComponent } from "./tool-card-medium";
-import { Tool } from "@/app/api/entity/schemas";
 import { ComponentDoc } from "./component-documentation-hub";
 import { ToolSearchProps } from "./tool-search";
+import { Tool } from "@/app/tools/api/entity/schemas";
+import TokenInput from "./token-input";
+import {
+  FaCheckCircle,
+  FaCircle,
+  FaEnvelope,
+  FaSquare,
+  FaStar,
+  FaUsers,
+} from "react-icons/fa";
 
 // Define the Tool type based on the provided schema
 
 // Mock data
 const mockTools: Tool[] = [
   {
-    id: "1",
+    id: 1,
     name: "Microsoft Teams",
     description: "Team collaboration and communication platform",
     url: "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software",
@@ -25,7 +34,7 @@ const mockTools: Tool[] = [
     ],
     tags: [
       { id: "tag1", value: "Productivity", order: "1", color: "#0078D7" },
-      { id: "tag2", value: "Teamwork", order: "2", color: "#0078D7" },
+      { id: "tag2", value: "Teamwork", order: "2", color: "#0078D8" },
     ],
     version: "1.5.00.8070",
     status: "active",
@@ -53,7 +62,7 @@ const mockTools: Tool[] = [
     deletedBy: null,
   },
   {
-    id: "2",
+    id: 2,
     name: "Slack",
     description: "Business communication platform",
     url: "https://slack.com",
@@ -64,7 +73,7 @@ const mockTools: Tool[] = [
     ],
     tags: [
       { id: "tag1", value: "Messaging", order: "1", color: "#36C5F0" },
-      { id: "tag2", value: "Teamwork", order: "2", color: "#36C5F0" },
+      { id: "tag2", value: "Teamwork", order: "2", color: "#0078D8" },
     ],
     version: "4.0.0",
     status: "active",
@@ -102,17 +111,92 @@ interface ToolsPageProps {
 export function ToolsPage({ className = "" }: ToolsPageProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("cards");
   const [tools, setTools] = useState<Tool[]>(mockTools);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const filteredTools = tools.filter(
-    (tool) =>
-      tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tool.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const properties = [
+    {
+      name: "group",
+      values: [
+        {
+          value: "group1",
+          label: "Group 1",
+          icon: <FaUsers color="blue" />,
+          color: "blue",
+        },
+        // Add additional groups here if more groups are defined
+      ],
+    },
+    {
+      name: "tag",
+      values: [
+        {
+          value: "Productivity",
+          icon: <FaCheckCircle color="#0078D7" />,
+          color: "#0088D7",
+        },
+        {
+          value: "Teamwork",
+          icon: <FaUsers color="#0078D7" />,
+          color: "#0078D8",
+        },
+        {
+          value: "Messaging",
+          icon: <FaEnvelope color="#36C5F0" />,
+          color: "#36C5F0",
+        },
+        // Add additional tags if necessary
+      ],
+    },
+  ];
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
   };
+
+  const parseQuery = (query: string) => {
+    const terms = query.split(" ");
+    const parsed = {
+      group: null as string | null,
+      tags: [] as string[],
+      text: [] as string[],
+    };
+
+    terms.forEach((term) => {
+      if (term.startsWith("group:")) {
+        parsed.group = term.replace("group:", "").toLowerCase();
+      } else if (term.startsWith("tag:")) {
+        parsed.tags.push(term.replace("tag:", "").toLowerCase());
+      } else {
+        parsed.text.push(term.toLowerCase());
+      }
+    });
+
+    return parsed;
+  };
+
+  const filteredTools = tools.filter((tool) => {
+    const { group, tags, text } = parseQuery(searchQuery);
+
+    const matchesGroup = group ? tool.groupId.toLowerCase() === group : true;
+
+    const matchesTags =
+      tags.length > 0
+        ? tags.every((tag) =>
+            tool.tags.some((toolTag) => toolTag.value.toLowerCase() === tag)
+          )
+        : true;
+
+    const matchesText =
+      text.length > 0
+        ? text.some(
+            (t) =>
+              tool.name.toLowerCase().includes(t) ||
+              tool.description.toLowerCase().includes(t)
+          )
+        : true;
+
+    return matchesGroup && matchesTags && matchesText;
+  });
 
   const renderTools = () => {
     switch (viewMode) {
@@ -123,9 +207,7 @@ export function ToolsPage({ className = "" }: ToolsPageProps) {
               <ToolCardMediumComponent
                 key={tool.id}
                 tool={tool}
-                onFavoriteChange={function (isFavorite: boolean): void {
-                  throw new Error("Function not implemented.");
-                }}
+                onFavoriteChange={(isFavorite: boolean) => {}}
                 allowedTags={[]}
               />
             ))}
@@ -176,11 +258,12 @@ export function ToolsPage({ className = "" }: ToolsPageProps) {
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <Input
-          type="text"
-          placeholder="Search tools..."
-          onChange={(e) => handleSearch(e.target.value)}
-          className="w-full sm:w-64"
+        <TokenInput
+          properties={properties}
+          value={searchQuery}
+          onChange={(e) => handleSearch(e)}
+          mode="edit"
+          className="mb-4"
         />
         <div className="flex gap-2">
           <Button

@@ -1,32 +1,36 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import { Tool } from '@/app/tools/api/entity/schemas'
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Heart, ExternalLink } from 'lucide-react'
-import Link from 'next/link'
-import Image from 'next/image'
-import ToolCard from './tool-card'
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import Tag, { TagType } from './tag'
-import { ComponentDoc } from './component-documentation-hub'
-import { FavoriteComponent } from './favorite'
+import React, { useState } from "react";
+import { Tool } from "@/app/tools/api/entity/schemas";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Heart, ExternalLink } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import ToolCard from "./tool-card";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import Tag, { TagType } from "./tag";
+import { ComponentDoc } from "./component-documentation-hub";
+import { FavoriteComponent } from "./favorite";
 
 interface ToolCardMediumProps {
-  tool: Tool
-  onFavoriteChange: (isFavorite: boolean) => void
-  allowedTags: TagType[]
+  tool: Tool;
+  onFavoriteChange: (isFavorite: boolean) => void;
+  allowedTags: TagType[];
 }
 
-export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }: ToolCardMediumProps) {
-  const [isFavorite, setIsFavorite] = useState(tool.status === 'active')
+export function ToolCardMediumComponent({
+  tool,
+  onFavoriteChange,
+  allowedTags,
+}: ToolCardMediumProps) {
+  const [isFavorite, setIsFavorite] = useState(tool.status === "active");
 
   const handleFavoriteClick = () => {
-    const newFavoriteState = !isFavorite
-    setIsFavorite(newFavoriteState)
-    onFavoriteChange(newFavoriteState)
-  }
+    const newFavoriteState = !isFavorite;
+    setIsFavorite(newFavoriteState);
+    onFavoriteChange(newFavoriteState);
+  };
 
   return (
     <Card className="w-64 h-80 flex flex-col">
@@ -38,23 +42,25 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
               initialSelectedTags={tool.tags}
               allowMulti={false}
               required={false}
-              mode={'view'}
-            // onChange={(_, selectedTags) => handleChange('tags', selectedTags)}
-
-
+              mode={"view"}
+              // onChange={(_, selectedTags) => handleChange('tags', selectedTags)}
             />
           </div>
           <FavoriteComponent
             mode="view"
-
-            defaultIsFavorite={isFavorite} onChange={function (mode: 'view' | 'new' | 'edit', isFavorite: boolean): void {
+            defaultIsFavorite={isFavorite}
+            onChange={function (
+              mode: "view" | "new" | "edit",
+              isFavorite: boolean
+            ): void {
               //throw new Error('Function not implemented.')
-            }} />
+            }}
+          />
         </div>
         <div className="flex flex-col items-center mb-4">
           <div className="w-16 h-16 mb-2">
             <Image
-              src={tool.icon || '/placeholder.svg'}
+              src={tool.icon || "/placeholder.svg"}
               alt={tool.name}
               width={64}
               height={64}
@@ -68,7 +74,9 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
       <CardFooter className="flex justify-between items-center p-4 bg-gray-50">
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm">Read More</Button>
+            <Button variant="outline" size="sm">
+              Read More
+            </Button>
           </DialogTrigger>
           <DialogContent className="max-w-3xl">
             <ToolCard
@@ -76,7 +84,10 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
               mode="view"
               allowedTags={allowedTags}
               isFavorite={isFavorite}
-              onFavoriteChange={onFavoriteChange} allowedPurposes={[]} allowedCountries={[]} />
+              onFavoriteChange={onFavoriteChange}
+              allowedPurposes={[]}
+              allowedCountries={[]}
+            />
           </DialogContent>
         </Dialog>
         <Link href={tool.url} target="_blank" rel="noopener noreferrer">
@@ -87,7 +98,7 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
         </Link>
       </CardFooter>
     </Card>
-  )
+  );
 }
 
 // Example usage
@@ -95,12 +106,12 @@ function ToolCardMediumExample() {
   const [tool, setTool] = useState<Tool>({
     id: 1,
     createdAt: new Date(),
-    createdBy: 'John Doe',
+    createdBy: "John Doe",
     updatedAt: new Date(),
-    updatedBy: 'Jane Smith',
+    updatedBy: "Jane Smith",
     deletedAt: null,
     deletedBy: null,
-    name: 'Nexi Connect',
+    name: "Nexi Connect",
     description: `Il servizio per chiedere assistenza sulla dotazione tecnologica aziendale, tramite:
 
 Ticket
@@ -108,46 +119,74 @@ Chat
 Telefono
     
     `,
-    url: 'https://nets.service-now.com/sp',
-    groupId: 'tools-group',
+    url: "https://nets.service-now.com/sp",
+    groupId: "tools-group",
     purposes: [],
-    tags: [{
-      "id": "tag1", "value": "Tag 1", "color": "#ff0000",
-      order: ''
-    }],
-    version: '1.0.0',
-    status: 'active',
-    icon: '/nexiconnect.png',
-    documentationUrl: 'https://example.com/docs',
+    tags: [
+      {
+        id: "tag1",
+        value: "Tag 1",
+        color: "#ff0000",
+        order: "",
+      },
+    ],
+    version: "1.0.0",
+    status: "active",
+    icon: "/nexiconnect.png",
+    documentationUrl: "https://example.com/docs",
 
     supportContact: [],
     license: [],
-    compatiblePlatforms: ['Windows', 'Mac', 'Linux'],
-    systemRequirements: 'Node.js 14+',
+    compatiblePlatforms: ["Windows", "Mac", "Linux"],
+    systemRequirements: "Node.js 14+",
     relatedToolIds: [],
     countries: [],
-    repositoryUrl: 'https://github.com/example/sample-tool',
+    repositoryUrl: "https://github.com/example/sample-tool",
     collaborationType: [],
     documents: [
-      { name: 'Manuale Utente', url: 'https://christianiabpos.sharepoint.com/sites/nexiintra-unit-gf-it/SiteAssets/SitePages/Nexi-Connect(1)/Nexi_Connect_Come_fare_per.pdf?web=1' },
-      { name: 'Nexi Connect: il nuovo accesso al supporto IT', url: 'https://christianiabpos.sharepoint.com/sites/nexiintra-unit-gf-it/SitePages/it/Nexi-Connect.aspx' }
+      {
+        name: "Manuale Utente",
+        url: "https://christianiabpos.sharepoint.com/sites/nexiintra-unit-gf-it/SiteAssets/SitePages/Nexi-Connect(1)/Nexi_Connect_Come_fare_per.pdf?web=1",
+      },
+      {
+        name: "Nexi Connect: il nuovo accesso al supporto IT",
+        url: "https://christianiabpos.sharepoint.com/sites/nexiintra-unit-gf-it/SitePages/it/Nexi-Connect.aspx",
+      },
     ],
     teamSize: 5,
-    primaryFocus: []
-  })
+    primaryFocus: [],
+  });
 
   const allowedTags = [
-    { id: "tag1", value: 'tag1', color: '#ff0000', description: 'Tag 1', order: "1" },
-    { id: "tag2", value: 'tag2', color: '#00ff00', description: 'Tag 2', order: "2" },
-    { id: 'tag3', value: "tag3", color: '#0000ff', description: 'Tag 3', order: "3" },
-  ]
+    {
+      id: "tag1",
+      value: "tag1",
+      color: "#ff0000",
+      description: "Tag 1",
+      order: "1",
+    },
+    {
+      id: "tag2",
+      value: "tag2",
+      color: "#00ff00",
+      description: "Tag 2",
+      order: "2",
+    },
+    {
+      id: "tag3",
+      value: "tag3",
+      color: "#0000ff",
+      description: "Tag 3",
+      order: "3",
+    },
+  ];
 
   const handleFavoriteChange = (isFavorite: boolean) => {
-    setTool(prevTool => ({
+    setTool((prevTool) => ({
       ...prevTool,
-      status: isFavorite ? 'active' : 'inactive'
-    }))
-  }
+      status: isFavorite ? "active" : "inactive",
+    }));
+  };
 
   return (
     <div className="p-4">
@@ -158,14 +197,14 @@ Telefono
         allowedTags={allowedTags}
       />
     </div>
-  )
+  );
 }
 
 export const examplesToolCardMedium: ComponentDoc[] = [
   {
-    id: 'ToolCardMedium-Example',
-    name: 'ToolCardMedium',
-    description: 'A medium-sized card for tools with a pop-up detailed view',
+    id: "ToolCardMedium-Example",
+    name: "ToolCardMedium",
+    description: "A medium-sized card for tools with a pop-up detailed view",
     usage: `
 import React, { useState } from 'react'
 import { Tool } from '@/app/api/entity/schemas'
@@ -233,4 +272,4 @@ function ToolCardMediumExample() {
     `,
     example: <ToolCardMediumExample />,
   },
-]
+];
