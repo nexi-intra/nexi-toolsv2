@@ -67,6 +67,7 @@ function MenuItemLabel(props: { title: string, label?: string }) {
 }
 interface ApplicationRootProps {
   children: React.ReactNode
+  topnav?: React.ReactNode;
   hideTopNav?: boolean
   hideBreadcrumb?: boolean
   hideSidebar?: boolean
@@ -76,7 +77,7 @@ const translations = {
   en: {
     teams: "Teams",
     addTeam: "Add team",
-    platform: "Platform",
+    platform: "Solution",
     projects: "Projects",
     more: "More",
     buildingYourApplication: "Building Your Application",
@@ -88,7 +89,7 @@ const translations = {
   da: {
     teams: "Hold",
     addTeam: "Tilføj hold",
-    platform: "Platform",
+    platform: "Solution",
     projects: "Projekter",
     more: "Mere",
     buildingYourApplication: "Byg din applikation",
@@ -132,6 +133,7 @@ const TopNavigation: React.FC<{
 
 export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
   children,
+  topnav,
   hideTopNav = false,
   hideBreadcrumb = false,
   hideSidebar = false
@@ -154,7 +156,8 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
   return (
     <div className={`flex h-screen ${isDarkMode ? 'dark' : ''} bg-background text-foreground`}>
       {!hideTopNav && (
-        <div className="absolute top-0 right-0 p-4 z-50">
+        <div className="absolute top-0 right-0 p-4 z-50 flex" >
+          {topnav}
           <TopNavigation
             isDarkMode={isDarkMode}
             toggleDarkMode={toggleDarkMode}
@@ -267,18 +270,18 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                   ))}
                 </SidebarMenu>
               </SidebarGroup>
-              <SidebarGroup className="group-data-[collapsible=icon]:hidden hidden">
+              <SidebarGroup className="group-data-[collapsible=icon]:hidden ">
                 <SidebarGroupLabel>{t.projects}</SidebarGroupLabel>
                 <SidebarMenu>
                   {sidebarData.projects.map((item) => (
-                    <SidebarMenuItem key={item.name.en}>
+                    <SidebarMenuItem key={item.title.en}>
                       <SidebarMenuButton asChild>
                         <Link href={item.url}>
                           <Icon iconName={item.icon} className="size-5" />
-                          <span>{item.name[currentLanguage]}</span>
+                          <span>{item?.title[currentLanguage]}</span>
                         </Link>
                       </SidebarMenuButton>
-                      <DropdownMenu>
+                      {/* <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <SidebarMenuAction showOnHover>
                             <Icon iconName={item.moreIcon} className="size-5" />
@@ -297,7 +300,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             </DropdownMenuItem>
                           ))}
                         </DropdownMenuContent>
-                      </DropdownMenu>
+                      </DropdownMenu> */}
                     </SidebarMenuItem>
                   ))}
                   <SidebarMenuItem>

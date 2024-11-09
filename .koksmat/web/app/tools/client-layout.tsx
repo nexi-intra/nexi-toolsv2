@@ -17,6 +17,7 @@ import { useExampleHook } from "@/components/lookup-provider";
 import GlobalBreadcrumb from "@/components/global-breadcrumb";
 import { KoksmatDatabaseProvider } from "../koksmat/src/v.next/components/database-context-provider";
 import { MessageToKoksmatDatabase } from "../koksmat/src/v.next/endpoints/database-messages-client";
+import TabNavigatorWithReorder from "../koksmat/src/v.next/components/tab-navigator-with-reorder";
 export default function AppClientLayout(props: { children: any }) {
   const { children } = props;
   const magicbox = useContext(MagicboxContext);
@@ -48,9 +49,12 @@ export default function AppClientLayout(props: { children: any }) {
   }
   return (
     <SidebarProvider>
+
       <AppProvider>
-        <ApplicationRoot hideBreadcrumb  >
+        <ApplicationRoot hideBreadcrumb topnav={<TabNavigatorWithReorder />} >
+
           <KoksmatDatabaseProvider initialMessageProvider={new MessageToKoksmatDatabase(async () => "NEED REAL TOKEN HERE")}>
+
             <GlobalBreadcrumb />
             <div className="w-ful">
 

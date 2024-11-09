@@ -112,3 +112,20 @@ navMain:
           en: "Components"
           da: "Komponenter"
         url: "/tools/docs/components"
+projects:
+  - title:
+      en: "Tools v1.0"
+      da: "Tools v1.0"
+    url: "#"
+    icon: "SquareTerminal"
+    isActive: true
+    items:
+      - title:
+          en: "Explorer"
+          da: "Udforsker"
+        url: "/tools/integration/explorer"
+      - title:
+          en: "Favourites"
+          da: "Favoritter"
+        label: coming
+        url: "/tools/pages/profile"

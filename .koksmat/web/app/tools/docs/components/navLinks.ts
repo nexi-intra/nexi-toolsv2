@@ -131,4 +131,8 @@ export const navLinks = [
     href: "/tools/docs/components/tools-explorer",
     label: "Tools Explorer",
   },
+  {
+    label: "Upload Excel",
+    href: "/tools/docs/components/upload-xls",
+  },
 ];
