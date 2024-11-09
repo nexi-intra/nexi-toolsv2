@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Tool } from '@/app/tools/api/view/schemas'
+import { Tool } from '@/app/tools/schemas'
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Heart, ExternalLink } from 'lucide-react'

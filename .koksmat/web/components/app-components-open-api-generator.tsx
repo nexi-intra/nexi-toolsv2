@@ -13,7 +13,7 @@ import {
   SchemaName,
   createInputSchema,
   updateInputSchema
-} from '@/app/tools/api/view/schemas'
+} from '@/app/tools/schemas'
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { APPNAME } from '@/app/global'
 

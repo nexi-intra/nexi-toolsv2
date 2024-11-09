@@ -8,9 +8,9 @@ import {
   User,
   schemaMapObjects,
   SchemaName,
-} from "./schemas";
+} from "../../schemas";
 
-import { SharedAttributes } from "./schemas/_shared";
+import { SharedAttributes } from "../../schemas/_shared";
 // Define a union type for all entity types
 type EntityType = Tool | Country | Purpose | Tag | ToolGroup | User;
 

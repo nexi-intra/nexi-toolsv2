@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { ComponentDoc } from './component-documentation-hub'
-import { Tool } from '@/app/tools/api/view/schemas'
+import { Tool } from '@/app/tools/schemas'
 import IconUploader from './icon-uploader'
 import TagSelector, { TagType } from './tag'
 import OneLineTextComponent from './one-line-text'

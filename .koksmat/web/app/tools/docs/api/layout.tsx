@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from "@/lib/utils"
-import { typeNames } from '@/app/tools/api/view/schemas'
+import { typeNames } from '@/app/tools/schemas'
 import { Menu, X } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { APPNAME } from '@/app/global'

@@ -1,5 +1,5 @@
 "use client";
-import { Tool } from "@/app/tools/api/view/schemas";
+import { Tool } from "@/app/tools/schemas";
 
 // Mock data
 export const mockTools: Tool[] = [

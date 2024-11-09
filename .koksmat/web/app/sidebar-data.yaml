@@ -5,8 +5,8 @@ teams:
       da: "Værktøjer"
     logo: "Link"
     plan:
-      en: "Preview"
-      da: "Forhåndsvisning"
+      en: "Beta - Production"
+      da: "Beta - Produktion"
 navMain:
   - title:
       en: "Integration Pages"

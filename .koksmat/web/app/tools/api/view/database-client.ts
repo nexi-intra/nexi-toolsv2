@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { SchemaName, schemaMapTypes, SchemaMap } from "./schemas";
-import { SharedAttributes } from "./schemas/_shared";
+import { SchemaName, schemaMapTypes, SchemaMap } from "../../schemas";
+import { SharedAttributes } from "../../schemas/_shared";
 import { APPNAME } from "@/app/global";
 
 interface PaginatedResponse<T> {

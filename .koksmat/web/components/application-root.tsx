@@ -75,8 +75,8 @@ interface ApplicationRootProps {
 
 const translations = {
   en: {
-    teams: "Teams",
-    addTeam: "Add team",
+    teams: "Configuration",
+    addTeam: "Add Configuration",
     platform: "Solution",
     projects: "Projects",
     more: "More",
@@ -87,8 +87,8 @@ const translations = {
     lightMode: "Light Mode",
   },
   da: {
-    teams: "Hold",
-    addTeam: "Tilføj hold",
+    teams: "Opsætning",
+    addTeam: "Tilføj opsætning",
     platform: "Solution",
     projects: "Projekter",
     more: "Mere",

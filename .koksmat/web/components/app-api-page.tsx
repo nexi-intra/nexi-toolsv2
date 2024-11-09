@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowRight, Book, FileJson } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
-import { typeNames } from '@/app/tools/api/view/schemas'
+import { typeNames } from '@/app/tools/schemas'
 import { APPNAME } from '@/app/global'
 
 export function APILandingPage() {

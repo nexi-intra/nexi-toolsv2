@@ -2,7 +2,7 @@
 import { Result } from "@/app/koksmat0/httphelper";
 import { NatsConnection, connect, StringCodec } from "nats";
 import { z } from "zod";
-import { schemaMapObjects, SchemaName } from "./schemas";
+import { schemaMapObjects, SchemaName } from "../../schemas";
 import { BackendService } from "./BackendService";
 
 // natsRequest function remains the same, adjusted for any types
