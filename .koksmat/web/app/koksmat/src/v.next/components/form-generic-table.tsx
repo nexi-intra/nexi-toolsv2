@@ -11,7 +11,10 @@ import React, { useState } from 'react'
 import { DatabaseHandlerType } from '../lib/database-handler'
 import { useKoksmatDatabase } from './database-context-provider'
 
+
 type GenericTableFormProps<T extends z.ZodObject<any, any>> = {
+  tableName: string;
+  virtualTable?: boolean;
   schema: T;
   showModeSelector?: boolean
   showJSON?: boolean

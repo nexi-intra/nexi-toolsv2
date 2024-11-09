@@ -212,13 +212,13 @@ describe("DatabaseHandler", () => {
       const response = await handler.delete(1);
 
       expect(kVerbose).toHaveBeenCalledWith(
-        "Starting delete operation for id 1 with hardDelete=false"
+        "Starting delete operation for id 1 with softDelete=false"
       );
       expect(kVerbose).toHaveBeenCalledWith(
-        "Dispatching delete message via message provider for id 1 with hardDelete=false"
+        "Dispatching delete message via message provider for id 1 with softDelete=false"
       );
       expect(kInfo).toHaveBeenCalledWith(
-        "Delete operation completed successfully for id 1 with hardDelete=false"
+        "Delete operation completed successfully for id 1 with softDelete=false"
       );
       expect(mockMessageProvider.send).toHaveBeenCalled();
       expect(response).toEqual({ success: true });
@@ -230,13 +230,13 @@ describe("DatabaseHandler", () => {
       const response = await handler.delete(1, true);
 
       expect(kVerbose).toHaveBeenCalledWith(
-        "Starting delete operation for id 1 with hardDelete=true"
+        "Starting delete operation for id 1 with softDelete=true"
       );
       expect(kVerbose).toHaveBeenCalledWith(
-        "Dispatching delete message via message provider for id 1 with hardDelete=true"
+        "Dispatching delete message via message provider for id 1 with softDelete=true"
       );
       expect(kInfo).toHaveBeenCalledWith(
-        "Delete operation completed successfully for id 1 with hardDelete=true"
+        "Delete operation completed successfully for id 1 with softDelete=true"
       );
       expect(mockMessageProvider.send).toHaveBeenCalled();
       expect(response).toEqual({ success: true });

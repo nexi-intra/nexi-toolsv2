@@ -16,7 +16,7 @@ export type DatabaseHandlerType<T extends z.ZodObject<any>> = {
   create(data: z.infer<T>): Promise<any>;
   update(id: number, data: z.infer<T>): Promise<any>;
   patch(id: number, data: Partial<z.infer<T>>): Promise<any>;
-  delete(id: number, hardDelete?: boolean): Promise<any>;
+  delete(id: number, softDelete?: boolean): Promise<any>;
   restore(id: number): Promise<any>;
 };
 
@@ -146,10 +146,10 @@ export class DatabaseHandler<T extends z.ZodObject<any>>
     }
   }
 
-  async delete(id: number, hardDelete: boolean = false): Promise<any> {
+  async delete(id: number, softDelete: boolean = false): Promise<any> {
     try {
       kVerbose(
-        `Starting delete operation for id ${id} with hardDelete=${hardDelete}`
+        `Starting delete operation for id ${id} with softDelete=${softDelete}`
       );
 
       // Build the message object
@@ -157,17 +157,17 @@ export class DatabaseHandler<T extends z.ZodObject<any>>
         token: this._getToken(),
         subject: "delete",
         targetData: { id },
-        payload: { hardDelete },
+        payload: { softDelete },
       };
 
       kVerbose(
-        `Dispatching delete message via message provider for id ${id} with hardDelete=${hardDelete}`
+        `Dispatching delete message via message provider for id ${id} with softDelete=${softDelete}`
       );
 
       const response = await this._messageProvider.send(message);
 
       kInfo(
-        `Delete operation completed successfully for id ${id} with hardDelete=${hardDelete}`
+        `Delete operation completed successfully for id ${id} with softDelete=${softDelete}`
       );
       return response;
     } catch (error) {
