@@ -67,7 +67,7 @@ export const MagicboxContext = createContext<MagicboxContextType>({
     accessToken: "",
   },
   version: 0,
-  refresh: () => {},
+  refresh: () => { },
   signIn: function (scopes: string[], loginHint?: string): Promise<boolean> {
     throw new Error("Function not implemented.");
   },

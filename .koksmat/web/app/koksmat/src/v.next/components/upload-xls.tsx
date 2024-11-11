@@ -109,7 +109,7 @@ export const ExcelUploader: React.FC<ExcelUploaderProps> = (props) => {
 
     if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
       setError('Please upload a valid Excel file (.xlsx or .xls)');
-      kError('Invalid file type uploaded');
+      kError("component", 'Invalid file type uploaded');
       return;
     }
 
@@ -126,10 +126,10 @@ export const ExcelUploader: React.FC<ExcelUploaderProps> = (props) => {
         setSelectedSheet(wb.SheetNames[0]);
         const newData = parseSheet(wb, wb.SheetNames[0]);
         setParsedData(newData);
-        kInfo('Excel file successfully parsed', { fileName: file.name });
+        kInfo("component", 'Excel file successfully parsed', { fileName: file.name });
       } catch (error) {
         setError('Error parsing Excel file. Please try again.');
-        kError('Error parsing Excel file', { error });
+        kError("component", 'Error parsing Excel file', { error });
       }
     };
     reader.readAsArrayBuffer(file);

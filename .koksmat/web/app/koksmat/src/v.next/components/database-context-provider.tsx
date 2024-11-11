@@ -6,6 +6,7 @@ import { kVerbose, kWarn, kInfo, kError } from "@/lib/koksmat-logger-client";
 // Create the context
 interface KoksmatDatabaseContextType {
   messageProvider: MessageProvider;
+  tokenProvider: TokenProvider;
   setMessageProvider: (provider: MessageProvider) => void;
   table: <T extends z.ZodObject<any>>(tableName: string, schema: T, isVirtual?: boolean) => DatabaseHandlerType<T>;
 }
@@ -15,10 +16,11 @@ const KoksmatDatabaseContext = createContext<KoksmatDatabaseContextType | undefi
 interface KoksmatDatabaseProviderProps {
   children: React.ReactNode;
   initialMessageProvider: MessageProvider;
+  tokenProvider: TokenProvider;
 }
 
 // Create the provider component
-export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = ({ children, initialMessageProvider }) => {
+export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = ({ children, initialMessageProvider, tokenProvider }) => {
   const [messageProvider, setMessageProvider] = useState<MessageProvider>(initialMessageProvider);
 
   const useTable = useCallback(<T extends z.ZodObject<any>>(
@@ -27,56 +29,71 @@ export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = (
     isVirtual: boolean = false
   ): DatabaseHandlerType<T> => {
     return {
-      create: async (data: z.infer<T>) => {
-        kInfo(`Creating new record in ${tableName}`);
+      read: async (id: number) => {
+        kInfo("provider", `Reading record ${id} from ${tableName}`);
+        const token = await getToken(tokenProvider);
         return messageProvider.send({
-          token: 'your-token-here',
+
+          subject: 'read',
+          targetData: { table: tableName, isVirtual },
+          payload: { id },
+        }, token);
+      },
+      create: async (data: z.infer<T>) => {
+        kInfo("provider", `Creating new record in ${tableName}`);
+        const token = await getToken(tokenProvider);
+        return messageProvider.send({
+
           subject: 'create',
           targetData: { table: tableName, isVirtual },
           payload: { data },
-        });
+        }, token);
       },
       update: async (id: number, data: z.infer<T>) => {
-        kInfo(`Updating record ${id} in ${tableName}`);
+        kInfo("provider", `Updating record ${id} in ${tableName}`);
+        const token = await getToken(tokenProvider);
         return messageProvider.send({
-          token: 'your-token-here',
+
           subject: 'update',
           targetData: { table: tableName, isVirtual },
           payload: { id, data },
-        });
+        }, token);
       },
       patch: async (id: number, data: Partial<z.infer<T>>) => {
-        kInfo(`Patching record ${id} in ${tableName}`);
+        kInfo("provider", `Patching record ${id} in ${tableName}`);
+        const token = await getToken(tokenProvider);
         return messageProvider.send({
-          token: 'your-token-here',
+
           subject: 'patch',
           targetData: { table: tableName, isVirtual },
           payload: { id, data },
-        });
+        }, token);
       },
       delete: async (id: number, hardDelete: boolean = false) => {
-        kInfo(`Deleting record ${id} in ${tableName}`);
+        kInfo("provider", `Deleting record ${id} in ${tableName}`);
+        const token = await getToken(tokenProvider);
         return messageProvider.send({
-          token: 'your-token-here',
+
           subject: 'delete',
           targetData: { table: tableName, isVirtual },
           payload: { id, hardDelete },
-        });
+        }, token);
       },
       restore: async (id: number) => {
-        kInfo(`Restoring record ${id} in ${tableName}`);
+        kInfo("provider", `Restoring record ${id} in ${tableName}`);
+        const token = await getToken(tokenProvider);
         return messageProvider.send({
-          token: 'your-token-here',
+
           subject: 'restore',
           targetData: { table: tableName, isVirtual },
           payload: { id },
-        });
+        }, token);
       },
     };
   }, [messageProvider]);
 
   return (
-    <KoksmatDatabaseContext.Provider value={{ messageProvider, setMessageProvider, table: useTable }}>
+    <KoksmatDatabaseContext.Provider value={{ messageProvider, setMessageProvider, table: useTable, tokenProvider }}>
       {children}
     </KoksmatDatabaseContext.Provider>
   );
@@ -93,7 +110,7 @@ export const useKoksmatDatabase = () => {
 
 // Example usage
 
-import { DatabaseHandlerType, MessageProvider } from '../lib/database-handler';
+import { DatabaseHandlerType, MessageProvider, TokenProvider } from '../lib/database-handler';
 import { ComponentDoc } from '@/components/component-documentation-hub';
 
 // Form-based message provider
@@ -111,7 +128,7 @@ const formMessageProvider: MessageProvider = {
 const inMemoryMessageProvider: MessageProvider = {
   send: async (message) => {
 
-    kInfo(`In-memory operation: ${message.subject} for ${message.targetData.table}`);
+    kInfo("provider", `In-memory operation: ${message.subject} for ${message.targetData.table}`);
     return { success: true, response: 'Default response' };
   }
 };
@@ -170,9 +187,19 @@ const YourComponent = () => {
 };
 `,
     example: (
-      <KoksmatDatabaseProvider initialMessageProvider={formMessageProvider}>
+      <KoksmatDatabaseProvider initialMessageProvider={formMessageProvider} tokenProvider={{ getToken: async () => "a.b.c" }}>
         <div>KoksmatDatabase Provider (See usage for example)</div>
       </KoksmatDatabaseProvider>
     ),
   }
 ];
+
+async function getToken(tokenProvider: TokenProvider) {
+
+  const token = await tokenProvider.getToken();
+  if (!token) {
+    kError("provider", "No token provided", __dirname, __filename);
+    throw new Error("No token provided");
+  }
+  return token
+}

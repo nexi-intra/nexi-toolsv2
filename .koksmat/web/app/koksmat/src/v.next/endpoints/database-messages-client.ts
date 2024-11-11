@@ -1,13 +1,11 @@
-import { tryCatch } from "@/app/officeaddin/actions/outlook-samples";
 import { kError, kVerbose } from "@/lib/koksmat-logger-client";
 import { MessageProvider } from "../lib/database-handler";
 
 async function fetchWithAuth(
   url: string,
-  getToken: () => Promise<string>,
+  token: string,
   options: RequestInit = {}
 ): Promise<Response> {
-  const token = await getToken();
   const headers = {
     ...options.headers,
     Authorization: `Bearer ${token}`,
@@ -22,19 +20,30 @@ async function fetchWithAuth(
 
 export class MessageToKoksmatDatabase implements MessageProvider {
   private baseUrl: string;
-  private getToken: () => Promise<string>;
 
-  constructor(getToken: () => Promise<string>) {
-    this.baseUrl = "/koksmat/api/translate";
-    this.getToken = getToken;
+  constructor() {
+    this.baseUrl = "/koksmat/api/database";
   }
 
-  async send(message: any): Promise<any> {
-    const response = await fetchWithAuth(this.baseUrl, this.getToken, {
+  async send(message: any, token: string): Promise<any> {
+    kVerbose("client", "Sending message to database", message);
+    const response = await fetchWithAuth(this.baseUrl, token, {
       method: "POST",
       body: JSON.stringify(message),
     });
     const result = await response.json();
+    kVerbose("client", "Received response from database", result);
+
+    if (result.status !== 200) {
+      kError(
+        "client",
+        "Error communicating with the database",
+        result,
+        __dirname,
+        __filename
+      );
+      throw new Error("Error communicating with the database");
+    }
     return result;
   }
 }

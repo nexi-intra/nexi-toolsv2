@@ -79,7 +79,7 @@ export function SchemaForm<T extends z.ZodObject<any, any>>({
 
   useEffect(() => {
     if (!schema || typeof schema !== 'object' || !('shape' in schema)) {
-      kError('Invalid schema provided to SchemaForm');
+      kError("component", 'Invalid schema provided to SchemaForm');
       setIsSchemaValid(false);
       return;
     }
@@ -91,7 +91,7 @@ export function SchemaForm<T extends z.ZodObject<any, any>>({
     setInvalidKeys(invalid);
 
     if (invalid.length > 0) {
-      kWarn(`The following keys in the 'omit' array do not exist in the schema: ${invalid.join(', ')}`);
+      kWarn("component", `The following keys in the 'omit' array do not exist in the schema: ${invalid.join(', ')}`);
     }
 
     setIsSchemaValid(true);
@@ -304,7 +304,7 @@ export function SchemaForm<T extends z.ZodObject<any, any>>({
                   const parsedValue = JSON.parse(e.target.value);
                   handleChange(parsedValue);
                 } catch (error) {
-                  kError('Invalid JSON:', error);
+                  kError("component", 'Invalid JSON:', error);
                 }
               }}
               disabled={isDisabled}
@@ -420,7 +420,7 @@ const SchemaFormExample = () => {
 
   const handleChange = (isValid: boolean, newData: ExampleSchemaType, errors: Array<{ field: string; message: string }>) => {
     setData(newData)
-    kInfo(`Data updated in ${mode} mode:`, { isValid, data: newData, errors })
+    kInfo("component", `Data updated in ${mode} mode:`, { isValid, data: newData, errors })
   }
 
   return (

@@ -8,7 +8,7 @@ export async function GET(
   request: Request,
   { params }: { params: { sessionid: string } }
 ) {
-  kInfo("GET /autopilot/session/[sessionid]");
+  kInfo("endpoint", "GET /autopilot/session/[sessionid]");
 
   // Extract the Authorization header
   const authHeader = request.headers.get("Authorization");
@@ -19,7 +19,7 @@ export async function GET(
     token = authHeader.substring(7); // Extract the token after "Bearer "
   }
   if (!token) {
-    kError("Missing token");
+    kError("endpoint", "Missing token");
     return new Response(JSON.stringify({ errormessage: "Unauthorized" }));
   }
 

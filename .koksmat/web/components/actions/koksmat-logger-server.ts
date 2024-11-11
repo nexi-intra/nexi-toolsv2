@@ -7,6 +7,7 @@ type LogLevel = "verbose" | "info" | "warning" | "error" | "fatal";
 
 interface LogInput {
   level: LogLevel;
+  moduleType: string;
   args: string[];
   correlationId?: string;
 }

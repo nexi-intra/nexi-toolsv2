@@ -26,7 +26,7 @@ function getBackendServiceFactory(): BackendServiceFactory {
 const serviceFactory: BackendServiceFactory = getBackendServiceFactory();
 
 function handleError(error: unknown): NextResponse<ErrorResponse> {
-  kError("An error occurred:", error);
+  kError("endpoint", "An error occurred:", error);
   const errorMessage =
     error instanceof Error ? error.message : "An unknown error occurred";
   return NextResponse.json(
@@ -47,13 +47,13 @@ export async function GET(
     const pageSize = parseInt(searchParams.get("pageSize") || "10");
 
     const service = serviceFactory();
-    kVerbose(`Fetching entities of type ${entityType}`);
+    kVerbose("endpoint", `Fetching entities of type ${entityType}`);
     if (id) {
-      kVerbose(`Fetching entity with id ${id}`);
+      kVerbose("endpoint", `Fetching entity with id ${id}`);
       const entity = await service.getById(entityType, id);
       return NextResponse.json(entity);
     } else {
-      kVerbose(`Fetching all entities `);
+      kVerbose("endpoint", `Fetching all entities `);
       const result = await service.getAll(entityType, page, pageSize);
       return NextResponse.json(result);
     }

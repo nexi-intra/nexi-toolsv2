@@ -4,49 +4,103 @@ import { z, ZodType, ZodOptional } from 'zod'
 
 import { SchemaForm } from './schema-form'
 import { Button } from '@/components/ui/button'
-import { kError, kInfo, kVerbose } from '@/lib/koksmat-logger-client'
-import React, { useState } from 'react'
-
-
-import { DatabaseHandlerType } from '../lib/database-handler'
+import { kError, kInfo, kVerbose, kWarn } from '@/lib/koksmat-logger-client'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useKoksmatDatabase } from './database-context-provider'
-
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 type GenericTableFormProps<T extends z.ZodObject<any, any>> = {
   tableName: string;
-  virtualTable?: boolean;
   schema: T;
   showModeSelector?: boolean
   showJSON?: boolean
-  databaseHandler?: DatabaseHandlerType<T>
+  id?: number
+  onCreated?: (id: number) => void
+  onUpdated?: (id: number) => void
+  onDeleted?: (id: number) => void
+  onRead?: (id: number, item: T) => void
+
 }
+
+
 export function GenericTableEditor<T extends z.ZodObject<any, any>>({
   schema,
+  tableName,
   showModeSelector = true,
   showJSON = true,
-  databaseHandler
-}: GenericTableFormProps<T>) {
+  onCreated,
+  onUpdated,
+  onDeleted
 
-  const table = useKoksmatDatabase().table('test', schema)
+}: GenericTableFormProps<T>) {
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const router = useRouter()
+  const idParam = searchParams.get('search')
+  const table = useKoksmatDatabase().table(tableName, schema)
   const [mode, setMode] = useState<'view' | 'edit' | 'new'>('new')
   const [data, setData] = useState<z.TypeOf<T>>()
   const [isValid, setisValid] = useState(false)
+  const [id, setid] = useState<number>()
   const [errors, seterrors] = useState<Array<{ field: string; message: string }>>([])
+  const [error, seterror] = useState("")
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set(name, value)
+
+      return params.toString()
+    },
+    [searchParams]
+  )
+  useEffect(() => {
+    if (idParam) {
+      setid(parseInt(idParam))
+    }
+  }, [idParam])
+  useEffect(() => {
+
+    const load = async () => {
+      if (mode == 'edit' && id) {
+        try {
+          kVerbose("component", "Starting read operation");
+          setData((await table.read(id)))
+          kVerbose("component", "Completed read operation");
+          onCreated && onCreated(id)
+        } catch (error) {
+          seterror("Cannot save" + error)
+          kError("component", "Data is undefined, cannot create region", error);
+        }
+      }
+    }
+    load()
+  }, [mode, id])
 
   const handleSave = async () => {
-
     try {
-      kVerbose("Starting save operation");
-      if (data && databaseHandler) {
-        const x = await table.create(data)
-        //const x = await databaseHandler.create(data);
+      //debugger
+      kVerbose("component", "Starting save operation");
+      if (data) {
+        if (mode == 'edit' && id) {
+          await table.update(id, data)
+          kVerbose("component", "Completed save operation");
+          onUpdated && onUpdated(id)
+          return
+        }
+        if (mode == 'new') {
+          const id = await table.create(data)
+          kVerbose("component", "Completed save operation, got ", id);
+          onCreated && onCreated(id)
+          router.push(pathname + '?' + createQueryString('id', id.toString()))
+        }
+        kWarn("component", "No id found, cannot save")
       } else {
-        kError("Data is undefined, cannot create region");
+        kError("component", "Data is undefined, cannot create");
       }
-
-
     } catch (error) {
-      kError("An error occurred:", error);
+      kError("component", "An error occurred:", error);
+      seterror("Cannot save" + error)
     }
 
   }
@@ -55,7 +109,7 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
     setData(newData)
     setisValid(isValid)
     seterrors(errors)
-    kInfo(`Data updated in ${mode} mode:`, { isValid, data: newData, errors })
+    kVerbose("component", `Data updated in ${mode} mode:`, { isValid, data: newData, errors })
   }
 
 
@@ -68,11 +122,12 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
           <Button onClick={() => setMode('new')} variant={mode === 'new' ? 'default' : 'outline'}>New</Button>
           <Button variant={"secondary"} onClick={handleSave}> Save</Button>
         </div>}
+      {error && <div className='text-red-500'>{error}</div>}
       <SchemaForm
         schema={schema}
         initialData={data}
         mode={mode}
-        //onChange={handleChange}
+
         omit={['tenant', 'searchindex']}
         onChange={handleChange} />
       <div className="mt-4">

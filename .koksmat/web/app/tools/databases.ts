@@ -5,7 +5,7 @@ import { DatabaseMessageType } from "../koksmat/src/v.next/lib/database-handler"
 
 function send(): (message: DatabaseMessageType) => Promise<any> {
   return () => {
-    kWarn("send not implemented", __dirname, __filename);
+    kWarn("applogic", "send not implemented", __dirname, __filename);
     return Promise.resolve("dummy");
   };
 }

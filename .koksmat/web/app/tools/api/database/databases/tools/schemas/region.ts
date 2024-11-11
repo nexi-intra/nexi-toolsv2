@@ -18,3 +18,63 @@ export const schema = z.object({
 });
 
 export const tablename = "region";
+
+export interface TableDescriptorInterface {
+  schema: z.ZodObject<any>;
+  tablename: string;
+  dynamic: boolean;
+}
+
+export class TableDescriptor implements TableDescriptorInterface {
+  private static instance: TableDescriptor | null = null;
+
+  private _schema: z.ZodObject<any>;
+  private _tablename: string;
+  private _dynamic: boolean;
+
+  private constructor(
+    schema: z.ZodObject<any>,
+    tablename: string,
+    dynamic: boolean
+  ) {
+    this._schema = schema;
+    this._tablename = tablename;
+    this._dynamic = dynamic;
+  }
+  // Static method to get the single instance
+  public static getInstance(
+    schema: z.ZodObject<any>,
+    tablename: string,
+    dynamic: boolean
+  ): TableDescriptor {
+    if (!TableDescriptor.instance) {
+      TableDescriptor.instance = new TableDescriptor(
+        schema,
+        tablename,
+        dynamic
+      );
+    }
+    return TableDescriptor.instance;
+  }
+
+  get schema() {
+    return this._schema;
+  }
+
+  get tablename() {
+    return this._tablename;
+  }
+
+  get dynamic() {
+    return this._dynamic;
+  }
+}
+
+function f1(y: TableDescriptorInterface) {
+  console.log(y.schema);
+}
+
+function f2() {
+  const table = TableDescriptor.getInstance(schema, tablename, false);
+  f1(table);
+}

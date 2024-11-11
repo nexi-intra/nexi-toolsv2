@@ -10,10 +10,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { text, texts, sourceLanguage, targetLanguages } = body;
-    kVerbose("translate", "Translation request", body);
+    kVerbose("endpoint", "translate", "Translation request", body);
     // Validate input
     if (!sourceLanguage || !targetLanguages || (!text && !texts)) {
-      kWarn("translate", "Missing required parameters", body);
+      kWarn("endpoint", "translate", "Missing required parameters", body);
       return NextResponse.json(
         { error: "Missing required parameters" },
         { status: 400 }
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!Array.isArray(targetLanguages)) {
-      kWarn("translate", "targetLanguages must be an array", body);
+      kWarn("endpoint", "translate", "targetLanguages must be an array", body);
       return NextResponse.json(
         { error: "targetLanguages must be an array" },
         { status: 400 }
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       !isValidLanguage(sourceLanguage) ||
       !targetLanguages.every(isValidLanguage)
     ) {
-      kWarn("translate", "Invalid language specified", body);
+      kWarn("endpoint", "translate", "Invalid language specified", body);
       return NextResponse.json(
         { error: "Invalid language specified" },
         { status: 400 }
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
         sourceLanguage as Language,
         targetLanguages as Language[]
       );
-      kVerbose("translate", "Translation result", result);
+      kVerbose("endpoint", "translate", "Translation result", result);
       return NextResponse.json(result);
     }
 
@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
     if (texts) {
       if (!Array.isArray(texts)) {
         kWarn(
+          "endpoint",
           "translate",
           "texts must be an array for batch translation",
           body
@@ -69,13 +70,13 @@ export async function POST(request: NextRequest) {
         sourceLanguage as Language,
         targetLanguages as Language[]
       );
-      kVerbose("translate", "Translation result", result);
+      kVerbose("endpoint", "translate", "Translation result", result);
       return NextResponse.json(result);
     }
-    kWarn("translate", "Invalid request", body);
+    kWarn("endpoint", "translate", "Invalid request", body);
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   } catch (error) {
-    kWarn("translate", "Translation error", error);
+    kWarn("endpoint", "translate", "Translation error", error);
     console.error("Translation error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
