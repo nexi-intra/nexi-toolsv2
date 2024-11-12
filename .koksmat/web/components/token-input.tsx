@@ -3,18 +3,22 @@
 import React, { useState, useEffect } from "react"
 import { FaCircle, FaSquare, FaStar } from "react-icons/fa"
 import { ComponentDoc } from './component-documentation-hub'
-import TokenInputInternal from "./token-input-internal"
+import TokenInputInternal, { Property } from "./token-input-internal"
 
-interface PropertyValue {
-  value: string
-  icon: React.ReactNode
-  color: string
-}
+import { z } from "zod";
 
-interface Property {
-  name: string
-  values: PropertyValue[]
-}
+
+
+
+// Example usage
+const example: Property = {
+  name: "Color Options",
+  values: [
+    { value: "Red", icon: null, color: "#ff0000" },
+    { value: "Blue", icon: null, color: "#0000ff" },
+  ],
+};
+
 
 interface ErrorDetail {
   token: string

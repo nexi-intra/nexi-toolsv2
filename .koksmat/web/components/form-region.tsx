@@ -1,7 +1,7 @@
 "use client"
 
 
-import { databases } from '@/app/tools/api/database'
+import { databases } from '@/app/tools/schemas/databases'
 
 import { GenericTableEditor } from '@/app/koksmat/src/v.next/components'
 

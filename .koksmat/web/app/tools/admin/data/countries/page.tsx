@@ -1,4 +1,5 @@
-import CountryEditor from "@/components/form-country";
+import { CountryList } from "@/components/country-list";
+//import CountryEditor from "@/components/form-country";
 
 import type { Metadata } from "next";
 
@@ -10,7 +11,8 @@ export default function Page() {
 
 
   return (
-    <CountryEditor />
+    <CountryList />
+    // <CountryEditor />
   )
 }
 

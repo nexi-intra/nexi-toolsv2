@@ -135,4 +135,8 @@ export const navLinks = [
     label: "Upload Excel",
     href: "/tools/docs/components/upload-xls",
   },
+  {
+    label: "Item Viewer",
+    href: "/tools/docs/components/item-viewer",
+  },
 ];

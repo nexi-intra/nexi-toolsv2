@@ -32,7 +32,8 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
   showJSON = true,
   onCreated,
   onUpdated,
-  onDeleted
+  onDeleted,
+  onRead
 
 }: GenericTableFormProps<T>) {
   const searchParams = useSearchParams()
@@ -77,9 +78,16 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
         try {
           kVerbose("component", "Starting read operation");
           const readDataOperation = await table.read(id)
-          setData(readDataOperation.record)
+          const parsedData = schema.safeParse(readDataOperation.record)
+          if (!parsedData.success) {
+            kError("component", "Data is undefined, cannot read region", parsedData.error);
+            seterror("Cannot read" + parsedData.error)
+            return
+          }
+          setData(parsedData.data)
           kVerbose("component", "Completed read operation");
-          onCreated && onCreated(id)
+          //TODO: This is a bit of a hack, but it works for now to get the data out of the form
+          //onRead && onRead(id,parsedData.data)
         } catch (error) {
           seterror("" + error)
           kError("component", "Data is undefined, cannot create region", error);

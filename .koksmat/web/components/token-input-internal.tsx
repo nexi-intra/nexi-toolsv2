@@ -8,17 +8,26 @@ import React, {
   ChangeEvent,
   KeyboardEvent,
 } from "react";
+import { z } from "zod";
 
-interface PropertyValue {
-  value: string;
-  icon: React.ReactNode;
-  color: string;
-}
+// Define PropertyValue schema
+const PropertyValueSchema = z.object({
+  value: z.string(),
+  icon: z.any().refine((val) => val instanceof Object || val === null, {
+    message: "icon must be a valid ReactNode",
+  }), // ReactNode cannot be strictly typed in Zod
+  color: z.string(),
+});
 
-interface Property {
-  name: string;
-  values: PropertyValue[];
-}
+// Define Property schema
+export const PropertySchema = z.object({
+  name: z.string(),
+  values: z.array(PropertyValueSchema),
+});
+
+// Derive TypeScript types from Zod schemas
+export type PropertyValue = z.infer<typeof PropertyValueSchema>;
+export type Property = z.infer<typeof PropertySchema>;
 
 interface ErrorDetail {
   token: string;
