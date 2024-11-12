@@ -42,8 +42,9 @@ export class MessageToKoksmatDatabase implements MessageProvider {
         __dirname,
         __filename
       );
-      throw new Error("Error communicating with the database");
+      throw new Error("Databases, " + (result.error ?? "Unknown error"));
     }
+
     return result;
   }
 }

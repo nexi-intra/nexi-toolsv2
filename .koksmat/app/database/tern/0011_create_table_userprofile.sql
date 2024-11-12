@@ -9,7 +9,7 @@ keep: false
 
 -- sure sild
 
-CREATE TABLE public.user
+CREATE TABLE public.userprofile
 (
     id SERIAL PRIMARY KEY,
     created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -44,23 +44,23 @@ CREATE TABLE public.user
 
 );
 
-                ALTER TABLE IF EXISTS public.user
+                ALTER TABLE IF EXISTS public.userprofile
                 ADD FOREIGN KEY (language_id)
                 REFERENCES public.language (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
-                NOT VALID;                ALTER TABLE IF EXISTS public.user
+                NOT VALID;                ALTER TABLE IF EXISTS public.userprofile
                 ADD FOREIGN KEY (country_id)
                 REFERENCES public.country (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
-                NOT VALID;                ALTER TABLE IF EXISTS public.user
+                NOT VALID;                ALTER TABLE IF EXISTS public.userprofile
                 ADD FOREIGN KEY (region_id)
                 REFERENCES public.region (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;                -- lollipop
-                CREATE TABLE public.user_m2m_tool (
+                CREATE TABLE public.userprofile_m2m_tool (
                 id SERIAL PRIMARY KEY,
                 created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 created_by character varying COLLATE pg_catalog."default"  ,
@@ -74,7 +74,7 @@ CREATE TABLE public.user
                 koksmat_state VARCHAR COLLATE pg_catalog."default",
 
                 koksmat_bucket JSONB 
-                    ,user_id int  
+                    ,userprofile_id int  
  
                     ,tool_id int  
  
@@ -82,20 +82,20 @@ CREATE TABLE public.user
                 );
             
 
-                ALTER TABLE public.user_m2m_tool
-                ADD FOREIGN KEY (user_id)
-                REFERENCES public.user (id) MATCH SIMPLE
+                ALTER TABLE public.userprofile_m2m_tool
+                ADD FOREIGN KEY (userprofile_id)
+                REFERENCES public.userprofile (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;
 
-                ALTER TABLE public.user_m2m_tool
+                ALTER TABLE public.userprofile_m2m_tool
                 ADD FOREIGN KEY (tool_id)
                 REFERENCES public.tool (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;                -- lollipop
-                CREATE TABLE public.user_m2m_userrole (
+                CREATE TABLE public.userprofile_m2m_userrole (
                 id SERIAL PRIMARY KEY,
                 created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 created_by character varying COLLATE pg_catalog."default"  ,
@@ -109,7 +109,7 @@ CREATE TABLE public.user
                 koksmat_state VARCHAR COLLATE pg_catalog."default",
 
                 koksmat_bucket JSONB 
-                    ,user_id int  
+                    ,userprofile_id int  
  
                     ,userrole_id int  
  
@@ -117,20 +117,20 @@ CREATE TABLE public.user
                 );
             
 
-                ALTER TABLE public.user_m2m_userrole
-                ADD FOREIGN KEY (user_id)
-                REFERENCES public.user (id) MATCH SIMPLE
+                ALTER TABLE public.userprofile_m2m_userrole
+                ADD FOREIGN KEY (userprofile_id)
+                REFERENCES public.userprofile (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;
 
-                ALTER TABLE public.user_m2m_userrole
+                ALTER TABLE public.userprofile_m2m_userrole
                 ADD FOREIGN KEY (userrole_id)
                 REFERENCES public.userrole (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;                -- lollipop
-                CREATE TABLE public.user_m2m_accesspoint (
+                CREATE TABLE public.userprofile_m2m_accesspoint (
                 id SERIAL PRIMARY KEY,
                 created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 created_by character varying COLLATE pg_catalog."default"  ,
@@ -144,7 +144,7 @@ CREATE TABLE public.user
                 koksmat_state VARCHAR COLLATE pg_catalog."default",
 
                 koksmat_bucket JSONB 
-                    ,user_id int  
+                    ,userprofile_id int  
  
                     ,accesspoint_id int  
  
@@ -152,20 +152,20 @@ CREATE TABLE public.user
                 );
             
 
-                ALTER TABLE public.user_m2m_accesspoint
-                ADD FOREIGN KEY (user_id)
-                REFERENCES public.user (id) MATCH SIMPLE
+                ALTER TABLE public.userprofile_m2m_accesspoint
+                ADD FOREIGN KEY (userprofile_id)
+                REFERENCES public.userprofile (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;
 
-                ALTER TABLE public.user_m2m_accesspoint
+                ALTER TABLE public.userprofile_m2m_accesspoint
                 ADD FOREIGN KEY (accesspoint_id)
                 REFERENCES public.accesspoint (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;                -- lollipop
-                CREATE TABLE public.user_m2m_usergroup (
+                CREATE TABLE public.userprofile_m2m_usergroup (
                 id SERIAL PRIMARY KEY,
                 created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 created_by character varying COLLATE pg_catalog."default"  ,
@@ -179,7 +179,7 @@ CREATE TABLE public.user
                 koksmat_state VARCHAR COLLATE pg_catalog."default",
 
                 koksmat_bucket JSONB 
-                    ,user_id int  
+                    ,userprofile_id int  
  
                     ,usergroup_id int  
  
@@ -187,14 +187,14 @@ CREATE TABLE public.user
                 );
             
 
-                ALTER TABLE public.user_m2m_usergroup
-                ADD FOREIGN KEY (user_id)
-                REFERENCES public.user (id) MATCH SIMPLE
+                ALTER TABLE public.userprofile_m2m_usergroup
+                ADD FOREIGN KEY (userprofile_id)
+                REFERENCES public.userprofile (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;
 
-                ALTER TABLE public.user_m2m_usergroup
+                ALTER TABLE public.userprofile_m2m_usergroup
                 ADD FOREIGN KEY (usergroup_id)
                 REFERENCES public.usergroup (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
@@ -203,6 +203,6 @@ CREATE TABLE public.user
 
 
 ---- create above / drop below ----
-DROP TABLE IF EXISTS public.user_m2m_tool;DROP TABLE IF EXISTS public.user_m2m_userrole;DROP TABLE IF EXISTS public.user_m2m_accesspoint;DROP TABLE IF EXISTS public.user_m2m_usergroup;
-DROP TABLE public.user;
+DROP TABLE IF EXISTS public.userprofile_m2m_tool;DROP TABLE IF EXISTS public.userprofile_m2m_userrole;DROP TABLE IF EXISTS public.userprofile_m2m_accesspoint;DROP TABLE IF EXISTS public.userprofile_m2m_usergroup;
+DROP TABLE public.userprofile;
 

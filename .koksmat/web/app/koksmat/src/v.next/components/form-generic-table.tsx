@@ -10,6 +10,7 @@ import { useKoksmatDatabase } from './database-context-provider'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 type GenericTableFormProps<T extends z.ZodObject<any, any>> = {
+  databaseName: string;
   tableName: string;
   schema: T;
   showModeSelector?: boolean
@@ -26,6 +27,7 @@ type GenericTableFormProps<T extends z.ZodObject<any, any>> = {
 export function GenericTableEditor<T extends z.ZodObject<any, any>>({
   schema,
   tableName,
+  databaseName,
   showModeSelector = true,
   showJSON = true,
   onCreated,
@@ -36,14 +38,16 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
-  const idParam = searchParams.get('search')
-  const table = useKoksmatDatabase().table(tableName, schema)
-  const [mode, setMode] = useState<'view' | 'edit' | 'new'>('new')
+  const idParam = searchParams.get('id')
+  const table = useKoksmatDatabase().table(tableName, databaseName, schema)
+  const [mode, setMode] = useState<'view' | 'edit' | 'new' | 'copy'>(idParam ? 'edit' : 'new')
   const [data, setData] = useState<z.TypeOf<T>>()
   const [isValid, setisValid] = useState(false)
   const [id, setid] = useState<number>()
   const [errors, seterrors] = useState<Array<{ field: string; message: string }>>([])
   const [error, seterror] = useState("")
+
+
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -60,16 +64,23 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
     }
   }, [idParam])
   useEffect(() => {
+    seterror(errors.map(e => e.message).join(","))
+
+
+  }, [errors])
+
+
+  useEffect(() => {
 
     const load = async () => {
-      if (mode == 'edit' && id) {
+      if (id) {
         try {
           kVerbose("component", "Starting read operation");
           setData((await table.read(id)))
           kVerbose("component", "Completed read operation");
           onCreated && onCreated(id)
         } catch (error) {
-          seterror("Cannot save" + error)
+          seterror("" + error)
           kError("component", "Data is undefined, cannot create region", error);
         }
       }
@@ -80,6 +91,7 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
   const handleSave = async () => {
     try {
       //debugger
+
       kVerbose("component", "Starting save operation");
       if (data) {
         if (mode == 'edit' && id) {
@@ -92,6 +104,7 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
           const id = await table.create(data)
           kVerbose("component", "Completed save operation, got ", id);
           onCreated && onCreated(id)
+          setMode('edit')
           router.push(pathname + '?' + createQueryString('id', id.toString()))
         }
         kWarn("component", "No id found, cannot save")
@@ -104,7 +117,19 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
     }
 
   }
-
+  const handleDelete = async () => {
+    try {
+      kVerbose("component", "Starting delete operation");
+      if (id) {
+        await table.delete(id)
+        kVerbose("component", "Completed delete operation");
+        onDeleted && onDeleted(id)
+      }
+    } catch (error) {
+      kError("component", "An error occurred:", error);
+      seterror("Cannot delete" + error)
+    }
+  }
   const handleChange = (isValid: boolean, newData: z.TypeOf<T>, errors: Array<{ field: string; message: string }>) => {
     setData(newData)
     setisValid(isValid)
@@ -117,10 +142,18 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
     <div className="space-y-4 p-6 bg-gray-100 dark:bg-gray-900 rounded-lg w-full">
       {showModeSelector &&
         <div className="space-x-2">
-          <Button onClick={() => setMode('view')} variant={mode === 'view' ? 'default' : 'outline'}>View</Button>
-          <Button onClick={() => setMode('edit')} variant={mode === 'edit' ? 'default' : 'outline'}>Edit</Button>
-          <Button onClick={() => setMode('new')} variant={mode === 'new' ? 'default' : 'outline'}>New</Button>
-          <Button variant={"secondary"} onClick={handleSave}> Save</Button>
+          <Button disabled={!id} onClick={() => setMode('view')} variant={mode === 'view' ? 'outline' : 'link'}>View</Button>
+          <Button disabled={!id} onClick={() => {
+            setMode('edit')
+          }} variant={mode === 'edit' ? 'outline' : 'link'}>Edit</Button>
+
+          <Button disabled={!id} onClick={() => setMode('copy')} variant={mode === 'copy' ? 'outline' : 'link'}>Make a copy</Button>
+          <Button onClick={() => {
+            setData(undefined)
+            setMode('new')
+          }} variant={mode === 'new' ? 'outline' : 'link'}>Create new</Button>
+          <Button onClick={handleDelete} disabled={!id} variant={'outline'} >Delete</Button>
+          <Button variant={"default"} disabled={!isValid} onClick={handleSave}> Save</Button>
         </div>}
       {error && <div className='text-red-500'>{error}</div>}
       <SchemaForm

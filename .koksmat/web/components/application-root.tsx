@@ -162,7 +162,10 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
     <KoksmatDatabaseProvider initialMessageProvider={new MessageToKoksmatDatabase()}
       tokenProvider={{
         getToken: async () => {
-
+          if (!magicbox.authtoken) {
+            alert("No authtoken")
+            throw new Error('No authtoken')
+          }
           return magicbox.authtoken
         }
       }}>

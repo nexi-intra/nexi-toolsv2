@@ -1,5 +1,5 @@
 import RegionEditor from "@/components/form-region";
-import UserEditor from "@/components/form-user";
+import UserProfileTableEditor from "@/components/form-userprofile";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,7 +10,7 @@ export default function Page() {
 
 
   return (
-    <UserEditor />
+    <UserProfileTableEditor />
   )
 }
 

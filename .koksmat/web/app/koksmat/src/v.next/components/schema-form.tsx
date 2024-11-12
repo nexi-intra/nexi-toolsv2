@@ -31,7 +31,7 @@ import { kVerbose, kWarn, kInfo, kError } from "@/lib/koksmat-logger-client"
 const SchemaFormPropsSchema = (schema: z.ZodObject<any, any>) => z.object({
   schema: z.instanceof(z.ZodObject),
   initialData: z.record(z.any()).optional(),
-  mode: z.enum(['view', 'new', 'edit']),
+  mode: z.enum(['view', 'new', 'edit', 'copy']),
   onChange: z.function().args(
     z.boolean(),
     z.record(z.any()),
@@ -56,7 +56,7 @@ const SchemaFormPropsSchema = (schema: z.ZodObject<any, any>) => z.object({
 type SchemaFormProps<T extends z.ZodObject<any, any>> = {
   schema: T;
   initialData?: z.infer<T>;
-  mode: 'view' | 'new' | 'edit';
+  mode: 'view' | 'new' | 'edit' | 'copy';
   onChange: (isValid: boolean, data: z.infer<T>, errors: Array<{ field: string; message: string }>) => void;
   className?: string;
   fieldMapper?: (fieldSchema: z.ZodTypeAny, key: string, value: any, onChange: (key: string, value: any) => void, isDisabled: boolean) => React.ReactNode;
@@ -117,6 +117,7 @@ export function SchemaForm<T extends z.ZodObject<any, any>>({
   const [historyIndex, setHistoryIndex] = useState(0)
 
   useEffect(() => {
+    debugger
     setFormData(initialData ? (Object.keys(initialData).reduce((acc, key) => {
       if (!omit.includes(key)) {
         acc[key] = initialData[key];

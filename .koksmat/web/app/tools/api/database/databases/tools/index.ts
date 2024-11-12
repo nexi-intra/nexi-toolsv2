@@ -21,8 +21,8 @@ import * as tool from "./schemas/tool";
 export type Tool = z.infer<typeof tool.schema>;
 import * as toolgroup from "./schemas/toolgroup";
 export type Toolgroup = z.infer<typeof toolgroup.schema>;
-import * as user from "./schemas/user";
-export type User = z.infer<typeof user.schema>;
+import * as userprofile from "./schemas/userprofile";
+export type UserProfile = z.infer<typeof userprofile.schema>;
 import * as usergroup from "./schemas/usergroup";
 export type Usergroup = z.infer<typeof usergroup.schema>;
 import * as userrole from "./schemas/userrole";
@@ -40,7 +40,7 @@ export const table = {
   region,
   tool,
   toolgroup,
-  user,
+  userprofile,
   usergroup,
   userrole,
 };

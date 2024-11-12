@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { handleDatabaseMessagesServer } from "@/app/koksmat/src/v.next/endpoints/database-messages-server";
+import { endpoints } from "@/app/koksmat";
 
 export async function POST(request: NextRequest) {
+  const handleDatabaseMessagesServer =
+    endpoints.databaseMessageServer.handleDatabaseMessagesServer;
   return handleDatabaseMessagesServer(request);
 }

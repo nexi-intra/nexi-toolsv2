@@ -1,1 +1,1 @@
-export * from "./src";
+export { components, endpoints, version } from "./src";

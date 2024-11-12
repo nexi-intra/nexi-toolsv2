@@ -1707,9 +1707,9 @@
         }
       ]
     },
-    "user": {
-      "name": "user",
-      "description": "User",
+    "userprofile": {
+      "name": "userprofile",
+      "description": "User Profile",
       "baselineattributes": [
         {
           "name": "tenant",
@@ -2978,8 +2978,8 @@
           "type": "reference",
           "required": true,
           "entity": {
-            "name": "user",
-            "description": "User",
+            "name": "userprofile",
+            "description": "User Profile",
             "baselineattributes": [
               {
                 "name": "tenant",
@@ -5549,13 +5549,13 @@
       ]
     },
     {
-      "name": "user",
-      "description": "Users",
+      "name": "userprofile",
+      "description": "User Profiles",
       "entity": {
         "type": "record",
         "entity": {
-          "name": "user",
-          "description": "User",
+          "name": "userprofile",
+          "description": "User Profile",
           "baselineattributes": [
             {
               "name": "tenant",
@@ -6779,8 +6779,8 @@
             }
           ]
         },
-        "model": "user",
-        "objectname": "User"
+        "model": "userprofile",
+        "objectname": "UserProfile"
       },
       "methods": [
         {
@@ -7714,8 +7714,8 @@
               "type": "reference",
               "required": true,
               "entity": {
-                "name": "user",
-                "description": "User",
+                "name": "userprofile",
+                "description": "User Profile",
                 "baselineattributes": [
                   {
                     "name": "tenant",

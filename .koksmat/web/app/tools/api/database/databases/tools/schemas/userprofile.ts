@@ -23,4 +23,4 @@ export const schema = z.object({
   status: z.string().describe("Status of the user"),
 });
 
-export const tablename = "user";
+export const tablename = "userprofile";

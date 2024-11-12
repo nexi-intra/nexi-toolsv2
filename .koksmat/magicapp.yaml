@@ -199,9 +199,9 @@ entities:
         type: json
         required: false
 
-  user: &user
-    name: user
-    description: User
+  userprofile: &userprofile
+    name: userprofile
+    description: User Profile
     baselineattributes: *recordAttributes
     additionalattributes:
       - name: email
@@ -266,7 +266,7 @@ entities:
         displayname: User
         type: reference
         required: true
-        entity: *user
+        entity: *userprofile
       - name: tool
         displayname: Tool
         type: reference
@@ -383,13 +383,13 @@ services:
 
     methods: *itemMethods
 
-  - name: user
-    description: Users
+  - name: userprofile
+    description: User Profiles
     entity:
       type: record
-      entity: *user
-      model: user
-      objectname: User
+      entity: *userprofile
+      model: userprofile
+      objectname: UserProfile
 
     methods: *itemMethods
 

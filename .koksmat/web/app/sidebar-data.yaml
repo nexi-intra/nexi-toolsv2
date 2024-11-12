@@ -77,9 +77,9 @@ navMain:
         url: "/tools/admin/data/user-groups"
         icon: "BookOpen"
       - title:
-          en: "Users"
-          da: "Brugere"
-        url: "/tools/admin/data/users"
+          en: "User Profiles"
+          da: "Bruger Profiler"
+        url: "/tools/admin/data/user-profiles"
         icon: "BookOpen"
       - title:
           en: "User Roles"

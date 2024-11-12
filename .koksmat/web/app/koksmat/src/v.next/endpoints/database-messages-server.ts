@@ -5,23 +5,27 @@ import { run } from "../actions/server";
 
 import { z } from "zod";
 
-const schema = z.object({
+export const databaseMessageSchema = z.object({
   //token: z.string(),
   subject: z.string(),
-  targetData: z.object({
-    table: z.string(),
+  targetDatabase: z.object({
+    databaseName: z.string(),
+    tableName: z.string(),
     isVirtual: z.boolean(),
   }),
-  payload: z.object({
-    data: z.record(z.any()),
+  record: z.object({
+    id: z.number().optional(),
+    data: z.record(z.any()).optional(),
+    hardDelete: z.boolean().optional(),
   }),
 });
+export type DatabaseMessageType = z.infer<typeof databaseMessageSchema>;
 const MICROSERVICE = "magic-mix.app";
 export async function handleDatabaseMessagesServer(request: NextRequest) {
   try {
     const body = await request.json();
     kVerbose("endpoint", "Database request", body);
-    const req = schema.safeParse(body);
+    const req = databaseMessageSchema.safeParse(body);
     const bearerToken = request.headers.get("Authorization") || "";
     const token = bearerToken.split("Bearer ")[1];
     if (!req.success) {
@@ -33,36 +37,62 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
       kError("endpoint", __filename, "No data");
       return new Response(JSON.stringify({ error: "No data" }));
     }
-    const data = req.data;
+    const message = req.data;
 
-    switch (data.subject) {
+    switch (message.subject) {
       case "create":
-        const payload = { ...data.payload.data, tenant: "", searchindex: "" };
-        const result = await run(
+        const createResult = await run(
           MICROSERVICE,
           [
             "execute",
-            "tools",
-            "create_" + data.targetData.table,
+            message.targetDatabase.databaseName,
+            "create_" + message.targetDatabase.tableName,
             token,
-            JSON.stringify(payload),
+            JSON.stringify(message.record.data),
           ],
           "",
           600,
           "x"
         );
-        if (result.hasError) {
+        if (createResult.hasError) {
           return new Response(
-            JSON.stringify({ error: result.errorMessage, status: 503 })
+            JSON.stringify({ error: createResult.errorMessage, status: 503 })
           );
         }
-        return new Response(JSON.stringify({ ...result, status: 200 }));
+        return new Response(JSON.stringify({ ...createResult, status: 200 }));
         break;
       case "delete":
         break;
       case "patch":
         break;
       case "read":
+        const readResult = await run<{ Result: any[] }>(
+          MICROSERVICE,
+          [
+            "query",
+            message.targetDatabase.databaseName,
+            `select * from ${message.targetDatabase.tableName} where id = ${message.record.id}`,
+            // token,
+            // JSON.stringify(message.record.data),
+          ],
+          "",
+          600,
+          "x"
+        );
+        if (readResult.hasError) {
+          return new Response(
+            JSON.stringify({ error: readResult.errorMessage, status: 503 })
+          );
+        }
+        if (readResult.data?.Result.length !== 1) {
+          return new Response(
+            JSON.stringify({ error: readResult.errorMessage, status: 404 })
+          );
+        }
+        return new Response(
+          JSON.stringify({ record: readResult.data?.Result[0], status: 200 })
+        );
+        break;
         break;
       case "undo_delete":
         break;

@@ -10,6 +10,7 @@ interface KoksmatOptions {
 interface LogEntry {
   timestamp: string;
   correlationId?: string;
+  moduleType: string;
   level: string;
   message: string;
   error?: any;
@@ -49,9 +50,11 @@ class Koksmat {
     });
   }
 
-  info(correlationId: string | undefined, message: string) {
+  info(correlationId: string | undefined, moduleType: string, message: string) {
     const entry: LogEntry = {
+      moduleType: moduleType.toUpperCase(),
       timestamp: new Date().toISOString(),
+
       correlationId,
       level: "INFO",
       message,
@@ -59,8 +62,14 @@ class Koksmat {
     this.writeLog(entry);
   }
 
-  error(correlationId: string | undefined, message: string, error: any) {
+  error(
+    correlationId: string | undefined,
+    moduleType: string,
+    message: string,
+    error: any
+  ) {
     const entry: LogEntry = {
+      moduleType: moduleType.toUpperCase(),
       timestamp: new Date().toISOString(),
       correlationId,
       level: "ERROR",
@@ -70,8 +79,13 @@ class Koksmat {
     this.writeLog(entry);
   }
 
-  warning(correlationId: string | undefined, message: string) {
+  warning(
+    correlationId: string | undefined,
+    moduleType: string,
+    message: string
+  ) {
     const entry: LogEntry = {
+      moduleType: moduleType.toUpperCase(),
       timestamp: new Date().toISOString(),
       correlationId,
       level: "WARNING",
@@ -80,8 +94,13 @@ class Koksmat {
     this.writeLog(entry);
   }
 
-  verbose(correlationId: string | undefined, message: string) {
+  verbose(
+    correlationId: string | undefined,
+    moduleType: string,
+    message: string
+  ) {
     const entry: LogEntry = {
+      moduleType: moduleType.toUpperCase(),
       timestamp: new Date().toISOString(),
       correlationId,
       level: "VERBOSE",
