@@ -1,10 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-
-
 import { Button } from "@/components/ui/button";
-
 import { useMsal, useAccount } from "@azure/msal-react";
 import { MagicboxContext } from "@/app/koksmat0/magicbox-context";
 import { https } from "@/app/koksmat0/httphelper";
@@ -27,7 +24,7 @@ export default function Authenticate(props: {
 }) {
   const { apiScope, children } = props;
   const magicbox = useContext(MagicboxContext);
-  const { instance, accounts, inProgress } = useMsal();
+  const { instance, accounts } = useMsal();
   const account = useAccount(accounts[0] || {});
   const [latestResponse, setlatestResponse] = useState<any>();
   const [token, settoken] = useState("");
@@ -44,7 +41,6 @@ export default function Authenticate(props: {
           account: account,
         });
         apiScope.token = response.accessToken;
-
         magicbox.setAuthToken(response.accessToken, "MSAL");
         settoken(response.accessToken);
         const getResponse = await https(
@@ -61,9 +57,7 @@ export default function Authenticate(props: {
           });
           apiScope.token = response.accessToken;
           settoken(response.accessToken);
-
           magicbox.setAuthToken(response.accessToken, "MSAL");
-
           const getResponse = await https(
             response.accessToken,
             "GET",
@@ -78,7 +72,6 @@ export default function Authenticate(props: {
   };
 
   useEffect(() => {
-    // debugger
     const load = async () => {
       if (magicbox.authtoken) {
         settoken(magicbox.authtoken);
@@ -86,8 +79,14 @@ export default function Authenticate(props: {
       }
       await aquireToken(apiScope);
     };
-    if (!apiScope || apiScope == undefined) return;
+    if (!apiScope || apiScope === undefined) return;
     load();
+
+    const refreshInterval = setInterval(() => {
+      aquireToken(apiScope);
+    }, 30 * 60 * 1000); // 30 minutes
+
+    return () => clearInterval(refreshInterval); // Cleanup on unmount
   }, [apiScope]);
 
   if (!magicbox) {
@@ -104,7 +103,6 @@ export default function Authenticate(props: {
             <Button
               onClick={async () => {
                 const signedIn = await magicbox.signIn(["User.Read"], "");
-
                 magicbox.refresh();
               }}
             >

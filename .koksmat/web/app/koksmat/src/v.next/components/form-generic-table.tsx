@@ -76,7 +76,8 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
       if (id) {
         try {
           kVerbose("component", "Starting read operation");
-          setData((await table.read(id)))
+          const readDataOperation = await table.read(id)
+          setData(readDataOperation.record)
           kVerbose("component", "Completed read operation");
           onCreated && onCreated(id)
         } catch (error) {

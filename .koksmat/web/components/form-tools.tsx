@@ -7,7 +7,7 @@ import { GenericTableEditor } from '@/app/koksmat/src/v.next/components'
 
 export default function ToolTableEditor() {
   return (
-    <GenericTableEditor schema={databases.tools.table.tool.schema} tableName={databases.tools.table.tool.tablename} />
+    <GenericTableEditor schema={databases.tools.table.tool.schema} tableName={databases.tools.table.tool.tablename} databaseName='tools' />
   )
 }
 

@@ -92,11 +92,30 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
         return new Response(
           JSON.stringify({ record: readResult.data?.Result[0], status: 200 })
         );
-        break;
+
         break;
       case "undo_delete":
         break;
       case "update":
+        const updateResult = await run(
+          MICROSERVICE,
+          [
+            "execute",
+            message.targetDatabase.databaseName,
+            "update_" + message.targetDatabase.tableName,
+            token,
+            JSON.stringify(message.record.data),
+          ],
+          "",
+          600,
+          "x"
+        );
+        if (updateResult.hasError) {
+          return new Response(
+            JSON.stringify({ error: updateResult.errorMessage, status: 503 })
+          );
+        }
+        return new Response(JSON.stringify({ ...updateResult, status: 200 }));
         break;
 
       default:

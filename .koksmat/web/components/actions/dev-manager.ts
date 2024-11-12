@@ -5,6 +5,7 @@ import path from "path";
 import { exec } from "child_process";
 import { getKoksmat } from "./koksmat"; // Adjust the path as necessary
 import { findPageFileForUrl } from "@/lib/findPage";
+import { kError, kInfo, kVerbose, kWarn } from "@/lib/koksmat-logger-client";
 // Define the base path for sessions
 const DEV_BASE_PATH = process.cwd();
 
@@ -16,13 +17,13 @@ const DEV_BASE_PATH = process.cwd();
 export async function openInCode(relativeFilePath: string): Promise<void> {
   try {
     const fullFilePath = path.join(DEV_BASE_PATH, relativeFilePath);
-    getKoksmat().verbose("", `Opening file in VS Code: ${fullFilePath}`);
+    kVerbose("component", `Opening file in VS Code: ${fullFilePath}`);
 
     return new Promise((resolve, reject) => {
       exec(`code ${fullFilePath}`, (error, stdout, stderr) => {
         if (error) {
-          getKoksmat().error(
-            "",
+          kError(
+            "component",
             `Error opening file in VS Code: ${error.message}`,
             error
           );
@@ -30,17 +31,17 @@ export async function openInCode(relativeFilePath: string): Promise<void> {
           return;
         }
         if (stderr) {
-          getKoksmat().warning("", `VS Code stderr: ${stderr}`);
+          kWarn("component", `VS Code stderr: ${stderr}`);
         }
-        getKoksmat().info(
-          "",
+        kInfo(
+          "component",
           `File opened successfully in VS Code: ${fullFilePath}`
         );
         resolve();
       });
     });
   } catch (error) {
-    getKoksmat().error("", "Error opening file in VS Code:", error);
+    kError("component", "Error opening file in VS Code:", error);
     throw new Error("Failed to open file in VS Code");
   }
 }
