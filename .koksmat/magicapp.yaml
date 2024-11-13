@@ -301,6 +301,15 @@ entities:
       - name: metadata
         type: json
         required: false
+  importdata: &importdata
+    name: importdata
+    description: Import
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: data
+        type: json
+        hidden: false
+        required: true
 models:
   itemMethods: &itemMethods
     - name: read
@@ -479,5 +488,14 @@ services:
       entity: *usergroup
       model: usergroup
       objectname: User Group
+
+    methods: *itemMethods
+  - name: importdata
+    description: Import Data
+    entity:
+      type: record
+      entity: *importdata
+      model: importdata
+      objectname: Import Data
 
     methods: *itemMethods

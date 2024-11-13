@@ -4676,6 +4676,53 @@
           "required": false
         }
       ]
+    },
+    "importdata": {
+      "name": "importdata",
+      "description": "Import",
+      "baselineattributes": [
+        {
+          "name": "tenant",
+          "type": "string",
+          "displayname": "Tenant",
+          "hidden": true,
+          "required": true
+        },
+        {
+          "name": "searchindex",
+          "type": "string",
+          "displayname": "Search Index",
+          "description": "Search Index is used for concatenating all searchable fields in a single field making in easier to search\n",
+          "hidden": true,
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "displayname": "Name",
+          "required": true
+        },
+        {
+          "name": "description",
+          "displayname": "Description",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "Translations",
+          "displayname": "Translations",
+          "type": "json",
+          "required": false
+        }
+      ],
+      "additionalattributes": [
+        {
+          "name": "data",
+          "type": "json",
+          "hidden": false,
+          "required": true
+        }
+      ]
     }
   },
   "models": {
@@ -10432,6 +10479,139 @@
         },
         "model": "usergroup",
         "objectname": "User Group"
+      },
+      "methods": [
+        {
+          "name": "read",
+          "description": "Read a single item",
+          "parameters": [
+            {
+              "name": "id",
+              "description": "The id of the item",
+              "type": "int64",
+              "required": true
+            }
+          ],
+          "returns": {
+            "type": "object"
+          }
+        },
+        {
+          "name": "create",
+          "description": "Create a new item",
+          "parameters": [
+            {
+              "name": "item",
+              "description": "The item to create",
+              "type": "object",
+              "required": true
+            }
+          ],
+          "returns": {
+            "type": "object"
+          }
+        },
+        {
+          "name": "update",
+          "description": "Update an existing item",
+          "parameters": [
+            {
+              "name": "item",
+              "description": "The item to update",
+              "type": "object",
+              "required": true
+            }
+          ],
+          "returns": {
+            "type": "object"
+          }
+        },
+        {
+          "name": "delete",
+          "description": "Delete an existing item",
+          "parameters": [
+            {
+              "name": "id",
+              "description": "The id of the item",
+              "type": "int64",
+              "required": true
+            }
+          ],
+          "returns": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "search",
+          "description": "Search for items",
+          "parameters": [
+            {
+              "name": "query",
+              "description": "The search query",
+              "type": "string",
+              "required": true
+            }
+          ],
+          "returns": {
+            "type": "page"
+          }
+        }
+      ]
+    },
+    {
+      "name": "importdata",
+      "description": "Import Data",
+      "entity": {
+        "type": "record",
+        "entity": {
+          "name": "importdata",
+          "description": "Import",
+          "baselineattributes": [
+            {
+              "name": "tenant",
+              "type": "string",
+              "displayname": "Tenant",
+              "hidden": true,
+              "required": true
+            },
+            {
+              "name": "searchindex",
+              "type": "string",
+              "displayname": "Search Index",
+              "description": "Search Index is used for concatenating all searchable fields in a single field making in easier to search\n",
+              "hidden": true,
+              "required": true
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "displayname": "Name",
+              "required": true
+            },
+            {
+              "name": "description",
+              "displayname": "Description",
+              "type": "string",
+              "required": false
+            },
+            {
+              "name": "Translations",
+              "displayname": "Translations",
+              "type": "json",
+              "required": false
+            }
+          ],
+          "additionalattributes": [
+            {
+              "name": "data",
+              "type": "json",
+              "hidden": false,
+              "required": true
+            }
+          ]
+        },
+        "model": "importdata",
+        "objectname": "Import Data"
       },
       "methods": [
         {
