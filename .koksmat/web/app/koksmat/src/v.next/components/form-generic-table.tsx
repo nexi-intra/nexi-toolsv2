@@ -78,6 +78,7 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
         try {
           kVerbose("component", "Starting read operation");
           const readDataOperation = await table.read(id)
+
           const parsedData = schema.safeParse(readDataOperation.record)
           if (!parsedData.success) {
             kError("component", "Data is undefined, cannot read region", parsedData.error);

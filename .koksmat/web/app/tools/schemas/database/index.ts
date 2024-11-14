@@ -1,1 +1,1 @@
-export * as tools from "./tools";
+export * as tools from "./tools/table";

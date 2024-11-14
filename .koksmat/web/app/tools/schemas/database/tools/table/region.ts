@@ -15,7 +15,11 @@ export const schema = z.object({
     .string()
     .min(1, { message: "String must not be empty" })
     .describe("Name of the region"),
-  description: z.string().optional().describe("Description of the region"),
+  description: z
+    .string()
+    .nullable()
+    .optional()
+    .describe("Description of the region"),
   Translations: z.object({}).passthrough().optional().describe("Translations"),
   sortOrder: z.string().optional().describe("Sort order"),
 });

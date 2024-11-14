@@ -62,8 +62,8 @@ export default function KoksmatSession({ className = '' }: KoksmatSessionProps) 
       const newSessionPath = await createSession({ prefix: 'koksmat' })
       const newSessionId = newSessionPath.split('/').pop() || ''
       setSessionId(newSessionId)
-      //router.push(pathname + '?' + createQueryString('koksmat-sessionid', newSessionId))
-      router.push(`?koksmat-sessionid=${newSessionId}`)
+      router.push(pathname + '?' + createQueryString('koksmat-sessionid', newSessionId))
+      //router.push(`?koksmat-sessionid=${newSessionId}`)
     } catch (err) {
       console.error('Failed to create new session:', err)
     }

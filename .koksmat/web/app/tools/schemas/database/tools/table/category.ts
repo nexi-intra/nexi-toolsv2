@@ -11,11 +11,18 @@ import { z } from "zod";
 export const schema = z.object({
   tenant: z.string(),
   searchindex: z.string(),
-  name: z.string().describe("Name of the language"),
-  description: z.string().optional().describe("Description of the language"),
+  name: z.string().describe("Name of the category"),
+  description: z
+    .string()
+    .nullable()
+    .optional()
+    .describe("Description of the category"),
   Translations: z.object({}).passthrough().optional().describe("Translations"),
-  code: z.string().describe("Code of the language"),
   sortOrder: z.string().optional().describe("Sort order"),
-});
+  color: z.string().optional(),
+}).describe(`
+Color code
+Color code for the category, supports hex, rgb, rgba, hsl, hsla, and named colors.
+`);
 
-export const tablename = "language";
+export const tablename = "category";

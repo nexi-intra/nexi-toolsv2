@@ -11,10 +11,14 @@ import { z } from "zod";
 export const schema = z.object({
   tenant: z.string(),
   searchindex: z.string(),
-  name: z.string().describe("Name of the user group"),
-  description: z.string().optional().describe("Description of the user group"),
+  name: z.string().describe("Name of the access point"),
+  description: z
+    .string()
+    .nullable()
+    .optional()
+    .describe("Description of the access point"),
   Translations: z.object({}).passthrough().optional().describe("Translations"),
   sortOrder: z.string().optional().describe("Sort order"),
 });
 
-export const tablename = "usergroup";
+export const tablename = "accesspoint";

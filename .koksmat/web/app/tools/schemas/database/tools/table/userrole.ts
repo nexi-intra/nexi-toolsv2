@@ -12,7 +12,11 @@ export const schema = z.object({
   tenant: z.string(),
   searchindex: z.string(),
   name: z.string().describe("Name of the user role"),
-  description: z.string().optional().describe("Description of the user role"),
+  description: z
+    .string()
+    .nullable()
+    .optional()
+    .describe("Description of the user role"),
   Translations: z.object({}).passthrough().optional().describe("Translations"),
   sortOrder: z.string().optional().describe("Sort order"),
 });

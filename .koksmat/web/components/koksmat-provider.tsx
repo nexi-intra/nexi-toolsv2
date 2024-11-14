@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 // Define the shape of the context
@@ -20,10 +20,19 @@ interface KoksmatProviderProps {
 }
 
 export function KoksmatProvider({ children }: KoksmatProviderProps) {
+
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [isMinimized, setIsMinimized] = useState(true)
   const searchParams = useSearchParams()
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set(name, value)
 
+      return params.toString()
+    },
+    [searchParams]
+  )
   useEffect(() => {
     const sessionIdFromUrl = searchParams.get('koksmat-sessionid')
     if (sessionIdFromUrl) {

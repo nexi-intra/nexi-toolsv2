@@ -12,7 +12,7 @@ export const schema = z.object({
   tenant: z.string(),
   searchindex: z.string(),
   name: z.string().describe("Name of the event"),
-  description: z.string().optional().describe("n.a."),
+  description: z.string().nullable().optional().describe("n.a."),
   Translations: z.object({}).passthrough().optional().describe("n.a."),
   user_id: z.number().int().describe("User ID"),
   tool_id: z.number().int().describe("Tool ID"),

@@ -8,3 +8,5 @@ export const MSAL = {
   redirectUri: "/",
   postLogoutRedirectUri: "/",
 };
+
+export * as queries from "./tools/schemas/database/query";

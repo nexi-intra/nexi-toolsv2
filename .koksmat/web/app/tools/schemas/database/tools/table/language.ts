@@ -11,11 +11,15 @@ import { z } from "zod";
 export const schema = z.object({
   tenant: z.string(),
   searchindex: z.string(),
-  name: z.string().describe("Name of the Tool Group"),
-  description: z.string().optional().describe("Description of the Tool Group"),
+  name: z.string().describe("Name of the language"),
+  description: z
+    .string()
+    .nullable()
+    .optional()
+    .describe("Description of the language"),
   Translations: z.object({}).passthrough().optional().describe("Translations"),
-  status: z.string().optional().describe("Status of the Tool Group"),
-  metadata: z.object({}).passthrough().optional().describe("Metadata"),
+  code: z.string().describe("Code of the language"),
+  sortOrder: z.string().optional().describe("Sort order"),
 });
 
-export const tablename = "toolgroup";
+export const tablename = "language";

@@ -11,14 +11,14 @@ import { z } from "zod";
 export const schema = z.object({
   tenant: z.string(),
   searchindex: z.string(),
-  name: z.string().describe("Name of the category"),
-  description: z.string().optional().describe("Description of the category"),
+  name: z.string().describe("Name of the user group"),
+  description: z
+    .string()
+    .nullable()
+    .optional()
+    .describe("Description of the user group"),
   Translations: z.object({}).passthrough().optional().describe("Translations"),
   sortOrder: z.string().optional().describe("Sort order"),
-  color: z.string().optional(),
-}).describe(`
-Color code
-Color code for the category, supports hex, rgb, rgba, hsl, hsla, and named colors.
-`);
+});
 
-export const tablename = "category";
+export const tablename = "usergroup";

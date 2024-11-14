@@ -13,7 +13,11 @@ export const schema = z
     tenant: z.string(),
     searchindex: z.string(),
     name: z.string().describe("Name of the purpose"),
-    description: z.string().optional().describe("Description of the purpose"),
+    description: z
+      .string()
+      .nullable()
+      .optional()
+      .describe("Description of the purpose"),
     Translations: z
       .object({})
       .passthrough()

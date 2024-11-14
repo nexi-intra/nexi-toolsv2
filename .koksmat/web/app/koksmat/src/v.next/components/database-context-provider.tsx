@@ -21,7 +21,7 @@ interface KoksmatDatabaseProviderProps {
   initialMessageProvider: MessageProvider;
   tokenProvider: TokenProvider;
 }
-//TODO: Isolate the implementation of the token provider
+//TODO: Isolate the implementation of the  provider
 // Create the provider component
 export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = ({ children, initialMessageProvider, tokenProvider }) => {
   const [messageProvider, setMessageProvider] = useState<MessageProvider>(initialMessageProvider);
@@ -34,18 +34,9 @@ export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = (
     isVirtual: boolean = false
   ): DatabaseHandlerType<T> => {
     return {
-      read: async (id: number) => {
-        kInfo("provider", `Reading record ${id} from ${tableName}`);
-        const token = await getToken(tokenProvider);
-        return messageProvider.send({
 
-          subject: 'read',
-          targetDatabase: { tableName: tableName, isVirtual, databaseName },
-          record: { id },
-        }, token);
-      },
       create: async (data: z.infer<T>) => {
-        debugger
+
         kInfo("provider", `Creating new record in ${tableName}`);
         // Validate data using safeParse
         const result = schema.safeParse({ ...data, tenant: "", searchindex: "" });
@@ -59,8 +50,13 @@ export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = (
         const response = await messageProvider.send({
 
           subject: 'create',
-          targetDatabase: { tableName: tableName, isVirtual, databaseName },
-          record: { data: parsedData },
+          message:
+          {
+            messageType: 'crudOperation',
+            targetDatabase: { tableName: tableName, isVirtual, databaseName },
+            record: { data: parsedData }
+          },
+
         }, token);
         const parsedResponse = createResponseSchema.safeParse(response.data.Result);
         if (!parsedResponse.success) {
@@ -81,8 +77,25 @@ export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = (
         return messageProvider.send({
 
           subject: 'update',
-          targetDatabase: { tableName: tableName, isVirtual, databaseName },
-          record: { id, data },
+          message:
+          {
+            messageType: 'crudOperation',
+            targetDatabase: { tableName: tableName, isVirtual, databaseName },
+            record: { id, data }
+          },
+        }, token);
+      },
+      read: async (id: number) => {
+        kInfo("provider", `Reading record ${id} from ${tableName}`);
+        const token = await getToken(tokenProvider);
+        return messageProvider.send({
+
+          subject: 'read',
+          message: {
+            messageType: 'crudOperation',
+            targetDatabase: { tableName: tableName, isVirtual, databaseName },
+            record: { id }
+          },
         }, token);
       },
       patch: async (id: number, data: Partial<z.infer<T>>) => {
@@ -91,8 +104,12 @@ export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = (
         return messageProvider.send({
 
           subject: 'patch',
-          targetDatabase: { tableName: tableName, isVirtual, databaseName },
-          record: { id, data },
+          message:
+          {
+            messageType: 'crudOperation',
+            targetDatabase: { tableName: tableName, isVirtual, databaseName },
+            record: { id, data }
+          },
         }, token);
       },
       delete: async (id: number, hardDelete: boolean = false) => {
@@ -101,8 +118,12 @@ export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = (
         return messageProvider.send({
 
           subject: 'delete',
-          targetDatabase: { tableName: tableName, isVirtual, databaseName },
-          record: { id, hardDelete },
+          message:
+          {
+            messageType: 'crudOperation',
+            targetDatabase: { tableName: tableName, isVirtual, databaseName },
+            record: { id, hardDelete }
+          },
         }, token);
       },
       restore: async (id: number) => {
@@ -111,8 +132,12 @@ export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = (
         return messageProvider.send({
 
           subject: 'restore',
-          targetDatabase: { tableName: tableName, isVirtual, databaseName },
-          record: { id },
+          message:
+          {
+            messageType: 'crudOperation',
+            targetDatabase: { tableName: tableName, isVirtual, databaseName },
+            record: { id }
+          },
         }, token);
       },
     };

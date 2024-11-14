@@ -12,7 +12,11 @@ export const schema = z.object({
   tenant: z.string(),
   searchindex: z.string(),
   name: z.string().describe("Name of the user"),
-  description: z.string().optional().describe("Description of the user"),
+  description: z
+    .string()
+    .nullable()
+    .optional()
+    .describe("Description of the user"),
   Translations: z.object({}).passthrough().optional().describe("Translations"),
   email: z.string().email().describe("Email of the user"),
   firstname: z.string().describe("First name of the user"),
