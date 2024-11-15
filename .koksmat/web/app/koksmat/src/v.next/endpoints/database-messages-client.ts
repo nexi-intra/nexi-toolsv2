@@ -45,6 +45,6 @@ export class MessageToKoksmatDatabase implements MessageProvider {
       throw new Error("Databases, " + (result.error ?? "Unknown error"));
     }
 
-    return result;
+    return result.data.Result;
   }
 }

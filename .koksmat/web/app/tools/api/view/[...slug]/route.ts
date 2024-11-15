@@ -1,6 +1,7 @@
+const todelete = 1;
 import { NextRequest, NextResponse } from "next/server";
 import { natsBackendServiceFactory } from "../backend-service";
-import { mockBackendServiceFactory } from "../mock-backend-service";
+import { createMock } from "../mock-backend-service";
 import { BackendService } from "../BackendService";
 import { kError, kInfo, kVerbose } from "@/lib/koksmat-logger-client";
 
@@ -19,11 +20,8 @@ interface ErrorResponse {
  */
 function getBackendServiceFactory(): BackendServiceFactory {
   const useMockBackend = process.env.USE_MOCK_BACKEND === "true";
-  return useMockBackend ? mockBackendServiceFactory : natsBackendServiceFactory;
+  return useMockBackend ? createMock : natsBackendServiceFactory;
 }
-
-// Get the appropriate service factory based on the environment
-const serviceFactory: BackendServiceFactory = getBackendServiceFactory();
 
 function handleError(error: unknown): NextResponse<ErrorResponse> {
   kError("endpoint", "An error occurred:", error);
@@ -41,6 +39,9 @@ export async function GET(
   { params }: { params: { slug: string[] } }
 ) {
   try {
+    // Get the appropriate service factory based on the environment
+    const serviceFactory: BackendServiceFactory = getBackendServiceFactory();
+
     const [entityType, id] = params.slug;
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");

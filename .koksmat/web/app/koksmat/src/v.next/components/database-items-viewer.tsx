@@ -7,24 +7,29 @@ import React, { useEffect, useState } from 'react'
 import { useKoksmatDatabase } from './database-context-provider'
 import { useSearchParams } from 'next/navigation'
 import { ItemViewerComponent } from './item-viewer'
-import { Base, BaseSchema } from './_shared'
+import { Base, BaseSchema, RenderItemFunction } from './_shared'
+import { queries } from '@/app/tools/schemas/database'
+import { ViewNames } from '@/app/tools/schemas/database/view'
+import { fromError } from 'zod-validation-error';
 
-type DatabaseItemsViewerProps<T extends Base> = {
-  databaseName: string;
-  viewName: string;
-  schema: ZodObject<Record<string, z.ZodTypeAny>>;
+type DatabaseItemsViewerProps<S extends z.ZodType<any, any, any>> = {
+  viewName: ViewNames;
+  schema: S;
+  renderItem?: RenderItemFunction<z.infer<S>>;
 
 }
 
-export function DatabaseItemsViewer<T extends Base>({
-  schema,
+export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
+
   viewName,
-  databaseName,
+  renderItem
 
-}: DatabaseItemsViewerProps<T>) {
+
+}: DatabaseItemsViewerProps<S>) {
+  type T = z.infer<S>;
   const searchParams = useSearchParams()
-
-  const table = useKoksmatDatabase().table("", databaseName, schema)
+  const view = queries.getView(viewName)
+  const table = useKoksmatDatabase().table("", view.databaseName, view.schema)
   const [items, setItems] = useState<T[]>()
 
   const [error, seterror] = useState("")
@@ -36,15 +41,41 @@ export function DatabaseItemsViewer<T extends Base>({
       try {
         kVerbose("component", "Starting read operation");
         const readDataOperation = await table.query(viewName)
-        debugger
-        // const parsedData = schema.safeParse(readDataOperation.record)
+        if (readDataOperation.length === 0) {
+          setItems([])
+          kInfo("component", "No data found");
+          return
+        }
+
+        const itemsSchema = z.array(view.schema)
+        // parse some invalid value
+        try {
+          const parsedData = itemsSchema.parse(readDataOperation);
+          setItems(parsedData as any)
+          kVerbose("component", "Completed read operation");
+
+        } catch (err) {
+          const validationError = fromError(err);
+          // the error is now readable by the user
+          // you may print it to console
+          console.log(validationError.toString());
+          // or return it as an actual error
+          seterror("" + validationError.toString())
+          kError("component", "Parse error", validationError.toString());
+        }
+        // const parsedData = itemsSchema.safeParse(readDataOperation)
         // if (!parsedData.success) {
-        //   kError("component", "Data is undefined, cannot read region", parsedData.error);
-        //   seterror("Cannot read" + parsedData.error)
-        //   return
-        // }
-        //setItems(readDataOperation)
-        kVerbose("component", "Completed read operation");
+        //   const errMap = new Map<string, string>()
+
+        //   parsedData.error.issues.forEach((issue) => {
+        //     if (errMap.has(issue.path[1])) {
+        //       kError("component", "Parsing errors", issue.message);
+        //     }
+
+        //     kError("component", "Parsing errors", parsedData.error);
+        //     seterror("Cannot read" + parsedData.error)
+        //     return
+        //   }
 
       } catch (error) {
         seterror("" + error)
@@ -65,13 +96,11 @@ export function DatabaseItemsViewer<T extends Base>({
 
       <ItemViewerComponent
         items={items || []}
-        renderItem={(item, mode) => (<div>{item.name + "(" + item.name + ")"}</div>)
-
-        }
+        renderItem={renderItem}
         properties={[]}
         onSearch={(query) => kInfo("component", 'Search query:', query)}
-        options={{ pageSize: 10, heightBehaviour: 'Full' }}
-        schema={schema} />
+        options={{ pageSize: 25, heightBehaviour: 'Full' }}
+        schema={view.schema} />
 
     </div >
   )

@@ -5,7 +5,7 @@ import { Grid, List, Table } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ToolCardMediumComponent } from "./tool-card-medium";
-import { Tool } from "@/app/tools/schemas";
+import { ToolView } from "@/app/tools/schemas";
 import { ComponentDoc } from "./component-documentation-hub";
 import { ToolSearchProps } from "./tool-search";
 import { mockTools } from "./mockTools";
@@ -18,7 +18,7 @@ interface ToolsPageProps {
 
 export function ToolsPage({ className = "" }: ToolsPageProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("cards");
-  const [tools, setTools] = useState<Tool[]>(mockTools);
+  const [tools, setTools] = useState<ToolView[]>(mockTools);
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredTools = tools.filter(

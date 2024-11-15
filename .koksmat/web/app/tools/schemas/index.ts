@@ -84,7 +84,7 @@ export type SchemaName =
   | "tag";
 
 export type SchemaMap = {
-  tool: Tool;
+  tool: ToolView;
   country: Country;
   purpose: Purpose;
   tag: Tag;
@@ -117,7 +117,7 @@ export const schemaMapObjects: {
   toolgroup: ToolGroupSchema,
   user: UserSchema,
 };
-export type Tool = z.infer<typeof ToolSchema>;
+export type ToolView = z.infer<typeof ToolSchema>;
 export type Country = z.infer<typeof CountrySchema>;
 export type Purpose = z.infer<typeof PurposeSchema>;
 export type User = z.infer<typeof UserSchema>;

@@ -1,4 +1,5 @@
 import RegionEditor from "@/components/form-region";
+import { RegionList } from "@/components/region-list";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,7 +10,8 @@ export default function Page() {
 
 
   return (
-    <RegionEditor />
+    // <RegionEditor />
+    <RegionList />
   )
 }
 

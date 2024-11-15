@@ -22,7 +22,7 @@ export type DatabaseHandlerType<T extends z.ZodObject<any>> = {
   patch(id: number, data: Partial<z.infer<T>>): void;
   delete(id: number, softDelete?: boolean): void;
   restore(id: number): Promise<z.infer<T>>;
-  query(queryname: string): Promise<z.infer<T>[]>;
+  query(queryname: string): Promise<any[]>;
 };
 
 const createResponseSchema = z.object({

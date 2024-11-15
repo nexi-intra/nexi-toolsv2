@@ -32,7 +32,7 @@ export function ListView<T extends { id: number; name: string; searchIndex: stri
               .filter(([key]) => key !== "id" && key !== "name" && key !== "searchIndex") // Omit "id" and "name"
               .map(([key, value]) => {
 
-                const description = getFieldCaption(schema.shape[key].description!, key);
+                const description = getFieldCaption(schema.shape[key]?.description!, key);
                 return (
                   <li key={key} className="text-sm">
                     <strong>{description}:</strong> {value?.toString()}

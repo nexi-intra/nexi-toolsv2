@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Tool } from '@/app/tools/schemas'
+import { ToolView } from '@/app/tools/schemas'
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Heart, ExternalLink } from 'lucide-react'
@@ -14,7 +14,7 @@ import { ComponentDoc } from './component-documentation-hub'
 import { FavoriteComponent } from './favorite'
 
 interface ToolCardMediumProps {
-  tool: Tool
+  tool: ToolView
   onFavoriteChange: (isFavorite: boolean) => void
   allowedTags: TagType[]
 }
@@ -92,13 +92,13 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
 
 // Example usage
 function ToolCardMediumExample() {
-  const [tool, setTool] = useState<Tool>({
+  const [tool, setTool] = useState<ToolView>({
     id: 1,
-    createdAt: new Date(),
-    createdBy: 'John Doe',
-    updatedAt: new Date(),
-    updatedBy: 'Jane Smith',
-    deletedAt: null,
+    created_at: new Date(),
+    created_by: 'John Doe',
+    updated_at: new Date(),
+    updated_by: 'Jane Smith',
+    deleted_at: null,
     deletedBy: null,
     name: 'Nexi Connect',
     description: `Il servizio per chiedere assistenza sulla dotazione tecnologica aziendale, tramite:

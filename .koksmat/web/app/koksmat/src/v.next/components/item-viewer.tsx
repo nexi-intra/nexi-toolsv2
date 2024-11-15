@@ -17,7 +17,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { CardView } from './CardView'
 import { TableView } from './TableView'
 import { ListView } from './ListView'
-import { RenderItemFunction, ViewMode } from './_shared'
+import { Base, RenderItemFunction, ViewMode } from './_shared'
 
 // Schema for countries
 const CountrySchema = z.object({
@@ -95,7 +95,7 @@ type Options = {
 };
 
 // Extend ViewItemsProps to include additional props
-type ViewItemsProps<T extends { id: number, name: string, searchIndex: string }> = {
+type ViewItemsProps<T extends Base> = {
   schema: ZodObject<Record<string, z.ZodTypeAny>>;
   items: T[];
   renderItem?: RenderItemFunction<T>;
@@ -151,6 +151,10 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
     }
   }, [isLoading])
 
+  useEffect(() => {
+    setFilteredItems(items)
+    setCurrentPage(1)
+  }, [items])
 
 
   const handleSearch = (query: string) => {

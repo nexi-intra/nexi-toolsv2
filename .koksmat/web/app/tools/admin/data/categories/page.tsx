@@ -1,5 +1,6 @@
 
-import CategoryEditor from "@/components/form-category";
+import { CategoryList } from "@/components/category-list";
+
 
 import type { Metadata } from "next";
 
@@ -11,7 +12,8 @@ export default function Page() {
 
 
   return (
-    <CategoryEditor />
+    <CategoryList />
+
   )
 }
 

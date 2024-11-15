@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { ComponentDoc } from './component-documentation-hub'
-import { Tool } from '@/app/tools/schemas'
+import { ToolView } from '@/app/tools/schemas'
 import IconUploader from './icon-uploader'
 import TagSelector, { TagType } from './tag'
 import OneLineTextComponent from './one-line-text'
@@ -20,9 +20,9 @@ import Lookup from './lookup'
 import { Globe } from 'lucide-react'
 
 interface ToolCardProps {
-  tool: Tool
+  tool: ToolView
   mode: 'view' | 'edit' | 'new'
-  onSave?: (data: Tool, mode: 'view' | 'edit' | 'new') => void
+  onSave?: (data: ToolView, mode: 'view' | 'edit' | 'new') => void
   className?: string
   allowedTags: TagType[]
   allowedPurposes: { name: string; code: string; sortorder: string }[]
@@ -40,13 +40,13 @@ export default function ToolCard({
   isFavorite,
   onFavoriteChange
 }: ToolCardProps) {
-  const [tool, setTool] = useState<Tool>(initialTool)
+  const [tool, setTool] = useState<ToolView>(initialTool)
 
   useEffect(() => {
     setTool(initialTool)
   }, [initialTool])
 
-  const handleChange = (field: keyof Tool, value: any) => {
+  const handleChange = (field: keyof ToolView, value: any) => {
     setTool(prev => ({ ...prev, [field]: value }))
   }
 
@@ -192,13 +192,13 @@ export default function ToolCard({
 // Example component
 function ToolCardExample() {
   const [mode, setMode] = useState<'view' | 'edit' | 'new'>('view')
-  const [tool, setTool] = useState<Tool>({
+  const [tool, setTool] = useState<ToolView>({
     id: 1,
-    createdAt: new Date(),
-    createdBy: 'John Doe',
-    updatedAt: new Date(),
-    updatedBy: 'Jane Smith',
-    deletedAt: null,
+    created_at: new Date(),
+    created_by: 'John Doe',
+    updated_at: new Date(),
+    updated_by: 'Jane Smith',
+    deleted_at: null,
     deletedBy: null,
     name: 'Nexi Connect',
     description: `Il servizio per chiedere assistenza sulla dotazione tecnologica aziendale, tramite:
@@ -251,7 +251,7 @@ Telefono
     { name: 'Purpose 2', code: 'PUR2', sortorder: '2' },
     { name: 'Purpose 3', code: 'PUR3', sortorder: '3' },
   ]
-  const handleSave = (updatedTool: Tool, saveMode: 'view' | 'edit' | 'new') => {
+  const handleSave = (updatedTool: ToolView, saveMode: 'view' | 'edit' | 'new') => {
     console.log('Saved:', updatedTool, 'Mode:', saveMode)
     setTool(updatedTool)
     setMode('view')

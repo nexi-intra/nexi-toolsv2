@@ -4,6 +4,8 @@ import { kError, kVerbose, kWarn } from "@/lib/koksmat-logger-client";
 import { run } from "../actions/server";
 
 import { z } from "zod";
+import { queries } from "@/app/global";
+import { database } from "@/actions/database/works/activityModel";
 
 const crudOperationSchema = z.object({
   messageType: z.literal("crudOperation"),
@@ -141,44 +143,34 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
           break;
       }
     } else if (message.message.messageType === "query") {
+      const databaseQuery = queries.getView(message.message.name as any);
+      if (!databaseQuery) {
+        return new Response(
+          JSON.stringify({ error: "Query not found", status: 404 })
+        );
+      }
+
+      kVerbose("endpoint", "databaseQuery", databaseQuery);
       const queryResult = await run<{ Result: any[] }>(
         MICROSERVICE,
         [
           "query",
-          message.message.name,
+          databaseQuery.databaseName,
+          databaseQuery.sql,
           JSON.stringify(message.message.parameters),
         ],
         "",
         600,
         "x"
       );
-      //const { text, texts, sourceLanguage, targetLanguages } = body;
-      //console.log(JSON.stringify(body, null, 2));
-      kVerbose("endpoint", "database", "Database request", body);
-      return new Response(JSON.stringify({ error: "Not implemented" }));
-
-      const res = await request.json();
-      const result = await run<any>(
-        res.channel,
-        res.args,
-        res.body,
-        res.timeout,
-        res.transactionId
-      );
-      let hasError = result.hasError;
-      if (hasError) {
-        return new Response(JSON.stringify({ error: result.errorMessage }));
-      }
-      if (!result.data?.Result) {
+      if (queryResult.hasError) {
+        kError("endpoint", "Query error", queryResult.errorMessage);
         return new Response(
-          JSON.stringify({
-            error: "No error signalled, but empty result returned",
-          })
+          JSON.stringify({ error: queryResult.errorMessage, status: 503 })
         );
       }
 
-      const returnValue = result.data?.Result;
-      return new Response(JSON.stringify(returnValue));
+      return new Response(JSON.stringify({ ...queryResult, status: 200 }));
     }
   } catch (error) {
     return Response.error();
