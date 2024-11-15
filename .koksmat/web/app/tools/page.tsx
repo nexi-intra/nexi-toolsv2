@@ -9,7 +9,7 @@ import LandingPage from '@/components/landing-page'
 
 // This would typically come from an API call or environment variables
 const repoInfo = {
-  name: "Magic Links",
+  name: "Tools",
   description: "A tool for building and managing the Koksmat Magic Platform consisting of Magic Buttons, Rest APIs, Microservices and Batch jobs.",
   stars: 120,
   forks: 35,
@@ -44,8 +44,8 @@ Magic Links is released under the MIT License. See the LICENSE file for more det
 `
 
 export const metadata: Metadata = {
-  title: 'Magic Links Documentation',
-  description: 'Documentation for Magic Links - A tool for building and managing the Koksmat Magic Platform',
+  title: 'Tools',
+  description: 'Magic Tools',
 }
 
 export default function DocumentationLandingPage() {

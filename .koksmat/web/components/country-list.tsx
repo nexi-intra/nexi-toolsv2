@@ -36,39 +36,46 @@ export function CountryList() {
   ]
   // Schema for countries
   const CountrySchema = z.object({
-    id: z.number().int().positive(),
-    name: z.string().min(1),
-    continent: z.string().min(1),
-    population: z.number().int().positive(),
-    capital: z.string().min(1),
-    constitutionDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD'),
+    id: z.number().int().positive().describe(`unique id
+    The unique identifier of the country`),
+    name: z.string().min(1).describe(`Country name
+    The name of the country`),
+    searchIndex: z.string().min(1).describe("The search index of the country"),
+    continent: z.string().min(1).describe(`Continent
+    The continent the country is located in`),
+    population: z.number().int().positive().describe(`Population    
+    The population of the country`),
+    capital: z.string().min(1).describe(`Capital 
+    The capital of the country`),
+    constitutionDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD').describe(`Constitution date
+     The date the constitution was signed`),
   })
-
   type Country = z.infer<typeof CountrySchema>
 
   // Schema for arrays of countries
   const CountriesArraySchema = z.array(CountrySchema)
   const countries: Country[] = [
-    { id: 1, name: 'United States', continent: 'North America', population: 331002651, capital: 'Washington, D.C.', constitutionDate: '1787-09-17' },
-    { id: 2, name: 'China', continent: 'Asia', population: 1439323776, capital: 'Beijing', constitutionDate: '1982-12-04' },
-    { id: 3, name: 'India', continent: 'Asia', population: 1380004385, capital: 'New Delhi', constitutionDate: '1950-01-26' },
-    { id: 4, name: 'Brazil', continent: 'South America', population: 212559417, capital: 'Brasília', constitutionDate: '1988-10-05' },
-    { id: 5, name: 'Russia', continent: 'Europe/Asia', population: 145934462, capital: 'Moscow', constitutionDate: '1993-12-25' },
-    { id: 6, name: 'Japan', continent: 'Asia', population: 126476461, capital: 'Tokyo', constitutionDate: '1947-05-03' },
-    { id: 7, name: 'Germany', continent: 'Europe', population: 83783942, capital: 'Berlin', constitutionDate: '1949-05-23' },
-    { id: 8, name: 'United Kingdom', continent: 'Europe', population: 67886011, capital: 'London', constitutionDate: '1215-06-15' },
-    { id: 9, name: 'France', continent: 'Europe', population: 65273511, capital: 'Paris', constitutionDate: '1958-10-04' },
-    { id: 10, name: 'Italy', continent: 'Europe', population: 60461826, capital: 'Rome', constitutionDate: '1948-01-01' },
-    { id: 11, name: 'South Africa', continent: 'Africa', population: 59308690, capital: 'Pretoria, Cape Town, Bloemfontein', constitutionDate: '1996-12-10' },
-    { id: 12, name: 'South Korea', continent: 'Asia', population: 51269185, capital: 'Seoul', constitutionDate: '1948-07-17' },
-    { id: 13, name: 'Colombia', continent: 'South America', population: 50882891, capital: 'Bogotá', constitutionDate: '1991-07-04' },
-    { id: 14, name: 'Spain', continent: 'Europe', population: 46754778, capital: 'Madrid', constitutionDate: '1978-12-29' },
-    { id: 15, name: 'Argentina', continent: 'South America', population: 45195774, capital: 'Buenos Aires', constitutionDate: '1853-05-01' },
+    { id: 1, name: 'United States', continent: 'North America', population: 331002651, capital: 'Washington, D.C.', constitutionDate: '1787-09-17', searchIndex: "abc" },
+    { id: 2, name: 'China', continent: 'Asia', population: 1439323776, capital: 'Beijing', constitutionDate: '1982-12-04', searchIndex: "abc" },
+    { id: 3, name: 'India', continent: 'Asia', population: 1380004385, capital: 'New Delhi', constitutionDate: '1950-01-26', searchIndex: "abc" },
+    { id: 4, name: 'Brazil', continent: 'South America', population: 212559417, capital: 'Brasília', constitutionDate: '1988-10-05', searchIndex: "abc" },
+    { id: 5, name: 'Russia', continent: 'Europe/Asia', population: 145934462, capital: 'Moscow', constitutionDate: '1993-12-25', searchIndex: "abc" },
+    { id: 6, name: 'Japan', continent: 'Asia', population: 126476461, capital: 'Tokyo', constitutionDate: '1947-05-03', searchIndex: "abc" },
+    { id: 7, name: 'Germany', continent: 'Europe', population: 83783942, capital: 'Berlin', constitutionDate: '1949-05-23', searchIndex: "abc" },
+    { id: 8, name: 'United Kingdom', continent: 'Europe', population: 67886011, capital: 'London', constitutionDate: '1215-06-15', searchIndex: "abc" },
+    { id: 9, name: 'France', continent: 'Europe', population: 65273511, capital: 'Paris', constitutionDate: '1958-10-04', searchIndex: "abc" },
+    { id: 10, name: 'Italy', continent: 'Europe', population: 60461826, capital: 'Rome', constitutionDate: '1948-01-01', searchIndex: "abc" },
+    { id: 11, name: 'South Africa', continent: 'Africa', population: 59308690, capital: 'Pretoria, Cape Town, Bloemfontein', constitutionDate: '1996-12-10', searchIndex: "abc" },
+    { id: 12, name: 'South Korea', continent: 'Asia', population: 51269185, capital: 'Seoul', constitutionDate: '1948-07-17', searchIndex: "abc" },
+    { id: 13, name: 'Colombia', continent: 'South America', population: 50882891, capital: 'Bogotá', constitutionDate: '1991-07-04', searchIndex: "abc" },
+    { id: 14, name: 'Spain', continent: 'Europe', population: 46754778, capital: 'Madrid', constitutionDate: '1978-12-29', searchIndex: "abc" },
+    { id: 15, name: 'Argentina', continent: 'South America', population: 45195774, capital: 'Buenos Aires', constitutionDate: '1853-05-01', searchIndex: "abc" },
   ]
 
   return (
     <ItemViewerComponent
       items={countries}
+      schema={CountrySchema}
       properties={properties}
       onSearch={(query) => kInfo("component", 'Search query:', query)}
       options={{ pageSize: 10, heightBehaviour: 'Full' }}

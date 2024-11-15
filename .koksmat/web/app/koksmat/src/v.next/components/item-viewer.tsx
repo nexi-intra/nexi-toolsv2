@@ -8,194 +8,115 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input'
 import { ZeroTrust } from '@/components/zero-trust'
 import { kVerbose, kWarn, kInfo, kError } from "@/lib/koksmat-logger-client"
-import { z } from 'zod'
+import { z, ZodObject, ZodSchema } from 'zod'
 import { ComponentDoc } from '@/components/component-documentation-hub'
 import TokenInput from '@/components/token-input'
 import { PropertySchema } from '@/components/token-input-internal'
 import { FaCircle, FaSquare, FaStar } from 'react-icons/fa'
 import { useSearchParams, useRouter } from 'next/navigation'
+import { CardView } from './CardView'
+import { TableView } from './TableView'
+import { ListView } from './ListView'
+import { RenderItemFunction, ViewMode } from './_shared'
 
 // Schema for countries
 const CountrySchema = z.object({
-  id: z.number().int().positive(),
-  name: z.string().min(1),
-  continent: z.string().min(1),
-  population: z.number().int().positive(),
-  capital: z.string().min(1),
-  constitutionDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD'),
+  id: z.number().int().positive().describe(`unique id
+    The unique identifier of the country`),
+  name: z.string().min(1).describe(`Country name
+    The name of the country`),
+  searchIndex: z.string().min(1).describe("The search index of the country"),
+  continent: z.string().min(1).describe(`Continent
+    The continent the country is located in`),
+  population: z.number().int().positive().describe(`Population    
+    The population of the country`),
+  capital: z.string().min(1).describe(`Capital 
+    The capital of the country`),
+  constitutionDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD').describe(`Constitution date
+     The date the constitution was signed`),
 })
 
-type Country = z.infer<typeof CountrySchema>
+export type Country = z.infer<typeof CountrySchema>
 
 // Schema for arrays of countries
 const CountriesArraySchema = z.array(CountrySchema)
 
 // Sample data
 const countries: Country[] = [
-  { id: 1, name: 'United States', continent: 'North America', population: 331002651, capital: 'Washington, D.C.', constitutionDate: '1787-09-17' },
-  { id: 2, name: 'China', continent: 'Asia', population: 1439323776, capital: 'Beijing', constitutionDate: '1982-12-04' },
-  { id: 3, name: 'India', continent: 'Asia', population: 1380004385, capital: 'New Delhi', constitutionDate: '1950-01-26' },
-  { id: 4, name: 'Brazil', continent: 'South America', population: 212559417, capital: 'Brasília', constitutionDate: '1988-10-05' },
-  { id: 5, name: 'Russia', continent: 'Europe/Asia', population: 145934462, capital: 'Moscow', constitutionDate: '1993-12-25' },
-  { id: 6, name: 'Japan', continent: 'Asia', population: 126476461, capital: 'Tokyo', constitutionDate: '1947-05-03' },
-  { id: 7, name: 'Germany', continent: 'Europe', population: 83783942, capital: 'Berlin', constitutionDate: '1949-05-23' },
-  { id: 8, name: 'United Kingdom', continent: 'Europe', population: 67886011, capital: 'London', constitutionDate: '1215-06-15' },
-  { id: 9, name: 'France', continent: 'Europe', population: 65273511, capital: 'Paris', constitutionDate: '1958-10-04' },
-  { id: 10, name: 'Italy', continent: 'Europe', population: 60461826, capital: 'Rome', constitutionDate: '1948-01-01' },
-  { id: 11, name: 'South Africa', continent: 'Africa', population: 59308690, capital: 'Pretoria, Cape Town, Bloemfontein', constitutionDate: '1996-12-10' },
-  { id: 12, name: 'South Korea', continent: 'Asia', population: 51269185, capital: 'Seoul', constitutionDate: '1948-07-17' },
-  { id: 13, name: 'Colombia', continent: 'South America', population: 50882891, capital: 'Bogotá', constitutionDate: '1991-07-04' },
-  { id: 14, name: 'Spain', continent: 'Europe', population: 46754778, capital: 'Madrid', constitutionDate: '1978-12-29' },
-  { id: 15, name: 'Argentina', continent: 'South America', population: 45195774, capital: 'Buenos Aires', constitutionDate: '1853-05-01' },
+  { id: 1, name: 'United States', continent: 'North America', population: 331002651, capital: 'Washington, D.C.', constitutionDate: '1787-09-17', searchIndex: "abc" },
+  { id: 2, name: 'China', continent: 'Asia', population: 1439323776, capital: 'Beijing', constitutionDate: '1982-12-04', searchIndex: "abc" },
+  { id: 3, name: 'India', continent: 'Asia', population: 1380004385, capital: 'New Delhi', constitutionDate: '1950-01-26', searchIndex: "abc" },
+  { id: 4, name: 'Brazil', continent: 'South America', population: 212559417, capital: 'Brasília', constitutionDate: '1988-10-05', searchIndex: "abc" },
+  { id: 5, name: 'Russia', continent: 'Europe/Asia', population: 145934462, capital: 'Moscow', constitutionDate: '1993-12-25', searchIndex: "abc" },
+  { id: 6, name: 'Japan', continent: 'Asia', population: 126476461, capital: 'Tokyo', constitutionDate: '1947-05-03', searchIndex: "abc" },
+  { id: 7, name: 'Germany', continent: 'Europe', population: 83783942, capital: 'Berlin', constitutionDate: '1949-05-23', searchIndex: "abc" },
+  { id: 8, name: 'United Kingdom', continent: 'Europe', population: 67886011, capital: 'London', constitutionDate: '1215-06-15', searchIndex: "abc" },
+  { id: 9, name: 'France', continent: 'Europe', population: 65273511, capital: 'Paris', constitutionDate: '1958-10-04', searchIndex: "abc" },
+  { id: 10, name: 'Italy', continent: 'Europe', population: 60461826, capital: 'Rome', constitutionDate: '1948-01-01', searchIndex: "abc" },
+  { id: 11, name: 'South Africa', continent: 'Africa', population: 59308690, capital: 'Pretoria, Cape Town, Bloemfontein', constitutionDate: '1996-12-10', searchIndex: "abc" },
+  { id: 12, name: 'South Korea', continent: 'Asia', population: 51269185, capital: 'Seoul', constitutionDate: '1948-07-17', searchIndex: "abc" },
+  { id: 13, name: 'Colombia', continent: 'South America', population: 50882891, capital: 'Bogotá', constitutionDate: '1991-07-04', searchIndex: "abc" },
+  { id: 14, name: 'Spain', continent: 'Europe', population: 46754778, capital: 'Madrid', constitutionDate: '1978-12-29', searchIndex: "abc" },
+  { id: 15, name: 'Argentina', continent: 'South America', population: 45195774, capital: 'Buenos Aires', constitutionDate: '1853-05-01', searchIndex: "abc" },
 ]
 
 // Validate the sample data
 CountriesArraySchema.parse(countries)
 
-// Mock components for different view types
-const CardView = ({ items, onItemClick }: { items: Country[], onItemClick: (id: number) => void }) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    {items.map((item) => (
-      <div key={item.id} className="p-4 border rounded-md">
-        <h3 className="font-bold">
-          <a href="#" onClick={(e) => { e.preventDefault(); onItemClick(item.id); }} className="text-blue-600 hover:underline">
-            {item.name}
-          </a>
-        </h3>
-        <p>Capital: {item.capital}</p>
-        <p>Population: {item.population.toLocaleString()}</p>
-        <p>Continent: {item.continent}</p>
-      </div>
-    ))}
-  </div>
-)
 
-const TableView = ({ items, onItemClick }: { items: Country[], onItemClick: (id: number) => void }) => (
-  <div className="overflow-x-auto">
-    <table className="w-full border-collapse">
-      <thead>
-        <tr>
-          <th className="border p-2">Name</th>
-          <th className="border p-2">Capital</th>
-          <th className="border p-2">Population</th>
-          <th className="border p-2">Continent</th>
-          <th className="border p-2">Constitution Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {items.map((item) => (
-          <tr key={item.id}>
-            <td className="border p-2">
-              <a href="#" onClick={(e) => { e.preventDefault(); onItemClick(item.id); }} className="text-blue-600 hover:underline">
-                {item.name}
-              </a>
-            </td>
-            <td className="border p-2">{item.capital}</td>
-            <td className="border p-2">{item.population.toLocaleString()}</td>
-            <td className="border p-2">{item.continent}</td>
-            <td className="border p-2">{item.constitutionDate}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-)
 
-const ListView = ({ items, onItemClick }: { items: Country[], onItemClick: (id: number) => void }) => (
-  <ul className="space-y-2">
-    {items.map((item) => (
-      <li key={item.id} className="p-2 border rounded-md">
-        <h3 className="font-bold">
-          <a href="#" onClick={(e) => { e.preventDefault(); onItemClick(item.id); }} className="text-blue-600 hover:underline">
-            {item.name}
-          </a>
-        </h3>
-        <p>Capital: {item.capital}</p>
-        <p>Population: {item.population.toLocaleString()}</p>
-        <p>Continent: {item.continent}</p>
-        <p>Constitution Date: {item.constitutionDate}</p>
-      </li>
-    ))}
-  </ul>
-)
 
-const CalendarView = ({ items, onItemClick }: { items: Country[], onItemClick: (id: number) => void }) => (
-  <div className="grid grid-cols-7 gap-2">
-    {Array.from({ length: 31 }, (_, i) => {
-      const matchingCountry = items.find(item => {
-        const date = new Date(item.constitutionDate)
-        return date.getDate() === i + 1
-      })
-      return (
-        <div key={i} className="p-2 border rounded-md text-center">
-          <div className="font-bold">{i + 1}</div>
-          {matchingCountry && (
-            <div className="text-xs">
-              <a href="#" onClick={(e) => { e.preventDefault(); onItemClick(matchingCountry.id); }} className="text-blue-600 hover:underline">
-                {matchingCountry.name}
-              </a>
-            </div>
-          )}
-        </div>
-      )
-    })}
-  </div>
-)
+// const ItemViewerSchema = z.object({
+//   items: CountriesArraySchema,
+//   onSearch: z.function().optional(),
+//   properties: z.array(PropertySchema).optional(),
+//   options: z.object({
+//     pageSize: z.number().optional(),
+//     heightBehaviour: z.enum(['Dynamic', 'Full']).default('Full')
+//   }).optional()
+// })
 
-const KanbanView = ({ items, onItemClick }: { items: Country[], onItemClick: (id: number) => void }) => {
-  const continents = Array.from(new Set(items.map(item => item.continent)))
-  return (
-    <div className="flex space-x-4 overflow-x-auto">
-      {continents.map((continent) => (
-        <div key={continent} className="flex-shrink-0 w-64 p-4 border rounded-md">
-          <h3 className="font-bold mb-2">{continent}</h3>
-          <div className="space-y-2">
-            {items.filter((item) => item.continent === continent).map((item) => (
-              <div key={item.id} className="p-2 bg-gray-100 rounded-md">
-                <div className="font-semibold">
-                  <a href="#" onClick={(e) => { e.preventDefault(); onItemClick(item.id); }} className="text-blue-600 hover:underline">
-                    {item.name}
-                  </a>
-                </div>
-                <div className="text-sm">Capital: {item.capital}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
+// type ItemViewerProps = z.infer<typeof ItemViewerSchema>
+// type ItemViewerProps<T> = {
+//   schema: ZodSchema<T>;
+//   items: T[];
+//   renderItem: (item: T) => React.ReactNode;
+//   childComponent?: (schema: ZodSchema<T>, item: T) => React.ReactNode; // Optional child component for schema-specific rendering
+// };
+// Define PropertySchema and other supporting schemas
+// const PropertySchema = z.object({
+//   key: z.string(),
+//   value: z.any(),
+// });
 
-type ViewMode = 'card' | 'table' | 'list' | 'calendar' | 'kanban'
+type Options = {
+  pageSize?: number;
+  heightBehaviour?: 'Dynamic' | 'Full';
+};
 
-const ItemViewerSchema = z.object({
-  items: CountriesArraySchema,
-  onSearch: z.function().optional(),
-  properties: z.array(PropertySchema).optional(),
-  options: z.object({
-    pageSize: z.number().optional(),
-    heightBehaviour: z.enum(['Dynamic', 'Full']).default('Full')
-  }).optional()
-})
+// Extend ViewItemsProps to include additional props
+type ViewItemsProps<T extends { id: number, name: string, searchIndex: string }> = {
+  schema: ZodObject<Record<string, z.ZodTypeAny>>;
+  items: T[];
+  renderItem?: RenderItemFunction<T>;
+  onSearch?: (query: string) => void;
+  properties?: z.infer<typeof PropertySchema>[];
+  options?: Options;
 
-type ItemViewerProps = z.infer<typeof ItemViewerSchema>
+};
 
-/**
- * ItemViewerComponent - A versatile component for displaying country data in various view modes
- * 
- * This component provides multiple view options (card, table, list, calendar, kanban)
- * for displaying a collection of country items. It includes features such as pagination,
- * search functionality, and smooth transitions between view modes.
- * 
- * @component
- * @param {ItemViewerProps} props - The properties passed to the component
- * @param {Country[]} props.items - The array of country items to be displayed
- * @param {function} [props.onSearch] - Optional callback function for search functionality
- * @param {object} [props.options] - Optional configuration object
- * @param {number} [props.options.pageSize=10] - Number of items to display per page
- */
-export function ItemViewerComponent({ items = [], onSearch, properties, options = { heightBehaviour: 'Full' } }: ItemViewerProps) {
+// function ViewItems<T>({
+//   schema,
+//   items,
+//   renderItem,
+//   onSearch,
+//   properties,
+//   options,
+//   childComponent,
+// }: ViewItemsProps<T>)
+export function ItemViewerComponent<T extends { id: number, name: string, searchIndex: string }>
+  ({ items, schema, onSearch, properties, renderItem, options = { heightBehaviour: 'Full' } }
+    : ViewItemsProps<T>) {
   const [viewMode, setViewMode] = useState<ViewMode>('card')
   const [currentPage, setCurrentPage] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
@@ -230,12 +151,14 @@ export function ItemViewerComponent({ items = [], onSearch, properties, options 
     }
   }, [isLoading])
 
+
+
   const handleSearch = (query: string) => {
     const lowercaseQuery = query.toLowerCase()
+
     const filtered = items.filter(item =>
-      item.name.toLowerCase().includes(lowercaseQuery) ||
-      item.capital.toLowerCase().includes(lowercaseQuery) ||
-      item.continent.toLowerCase().includes(lowercaseQuery)
+      item?.searchIndex.toLowerCase().includes(lowercaseQuery)
+
     )
     setFilteredItems(filtered)
     setCurrentPage(1)
@@ -246,10 +169,11 @@ export function ItemViewerComponent({ items = [], onSearch, properties, options 
 
   const paginatedItems = filteredItems.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 
-  const handleItemClick = (id: number) => {
+  const handleItemClick = (item: T) => {
+
     const params = new URLSearchParams(searchParams)
     params.set('pane', 'details')
-    params.set('id', id.toString())
+    params.set('id', item.id.toString())
     router.push(`?${params.toString()}`)
   }
 
@@ -263,15 +187,11 @@ export function ItemViewerComponent({ items = [], onSearch, properties, options 
   const renderView = () => {
     switch (viewMode) {
       case 'card':
-        return <CardView items={paginatedItems} onItemClick={handleItemClick} />
+        return <CardView renderItem={renderItem} items={paginatedItems} onItemClick={handleItemClick} schema={schema} />
       case 'table':
-        return <TableView items={paginatedItems} onItemClick={handleItemClick} />
+        return <TableView items={paginatedItems} onItemClick={handleItemClick} schema={schema} />
       case 'list':
-        return <ListView items={paginatedItems} onItemClick={handleItemClick} />
-      case 'calendar':
-        return <CalendarView items={paginatedItems} onItemClick={handleItemClick} />
-      case 'kanban':
-        return <KanbanView items={paginatedItems} onItemClick={handleItemClick} />
+        return <ListView items={paginatedItems} onItemClick={handleItemClick} schema={schema} />
       default:
         return null
     }
@@ -327,12 +247,12 @@ export function ItemViewerComponent({ items = [], onSearch, properties, options 
 
   return (
     <>
-      <ZeroTrust
+      {/* <ZeroTrust
         schema={ItemViewerSchema}
         props={{ items, onSearch, options }}
         actionLevel="error"
         componentName="ItemViewerComponent"
-      />
+      /> */}
       <div className={`space-y-4 ${heightBehaviour === 'Full' ? 'h-[calc(100vh-4rem)] flex flex-col' : ''} relative`}>
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
@@ -363,7 +283,7 @@ export function ItemViewerComponent({ items = [], onSearch, properties, options 
               <List className="h-4 w-4" />
               <span className="sr-only">List view</span>
             </Button>
-            <Button
+            {/* <Button
               variant="outline"
               size="icon"
               onClick={() => setViewMode('calendar')}
@@ -380,7 +300,7 @@ export function ItemViewerComponent({ items = [], onSearch, properties, options 
             >
               <Columns className="h-4 w-4" />
               <span className="sr-only">Kanban view</span>
-            </Button>
+            </Button> */}
           </div>
           <div className="flex items-center space-x-2">
             <TokenInput
@@ -429,7 +349,8 @@ export function ItemViewerComponent({ items = [], onSearch, properties, options 
             ) : filteredItems.length > 0 ? (
               renderView()
             ) : (
-              <div className="text-center py-8">No items to display</div>
+              renderView()
+              // <div className="text-center py-8">No items to display</div>
             )}
           </motion.div>
         </AnimatePresence>
@@ -498,27 +419,85 @@ export const examplesItemViewer: ComponentDoc[] = [
     description: 'A versatile component for displaying country data in various view modes',
     usage: `
 import { ItemViewerComponent } from './item-viewer'
+const properties = [
+  {
+    name: "continent",
+    values: [
+      { value: "europe", icon: <FaCircle color="red" />, color: "red" },
+      { value: "north-america", icon: <FaCircle color="green" />, color: "green" },
+      { value: "south-america", icon: <FaCircle color="blue" />, color: "blue" },
+      { value: "asia", icon: <FaCircle color="yellow" />, color: "yellow" },
+      { value: "africa", icon: <FaCircle color="purple" />, color: "purple" },
+      { value: "oceania", icon: <FaCircle color="purple" />, color: "purple" },
+    ],
+  },
+  {
+    name: "population",
+    values: [
+      { value: "small", icon: <FaCircle />, color: "black" },
+      { value: "+50M", icon: <FaSquare />, color: "black" },
+      { value: "+250M", icon: <FaStar />, color: "black" },
+    ],
+  },
+]
+// Schema for countries
+const CountrySchema = z.object({
+  id: z.number().int().positive(),
+  name: z.string().min(1),
+  continent: z.string().min(1),
+  population: z.number().int().positive(),
+  capital: z.string().min(1),
+  constitutionDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD'),
+})
 
-// Sample data and properties are already included in the component file
+export type Country = z.infer<typeof CountrySchema>
+
+// Schema for arrays of countries
+const CountriesArraySchema = z.array(CountrySchema)
+
+// Sample data
+const countries: Country[] = [
+  { id: 1, name: 'United States', continent: 'North America', population: 331002651, capital: 'Washington, D.C.', constitutionDate: '1787-09-17' },
+  { id: 2, name: 'China', continent: 'Asia', population: 1439323776, capital: 'Beijing', constitutionDate: '1982-12-04' },
+  { id: 3, name: 'India', continent: 'Asia', population: 1380004385, capital: 'New Delhi', constitutionDate: '1950-01-26' },
+  { id: 4, name: 'Brazil', continent: 'South America', population: 212559417, capital: 'Brasília', constitutionDate: '1988-10-05' },
+  { id: 5, name: 'Russia', continent: 'Europe/Asia', population: 145934462, capital: 'Moscow', constitutionDate: '1993-12-25' },
+  { id: 6, name: 'Japan', continent: 'Asia', population: 126476461, capital: 'Tokyo', constitutionDate: '1947-05-03' },
+  { id: 7, name: 'Germany', continent: 'Europe', population: 83783942, capital: 'Berlin', constitutionDate: '1949-05-23' },
+  { id: 8, name: 'United Kingdom', continent: 'Europe', population: 67886011, capital: 'London', constitutionDate: '1215-06-15' },
+  { id: 9, name: 'France', continent: 'Europe', population: 65273511, capital: 'Paris', constitutionDate: '1958-10-04' },
+  { id: 10, name: 'Italy', continent: 'Europe', population: 60461826, capital: 'Rome', constitutionDate: '1948-01-01' },
+  { id: 11, name: 'South Africa', continent: 'Africa', population: 59308690, capital: 'Pretoria, Cape Town, Bloemfontein', constitutionDate: '1996-12-10' },
+  { id: 12, name: 'South Korea', continent: 'Asia', population: 51269185, capital: 'Seoul', constitutionDate: '1948-07-17' },
+  { id: 13, name: 'Colombia', continent: 'South America', population: 50882891, capital: 'Bogotá', constitutionDate: '1991-07-04' },
+  { id: 14, name: 'Spain', continent: 'Europe', population: 46754778, capital: 'Madrid', constitutionDate: '1978-12-29' },
+  { id: 15, name: 'Argentina', continent: 'South America', population: 45195774, capital: 'Buenos Aires', constitutionDate: '1853-05-01' },
+]
+
 
 export default function MyPage() {
   return (
-    <ItemViewerComponent
-      items={countries}
-      properties={properties}
-      onSearch={(query) => console.log('Search query:', query)}
-      options={{ pageSize: 5, heightBehaviour: 'Full' }}
-    />
-  )
-}
-`,
-    example: (
       <ItemViewerComponent
         items={countries}
         properties={properties}
         onSearch={(query) => kInfo("component", 'Search query:', query)}
         options={{ pageSize: 10, heightBehaviour: 'Full' }}
-      />
+        schema={CountrySchema} />
+
+  )
+}
+`,
+    example: (
+
+      <ItemViewerComponent
+        items={countries}
+        renderItem={(item, mode) => (<div>{item.name + "(" + item.continent + ")"}</div>)
+
+        }
+        properties={[]}
+        onSearch={(query) => kInfo("component", 'Search query:', query)}
+        options={{ pageSize: 10, heightBehaviour: 'Full' }}
+        schema={CountrySchema} />
     ),
   }
 ]

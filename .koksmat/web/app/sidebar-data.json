@@ -123,10 +123,10 @@
         },
         {
           "title": {
-            "en": "Users",
-            "da": "Brugere"
+            "en": "User Profiles",
+            "da": "Bruger Profiler"
           },
-          "url": "/tools/admin/data/users",
+          "url": "/tools/admin/data/user-profiles",
           "icon": "BookOpen"
         },
         {

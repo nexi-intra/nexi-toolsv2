@@ -1,5 +1,6 @@
 
-import ToolEditor from "@/components/form-tools";
+import ToolForm from "@/components/tool-form";
+import { ToolList } from "@/components/tool-list";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -8,9 +9,10 @@ export const metadata: Metadata = {
 };
 export default function Page() {
 
-
+  //TODO: add ToolForm as property to ToolList component
   return (
-    <ToolEditor />
+    <ToolList />
+    // <ToolForm />
   )
 }
 

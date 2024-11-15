@@ -12,6 +12,7 @@ interface KoksmatDatabaseContextType {
   tokenProvider: TokenProvider;
   setMessageProvider: (provider: MessageProvider) => void;
   table: <T extends z.ZodObject<any>>(tableName: string, databaseName: string, schema: T, isVirtual?: boolean) => DatabaseHandlerType<T>;
+
 }
 
 const KoksmatDatabaseContext = createContext<KoksmatDatabaseContextType | undefined>(undefined);
@@ -140,6 +141,18 @@ export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = (
           },
         }, token);
       },
+      query: async (queryname: string) => {
+        kVerbose("provider", `Querying ${queryname}`);
+        const token = await getToken(tokenProvider);
+        return messageProvider.send({
+          subject: 'query',
+          message:
+          {
+            messageType: "query",
+            name: queryname,
+          },
+        }, token);
+      }
     };
   }, [messageProvider]);
 

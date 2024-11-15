@@ -7,7 +7,7 @@ import { GenericTableEditor } from '@/app/koksmat/src/v.next/components'
 
 export default function PurposeEditor() {
   return (
-    <GenericTableEditor schema={databases.tools.table.purpose.schema} tableName={databases.tools.table.purpose.tablename} databaseName={"tools"} />
+    <GenericTableEditor schema={databases.databaseToolsTables.table.purpose.schema} tableName={databases.databaseToolsTables.table.purpose.tablename} databaseName={"tools"} />
   )
 }
 
