@@ -1,9 +1,10 @@
 import { SqlView } from "@/app/koksmat/src/v.next/schemas/sql_view";
 import * as z from "zod";
+import { SharedAttributes } from "../../_shared";
 export const metadata: SqlView = {
   databaseName: "tools",
   sql: `SELECT * FROM category order by name`,
-  schema: z.object({
+  schema: SharedAttributes.extend({
     searchindex: z.string(),
     name: z.string(),
     description: z.string().nullable().optional(),

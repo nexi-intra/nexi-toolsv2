@@ -139,4 +139,8 @@ export const navLinks = [
     label: "Item Viewer",
     href: "/tools/docs/components/item-viewer",
   },
+  {
+    label: "Markdown Parser",
+    href: "/tools/docs/components/markdown-parser",
+  },
 ];

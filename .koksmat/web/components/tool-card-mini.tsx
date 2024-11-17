@@ -120,9 +120,9 @@ Telefono
   })
 
   const allowedTags = [
-    { id: 'tag1', value: 'tag1', color: '#ff0000', description: 'Tag 1', order: "1" },
-    { id: 'tag2', value: 'tag2', color: '#00ff00', description: 'Tag 2', order: "2" },
-    { id: 'tag3', value: 'tag2', color: '#0000ff', description: 'Tag 3', order: "3" },
+    { id: 1, value: 'tag1', color: '#ff0000', description: 'Tag 1', order: "1" },
+    { id: 2, value: 'tag2', color: '#00ff00', description: 'Tag 2', order: "2" },
+    { id: 3, value: 'tag2', color: '#0000ff', description: 'Tag 3', order: "3" },
   ]
 
 

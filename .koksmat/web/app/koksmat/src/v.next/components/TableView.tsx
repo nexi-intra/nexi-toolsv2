@@ -30,7 +30,7 @@ export function TableView<T extends { id: number; name: string; searchIndex: str
         <thead>
           <tr>
             {fields().map(([key, field]) => (
-              <th key={key} className="border p-2">
+              <th key={key} className="border p-2 text-nowrap">
                 {getFieldCaption((field as any).description, key)} {/* Use description or key */}
               </th>
             ))}

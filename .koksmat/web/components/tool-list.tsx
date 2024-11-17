@@ -19,10 +19,10 @@ export function ToolList() {
           deleted_at: tool.deleted_at,
           url: tool.url,
           groupId: "",
-          purposes: [],
-          tags: [],
+          purposes: tool.purposes,
+          tags: tool.tags,
           version: "",
-          status: "active",
+          status: tool.status,
           created_at: tool.created_at,
           updated_at: tool.updated_at,
         }

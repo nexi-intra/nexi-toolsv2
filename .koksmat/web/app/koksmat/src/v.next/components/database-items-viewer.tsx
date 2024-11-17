@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react'
 import { useKoksmatDatabase } from './database-context-provider'
 import { useSearchParams } from 'next/navigation'
 import { ItemViewerComponent } from './item-viewer'
-import { Base, BaseSchema, RenderItemFunction } from './_shared'
+import { Base, BaseSchema, EditItemFunction, RenderItemFunction } from './_shared'
 import { queries } from '@/app/tools/schemas/database'
 import { ViewNames } from '@/app/tools/schemas/database/view'
 import { fromError } from 'zod-validation-error';
@@ -16,13 +16,15 @@ type DatabaseItemsViewerProps<S extends z.ZodType<any, any, any>> = {
   viewName: ViewNames;
   schema: S;
   renderItem?: RenderItemFunction<z.infer<S>>;
+  editItem?: EditItemFunction<z.infer<S>>;
 
 }
 
 export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
 
   viewName,
-  renderItem
+  renderItem,
+  editItem
 
 
 }: DatabaseItemsViewerProps<S>) {
@@ -97,6 +99,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
       <ItemViewerComponent
         items={items || []}
         renderItem={renderItem}
+        editItem={editItem}
         properties={[]}
         onSearch={(query) => kInfo("component", 'Search query:', query)}
         options={{ pageSize: 25, heightBehaviour: 'Full' }}

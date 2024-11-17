@@ -7,10 +7,10 @@ export const metadata: SqlView = {
   schema: SharedAttributes.extend({
     searchindex: z.string(),
     name: z.string(),
-    description: z.string().optional(),
-    translations: z.string().optional(),
+    description: z.string().nullable().optional(),
+    translations: z.string().nullable().optional(),
 
-    sortorder: z.string().optional(),
+    sortorder: z.string().nullable().optional(),
   }),
   parameters: {},
 };

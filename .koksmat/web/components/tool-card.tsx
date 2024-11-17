@@ -17,7 +17,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Link from 'next/link'
 import KeyValueSelector from './lookup'
 import Lookup from './lookup'
-import { Globe } from 'lucide-react'
+import { Code, Globe } from 'lucide-react'
+import { CodeViewer } from './code-viewer'
 
 interface ToolCardProps {
   tool: ToolView
@@ -55,6 +56,30 @@ export default function ToolCard({
       onSave(tool, mode)
     }
   }
+  useEffect(() => {
+    if (mode === "new") {
+      const newTool: ToolView = {
+        id: 0,
+        name: '',
+        created_at: new Date(),
+        created_by: '',
+        updated_at: new Date(),
+        updated_by: '',
+        deleted_at: null,
+        description: '',
+        status: 'inactive',
+        url: '',
+        groupId: '',
+        purposes: [],
+        tags: [],
+        version: ''
+      }
+      setTool(newTool)
+
+    }
+
+  }, [mode])
+
 
   const handleFavoriteChange = (mode: 'view' | 'edit' | 'new', newFavoriteState: boolean) => {
     onFavoriteChange(newFavoriteState)
@@ -210,7 +235,7 @@ Telefono
     `,
     url: 'https://nets.service-now.com/sp',
     groupId: 'tools-group',
-    purposes: [{ value: 'Purpose 1', id: 'PUR1', order: '1' }, { value: 'Purpose 2', id: 'PUR2', order: '2' }],
+    purposes: [{ value: 'Purpose 1', id: 1, order: '1' }, { value: 'Purpose 2', id: 2, order: '2' }],
     tags: [],
     version: '1.0.0',
     status: 'active',
@@ -222,7 +247,7 @@ Telefono
     compatiblePlatforms: ['Windows', 'Mac', 'Linux'],
     systemRequirements: 'Node.js 14+',
     relatedToolIds: [],
-    countries: [{ value: 'Italy', id: 'it', order: '1' }],
+    countries: [{ value: 'Italy', id: 1, order: '1' }],
     repositoryUrl: 'https://github.com/example/sample-tool',
     collaborationType: [],
     documents: [
@@ -235,21 +260,21 @@ Telefono
   const [isFavorite, setIsFavorite] = useState(false)
 
   const allowedTags = [
-    { id: 'tag1', value: 'tag1', color: '#ff0000', description: 'Tag 1', order: "1" },
-    { id: 'tag2', value: 'tag2', color: '#00ff00', description: 'Tag 2', order: "2" },
-    { id: 'tag3', value: 'tag2', color: '#0000ff', description: 'Tag 3', order: "3" },
+    { id: 1, value: 'tag1', color: '#ff0000', description: 'Tag 1', order: "1" },
+    { id: 2, value: 'tag2', color: '#00ff00', description: 'Tag 2', order: "2" },
+    { id: 3, value: 'tag2', color: '#0000ff', description: 'Tag 3', order: "3" },
   ]
 
   const allowedCountries = [
-    { name: 'Italy', code: 'it' },
-    { name: 'France', code: 'fr' },
-    { name: 'Germany', code: 'de' },
+    { id: 1, name: 'Italy', code: 'it' },
+    { id: 2, name: 'France', code: 'fr' },
+    { id: 3, name: 'Germany', code: 'de' },
   ]
 
   const allowedPurposes = [
-    { name: 'Purpose 1', code: 'PUR1', sortorder: '1' },
-    { name: 'Purpose 2', code: 'PUR2', sortorder: '2' },
-    { name: 'Purpose 3', code: 'PUR3', sortorder: '3' },
+    { id: 1, name: 'Purpose 1', code: 'PUR1', sortorder: '1' },
+    { id: 2, name: 'Purpose 2', code: 'PUR2', sortorder: '2' },
+    { id: 3, name: 'Purpose 3', code: 'PUR3', sortorder: '3' },
   ]
   const handleSave = (updatedTool: ToolView, saveMode: 'view' | 'edit' | 'new') => {
     console.log('Saved:', updatedTool, 'Mode:', saveMode)
@@ -261,6 +286,8 @@ Telefono
     setIsFavorite(newFavoriteState)
     console.log('Favorite changed:', newFavoriteState)
   }
+
+
 
   return (
     <>
@@ -280,7 +307,7 @@ Telefono
             </SelectContent>
           </Select>
           <ToolCard
-            tool={tool}
+            tool={tool as ToolView}
             mode={mode}
             onSave={handleSave}
             allowedTags={allowedTags}
@@ -291,6 +318,7 @@ Telefono
           />
         </CardContent>
       </Card>
+      <CodeViewer filename="tool.json" language="json" code={JSON.stringify(tool, null, 2)} />
       {/* <pre>
         {JSON.stringify(tool, null, 2)}
       </pre> */}

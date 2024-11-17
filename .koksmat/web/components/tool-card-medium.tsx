@@ -68,7 +68,7 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
       <CardFooter className="flex justify-between items-center p-4 bg-gray-50">
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm">Read More</Button>
+            <Button onClick={e => e.stopPropagation()} variant="outline" size="sm">Read More</Button>
           </DialogTrigger>
           <DialogContent className="max-w-3xl">
             <ToolCard
@@ -80,7 +80,7 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
           </DialogContent>
         </Dialog>
         <Link href={tool.url} target="_blank" rel="noopener noreferrer">
-          <Button variant="ghost" size="sm">
+          <Button onClick={e => e.stopPropagation()} variant="ghost" size="sm">
             <ExternalLink className="h-4 w-4 mr-2" />
             Open Tool
           </Button>
@@ -112,7 +112,7 @@ Telefono
     groupId: 'tools-group',
     purposes: [],
     tags: [{
-      "id": "tag1", "value": "Tag 1", "color": "#ff0000",
+      "id": 1, "value": "Tag 1", "color": "#ff0000",
       order: ''
     }],
     version: '1.0.0',
@@ -137,9 +137,9 @@ Telefono
   })
 
   const allowedTags = [
-    { id: "tag1", value: 'tag1', color: '#ff0000', description: 'Tag 1', order: "1" },
-    { id: "tag2", value: 'tag2', color: '#00ff00', description: 'Tag 2', order: "2" },
-    { id: 'tag3', value: "tag3", color: '#0000ff', description: 'Tag 3', order: "3" },
+    { id: 1, value: 'tag1', color: '#ff0000', description: 'Tag 1', order: "1" },
+    { id: 2, value: 'tag2', color: '#00ff00', description: 'Tag 2', order: "2" },
+    { id: 3, value: "tag3", color: '#0000ff', description: 'Tag 3', order: "3" },
   ]
 
   const handleFavoriteChange = (isFavorite: boolean) => {

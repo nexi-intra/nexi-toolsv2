@@ -3,13 +3,13 @@ import * as z from "zod";
 import { SharedAttributes } from "../../_shared";
 export const metadata: SqlView = {
   databaseName: "tools",
-  sql: `SELECT * FROM country `,
+  sql: `SELECT * FROM userrole order by name`,
   schema: SharedAttributes.extend({
     searchindex: z.string(),
     name: z.string(),
     description: z.string().nullable().optional(),
     translations: z.string().nullable().optional(),
-    region_id: z.number(),
+
     sortorder: z.string().nullable().optional(),
   }),
   parameters: {},

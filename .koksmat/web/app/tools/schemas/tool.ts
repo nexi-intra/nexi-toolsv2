@@ -16,7 +16,7 @@ export const ToolSchema = SharedAttributes.extend({
   purposes: z
     .array(
       z.object({
-        id: z.string(),
+        id: z.number(),
         value: z.string(),
         order: z.string(),
       })
@@ -25,7 +25,7 @@ export const ToolSchema = SharedAttributes.extend({
   tags: z
     .array(
       z.object({
-        id: z.string(),
+        id: z.number(),
         value: z.string(),
         order: z.string(),
         color: z.string(),
@@ -85,7 +85,7 @@ export const ToolSchema = SharedAttributes.extend({
   countries: z
     .array(
       z.object({
-        id: z.string(),
+        id: z.number(),
         value: z.string(),
         order: z.string(),
       })

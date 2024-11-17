@@ -9,7 +9,7 @@ import clsx from 'clsx';
 
 // Define the IdValue interface
 export interface IdValue {
-  id: string;
+  id: number;
   value: string;
   sortorder: string; // Sorting will be done based on this field
 }
@@ -91,7 +91,7 @@ const Lookup: React.FC<LookupProps> = ({
     if (newItemValue === '' || items.find(item => item.value === newItemValue)) return;
 
     const newItem: IdValue = {
-      id: `id-${Date.now()}`, // Generate a unique ID
+      id: -(items.length + 1), // Generate a unique ID
       value: newItemValue,
       sortorder: (items.length + 1).toString(), // Default sort order for new items
     };
@@ -227,14 +227,14 @@ const items = [
     example: (
       <Lookup
         items={[
-          { id: 'option1', value: 'Option 1', sortorder: '2' },
-          { id: 'option2', value: 'Option 2', sortorder: '1' },
-          { id: 'option3', value: 'Option 3', sortorder: '3' },
+          { id: 1, value: 'Option 1', sortorder: '2' },
+          { id: 2, value: 'Option 2', sortorder: '1' },
+          { id: 3, value: 'Option 3', sortorder: '3' },
         ]}
         mode="edit"
         allowMulti={false}
         required={true}
-        initialSelectedItems={[{ id: 'option1', value: 'Option 1', sortorder: '2' }]}
+        initialSelectedItems={[{ id: 1, value: 'Option 1', sortorder: '2' }]}
         onChange={(selectedItems) => console.log('Selected Items:', selectedItems)}
       />
     ),
@@ -247,9 +247,10 @@ const items = [
 import Lookup from './Lookup';
 
 const items = [
-  { id: 'item1', value: 'Item 1', sortorder: '3' },
-  { id: 'item2', value: 'Item 2', sortorder: '1' },
-  { id: 'item3', value: 'Item 3', sortorder: '2' },
+          { id: 1, value: 'Option 1', sortorder: '2' },
+          { id: 2, value: 'Option 2', sortorder: '1' },
+          { id: 3, value: 'Option 3', sortorder: '3' },
+
 ];
 
 <Lookup
@@ -257,21 +258,21 @@ const items = [
   mode="edit"
   allowMulti={true}
   required={false}
-  initialSelectedItems={[{ id: 'item2', value: 'Item 2', sortorder: '1' }]}
+  initialSelectedItems={[{ id: 2, value: 'Item 2', sortorder: '1' }]}
   onChange={(selectedItems) => console.log('Selected Items:', selectedItems)}
 />
     `,
     example: (
       <Lookup
         items={[
-          { id: 'item1', value: 'Item 1', sortorder: '3' },
-          { id: 'item2', value: 'Item 2', sortorder: '1' },
-          { id: 'item3', value: 'Item 3', sortorder: '2' },
+          { id: 1, value: 'Item 1', sortorder: '3' },
+          { id: 2, value: 'Item 2', sortorder: '1' },
+          { id: 3, value: 'Item 3', sortorder: '2' },
         ]}
         mode="edit"
         allowMulti={true}
         required={false}
-        initialSelectedItems={[{ id: 'item2', value: 'Item 2', sortorder: '1' }]}
+        initialSelectedItems={[{ id: 2, value: 'Item 2', sortorder: '1' }]}
         onChange={(selectedItems) => console.log('Selected Items:', selectedItems)}
       />
     ),
@@ -284,8 +285,8 @@ const items = [
 import Lookup from './Lookup';
 
 const items = [
-  { id: 'view1', value: 'View 1', sortorder: '1' },
-  { id: 'view2', value: 'View 2', sortorder: '2' },
+  { id: 1, value: 'View 1', sortorder: '1' },
+  { id: 2, value: 'View 2', sortorder: '2' },
 ];
 
 <Lookup
@@ -300,13 +301,13 @@ const items = [
     example: (
       <Lookup
         items={[
-          { id: 'view1', value: 'View 1', sortorder: '1' },
-          { id: 'view2', value: 'View 2', sortorder: '2' },
+          { id: 1, value: 'View 1', sortorder: '1' },
+          { id: 2, value: 'View 2', sortorder: '2' },
         ]}
         mode="view"
         allowMulti={false}
         required={false}
-        initialSelectedItems={[{ id: 'view1', value: 'View 1', sortorder: '1' }]}
+        initialSelectedItems={[{ id: 1, value: 'View 1', sortorder: '1' }]}
         onChange={(selectedItems) => console.log('Selected Items:', selectedItems)}
       />
     ),

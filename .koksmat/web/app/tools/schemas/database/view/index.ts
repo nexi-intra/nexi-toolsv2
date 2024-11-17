@@ -2,12 +2,33 @@ import { database } from "@/actions/database/works/activityModel";
 import * as tools from "./tools";
 import * as countries from "./countries";
 import * as category from "./categories";
-import * as region from "./regions";
+import * as purposes from "./purposes";
+import * as languages from "./languages";
+import * as accesspoints from "./accesspoints";
+import * as regions from "./regions";
+import * as userroles from "./userroles";
+import * as usergroups from "./usergroups";
+import * as userprofiles from "./userprofiles";
+import * as toolgroups from "./toolgroups";
 
 import { z } from "zod";
+import { access } from "fs";
+import { User } from "lucide-react";
 
 // Define a union of all available query names
-const viewNames = ["tools", "countries", "category", "region"] as const;
+const viewNames = [
+  "tools",
+  "countries",
+  "category",
+  "region",
+  "language",
+  "accesspoint",
+  "purpose",
+  "toolgroup",
+  "usergroup",
+  "userprofile",
+  "userroles",
+] as const;
 export type ViewNames = (typeof viewNames)[number];
 
 // Consolidate views from multiple modules
@@ -15,7 +36,14 @@ const views = {
   tools: tools.metadata,
   countries: countries.metadata,
   category: category.metadata,
-  region: region.metadata,
+  region: regions.metadata,
+  accesspoint: accesspoints.metadata,
+  language: languages.metadata,
+  purpose: purposes.metadata,
+  toolgroup: toolgroups.metadata,
+  userroles: userroles.metadata,
+  usergroup: usergroups.metadata,
+  userprofile: userprofiles.metadata,
 };
 
 // Function to retrieve a query by name

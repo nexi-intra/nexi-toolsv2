@@ -17,8 +17,17 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { CardView } from './CardView'
 import { TableView } from './TableView'
 import { ListView } from './ListView'
-import { Base, RenderItemFunction, ViewMode } from './_shared'
-
+import { Base, EditItemFunction, RenderItemFunction, ViewMode } from './_shared'
+import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 // Schema for countries
 const CountrySchema = z.object({
   id: z.number().int().positive().describe(`unique id
@@ -99,6 +108,7 @@ type ViewItemsProps<T extends Base> = {
   schema: ZodObject<Record<string, z.ZodTypeAny>>;
   items: T[];
   renderItem?: RenderItemFunction<T>;
+  editItem?: EditItemFunction<T>;
   onSearch?: (query: string) => void;
   properties?: z.infer<typeof PropertySchema>[];
   options?: Options;
@@ -115,7 +125,7 @@ type ViewItemsProps<T extends Base> = {
 //   childComponent,
 // }: ViewItemsProps<T>)
 export function ItemViewerComponent<T extends { id: number, name: string, searchIndex: string }>
-  ({ items, schema, onSearch, properties, renderItem, options = { heightBehaviour: 'Full' } }
+  ({ items, schema, onSearch, properties, renderItem, editItem, options = { heightBehaviour: 'Full' } }
     : ViewItemsProps<T>) {
   const [viewMode, setViewMode] = useState<ViewMode>('card')
   const [currentPage, setCurrentPage] = useState(1)
@@ -127,7 +137,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
   const router = useRouter()
 
   const pageSize = options.pageSize || 10
-  const totalPages = Math.max(1, Math.ceil(filteredItems.length / pageSize))
+  const totalPages = Math.max(1, Math.ceil(filteredItems?.length / pageSize))
   const heightBehaviour = options.heightBehaviour || 'Full'
 
   useEffect(() => {
@@ -201,14 +211,14 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
     }
   }
 
-  const renderDetailsPane = () => {
+  function renderDetailsPane<T>(editItem?: EditItemFunction<T>) {
     const id = searchParams.get('id')
     const item = items.find(i => i.id === Number(id))
 
     if (!item) return null
 
     return (
-      <div className="absolute inset-y-0 right-0 w-1/3 bg-white shadow-lg p-4 overflow-y-auto">
+      <div className="absolute z-[1000] inset-y-0 right-0 w-1/3 bg-white shadow-lg p-4 overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">{item.name}</h2>
           <div className="flex space-x-2">
@@ -230,7 +240,8 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
             </Button>
           </div>
         </div>
-        <pre>{JSON.stringify(item, null, 2)}</pre>
+        {editItem && (editItem("edit", item.id))}
+        {!editItem && <pre>{JSON.stringify(item, null, 2)}</pre>}
       </div>
     )
   }
@@ -251,12 +262,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
 
   return (
     <>
-      {/* <ZeroTrust
-        schema={ItemViewerSchema}
-        props={{ items, onSearch, options }}
-        actionLevel="error"
-        componentName="ItemViewerComponent"
-      /> */}
+
       <div className={`space-y-4 ${heightBehaviour === 'Full' ? 'h-[calc(100vh-4rem)] flex flex-col' : ''} relative`}>
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
@@ -350,11 +356,33 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
                   <div key={index} className="h-40 bg-gray-200 animate-pulse rounded-md"></div>
                 ))}
               </div>
-            ) : filteredItems.length > 0 ? (
+            ) : filteredItems?.length > 0 ? (
               renderView()
             ) : (
-              renderView()
-              // <div className="text-center py-8">No items to display</div>
+
+              <div className="text-center py-8">No items to display
+                {editItem &&
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline">Add new</Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px] max-h-[40vh]">
+                      <DialogHeader>
+                        <DialogTitle>Create a new record</DialogTitle>
+
+                      </DialogHeader>
+                      <ScrollArea className="h-72 w-full rounded-md border">
+                        {editItem("new", 0)}
+                      </ScrollArea>
+                      <DialogFooter>
+                        <Button type="submit">Save changes</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+
+                }
+
+              </div>
             )}
           </motion.div>
         </AnimatePresence>
@@ -365,7 +393,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
           </div>
         )}
 
-        {filteredItems.length > 0 && (
+        {filteredItems?.length > 0 && (
           <div className="flex justify-between items-center mt-4">
             <Button
               variant="outline"

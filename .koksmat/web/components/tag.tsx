@@ -43,7 +43,7 @@ interface TagProps {
 
 // Define the Tag interface
 export interface TagType {
-  id: string;
+  id: number;
   value: string
   color: string;
   order: string;
@@ -77,7 +77,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({
 
   // Filtered tags based on search query
   const filteredTags = tags.filter(tag =>
-    tag.id.toLowerCase().includes(searchQuery.toLowerCase())
+    tag.value.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Effect to call onChange when selectedTags change
@@ -110,10 +110,10 @@ const TagSelector: React.FC<TagSelectorProps> = ({
   // Function to add a new tag
   const addNewTag = () => {
     const newTagName = searchQuery.trim();
-    if (newTagName === '' || tags.find(tag => tag.id === newTagName)) return;
+    if (newTagName === '' || tags.find(tag => tag.value === newTagName)) return;
 
     const newTag: TagType = {
-      id: newTagName,
+      id: -(tags.length + 1),
       color: '#000000',
       value: newTagName,
       order: newTagName,
@@ -261,15 +261,15 @@ export const examplesTag: ComponentDoc[] = [
     example: (
       <TagSelector
         tags={[
-          { id: 'bug', color: '#d73a4a', value: 'Something isn\'t working', order: '1' },
-          { id: 'documentation', color: '#0075ca', value: 'Improvements or additions to documentation', order: '2' },
-          { id: 'duplicate', color: '#cfd3d7', value: 'This issue or pull request already exists', order: '3' },
-          { id: 'enhancement', color: '#a2eeef', value: 'New feature or request', order: '4' },
-          { id: 'good first issue', color: '#7057ff', value: 'Good for newcomers', order: '5' }
+          { id: 1, color: '#d73a4a', value: 'Something isn\'t working', order: '1' },
+          { id: 2, color: '#0075ca', value: 'Improvements or additions to documentation', order: '2' },
+          { id: 3, color: '#cfd3d7', value: 'This issue or pull request already exists', order: '3' },
+          { id: 4, color: '#a2eeef', value: 'New feature or request', order: '4' },
+          { id: 5, color: '#7057ff', value: 'Good for newcomers', order: '5' }
         ]}
         initialSelectedTags={[
-          { id: 'bug', color: '#d73a4a', value: 'Something isn\'t working', order: '1' },
-          { id: 'documentation', color: '#0075ca', value: 'Improvements or additions to documentation', order: '2' }
+          { id: 1, color: '#d73a4a', value: 'Something isn\'t working', order: '1' },
+          { id: 2, color: '#0075ca', value: 'Improvements or additions to documentation', order: '2' }
         ]}
         allowMulti={true}
         required={false}
