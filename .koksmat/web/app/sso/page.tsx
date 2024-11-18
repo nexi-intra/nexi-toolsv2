@@ -46,6 +46,7 @@ export default function SSO() {
   const searchParams = useSearchParams();
   const [jwtToken, setjwtToken] = useState<jwt.JwtPayload>();
   const token = searchParams.get("token");
+  const route = searchParams.get("path");
   const cmd = searchParams.get("cmd");
   const [data, setdata] = useState<any>();
   const router = useRouter();
@@ -76,9 +77,12 @@ export default function SSO() {
       magicbox.setAuthToken(token, "SharePoint");
 
       if (!cmd) {
-        setframeHref("/sso/?cmd=framed&token=" + token);
+        setframeHref("/sso/?cmd=framed&token=" + token + "&path=" + route);
       } else if (cmd === "framed") {
-        router.push("/" + APPNAME);
+        if (route) {
+          router.push("/" + route);
+        } else { router.push("/" + APPNAME); }
+
       }
       setdata(result);
     };
