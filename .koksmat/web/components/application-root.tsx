@@ -60,6 +60,9 @@ import { KoksmatDatabaseProvider } from "@/app/koksmat/src/v.next/components/dat
 import { MessageToKoksmatDatabase } from "@/app/koksmat/src/v.next/endpoints/database-messages-client"
 import { useContext } from "react"
 import { MagicboxContext } from "@/app/koksmat0/magicbox-context"
+import { useIsInIframe } from "@/app/koksmat/src/v.next/components/use-isiniframe"
+// Custom hook to detect if running in an iframe
+
 
 function MenuItemLabel(props: { title: string, label?: string }) {
   const { title, label } = props
@@ -142,6 +145,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
   hideBreadcrumb = false,
   hideSidebar = false
 }) => {
+  const isInIframe = useIsInIframe()
   const magicbox = useContext(MagicboxContext)
   const [isDarkMode, setIsDarkMode] = React.useState(false)
   const [currentLanguage, setCurrentLanguage] = React.useState<SupportedLanguage>(sidebarData.language)
@@ -171,7 +175,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
       }}>
 
       <div className={`flex h-screen ${isDarkMode ? 'dark' : ''} bg-background text-foreground`}>
-        {!hideTopNav && (
+        {!hideTopNav && !isInIframe && (
           <div className="absolute top-0 right-0 p-4 z-50 flex" >
             {topnav}
             <TopNavigation
@@ -184,7 +188,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
           </div>
         )}
         <SidebarProvider>
-          {!hideSidebar && (
+          {!hideSidebar && !isInIframe && (
             <Sidebar collapsible="icon">
               <SidebarHeader>
                 <SidebarMenu>
@@ -402,13 +406,15 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
               <SidebarRail />
             </Sidebar>
           )}
-          <SidebarInset>
 
-            <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-              <div className="flex items-center gap-2 px-4">
-                <SidebarTrigger className="-ml-1" />
-                <Separator orientation="vertical" className="mr-2 h-4" />
-                {!hideBreadcrumb && (
+          <SidebarInset>
+            {!isInIframe && (
+              <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+                <div className="flex items-center gap-2 px-4">
+                  <SidebarTrigger className="-ml-1" />
+
+                  <Separator orientation="vertical" className="mr-2 h-4" />
+
                   <Breadcrumb>
                     <BreadcrumbList>
                       <BreadcrumbItem className="hidden md:block">
@@ -422,9 +428,9 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                       </BreadcrumbItem>
                     </BreadcrumbList>
                   </Breadcrumb>
-                )}
-              </div>
-            </header>
+
+                </div>
+              </header>)}
 
             <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
               <div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min w-full">
