@@ -196,7 +196,7 @@ export default function ToolCard({
         {mode === 'view' && (
           <div className="flex justify-center w-full mt-4">
             <Link href={tool.url} target="_blank">
-              <Button variant="default">
+              <Button variant="default" onClick={e => e.stopPropagation()} disabled={!tool.url} >
                 Open Tool
               </Button>
             </Link>

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Heart, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import ToolCard from './tool-card'
+import ToolCard from './tool-card-large'
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import Tag, { TagType } from './tag'
 import { ComponentDoc } from './component-documentation-hub'

@@ -14,7 +14,7 @@ import TokenInput from '@/components/token-input'
 import { PropertySchema } from '@/components/token-input-internal'
 import { FaCircle, FaSquare, FaStar } from 'react-icons/fa'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { CardView } from './CardView'
+import { CardViewItems } from './CardView'
 import { TableView } from './TableView'
 import { ListView } from './ListView'
 import { Base, EditItemFunction, RenderItemFunction, ViewMode } from './_shared'
@@ -201,7 +201,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
   const renderView = () => {
     switch (viewMode) {
       case 'card':
-        return <CardView renderItem={renderItem} items={paginatedItems} onItemClick={handleItemClick} schema={schema} />
+        return <CardViewItems renderItem={renderItem} items={paginatedItems} onItemClick={handleItemClick} schema={schema} />
       case 'table':
         return <TableView items={paginatedItems} onItemClick={handleItemClick} schema={schema} />
       case 'list':
@@ -351,13 +351,15 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
             className={heightBehaviour === 'Full' ? 'flex-grow overflow-auto' : ''}
           >
             {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div >
                 {Array.from({ length: pageSize }).map((_, index) => (
                   <div key={index} className="h-40 bg-gray-200 animate-pulse rounded-md"></div>
                 ))}
               </div>
             ) : filteredItems?.length > 0 ? (
-              renderView()
+              <div className=''>
+                {renderView()}
+              </div>
             ) : (
 
               <div className="text-center py-8">No items to display

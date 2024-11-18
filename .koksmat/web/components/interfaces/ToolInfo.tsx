@@ -3,6 +3,7 @@ export interface ToolInfo {
   id: string;
   name: string;
   icon: string;
+  url: string;
   description: Record<string, string>;
   countries: string[];
   businessPurposes: string[];
@@ -21,5 +22,6 @@ export const exampleToolInfo: ToolInfo = {
   documents: [
     { name: 'README', url: 'https://github.com/nexi-intra/README.md' },
     { name: 'Contributing Guidelines', url: 'https://github.com/nexi-intra/CONTRIBUTING.md' }
-  ]
+  ],
+  url: ""
 };

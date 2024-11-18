@@ -10,23 +10,21 @@ export const ToolSchema = SharedAttributes.extend({
   category_id: z.number().describe(`Category id`),
   url: z.string().describe(`Tool url`),
   status: z.string().describe(`Tool status`),
-  // documents: z
-  //   .union([
-  //     z.array(z.any()).nullable(),
-  //     z.object({
-  //       "MFA - CA Mobile Authenticator App - Registrazione Push": z.string(),
-  //       "MFA - CA Mobile Authenticator App - Registrazione OTP Online":
-  //         z.string(),
-  //       "MFA - CA Mobile Authenticator App - Registrazione OTP Offline":
-  //         z.string(),
-  //     }),
-  //   ])
-  //   .describe(`Tool documents`),
-  // metadata: z
-  //   .object({
-  //     icon_reference: z.string(),
-  //   })
-  //   .describe(`Tool metadata`),
+  documents: z
+    .array(
+      z.object({
+        name: z.string(),
+        url: z.string().url(),
+      })
+    )
+    .nullable()
+
+    .describe(`Tool documents`),
+  metadata: z
+    .object({
+      icon_reference: z.string(),
+    })
+    .describe(`Tool metadata`),
   category_name: z.string().describe(`Category name`),
   category_order: z.string().nullable().describe(`Category order`),
   category_color: z.string().nullable().describe(`Category color`),

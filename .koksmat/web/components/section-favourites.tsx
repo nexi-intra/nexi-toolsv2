@@ -21,7 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ToolLarge } from "./tool-large";
+
 
 export interface ToolsProps {
   weburl: string;

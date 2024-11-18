@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Heart, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import ToolCard from './tool-card'
+import ToolCard from './tool-card-large'
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import Tag, { TagType } from './tag'
 import { ComponentDoc } from './component-documentation-hub'
@@ -80,7 +80,7 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
           </DialogContent>
         </Dialog>
         <Link href={tool.url} target="_blank" rel="noopener noreferrer">
-          <Button onClick={e => e.stopPropagation()} variant="ghost" size="sm">
+          <Button disabled={!tool.url} onClick={e => e.stopPropagation()} variant="ghost" size="sm">
             <ExternalLink className="h-4 w-4 mr-2" />
             Open Tool
           </Button>
