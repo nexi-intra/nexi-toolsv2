@@ -13,7 +13,8 @@ async function fetchWithAuth(
   };
   const response = await fetch(url, { ...options, headers });
   if (!response.ok) {
-    throw new Error(`Translation error! status: ${response.status}`);
+    kError("endpoint", "Error in fetchWithAuth", response);
+    throw new Error(`Error: ${response.status}`);
   }
   return response;
 }

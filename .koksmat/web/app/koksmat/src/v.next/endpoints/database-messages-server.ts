@@ -6,6 +6,7 @@ import { run } from "../actions/server";
 import { z } from "zod";
 import { queries } from "@/app/global";
 import { database } from "@/actions/database/works/activityModel";
+import { databaseActions } from "@/app/tools/schemas/database";
 
 const crudOperationSchema = z.object({
   messageType: z.literal("crudOperation"),
@@ -26,12 +27,17 @@ const queryOperationSchema = z.object({
   name: z.string(),
   parameters: z.record(z.any()).optional(),
 });
-
+const actionOperationSchema = z.object({
+  messageType: z.literal("action"),
+  name: z.string(),
+  parameters: z.record(z.any()).optional(),
+});
 export const databaseMessageSchema = z.object({
   subject: z.string(),
   message: z.discriminatedUnion("messageType", [
     crudOperationSchema,
     queryOperationSchema,
+    actionOperationSchema,
   ]),
 });
 export type DatabaseMessageType = z.infer<typeof databaseMessageSchema>;
@@ -157,6 +163,37 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
           "query",
           databaseQuery.databaseName,
           databaseQuery.sql,
+          JSON.stringify(message.message.parameters),
+        ],
+        "",
+        600,
+        "x"
+      );
+      if (queryResult.hasError) {
+        kError("endpoint", "Query error", queryResult.errorMessage);
+        return new Response(
+          JSON.stringify({ error: queryResult.errorMessage, status: 503 })
+        );
+      }
+
+      return new Response(JSON.stringify({ ...queryResult, status: 200 }));
+    } else if (message.message.messageType === "action") {
+      const databaseAction = databaseActions.getAction(
+        message.message.name as any
+      );
+      if (!databaseAction) {
+        return new Response(
+          JSON.stringify({ error: "Action not found", status: 404 })
+        );
+      }
+
+      kVerbose("endpoint", "databaseAction", databaseAction);
+      const queryResult = await run<{ Result: any[] }>(
+        MICROSERVICE,
+        [
+          "query",
+          databaseAction.databaseName,
+          databaseAction.sql,
           JSON.stringify(message.message.parameters),
         ],
         "",

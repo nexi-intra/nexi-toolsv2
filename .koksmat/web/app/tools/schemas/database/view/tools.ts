@@ -5,6 +5,10 @@ import { SharedAttributes } from "../../_shared";
 
 export const ToolSchema = SharedAttributes.extend({
   searchindex: z.string().nullable().describe(`searchIndex`),
+  calculatedsearchindex: z
+    .string()
+    .nullable()
+    .describe(`calculatedSearchIndex`),
   description: z.string().nullable().optional().describe(`Tool description`),
   translations: z.string().nullable().optional().describe(`Tool translations`),
   category_id: z.number().describe(`Category id`),
@@ -31,6 +35,7 @@ export const ToolSchema = SharedAttributes.extend({
   countries: z.array(z.any()).nullable().describe(`Countries`),
   purposes: z.array(z.any()).nullable().describe(`Purposes`),
 });
+
 export const metadata: SqlView = {
   databaseName: "tools",
   sql: `
@@ -39,7 +44,7 @@ export const metadata: SqlView = {
        (get_m2m_left_json(t.id, 'tool', 'country')) AS countries,
        (get_m2m_left_json(t.id, 'tool', 'purpose')) AS purposes,
        
-    t.name || ' ' || t.description AS calculatedSearchIndex,
+    t.name || ' ' || t.description AS calculatedsearchindex,
     c.name AS category_name,
     c.sortorder AS category_order,
     c.color AS category_color

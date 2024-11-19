@@ -1,10 +1,10 @@
 "use client"
 import { DatabaseItemsViewer } from "@/app/koksmat/src/v.next/components/database-items-viewer";
-import { queries } from "@/app/tools/schemas/database";
+import { databaseQueries } from "@/app/tools/schemas/database";
 import AccessPointForm from "./access-point-form";
 
 export function AccessPointList() {
-  const view = queries.getView("tools")
+  const view = databaseQueries.getView("tools")
   return (
     <DatabaseItemsViewer
       schema={view.schema}
@@ -15,7 +15,7 @@ export function AccessPointList() {
 
 
       }}
-      viewName={"accesspoint"} />
+      viewName={"accesspoints"} />
   )
 }
 

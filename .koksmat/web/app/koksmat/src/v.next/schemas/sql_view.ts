@@ -16,3 +16,11 @@ export type SqlView = {
   parameters?: Record<string, string>;
   schema: ZodObject<Record<string, z.ZodTypeAny>>;
 };
+
+export type SqlAction = {
+  sql: string;
+  databaseName: string;
+  parameters?: Record<string, string>;
+  inputSchema: ZodObject<Record<string, z.ZodTypeAny>>;
+  outputSchema: ZodObject<Record<string, z.ZodTypeAny>>;
+};

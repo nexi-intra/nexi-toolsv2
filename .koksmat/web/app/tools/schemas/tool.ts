@@ -22,6 +22,14 @@ export const ToolSchema = SharedAttributes.extend({
       })
     )
     .describe("List of purposes, each with an id, value, and order"),
+  category: z
+    .object({
+      id: z.number(),
+      value: z.string(),
+      order: z.string(),
+      color: z.string(),
+    })
+    .describe("Category of the tool"),
   tags: z
     .array(
       z.object({

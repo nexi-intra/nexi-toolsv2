@@ -20,7 +20,7 @@ const example: Property = {
 };
 
 
-interface ErrorDetail {
+export interface ErrorDetail {
   token: string
   message: string
 }
@@ -28,6 +28,7 @@ interface ErrorDetail {
 interface TokenInputProps {
   properties: Property[]
   value: string
+  placeholder?: string
   onChange: (
     value: string,
     hasErrors: boolean,
@@ -53,6 +54,7 @@ const TokenInput: React.FC<TokenInputProps> = ({
   properties,
   value,
   onChange,
+  placeholder,
   mode = 'edit',
   className = ""
 }) => {
@@ -76,6 +78,7 @@ const TokenInput: React.FC<TokenInputProps> = ({
       properties={properties}
       value={internalValue}
       onChange={handleChange}
+      placeholder={placeholder}
 
 
     />

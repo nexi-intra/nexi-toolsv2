@@ -6,12 +6,12 @@ import { DatabaseItemsViewer } from "@/app/koksmat/src/v.next/components/databas
 
 
 export function CategoryList() {
-  const view = queries.getView("category")
+  const view = queries.getView("categories")
   return (
 
     <DatabaseItemsViewer
       schema={view.schema}
-      viewName={"category"} />
+      viewName={"categories"} />
   )
 }
 

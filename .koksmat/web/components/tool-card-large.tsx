@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { ComponentDoc } from './component-documentation-hub'
 import { ToolView } from '@/app/tools/schemas'
 import IconUploader from './icon-uploader'
 import TagSelector, { TagType } from './tag'
@@ -9,21 +8,31 @@ import OneLineTextComponent from './one-line-text'
 import MultiLineText from './multi-line-text'
 import { FavoriteComponent } from './favorite'
 import { FileLinksGridComponent } from './file-links-grid'
-
-
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Link from 'next/link'
-import KeyValueSelector from './lookup'
 import Lookup from './lookup'
-import { Code, Globe } from 'lucide-react'
+import { Globe } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { CodeViewer } from './code-viewer'
+import { ComponentDoc } from './component-documentation-hub'
+import { useKoksmatDatabase } from '@/app/koksmat/src/v.next/components/database-context-provider'
+import { databaseQueries } from '@/app/tools/schemas/database'
+import { kError } from '@/lib/koksmat-logger-client'
+import { set } from 'date-fns'
+
+type ModeType = 'view' | 'edit' | 'new'
+
+function captionForArray(mode: ModeType, caption: string, arr?: any[]) {
+  const hasItems = arr && arr.length > 0
+  if ((mode === 'view') && !hasItems) return null
+  return <div className='text-xl font-bold ml-2 mt-2'>{caption}</div>
+}
 
 interface ToolCardProps {
   tool: ToolView
-  mode: 'view' | 'edit' | 'new'
-  onSave?: (data: ToolView, mode: 'view' | 'edit' | 'new') => void
+  mode: ModeType
+  onSave?: (data: ToolView, mode: ModeType) => void
   className?: string
   allowedTags: TagType[]
   allowedPurposes: { name: string; code: string; sortorder: string }[]
@@ -38,52 +47,72 @@ export default function ToolCard({
   onSave,
   className = '',
   allowedTags,
-  isFavorite,
+  isFavorite: initialIsFavorite,
   onFavoriteChange
 }: ToolCardProps) {
-  const [tool, setTool] = useState<ToolView>(initialTool)
+  const [name, setName] = useState(initialTool.name)
+  const [description, setDescription] = useState(initialTool.description)
+  const [icon, setIcon] = useState(initialTool.icon)
+  const [url, setUrl] = useState(initialTool.url)
+  const [tags, setTags] = useState(initialTool.tags)
+  const [countries, setCountries] = useState(initialTool.countries)
+  const [purposes, setPurposes] = useState(initialTool.purposes)
+  const [documents, setDocuments] = useState(initialTool.documents)
+  const [isFavorite, setIsFavorite] = useState(initialIsFavorite)
+
+  const [error, seterror] = useState("")
+
+  const view = databaseQueries.getView("countries")
+  const database = useKoksmatDatabase().table("", view.databaseName, view.schema)
+
 
   useEffect(() => {
-    setTool(initialTool)
-  }, [initialTool])
+    setName(initialTool.name)
+    setDescription(initialTool.description)
+    setIcon(initialTool.icon)
+    setUrl(initialTool.url)
+    setTags(initialTool.tags)
+    setCountries(initialTool.countries)
+    setPurposes(initialTool.purposes)
+    setDocuments(initialTool.documents)
+    setIsFavorite(initialIsFavorite)
+  }, [initialTool, initialIsFavorite])
 
-  const handleChange = (field: keyof ToolView, value: any) => {
-    setTool(prev => ({ ...prev, [field]: value }))
-  }
+  useEffect(() => {
+    if (mode === "new") {
+      setName('')
+      setDescription('')
+      setIcon('')
+      setUrl('')
+      setTags([])
+      setCountries([])
+      setPurposes([])
+      setDocuments([])
+      setIsFavorite(false)
+    }
+  }, [mode])
 
   const handleSave = () => {
     if (onSave) {
-      onSave(tool, mode)
+      const updatedTool: ToolView = {
+        ...initialTool,
+        name,
+        description,
+        icon,
+        url,
+        tags,
+        countries,
+        purposes,
+        documents,
+        status: isFavorite ? 'active' : 'inactive'
+      }
+      onSave(updatedTool, mode)
     }
   }
-  useEffect(() => {
-    if (mode === "new") {
-      const newTool: ToolView = {
-        id: 0,
-        name: '',
-        created_at: new Date(),
-        created_by: '',
-        updated_at: new Date(),
-        updated_by: '',
-        deleted_at: null,
-        description: '',
-        status: 'inactive',
-        url: '',
-        groupId: '',
-        purposes: [],
-        tags: [],
-        version: ''
-      }
-      setTool(newTool)
 
-    }
-
-  }, [mode])
-
-
-  const handleFavoriteChange = (mode: 'view' | 'edit' | 'new', newFavoriteState: boolean) => {
+  const handleFavoriteChange = (_: any, newFavoriteState: boolean) => {
+    setIsFavorite(newFavoriteState)
     onFavoriteChange(newFavoriteState)
-    handleChange('status', newFavoriteState ? 'active' : 'inactive')
   }
 
   return (
@@ -93,15 +122,15 @@ export default function ToolCard({
           <IconUploader
             size={48}
             mode={mode}
-            onUpdate={(_, icon) => handleChange('icon', icon)}
-            initialIcon={tool.icon}
+            onUpdate={(_, newIcon) => setIcon(newIcon)}
+            initialIcon={icon}
             className="w-[48px] h-[48px]"
           />
           <OneLineTextComponent
-            initialValue={tool.name}
+            initialValue={name}
             placeholder="Enter tool name"
             mode={mode}
-            onChange={(_, value) => handleChange('name', value)}
+            onChange={(_, value) => setName(value)}
             className='text-2xl font-bold ml-3'
           />
         </div>
@@ -109,13 +138,29 @@ export default function ToolCard({
         <div className="flex items-center space-x-2">
           <TagSelector
             tags={allowedTags}
-            initialSelectedTags={tool.tags}
+            initialSelectedTags={[{
+              id: initialTool.category.id,
+              value: initialTool.category.value,
+              color: initialTool.category.color,
+              order: ""
+            }]}
             allowMulti={false}
             required={false}
             mode={mode}
-          //onChange={(_, selected) => handleChange('tags', selected)}
+            lazyLoad
+            loadItems={async () => {
+              try {
+                const categories = await database.query("categories")
+                return categories.map((category: any) => ({ id: category.id, value: category.name, order: category.sortorder, color: category.color }))
 
-          // className='right-0'
+              } catch (error) {
+                kError("component", "Data read error", error);
+                seterror("" + error)
+                return []
+              }
+            }}
+
+          // onChange={(selected) => setTags(selected)}
           />
           <FavoriteComponent
             mode={mode}
@@ -125,57 +170,71 @@ export default function ToolCard({
         </div>
       </CardHeader>
       <CardContent>
-
         <MultiLineText
-          initialValue={tool.description}
+          initialValue={description}
           placeholder="Enter tool description"
           mode={mode}
-          onChange={(_, value) => handleChange('description', value)}
+          onChange={(_, value) => setDescription(value)}
         />
 
-        {tool && tool.countries && tool.countries.length > 0 && (
-          <div className='text-xl font-bold ml-2 mt-2'>
-            Countries
-          </div>
-
-        )}
+        {captionForArray(mode, "Countries", countries)}
         <Lookup
           className='p-2'
           renderItem={(item) => <span className='flex '><Globe className='h-6 w-6 mt-1 mr-2' />{item.value}</span>}
-
-          items={tool.countries?.map((country, index) => ({ id: country.id, value: country.value, sortorder: country.order })) ?? []}
+          initialSelectedItems={countries?.map(country => ({ id: country.id, value: country.value, sortorder: country.order })) ?? []}
+          items={[]}
           mode={mode}
+          lazyLoad
+          loadItems={async () => {
+            try {
+              const readDataOperation = await database.query("countries")
+              return readDataOperation.map((country: any) => ({ id: country.id, value: country.name, sortorder: country.sortorder }))
 
+            } catch (error) {
+              kError("component", "Data read error", error);
+              seterror("" + error)
+              return []
+            }
+          }}
+
+          onChange={(selectedItems) => {
+
+            const selectedCountries = selectedItems.map(item => ({ id: item.id, value: item.value, order: item.sortorder }))
+            setCountries([...selectedCountries])
+          }}
           required={true}
-
-
         />
 
-
-        {tool && tool.purposes && tool.purposes.length > 0 && (
-          <div className='text-xl font-bold ml-2 mt-2'>
-            Purposes
-          </div>
-
-        )}
+        {captionForArray(mode, "Purposes", purposes)}
         <Lookup
           className='p-2'
-          items={tool.purposes?.map((purpose, index) => ({ id: purpose.id, value: purpose.value, sortorder: purpose.order })) ?? []}
+          initialSelectedItems={purposes?.map(purpose => ({ id: purpose.id, value: purpose.value, sortorder: purpose.order })) ?? []}
+          items={purposes?.map(purpose => ({ id: purpose.id, value: purpose.value, sortorder: purpose.order })) ?? []}
           mode={mode}
+          onChange={(selectedItems) => {
 
+            const selectedPurposes = selectedItems.map(item => ({ id: item.id, value: item.value, order: item.sortorder }))
+            setPurposes([...selectedPurposes])
+          }}
+          lazyLoad
+          loadItems={async () => {
+            try {
+              const readDataOperation = await database.query("purposes")
+              return readDataOperation.map((purpose: any) => ({ id: purpose.id, value: purpose.name, sortorder: purpose.sortorder }))
+
+            } catch (error) {
+              kError("component", "Data read error", error);
+              seterror("" + error)
+              return []
+            }
+          }}
+          // onChange={(selectedItems) => setPurposes(selectedItems.map(item => ({ id: item.id, value: item.value, order: item.sortorder })))}
           required={true}
-
-
         />
 
-        {tool && tool.documents && tool.documents?.length > 0 && (
-          <div className='text-xl font-bold ml-2 mt-2'>
-            Documents
-          </div>
-
-        )}
+        {captionForArray(mode, "Documents", documents)}
         <FileLinksGridComponent
-          initialLinks={tool.documents?.map((doc, index) => ({
+          initialLinks={documents?.map((doc, index) => ({
             id: index.toString(),
             name: doc.name,
             url: doc.url,
@@ -183,20 +242,20 @@ export default function ToolCard({
           })) || []}
           mode={mode}
           columns={mode === "view" ? 2 : 1}
-          onUpdate={(_, links) => handleChange('documents', links.map(link => ({ name: link.name, url: link.url })))}
+          onUpdate={(_, links) => setDocuments(links.map(link => ({ name: link.name, url: link.url })))}
         />
         {mode !== 'view' && (
           <OneLineTextComponent
-            initialValue={tool.url}
+            initialValue={url}
             placeholder="Enter tool url"
             mode={mode}
-            onChange={(_, value) => handleChange('url', value)}
+            onChange={(_, value) => setUrl(value)}
           />
         )}
         {mode === 'view' && (
           <div className="flex justify-center w-full mt-4">
-            <Link href={tool.url} target="_blank">
-              <Button variant="default" onClick={e => e.stopPropagation()} disabled={!tool.url} >
+            <Link href={url} target="_blank">
+              <Button variant="default" onClick={e => e.stopPropagation()} disabled={!url}>
                 Open Tool
               </Button>
             </Link>
@@ -205,7 +264,10 @@ export default function ToolCard({
       </CardContent>
       <CardFooter className="flex justify-end">
         {mode !== 'view' && (
-          <Button onClick={handleSave}>
+          <Button onClick={(e) => {
+            e.stopPropagation()
+            handleSave()
+          }}>
             {mode === 'new' ? 'Create' : 'Save'}
           </Button>
         )}
@@ -226,6 +288,7 @@ function ToolCardExample() {
     deleted_at: null,
     deletedBy: null,
     name: 'Nexi Connect',
+    category: { id: 1, value: 'Category 1', color: '#ff0000', order: "" },
     description: `Il servizio per chiedere assistenza sulla dotazione tecnologica aziendale, tramite:
 
 Ticket

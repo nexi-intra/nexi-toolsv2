@@ -1,14 +1,14 @@
 "use client"
 import { DatabaseItemsViewer } from "@/app/koksmat/src/v.next/components/database-items-viewer";
-import { queries } from "@/app/tools/schemas/database";
+import { databaseQueries } from "@/app/tools/schemas/database";
 
 export function ToolGroupsList() {
-  const view = queries.getView("tools")
+  const view = databaseQueries.getView("toolgroups")
   return (
     <DatabaseItemsViewer
       schema={view.schema}
 
-      viewName={"toolgroup"} />
+      viewName={"toolgroups"} />
   )
 }
 

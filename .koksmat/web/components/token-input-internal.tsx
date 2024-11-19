@@ -36,6 +36,7 @@ interface ErrorDetail {
 
 interface TokenInputProps {
   properties: Property[];
+  placeholder?: string;
   value: string;
   onChange: (
     value: string,
@@ -58,6 +59,7 @@ interface Token {
 
 const TokenInputInternal: React.FC<TokenInputProps> = ({
   properties,
+  placeholder,
   value,
   onChange,
 }) => {
@@ -362,6 +364,7 @@ const TokenInputInternal: React.FC<TokenInputProps> = ({
       <input
         type="text"
         ref={inputRef}
+        placeholder={placeholder}
         className="w-full border border-gray-300 rounded focus:outline-none focus:ring"
         style={{
           ...commonStyles,

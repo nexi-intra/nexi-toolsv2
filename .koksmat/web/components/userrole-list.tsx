@@ -7,7 +7,7 @@ import UserRoleTableEditor from "./userrole-form";
 
 
 export function UserRoleList() {
-  const view = queries.getView("category")
+  const view = queries.getView("userroles")
   return (
 
     <DatabaseItemsViewer

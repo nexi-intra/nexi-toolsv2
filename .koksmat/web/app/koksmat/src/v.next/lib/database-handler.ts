@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { kError, kInfo, kVerbose } from "@/lib/koksmat-logger-client";
 import { DatabaseMessageType } from "../endpoints/database-messages-server";
+import { actionNames } from "@/app/tools/schemas/database/actions";
+import { viewNames } from "@/app/tools/schemas/database/view";
 
 // export interface DatabaseMessageType {
 //   subject: string;
@@ -22,7 +24,8 @@ export type DatabaseHandlerType<T extends z.ZodObject<any>> = {
   patch(id: number, data: Partial<z.infer<T>>): void;
   delete(id: number, softDelete?: boolean): void;
   restore(id: number): Promise<z.infer<T>>;
-  query(queryname: string): Promise<any[]>;
+  query(queryname: typeof viewNames): Promise<any[]>;
+  execute(actionname: typeof actionNames, data: any): Promise<any>;
 };
 
 const createResponseSchema = z.object({

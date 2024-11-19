@@ -8,7 +8,7 @@ import { useKoksmatDatabase } from './database-context-provider'
 import { useSearchParams } from 'next/navigation'
 import { ItemViewerComponent } from './item-viewer'
 import { Base, BaseSchema, EditItemFunction, RenderItemFunction } from './_shared'
-import { queries } from '@/app/tools/schemas/database'
+import { databaseQueries } from '@/app/tools/schemas/database'
 import { ViewNames } from '@/app/tools/schemas/database/view'
 import { fromError } from 'zod-validation-error';
 
@@ -30,8 +30,8 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
 }: DatabaseItemsViewerProps<S>) {
   type T = z.infer<S>;
   const searchParams = useSearchParams()
-  const view = queries.getView(viewName)
-  const table = useKoksmatDatabase().table("", view.databaseName, view.schema)
+  const view = databaseQueries.getView(viewName)
+  const table = useKoksmatDatabase().table("", view!.databaseName, view!.schema)
   const [items, setItems] = useState<T[]>()
 
   const [error, seterror] = useState("")
@@ -49,7 +49,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
           return
         }
 
-        const itemsSchema = z.array(view.schema)
+        const itemsSchema = z.array(view!.schema)
         // parse some invalid value
         try {
           const parsedData = itemsSchema.parse(readDataOperation);
@@ -95,15 +95,15 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
     <div className="space-y-4 p-6 bg-gray-100 dark:bg-gray-900 rounded-lg w-full">
 
       {error && <div className='text-red-500'>{error}</div>}
-
-      <ItemViewerComponent
-        items={items || []}
-        renderItem={renderItem}
-        editItem={editItem}
-        properties={[]}
-        onSearch={(query) => kInfo("component", 'Search query:', query)}
-        options={{ pageSize: 25, heightBehaviour: 'Full' }}
-        schema={view.schema} />
+      {view && (
+        <ItemViewerComponent
+          items={items || []}
+          renderItem={renderItem}
+          editItem={editItem}
+          properties={[]}
+          onSearch={(query) => kInfo("component", 'Search query:', query)}
+          options={{ pageSize: 25, heightBehaviour: 'Full' }}
+          schema={view.schema} />)}
 
     </div >
   )

@@ -7,7 +7,7 @@ import LanguageForm from "./language-form";
 
 
 export function LanguageList() {
-  const view = queries.getView("category")
+  const view = queries.getView("languages")
   return (
 
     <DatabaseItemsViewer
@@ -19,7 +19,7 @@ export function LanguageList() {
 
 
       }}
-      viewName={"language"} />
+      viewName={"languages"} />
   )
 }
 

@@ -6,12 +6,12 @@ import { DatabaseItemsViewer } from "@/app/koksmat/src/v.next/components/databas
 
 
 export function RegionList() {
-  const view = queries.getView("region")
+  const view = queries.getView("regions")
   return (
 
     <DatabaseItemsViewer
       schema={view.schema}
-      viewName={"region"} />
+      viewName={"regions"} />
   )
 }
 

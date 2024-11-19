@@ -9,6 +9,8 @@ import { ToolView } from "@/app/tools/schemas";
 import { ComponentDoc } from "./component-documentation-hub";
 import { ToolSearchProps } from "./tool-search";
 import { mockTools } from "./mockTools";
+import TokenInput, { ErrorDetail } from "./token-input";
+import { kVerbose } from "@/lib/koksmat-logger-client";
 
 type ViewMode = "cards" | "table" | "list";
 
@@ -92,12 +94,23 @@ export function ToolsPage({ className = "" }: ToolsPageProps) {
   return (
     <div className={`space-y-4 ${className} w-full`}>
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full">
-        <Input
+        {/* <Input
           type="text"
           placeholder="Search tools..."
           onChange={(e) => handleSearch(e.target.value)}
           className="w-full flex-grow"
-        />
+        /> */}
+        <TokenInput properties={[]} value={""}
+          onChange={function (value: string, hasErrors: boolean, errors: ErrorDetail[]): void {
+            kVerbose("component", "TokenInput value", value, hasErrors, errors);
+            if (hasErrors) {
+              console.log(errors);
+            }
+
+            className = "w-full";
+          }} placeholder="Search tools ..." />
+
+
         <div className="flex gap-2">
           <Button
             variant={viewMode === "cards" ? "default" : "outline"}

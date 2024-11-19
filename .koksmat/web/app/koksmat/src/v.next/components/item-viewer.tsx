@@ -124,7 +124,7 @@ type ViewItemsProps<T extends Base> = {
 //   options,
 //   childComponent,
 // }: ViewItemsProps<T>)
-export function ItemViewerComponent<T extends { id: number, name: string, searchIndex: string }>
+export function ItemViewerComponent<T extends { id: number, name: string, searchIndex: string, calculatedSearchIndex?: string }>
   ({ items, schema, onSearch, properties, renderItem, editItem, options = { heightBehaviour: 'Full' } }
     : ViewItemsProps<T>) {
   const [viewMode, setViewMode] = useState<ViewMode>('card')
@@ -170,8 +170,13 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
   const handleSearch = (query: string) => {
     const lowercaseQuery = query.toLowerCase()
 
-    const filtered = items.filter(item =>
-      item?.searchIndex.toLowerCase().includes(lowercaseQuery)
+    const filtered = items.filter((item) => {
+      if (item?.calculatedSearchIndex) {
+        return item?.calculatedSearchIndex?.toLowerCase().includes(lowercaseQuery)
+      }
+      else return item?.searchIndex?.toLowerCase().includes(lowercaseQuery)
+
+    }
 
     )
     setFilteredItems(filtered)

@@ -2,15 +2,16 @@
 import { DatabaseItemsViewer } from "@/app/koksmat/src/v.next/components/database-items-viewer";
 import { ToolCardMediumComponent } from "./tool-card-medium";
 import { ToolView } from "@/app/tools/schemas";
-import { queries } from "@/app/tools/schemas/database";
+import { databaseQueries } from "@/app/tools/schemas/database";
 
 export function ToolList() {
-  const view = queries.getView("tools")
+  const view = databaseQueries.getView("tools")
   return (
     <DatabaseItemsViewer
       schema={view.schema}
       renderItem={(tool, viewMode) => {
         const toolView: ToolView = {
+
           id: tool.id,
           name: tool.name,
           description: tool.description,
@@ -27,10 +28,12 @@ export function ToolList() {
           status: tool.status,
           created_at: tool.created_at,
           updated_at: tool.updated_at,
+          category: { color: tool.category_color, id: tool.category_id, value: tool.category_name, order: "" },
         }
 
         return <div>
           <ToolCardMediumComponent
+            showActions
             tool={toolView} onFavoriteChange={function (isFavorite: boolean): void {
 
             }} allowedTags={[]}

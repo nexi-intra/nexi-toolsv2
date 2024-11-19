@@ -16,17 +16,17 @@ import { access } from "fs";
 import { User } from "lucide-react";
 
 // Define a union of all available query names
-const viewNames = [
+export const viewNames = [
   "tools",
   "countries",
-  "category",
-  "region",
-  "language",
-  "accesspoint",
-  "purpose",
-  "toolgroup",
-  "usergroup",
-  "userprofile",
+  "categories",
+  "regions",
+  "languages",
+  "accesspoints",
+  "purposes",
+  "toolgroups",
+  "usergroups",
+  "userprofiles",
   "userroles",
 ] as const;
 export type ViewNames = (typeof viewNames)[number];
@@ -35,22 +35,22 @@ export type ViewNames = (typeof viewNames)[number];
 const views = {
   tools: tools.metadata,
   countries: countries.metadata,
-  category: category.metadata,
-  region: regions.metadata,
-  accesspoint: accesspoints.metadata,
-  language: languages.metadata,
-  purpose: purposes.metadata,
-  toolgroup: toolgroups.metadata,
+  categories: category.metadata,
+  regions: regions.metadata,
+  accesspoints: accesspoints.metadata,
+  languages: languages.metadata,
+  purposes: purposes.metadata,
+  toolgroups: toolgroups.metadata,
   userroles: userroles.metadata,
-  usergroup: usergroups.metadata,
-  userprofile: userprofiles.metadata,
+  usergroups: usergroups.metadata,
+  userprofiles: userprofiles.metadata,
 };
 
-// Function to retrieve a query by name
+// Function to retrieve a view by name
 export const getView = (queryName: ViewNames) => {
   const query = views[queryName];
   if (!query) {
-    throw new Error(`View ${queryName} not found.`);
+    return null; // throw new Error(`View ${queryName} not found.`);
   }
   return {
     databaseName: query.databaseName,
@@ -69,6 +69,9 @@ export const getTypedView = <T extends ViewNames>(
   parameters: (typeof views)[T]["parameters"];
 } => {
   const query = getView(queryName);
+  if (!query) {
+    throw new Error(`View ${queryName} not found.`);
+  }
   return {
     sql: query.sql,
     schema: query.schema,

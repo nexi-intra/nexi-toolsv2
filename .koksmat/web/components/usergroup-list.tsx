@@ -1,10 +1,10 @@
 "use client"
 import { DatabaseItemsViewer } from "@/app/koksmat/src/v.next/components/database-items-viewer";
-import { queries } from "@/app/tools/schemas/database";
+import { databaseQueries } from "@/app/tools/schemas/database";
 import UserGroupForm from "./usergroup-form";
 
 export function UserGroupsList() {
-  const view = queries.getView("tools")
+  const view = databaseQueries.getView("usergroups")
   return (
     <DatabaseItemsViewer
       schema={view.schema}
@@ -13,7 +13,7 @@ export function UserGroupsList() {
           <UserGroupForm />
         </div>
       }}
-      viewName={"usergroup"} />
+      viewName={"usergroups"} />
   )
 }
 

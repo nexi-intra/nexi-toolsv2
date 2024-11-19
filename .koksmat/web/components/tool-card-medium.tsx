@@ -8,19 +8,29 @@ import { Heart, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import ToolCard from './tool-card-large'
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "@/components/ui/dialog"
 import Tag, { TagType } from './tag'
 import { ComponentDoc } from './component-documentation-hub'
 import { FavoriteComponent } from './favorite'
+import { kVerbose } from '@/lib/koksmat-logger-client'
+import { useKoksmatDatabase } from '@/app/koksmat/src/v.next/components/database-context-provider'
+import { databaseActions } from '@/app/tools/schemas/database'
 
 interface ToolCardMediumProps {
   tool: ToolView
   onFavoriteChange: (isFavorite: boolean) => void
   allowedTags: TagType[]
+  showActions?: boolean
 }
 
-export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }: ToolCardMediumProps) {
+export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags, showActions }: ToolCardMediumProps) {
   const [isFavorite, setIsFavorite] = useState(tool.status === 'active')
+  const [edit, setedit] = useState(false)
+  const action = databaseActions.getAction("tools")
+  const table = useKoksmatDatabase().table("", action.databaseName, action.inputSchema)
+
+
+
 
   const handleFavoriteClick = () => {
     const newFavoriteState = !isFavorite
@@ -35,7 +45,7 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
           <div className="flex flex-wrap gap-1">
             <Tag
               tags={allowedTags}
-              initialSelectedTags={tool.tags}
+              initialSelectedTags={tool.category ? [tool.category] : []}
               allowMulti={false}
               required={false}
               mode={'view'}
@@ -73,11 +83,23 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
           <DialogContent className="max-w-3xl">
             <ToolCard
               tool={tool}
-              mode="view"
+              mode={edit ? 'edit' : 'view'}
               allowedTags={allowedTags}
               isFavorite={isFavorite}
+              onSave={async (data, mode) => {
+                kVerbose("component", "ToolCardMediumComponent onSave", data, mode);
+
+                const writeOperation = await table.execute("tool", data)
+
+              }}
               onFavoriteChange={onFavoriteChange} allowedPurposes={[]} allowedCountries={[]} />
+
+            {showActions && (
+              <DialogFooter>
+                <Button onClick={e => { e.stopPropagation(); setedit(!edit) }} variant="ghost" size="sm">Edit</Button>
+              </DialogFooter>)}
           </DialogContent>
+
         </Dialog>
         <Link href={tool.url} target="_blank" rel="noopener noreferrer">
           <Button disabled={!tool.url} onClick={e => e.stopPropagation()} variant="ghost" size="sm">
@@ -86,7 +108,7 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
           </Button>
         </Link>
       </CardFooter>
-    </Card>
+    </Card >
   )
 }
 
@@ -101,6 +123,7 @@ function ToolCardMediumExample() {
     deleted_at: null,
     deletedBy: null,
     name: 'Nexi Connect',
+    category: { id: 1, value: 'Category 1', color: '#ff0000', order: "" },
     description: `Il servizio per chiedere assistenza sulla dotazione tecnologica aziendale, tramite:
 
 Ticket

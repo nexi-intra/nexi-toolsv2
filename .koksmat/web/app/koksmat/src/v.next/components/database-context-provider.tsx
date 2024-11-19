@@ -152,6 +152,19 @@ export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = (
             name: queryname,
           },
         }, token);
+      },
+      execute: async (queryname: string, data: any) => {
+        kVerbose("provider", `Executing ${queryname}`);
+        const token = await getToken(tokenProvider);
+        return messageProvider.send({
+          subject: 'execute',
+          message:
+          {
+            messageType: "action",
+            name: queryname,
+            parameters: data,
+          },
+        }, token);
       }
     };
   }, [messageProvider]);
