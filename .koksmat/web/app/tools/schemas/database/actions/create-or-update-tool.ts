@@ -4,7 +4,7 @@ import { SharedAttributes } from "../../_shared";
 import { count } from "console";
 export const createOrUpdateTool: SqlAction = {
   databaseName: "tools",
-  sql: `proc.create_or_update_tool_view`,
+  functionName: `create_or_update_tool_view`,
   inputSchema: z.object({}).catchall(z.any()),
   outputSchema: SharedAttributes.extend({
     trace_data: z.object({}).catchall(z.any()),

@@ -83,6 +83,7 @@ function ToolCardMiniExample() {
     created_at: new Date(),
     created_by: 'John Doe',
     updated_at: new Date(),
+    category: { id: 1, value: 'Category 1', color: '#ff0000', order: "1" },
     updated_by: 'Jane Smith',
     deleted_at: null,
     deletedBy: null,

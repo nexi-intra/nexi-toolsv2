@@ -20,6 +20,7 @@ import { useKoksmatDatabase } from '@/app/koksmat/src/v.next/components/database
 import { databaseQueries } from '@/app/tools/schemas/database'
 import { kError } from '@/lib/koksmat-logger-client'
 import { set } from 'date-fns'
+import { init } from 'next/dist/compiled/webpack/webpack'
 
 type ModeType = 'view' | 'edit' | 'new'
 
@@ -59,6 +60,10 @@ export default function ToolCard({
   const [purposes, setPurposes] = useState(initialTool.purposes)
   const [documents, setDocuments] = useState(initialTool.documents)
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite)
+  const [categoryId, setcategoryId] = useState(initialTool.category.id)
+  const [categoryValue, setcategoryValue] = useState(initialTool.category.value)
+  const [categoryColor, setcategoryColor] = useState(initialTool.category.color)
+
 
   const [error, seterror] = useState("")
 
@@ -139,15 +144,21 @@ export default function ToolCard({
           <TagSelector
             tags={allowedTags}
             initialSelectedTags={[{
-              id: initialTool.category.id,
-              value: initialTool.category.value,
-              color: initialTool.category.color,
+              id: categoryId,
+              value: categoryValue,
+              color: categoryColor,
               order: ""
             }]}
             allowMulti={false}
             required={false}
             mode={mode}
             lazyLoad
+            onChange={(selected) => {
+              setcategoryId(selected[0].id)
+              setcategoryValue(selected[0].value)
+              setcategoryColor(selected[0].color)
+
+            }}
             loadItems={async () => {
               try {
                 const categories = await database.query("categories")

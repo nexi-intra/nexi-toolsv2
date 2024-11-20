@@ -18,9 +18,9 @@ export type SqlView = {
 };
 
 export type SqlAction = {
-  sql: string;
+  functionName: string;
   databaseName: string;
-  parameters?: Record<string, string>;
+  //  parameters?: Record<string, string>;
   inputSchema: ZodObject<Record<string, z.ZodTypeAny>>;
   outputSchema: ZodObject<Record<string, z.ZodTypeAny>>;
 };

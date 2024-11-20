@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "@/components
 import Tag, { TagType } from './tag'
 import { ComponentDoc } from './component-documentation-hub'
 import { FavoriteComponent } from './favorite'
-import { kVerbose } from '@/lib/koksmat-logger-client'
+import { kError, kVerbose } from '@/lib/koksmat-logger-client'
 import { useKoksmatDatabase } from '@/app/koksmat/src/v.next/components/database-context-provider'
 import { databaseActions } from '@/app/tools/schemas/database'
 
@@ -24,10 +24,11 @@ interface ToolCardMediumProps {
 }
 
 export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags, showActions }: ToolCardMediumProps) {
+  const actionName = "createOrUpdateTool"
   const [isFavorite, setIsFavorite] = useState(tool.status === 'active')
   const [edit, setedit] = useState(false)
-  const action = databaseActions.getAction("tools")
-  const table = useKoksmatDatabase().table("", action.databaseName, action.inputSchema)
+  const action = databaseActions.getAction(actionName)
+  const table = useKoksmatDatabase().table("", action!.databaseName, action!.inputSchema)
 
 
 
@@ -89,7 +90,14 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags, s
               onSave={async (data, mode) => {
                 kVerbose("component", "ToolCardMediumComponent onSave", data, mode);
 
-                const writeOperation = await table.execute("tool", data)
+                try {
+                  const writeOperation = await table.execute(actionName, data)
+                  setedit(false)
+                  kVerbose("component", "ToolCardMediumComponent onSave completed", writeOperation);
+                } catch (error) {
+                  kError("component", "onSave", error)
+                }
+
 
               }}
               onFavoriteChange={onFavoriteChange} allowedPurposes={[]} allowedCountries={[]} />

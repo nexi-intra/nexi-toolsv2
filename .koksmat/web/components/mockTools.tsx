@@ -7,6 +7,7 @@ export const mockTools: ToolView[] = [
   {
     id: 2,
     name: "Slack",
+    category: { id: 1, value: "Communication", order: "1", color: "#611F69" },
     description: "Business communication platform",
     url: "https://slack.com",
     groupId: "group1",
@@ -42,6 +43,8 @@ export const mockTools: ToolView[] = [
 
   {
     id: 4,
+    category: { id: 1, value: "Communication", order: "1", color: "#611F69" },
+
     name: "Trello",
     description: "Project management tool using boards and cards",
     url: "https://trello.com",
@@ -77,6 +80,8 @@ export const mockTools: ToolView[] = [
   },
   {
     id: 5,
+    category: { id: 1, value: "Communication", order: "1", color: "#611F69" },
+
     name: "Asana",
     description: "Work management platform for teams",
     url: "https://asana.com",
@@ -113,6 +118,8 @@ export const mockTools: ToolView[] = [
   // Continue adding more items up to id:30
   {
     id: 6,
+    category: { id: 1, value: "Communication", order: "1", color: "#611F69" },
+
     name: "Jira",
     description: "Issue and project tracking software",
     url: "https://www.atlassian.com/software/jira",
@@ -148,6 +155,8 @@ export const mockTools: ToolView[] = [
   },
   {
     id: 7,
+    category: { id: 1, value: "Communication", order: "1", color: "#611F69" },
+
     name: "GitHub",
     description: "Code hosting platform for version control and collaboration",
     url: "https://github.com",
@@ -184,6 +193,8 @@ export const mockTools: ToolView[] = [
   // ... Continue adding items until id:30
   {
     id: 8,
+    category: { id: 1, value: "Communication", order: "1", color: "#611F69" },
+
     name: "GitLab",
     description: "A complete DevOps platform",
     url: "https://gitlab.com",
@@ -221,6 +232,8 @@ export const mockTools: ToolView[] = [
   // For brevity, assume that items 9 through 29 are added here with similar structure.
   {
     id: 30,
+    category: { id: 1, value: "Communication", order: "1", color: "#611F69" },
+
     name: "Adobe Illustrator",
     description: "Vector graphics editor and design program",
     url: "https://www.adobe.com/products/illustrator.html",

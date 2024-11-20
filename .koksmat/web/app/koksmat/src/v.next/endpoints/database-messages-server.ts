@@ -191,9 +191,10 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
       const queryResult = await run<{ Result: any[] }>(
         MICROSERVICE,
         [
-          "query",
+          "execute",
           databaseAction.databaseName,
-          databaseAction.sql,
+          databaseAction.functionName,
+          token,
           JSON.stringify(message.message.parameters),
         ],
         "",

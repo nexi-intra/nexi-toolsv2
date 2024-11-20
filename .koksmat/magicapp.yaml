@@ -164,6 +164,20 @@ entities:
         type: array
         required: true
         entity: *accesspoint
+      - name: Languages
+        displayname: Languages
+        type: array
+        required: true
+        entity: *language
+      - name: categories
+        displayname: Categories
+        type: array
+        entity: *category
+        required: false
+      - name: icon
+        displayname: Status
+        type: string
+        required: false
 
   usergroup: &usergroup
     name: usergroup

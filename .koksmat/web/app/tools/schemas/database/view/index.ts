@@ -1,7 +1,9 @@
-import { database } from "@/actions/database/works/activityModel";
+import { z } from "zod";
+
+// Import metadata from various modules
 import * as tools from "./tools";
 import * as countries from "./countries";
-import * as category from "./categories";
+import * as categories from "./categories";
 import * as purposes from "./purposes";
 import * as languages from "./languages";
 import * as accesspoints from "./accesspoints";
@@ -11,31 +13,11 @@ import * as usergroups from "./usergroups";
 import * as userprofiles from "./userprofiles";
 import * as toolgroups from "./toolgroups";
 
-import { z } from "zod";
-import { access } from "fs";
-import { User } from "lucide-react";
-
-// Define a union of all available query names
-export const viewNames = [
-  "tools",
-  "countries",
-  "categories",
-  "regions",
-  "languages",
-  "accesspoints",
-  "purposes",
-  "toolgroups",
-  "usergroups",
-  "userprofiles",
-  "userroles",
-] as const;
-export type ViewNames = (typeof viewNames)[number];
-
 // Consolidate views from multiple modules
 const views = {
   tools: tools.metadata,
   countries: countries.metadata,
-  categories: category.metadata,
+  categories: categories.metadata,
   regions: regions.metadata,
   accesspoints: accesspoints.metadata,
   languages: languages.metadata,
@@ -44,37 +26,20 @@ const views = {
   userroles: userroles.metadata,
   usergroups: usergroups.metadata,
   userprofiles: userprofiles.metadata,
-};
+} as const;
 
-// Function to retrieve a view by name
-export const getView = (queryName: ViewNames) => {
-  const query = views[queryName];
-  if (!query) {
-    return null; // throw new Error(`View ${queryName} not found.`);
-  }
-  return {
-    databaseName: query.databaseName,
-    sql: query.sql,
-    schema: query.schema,
-    parameters: query.parameters,
-  };
-};
+// Define a union of all available view names
+export type ViewNames = keyof typeof views;
+export const viewNames = Object.keys(views) as ViewNames[];
 
-// Type-safe function to infer schema and parameters for a specific query
-export const getTypedView = <T extends ViewNames>(
-  queryName: T
-): {
-  sql: string;
-  schema: z.infer<(typeof views)[T]["schema"]>;
-  parameters: (typeof views)[T]["parameters"];
-} => {
-  const query = getView(queryName);
-  if (!query) {
-    throw new Error(`View ${queryName} not found.`);
+// Type definition for view metadata
+type ViewMetadata<T extends ViewNames> = (typeof views)[T];
+
+// Function to retrieve a view by name with type safety
+export const getView = <T extends ViewNames>(viewName: T): ViewMetadata<T> => {
+  const view = views[viewName];
+  if (!view) {
+    throw new Error(`View ${viewName} not found.`);
   }
-  return {
-    sql: query.sql,
-    schema: query.schema,
-    parameters: query.parameters,
-  };
+  return view;
 };
