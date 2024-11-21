@@ -12,6 +12,7 @@ import { mockTools } from "./mockTools";
 import TokenInput, { ErrorDetail } from "./token-input";
 import { kVerbose } from "@/lib/koksmat-logger-client";
 import { ToolView } from "@/app/tools/schemas/forms";
+import { ToolList } from "./tool-list";
 
 type ViewMode = "cards" | "table" | "list";
 
@@ -20,6 +21,7 @@ interface ToolsPageProps {
 }
 
 export function ToolsPage({ className = "" }: ToolsPageProps) {
+  return <ToolList />
   const [viewMode, setViewMode] = useState<ViewMode>("cards");
   const [tools, setTools] = useState<ToolView[]>(mockTools);
   const [searchQuery, setSearchQuery] = useState("");

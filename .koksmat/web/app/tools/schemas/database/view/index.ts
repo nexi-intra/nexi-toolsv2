@@ -12,6 +12,7 @@ import * as userroles from "./userroles";
 import * as usergroups from "./usergroups";
 import * as userprofiles from "./userprofiles";
 import * as toolgroups from "./toolgroups";
+import * as my_tools from "./my_tools";
 
 // Consolidate views from multiple modules
 const views = {
@@ -26,6 +27,7 @@ const views = {
   userroles: userroles.metadata,
   usergroups: usergroups.metadata,
   userprofiles: userprofiles.metadata,
+  my_tools: my_tools.metadata,
 } as const;
 
 // Define a union of all available view names

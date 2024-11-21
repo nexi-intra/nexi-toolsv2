@@ -298,6 +298,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
               <List className="h-4 w-4" />
               <span className="sr-only">List view</span>
             </Button>
+            <CreateItem />
             {/* <Button
               variant="outline"
               size="icon"
@@ -369,23 +370,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
 
               <div className="text-center py-8">No items to display
                 {editItem &&
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="outline">Add new</Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px] max-h-[40vh]">
-                      <DialogHeader>
-                        <DialogTitle>Create a new record</DialogTitle>
-
-                      </DialogHeader>
-                      <ScrollArea className="h-72 w-full rounded-md border">
-                        {editItem("new", 0)}
-                      </ScrollArea>
-                      <DialogFooter>
-                        <Button type="submit">Save changes</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                  <CreateItem />
 
                 }
 
@@ -427,6 +412,26 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
       {/* {searchParams.get('pane') === 'details' && renderDetailsPane()} */}
     </>
   )
+
+  function CreateItem() {
+    return <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Add new <span className='text-slate-500 pl-2'>Preview</span></Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px] max-h-[40vh]">
+        <DialogHeader>
+          <DialogTitle>Create a new record</DialogTitle>
+
+        </DialogHeader>
+        <ScrollArea className="h-72 w-full rounded-md border">
+          {editItem?.("new", 0)}
+        </ScrollArea>
+        <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  }
 }
 
 const properties = [

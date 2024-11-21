@@ -22,14 +22,14 @@ navMain:
       - title:
           en: "Favourites"
           da: "Favoritter"
-        label: coming
+        label: new
         url: "/tools/pages/profile"
   - title:
       en: "Tables"
       da: "Tabeller"
     url: "#"
     icon: "Database"
-    label: preview
+    # label: preview
     items:
       - title:
           en: "Regions"
@@ -86,18 +86,18 @@ navMain:
           da: "Brugerroller"
         url: "/tools/admin/data/user-roles"
         icon: "BookOpen"
-  - title:
-      en: "Settings"
-      da: "Indstillinger"
-    url: "#"
-    icon: "Settings2"
-    items:
-      - title:
-          en: "Mapping"
-          da: "Kortlægning"
-        url: "/tools/admin/mapping"
-        label: "alpha"
-        icon: "BookOpen"
+  # - title:
+  #     en: "Settings"
+  #     da: "Indstillinger"
+  #   url: "#"
+  #   icon: "Settings2"
+  #   items:
+  #     - title:
+  #         en: "Mapping"
+  #         da: "Kortlægning"
+  #       url: "/tools/admin/mapping"
+  #       label: "alpha"
+  #       icon: "BookOpen"
   - title:
       en: "Documentation"
       da: "Dokumentation"

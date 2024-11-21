@@ -35,7 +35,7 @@
             "en": "Favourites",
             "da": "Favoritter"
           },
-          "label": "coming",
+          "label": "new",
           "url": "/tools/pages/profile"
         }
       ]
@@ -47,7 +47,6 @@
       },
       "url": "#",
       "icon": "Database",
-      "label": "preview",
       "items": [
         {
           "title": {
@@ -135,25 +134,6 @@
             "da": "Brugerroller"
           },
           "url": "/tools/admin/data/user-roles",
-          "icon": "BookOpen"
-        }
-      ]
-    },
-    {
-      "title": {
-        "en": "Settings",
-        "da": "Indstillinger"
-      },
-      "url": "#",
-      "icon": "Settings2",
-      "items": [
-        {
-          "title": {
-            "en": "Mapping",
-            "da": "Kortlægning"
-          },
-          "url": "/tools/admin/mapping",
-          "label": "alpha",
           "icon": "BookOpen"
         }
       ]
