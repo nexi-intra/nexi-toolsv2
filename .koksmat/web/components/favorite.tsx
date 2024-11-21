@@ -51,7 +51,9 @@ export function FavoriteComponent({
       const newState = !isFavorite
       try {
         if (email && tool_id) {
-          const data = { userprofile_email: email, tool_id: 1, is_favorite: newState }
+          const data = {
+            email, tool_id, is_favorite: newState
+          }
           kVerbose("component", "FavoriteComponent onSave", data, mode);
           const writeOperation = await table.execute(actionName, data)
           kVerbose("component", "FavoriteComponent onSave completed", writeOperation);

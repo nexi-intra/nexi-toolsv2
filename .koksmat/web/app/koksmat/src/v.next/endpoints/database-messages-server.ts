@@ -7,6 +7,7 @@ import { z } from "zod";
 import { queries } from "@/app/global";
 import { database } from "@/actions/database/works/activityModel";
 import { databaseActions } from "@/app/tools/schemas/database";
+import { jwtDecode } from "jwt-decode";
 
 const crudOperationSchema = z.object({
   messageType: z.literal("crudOperation"),
@@ -49,6 +50,7 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
     const req = databaseMessageSchema.safeParse(body);
     const bearerToken = request.headers.get("Authorization") || "";
     const token = bearerToken.split("Bearer ")[1];
+
     if (!req.success) {
       kError("endpoint", __filename, req.error);
     } else {
@@ -157,12 +159,13 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
       }
 
       kVerbose("endpoint", "databaseQuery", databaseQuery);
+      const jwt = jwtDecode<{ upn: string }>(token);
       const queryResult = await run<{ Result: any[] }>(
         MICROSERVICE,
         [
           "query",
           databaseQuery.databaseName,
-          databaseQuery.sql,
+          databaseQuery.sql.replaceAll("###UPN###", jwt.upn ?? ""),
           JSON.stringify(message.message.parameters),
         ],
         "",

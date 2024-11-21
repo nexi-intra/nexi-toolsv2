@@ -7,7 +7,7 @@ export const userprofileFavourite: SqlAction = {
   functionName: `userprofile_m2m_tool_manage_view`,
   inputSchema: z
     .object({
-      user_id: z.number(),
+      email: z.string(),
       tool_id: z.number(),
       is_favorite: z.boolean(),
     })

@@ -54,7 +54,7 @@ export const metadata: SqlView = {
        (get_m2m_right_json(t.id, 'tool', 'country')) AS countries,
        (get_m2m_right_json(t.id, 'tool', 'purpose')) AS purposes,
         (get_m2m_right_json(t.id, 'tool', 'language')) AS languages,
-       (proc.isFavouriteTool('',t.id)) as is_favorite,
+       (proc.isFavouriteTool('###UPN###',t.id)) as is_favorite,
     t.name || ' ' || t.description AS calculatedsearchindex,
     c.name AS category_name,
     c.sortorder AS category_order,

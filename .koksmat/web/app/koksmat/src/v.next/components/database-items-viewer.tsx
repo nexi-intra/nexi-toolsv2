@@ -9,8 +9,9 @@ import { useSearchParams } from 'next/navigation'
 import { ItemViewerComponent } from './item-viewer'
 import { Base, BaseSchema, EditItemFunction, RenderItemFunction } from './_shared'
 import { databaseQueries } from '@/app/tools/schemas/database'
-import { ViewNames } from '@/app/tools/schemas/database/view'
+
 import { fromError } from 'zod-validation-error';
+import { ViewNames } from '@/app/tools/schemas/database/view'
 
 type DatabaseItemsViewerProps<S extends z.ZodType<any, any, any>> = {
   viewName: ViewNames;
