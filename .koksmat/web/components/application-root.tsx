@@ -167,8 +167,8 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
       tokenProvider={{
         getToken: async () => {
           if (!magicbox.authtoken) {
-            alert("No authtoken")
-            throw new Error('No authtoken')
+            //alert("No authtoken")
+            throw new Error('No authtoken - please reload the page')
           }
           return magicbox.authtoken
         }
@@ -290,7 +290,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                     ))}
                   </SidebarMenu>
                 </SidebarGroup>
-                <SidebarGroup className="group-data-[collapsible=icon]:hidden ">
+                <SidebarGroup className="hidden group-data-[collapsible=icon]:hidden ">
                   <SidebarGroupLabel>{t.projects}</SidebarGroupLabel>
                   <SidebarMenu>
                     {sidebarData.projects.map((item) => (
