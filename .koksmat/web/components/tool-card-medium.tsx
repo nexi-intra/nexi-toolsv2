@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
-import { ToolView } from '@/app/tools/schemas'
+import React, { useContext, useState } from 'react'
+import { ToolView } from '@/app/tools/schemas/forms'
+
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Heart, ExternalLink } from 'lucide-react'
@@ -15,29 +16,27 @@ import { FavoriteComponent } from './favorite'
 import { kError, kVerbose } from '@/lib/koksmat-logger-client'
 import { useKoksmatDatabase } from '@/app/koksmat/src/v.next/components/database-context-provider'
 import { databaseActions } from '@/app/tools/schemas/database'
+import { MagicboxContext } from '@/app/koksmat0/magicbox-context'
 
 interface ToolCardMediumProps {
   tool: ToolView
-  onFavoriteChange: (isFavorite: boolean) => void
+  isFavorite: boolean
+
   allowedTags: TagType[]
   showActions?: boolean
 }
 
-export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags, showActions }: ToolCardMediumProps) {
+export function ToolCardMediumComponent({ tool, allowedTags, isFavorite, showActions }: ToolCardMediumProps) {
   const actionName = "createOrUpdateTool"
-  const [isFavorite, setIsFavorite] = useState(tool.status === 'active')
+  //const [isFavorite, setIsFavorite] = useState(tool.status === 'active')
   const [edit, setedit] = useState(false)
   const action = databaseActions.getAction(actionName)
   const table = useKoksmatDatabase().table("", action!.databaseName, action!.inputSchema)
 
+  const magicbox = useContext(MagicboxContext)
 
 
 
-  const handleFavoriteClick = () => {
-    const newFavoriteState = !isFavorite
-    setIsFavorite(newFavoriteState)
-    onFavoriteChange(newFavoriteState)
-  }
 
   return (
     <Card className="w-64 h-80 flex flex-col">
@@ -56,11 +55,11 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags, s
             />
           </div>
           <FavoriteComponent
-            mode="view"
-
-            defaultIsFavorite={isFavorite} onChange={function (mode: 'view' | 'new' | 'edit', isFavorite: boolean): void {
-              //throw new Error('Function not implemented.')
-            }} />
+            mode="edit"
+            email={magicbox.user?.email}
+            tool_id={tool.id}
+            defaultIsFavorite={isFavorite}
+          />
         </div>
         <div className="flex flex-col items-center mb-4">
           <div className="w-16 h-16 mb-2">
@@ -88,19 +87,19 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags, s
               allowedTags={allowedTags}
               isFavorite={isFavorite}
               onSave={async (data, mode) => {
-                kVerbose("component", "ToolCardMediumComponent onSave", data, mode);
+                kVerbose("component", "ToolCardMediumComponent onSave", data, mode)
 
                 try {
                   const writeOperation = await table.execute(actionName, data)
                   setedit(false)
-                  kVerbose("component", "ToolCardMediumComponent onSave completed", writeOperation);
+                  kVerbose("component", "ToolCardMediumComponent onSave completed", writeOperation)
                 } catch (error) {
                   kError("component", "onSave", error)
                 }
 
 
               }}
-              onFavoriteChange={onFavoriteChange} allowedPurposes={[]} allowedCountries={[]} />
+              allowedPurposes={[]} allowedCountries={[]} />
 
             {showActions && (
               <DialogFooter>
@@ -185,9 +184,8 @@ Telefono
       <h2 className="text-2xl font-bold mb-4">ToolCardMedium Example</h2>
       <ToolCardMediumComponent
         tool={tool}
-        onFavoriteChange={handleFavoriteChange}
-        allowedTags={allowedTags}
-      />
+
+        allowedTags={allowedTags} isFavorite={false} />
     </div>
   )
 }

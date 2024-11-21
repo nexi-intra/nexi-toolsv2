@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from 'react'
 import { Star } from 'lucide-react'
 import { ComponentDoc } from './component-documentation-hub'
+import { databaseActions } from '@/app/tools/schemas/database'
+import { useKoksmatDatabase } from '@/app/koksmat/src/v.next/components/database-context-provider'
+import { kError, kVerbose } from '@/lib/koksmat-logger-client'
 
 /**
  * Favorite Component
@@ -19,8 +22,10 @@ import { ComponentDoc } from './component-documentation-hub'
 export interface FavoriteProps {
   defaultIsFavorite: boolean
   mode: 'view' | 'new' | 'edit'
-  onChange: (mode: 'view' | 'new' | 'edit', isFavorite: boolean) => void
-  className?: string
+  onChange?: (isFavorite: boolean) => void
+  className?: string,
+  tool_id?: number,
+  email?: string,
 }
 
 export function FavoriteComponent({
@@ -28,19 +33,35 @@ export function FavoriteComponent({
   mode = 'view',
   onChange,
   className = '',
+  tool_id,
+  email
 }: FavoriteProps) {
   const [isFavorite, setIsFavorite] = useState(defaultIsFavorite)
+  const actionName = "userprofileFavourite"
+  const action = databaseActions.getAction(actionName)
+  const table = useKoksmatDatabase().table("", action!.databaseName, action!.inputSchema)
 
   // Update local state if prop changes
   useEffect(() => {
     setIsFavorite(defaultIsFavorite)
   }, [defaultIsFavorite])
 
-  const handleToggle = () => {
+  const handleToggle = async () => {
     if (mode !== 'view') {
       const newState = !isFavorite
-      setIsFavorite(newState)
-      onChange(mode, newState)
+      try {
+        if (email && tool_id) {
+          const data = { userprofile_email: email, tool_id: 1, is_favorite: newState }
+          kVerbose("component", "FavoriteComponent onSave", data, mode);
+          const writeOperation = await table.execute(actionName, data)
+          kVerbose("component", "FavoriteComponent onSave completed", writeOperation);
+        }
+        setIsFavorite(newState)
+        onChange?.(newState);
+
+      } catch (error) {
+        kError("component", "onSave", error)
+      }
     }
   }
 
@@ -51,9 +72,8 @@ export function FavoriteComponent({
   return (
     <div className={`inline-flex items-center ${className}`}>
       <Star
-        className={`w-6 h-6 ${starColor} ${
-          isInteractive ? 'cursor-pointer hover:text-yellow-500' : ''
-        } transition-colors duration-200`}
+        className={`w-6 h-6 ${starColor} ${isInteractive ? 'cursor-pointer hover:text-yellow-500' : ''
+          } transition-colors duration-200`}
         fill={isFavorite ? 'currentColor' : 'none'}
         onClick={handleToggle}
         role={isInteractive ? 'button' : 'presentation'}
@@ -81,7 +101,7 @@ export const examplesFavorite: ComponentDoc[] = [
       <FavoriteComponent
         defaultIsFavorite={true}
         mode="view"
-        onChange={(mode, isFavorite) => console.log(mode, isFavorite)}
+        onChange={(isFavorite) => console.log(isFavorite)}
       />
     ),
   },
@@ -100,7 +120,7 @@ export const examplesFavorite: ComponentDoc[] = [
       <FavoriteComponent
         defaultIsFavorite={false}
         mode="new"
-        onChange={(mode, isFavorite) => console.log(mode, isFavorite)}
+        onChange={(isFavorite) => console.log(isFavorite)}
       />
     ),
   },
@@ -120,7 +140,7 @@ export const examplesFavorite: ComponentDoc[] = [
       <FavoriteComponent
         defaultIsFavorite={true}
         mode="edit"
-        onChange={(mode, isFavorite) => console.log(mode, isFavorite)}
+        onChange={(isFavorite) => console.log(isFavorite)}
         className="bg-gray-100 p-2 rounded"
       />
     ),

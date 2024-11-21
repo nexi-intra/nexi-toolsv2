@@ -2,10 +2,16 @@ import { SqlAction } from "@/app/koksmat/src/v.next/schemas/sql_view";
 import * as z from "zod";
 import { SharedAttributes } from "../../_shared";
 
-export const createOrUpdateTool: SqlAction = {
+export const userprofileFavourite: SqlAction = {
   databaseName: "tools",
-  functionName: `create_or_update_tool_view`,
-  inputSchema: z.object({}).catchall(z.any()),
+  functionName: `userprofile_m2m_tool_manage_view`,
+  inputSchema: z
+    .object({
+      user_id: z.number(),
+      tool_id: z.number(),
+      is_favorite: z.boolean(),
+    })
+    .catchall(z.any()),
   outputSchema: SharedAttributes.extend({
     trace_data: z.object({}).catchall(z.any()),
     affected_records: z.object({

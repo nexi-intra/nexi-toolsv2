@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
-import { ToolView } from '@/app/tools/schemas'
+import React, { useContext, useState } from 'react'
+import { ToolView } from '@/app/tools/schemas/forms'
+
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Heart, ExternalLink } from 'lucide-react'
@@ -13,21 +14,18 @@ import Tag, { TagType } from './tag'
 import { ComponentDoc } from './component-documentation-hub'
 import { FavoriteComponent } from './favorite'
 import TagSelector from './tag'
+import { MagicboxContext } from '@/app/koksmat0/magicbox-context'
 
-interface ToolCardMediumProps {
+interface ToolCardMiniProps {
   tool: ToolView
-  onFavoriteChange: (isFavorite: boolean) => void
+  isFavorite: boolean
   allowedTags: TagType[]
 }
 
-export function ToolCardMiniComponent({ tool, onFavoriteChange, allowedTags }: ToolCardMediumProps) {
-  const [isFavorite, setIsFavorite] = useState(tool.status === 'active')
+export function ToolCardMiniComponent({ tool, allowedTags, isFavorite }: ToolCardMiniProps) {
 
-  const handleFavoriteClick = () => {
-    const newFavoriteState = !isFavorite
-    setIsFavorite(newFavoriteState)
-    onFavoriteChange(newFavoriteState)
-  }
+  const magicbox = useContext(MagicboxContext)
+
 
   return (
     <Card className="w-48 h-48 flex flex-col">
@@ -46,11 +44,11 @@ export function ToolCardMiniComponent({ tool, onFavoriteChange, allowedTags }: T
             />
           </div>
           <FavoriteComponent
-            mode="view"
+            mode="edit"
+            tool_id={tool.id}
+            email={magicbox.user?.email}
 
-            defaultIsFavorite={isFavorite} onChange={function (mode: 'view' | 'new' | 'edit', isFavorite: boolean): void {
-              //throw new Error('Function not implemented.')
-            }} />
+            defaultIsFavorite={isFavorite} />
         </div>
         <Link href={tool.url} target="_blank" rel="noopener noreferrer">
           <Button variant="ghost" size="sm">
@@ -139,7 +137,7 @@ Telefono
       <h2 className="text-2xl font-bold mb-4">ToolCardMedium Example</h2>
       <ToolCardMiniComponent
         tool={tool}
-        onFavoriteChange={handleFavoriteChange}
+        isFavorite={true}
         allowedTags={allowedTags}
       />
     </div>

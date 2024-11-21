@@ -1,5 +1,7 @@
 "use client";
-import { ToolView } from "@/app/tools/schemas";
+
+import { ToolView } from "@/app/tools/schemas/forms";
+
 
 // Mock data
 export const mockTools: ToolView[] = [

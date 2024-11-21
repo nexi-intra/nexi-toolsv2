@@ -1,15 +1,20 @@
 "use client"
 import { DatabaseItemsViewer } from "@/app/koksmat/src/v.next/components/database-items-viewer";
 import { ToolCardMediumComponent } from "./tool-card-medium";
-import { ToolView } from "@/app/tools/schemas";
+import { ToolView } from '@/app/tools/schemas/forms'
+
 import { databaseQueries } from "@/app/tools/schemas/database";
+import { use, useContext } from "react";
+import { MagicboxContext } from "@/app/koksmat0/magicbox-context";
 
 export function ToolList() {
+
   const view = databaseQueries.getView("tools")
   return (
     <DatabaseItemsViewer
       schema={view.schema}
       renderItem={(tool, viewMode) => {
+
         const toolView: ToolView = {
 
           id: tool.id,
@@ -35,9 +40,8 @@ export function ToolList() {
         return <div>
           <ToolCardMediumComponent
             showActions
-            tool={toolView} onFavoriteChange={function (isFavorite: boolean): void {
-
-            }} allowedTags={[]}
+            tool={toolView}
+            isFavorite={tool.is_favorite} allowedTags={[]}
 
           />
 

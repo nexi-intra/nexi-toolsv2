@@ -11,8 +11,7 @@
 import { OpenApiGeneratorComponent } from '@/components/app-components-open-api-generator';
 import React, { useEffect, useState } from 'react';
 import { Skeleton } from "@/components/ui/skeleton"
-import CodeSamplesPage from '@/components/code-samples-page';
-import { schemaMapObjects, typeNames } from '@/app/tools/schemas';
+
 import { generateTranslationApiOpenApiDefinition } from '@/lib/translation-service';
 import { headers } from 'next/headers';
 import { generateFileSystemApiOpenApiDefinition } from '@/components/app-actions-file-system';

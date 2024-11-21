@@ -14,7 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { CreateFileDialogComponent } from './app-components-create-file-dialog'
-import { typeNames } from '@/app/tools/schemas'
+import { typeNames } from '@/app/tools/schemas/forms'
+
 
 interface CodeSample {
   operation: string

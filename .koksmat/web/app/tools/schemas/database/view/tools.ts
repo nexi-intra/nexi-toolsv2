@@ -1,10 +1,10 @@
 import { SqlView } from "@/app/koksmat/src/v.next/schemas/sql_view";
 import * as z from "zod";
-import { ToolView } from "../..";
-import { SharedAttributes } from "../../_shared";
 
+import { SharedAttributes } from "../../_shared";
 export const ToolSchema = SharedAttributes.extend({
   searchindex: z.string().nullable().describe(`searchIndex`),
+  is_favorite: z.boolean().describe(`isFavorite`),
   calculatedsearchindex: z
     .string()
     .nullable()
@@ -54,7 +54,7 @@ export const metadata: SqlView = {
        (get_m2m_right_json(t.id, 'tool', 'country')) AS countries,
        (get_m2m_right_json(t.id, 'tool', 'purpose')) AS purposes,
         (get_m2m_right_json(t.id, 'tool', 'language')) AS languages,
-       
+       (proc.isFavouriteTool('',t.id)) as is_favorite,
     t.name || ' ' || t.description AS calculatedsearchindex,
     c.name AS category_name,
     c.sortorder AS category_order,

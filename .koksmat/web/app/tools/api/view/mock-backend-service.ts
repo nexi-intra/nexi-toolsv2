@@ -1,16 +1,14 @@
 import { z } from "zod";
+import { SharedAttributes } from "../../schemas/_shared";
 import {
-  ToolView,
   Country,
   Purpose,
   Tag,
   ToolGroup,
   User,
-  schemaMapObjects,
-  SchemaName,
-} from "../../schemas";
+} from "@/components/app-api-entity-route";
+import { ToolView, schemaMapObjects } from "../../schemas/forms";
 
-import { SharedAttributes } from "../../schemas/_shared";
 // Define a union type for all entity types
 type EntityType = ToolView | Country | Purpose | Tag | ToolGroup | User;
 

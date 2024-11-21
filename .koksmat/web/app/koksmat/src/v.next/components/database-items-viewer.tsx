@@ -28,6 +28,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
 
 
 }: DatabaseItemsViewerProps<S>) {
+
   type T = z.infer<S>;
   const searchParams = useSearchParams()
   const view = databaseQueries.getView(viewName)

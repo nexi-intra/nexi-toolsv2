@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { SharedAttributes } from "./_shared";
+import { SharedAttributes } from "../_shared";
 export const ToolStatus = z.enum(["active", "inactive", "deprecated"]);
 
 export const ToolSchema = SharedAttributes.extend({

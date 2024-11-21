@@ -5,12 +5,13 @@ import { Grid, List, Table } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ToolCardMediumComponent } from "./tool-card-medium";
-import { ToolView } from "@/app/tools/schemas";
+
 import { ComponentDoc } from "./component-documentation-hub";
 import { ToolSearchProps } from "./tool-search";
 import { mockTools } from "./mockTools";
 import TokenInput, { ErrorDetail } from "./token-input";
 import { kVerbose } from "@/lib/koksmat-logger-client";
+import { ToolView } from "@/app/tools/schemas/forms";
 
 type ViewMode = "cards" | "table" | "list";
 
@@ -42,7 +43,7 @@ export function ToolsPage({ className = "" }: ToolsPageProps) {
               <ToolCardMediumComponent
                 key={tool.id}
                 tool={tool}
-                onFavoriteChange={() => { }}
+                isFavorite={false}
                 allowedTags={[]}
 
               />

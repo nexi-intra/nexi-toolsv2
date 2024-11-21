@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { SharedAttributes } from "./_shared";
+import { SharedAttributes } from "../_shared";
 
 export const PurposeSchema = SharedAttributes.extend({
   name: z.string().describe("Name of the purpose"),

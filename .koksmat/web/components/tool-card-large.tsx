@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { ToolView } from '@/app/tools/schemas'
+import React, { useState, useEffect, useContext } from 'react'
+
 import IconUploader from './icon-uploader'
 import TagSelector, { TagType } from './tag'
 import OneLineTextComponent from './one-line-text'
@@ -21,6 +21,8 @@ import { databaseQueries } from '@/app/tools/schemas/database'
 import { kError } from '@/lib/koksmat-logger-client'
 import { set } from 'date-fns'
 import { init } from 'next/dist/compiled/webpack/webpack'
+import { MagicboxContext } from '@/app/koksmat0/magicbox-context'
+import { ToolView } from '@/app/tools/schemas/forms'
 
 type ModeType = 'view' | 'edit' | 'new'
 
@@ -39,7 +41,7 @@ interface ToolCardProps {
   allowedPurposes: { name: string; code: string; sortorder: string }[]
   allowedCountries: { name: string; code: string }[]
   isFavorite: boolean
-  onFavoriteChange: (isFavorite: boolean) => void
+
 }
 
 export default function ToolCard({
@@ -48,8 +50,8 @@ export default function ToolCard({
   onSave,
   className = '',
   allowedTags,
-  isFavorite: initialIsFavorite,
-  onFavoriteChange
+  isFavorite,
+
 }: ToolCardProps) {
   const [name, setName] = useState(initialTool.name)
   const [description, setDescription] = useState(initialTool.description)
@@ -59,12 +61,12 @@ export default function ToolCard({
   const [countries, setCountries] = useState(initialTool.countries)
   const [purposes, setPurposes] = useState(initialTool.purposes)
   const [documents, setDocuments] = useState(initialTool.documents)
-  const [isFavorite, setIsFavorite] = useState(initialIsFavorite)
+  // const [isFavorite, setIsFavorite] = useState(initialIsFavorite)
   const [categoryId, setcategoryId] = useState(initialTool.category.id)
   const [categoryValue, setcategoryValue] = useState(initialTool.category.value)
   const [categoryColor, setcategoryColor] = useState(initialTool.category.color)
 
-
+  const magicbox = useContext(MagicboxContext)
   const [error, seterror] = useState("")
 
   const view = databaseQueries.getView("countries")
@@ -80,8 +82,8 @@ export default function ToolCard({
     setCountries(initialTool.countries)
     setPurposes(initialTool.purposes)
     setDocuments(initialTool.documents)
-    setIsFavorite(initialIsFavorite)
-  }, [initialTool, initialIsFavorite])
+
+  }, [initialTool])
 
   useEffect(() => {
     if (mode === "new") {
@@ -93,7 +95,7 @@ export default function ToolCard({
       setCountries([])
       setPurposes([])
       setDocuments([])
-      setIsFavorite(false)
+
     }
   }, [mode])
 
@@ -115,10 +117,7 @@ export default function ToolCard({
     }
   }
 
-  const handleFavoriteChange = (_: any, newFavoriteState: boolean) => {
-    setIsFavorite(newFavoriteState)
-    onFavoriteChange(newFavoriteState)
-  }
+
 
   return (
     <Card className={className}>
@@ -174,8 +173,9 @@ export default function ToolCard({
           // onChange={(selected) => setTags(selected)}
           />
           <FavoriteComponent
-            mode={mode}
-            onChange={handleFavoriteChange}
+            mode={"edit"}
+            tool_id={initialTool.id}
+            email={magicbox.user?.email}
             defaultIsFavorite={isFavorite}
           />
         </div>
@@ -388,7 +388,7 @@ Telefono
             allowedCountries={allowedCountries}
             allowedPurposes={allowedPurposes}
             isFavorite={isFavorite}
-            onFavoriteChange={handleFavoriteChange}
+
           />
         </CardContent>
       </Card>

@@ -1,11 +1,13 @@
 import { database } from "@/actions/database/works/activityModel";
 import { createOrUpdateTool } from "./create-or-update-tool";
+import { userprofileFavourite } from "./userprofile-favourite";
 
 import { z } from "zod";
 
 // Define actions object with 'as const' for type safety
 const actions = {
   createOrUpdateTool,
+  userprofileFavourite,
 } as const;
 
 // Derive ActionNames from the keys of actions
