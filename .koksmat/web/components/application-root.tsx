@@ -61,6 +61,7 @@ import { MessageToKoksmatDatabase } from "@/app/koksmat/src/v.next/endpoints/dat
 import { useContext } from "react"
 import { MagicboxContext } from "@/app/koksmat0/magicbox-context"
 import { useIsInIframe } from "@/app/koksmat/src/v.next/components/use-isiniframe"
+import GlobalBreadcrumb from "./global-breadcrumb"
 // Custom hook to detect if running in an iframe
 
 
@@ -414,8 +415,8 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                   <SidebarTrigger className="-ml-1" />
 
                   <Separator orientation="vertical" className="mr-2 h-4" />
-
-                  <Breadcrumb>
+                  {!isInIframe && <GlobalBreadcrumb />}
+                  {/* <Breadcrumb>
                     <BreadcrumbList>
                       <BreadcrumbItem className="hidden md:block">
                         <BreadcrumbLink href="#">
@@ -427,7 +428,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                         <BreadcrumbPage>{t.dataFetching}</BreadcrumbPage>
                       </BreadcrumbItem>
                     </BreadcrumbList>
-                  </Breadcrumb>
+                  </Breadcrumb> */}
 
                 </div>
               </header>)}

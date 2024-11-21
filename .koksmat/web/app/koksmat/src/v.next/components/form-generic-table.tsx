@@ -2,7 +2,7 @@
 import { z, ZodType, ZodOptional } from 'zod'
 
 
-import { SchemaForm } from './schema-form'
+import { SchemaForm } from './generic-schema-form'
 import { Button } from '@/components/ui/button'
 import { kError, kInfo, kVerbose, kWarn } from '@/lib/koksmat-logger-client'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -28,7 +28,7 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
   schema,
   tableName,
   databaseName,
-  showModeSelector = true,
+  showModeSelector = false,
   showJSON = true,
   onCreated,
   onUpdated,

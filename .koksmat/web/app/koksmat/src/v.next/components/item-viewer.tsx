@@ -409,7 +409,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
           </div>
         )}
       </div>
-      {/* {searchParams.get('pane') === 'details' && renderDetailsPane()} */}
+      {searchParams.get('pane') === 'details' && renderDetailsPane()}
     </>
   )
 

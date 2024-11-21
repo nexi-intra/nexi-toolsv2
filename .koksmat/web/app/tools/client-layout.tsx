@@ -19,7 +19,7 @@ export default function AppClientLayout(props: { children: any }) {
         <ErrorBoundary>
           <Authenticate apiScope={UserProfileAPI}>
             <ApplicationRoot hideBreadcrumb topnav={<TabNavigatorWithReorder />} >
-              {!isInIframe && <GlobalBreadcrumb />}
+
               {children}
               <KoksmatSession />
             </ApplicationRoot>

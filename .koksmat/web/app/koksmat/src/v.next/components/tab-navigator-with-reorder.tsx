@@ -59,9 +59,8 @@ const DraggableTab = ({
       ref={setNodeRef}
       onClick={onClick}
       style={style}
-      className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all ${
-        isActive ? "bg-background text-foreground shadow-sm" : ""
-      }`}
+      className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all ${isActive ? "bg-background text-foreground shadow-sm" : ""
+        }`}
       {...attributes}
     >
       <GripVertical className="mr-2 h-4 w-4 cursor-move" {...listeners} />
@@ -185,7 +184,7 @@ export default function TabNavigatorWithReorder() {
           <ScrollArea className="w-full">
             <div
               ref={tabsRef}
-              className="inline-flex h-10 items-center justify-start rounded-md bg-muted p-1 text-muted-foreground"
+              className="inline-flex h-10 items-center justify-start rounded-md  p-1 text-muted-foreground"
             >
               <SortableContext
                 items={tabData}
@@ -210,8 +209,8 @@ export default function TabNavigatorWithReorder() {
                 ))}
               </SortableContext>
               {!isCurrentPageInTab && (
-                <Button
-                  variant="outline"
+                <span
+
                   onClick={() => {
                     tabData.push({
                       id: tabData.length.toString(),
@@ -224,8 +223,8 @@ export default function TabNavigatorWithReorder() {
                     setversion(version + 1);
                   }}
                 >
-                  {pathname} <Pin className="ml-2 h-3 w-3" />
-                </Button>
+                  <Pin className="h-5 w-5" />
+                </span>
               )}
             </div>
             <ScrollBar orientation="horizontal" />
