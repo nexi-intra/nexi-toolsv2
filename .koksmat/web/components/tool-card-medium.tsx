@@ -39,7 +39,7 @@ export function ToolCardMediumComponent({ tool, allowedTags, isFavorite, showAct
 
 
   return (
-    <Card className="w-64 h-80 flex flex-col">
+    <Card className="w-64 h-72 flex flex-col">
       <CardContent className="flex-grow p-4">
         <div className="flex justify-between items-start mb-4 ">
           <div className="flex flex-wrap gap-1">
@@ -61,8 +61,8 @@ export function ToolCardMediumComponent({ tool, allowedTags, isFavorite, showAct
             defaultIsFavorite={isFavorite}
           />
         </div>
-        <div className="flex flex-col items-center mb-4">
-          <div className="w-16 h-16 mb-2">
+        <div className="flex flex-col items-center mb-0">
+          <div className="w-16 h-16 mb-0">
             <img
               src={tool.icon || '/placeholder.svg'}
               alt={tool.name}
@@ -71,50 +71,58 @@ export function ToolCardMediumComponent({ tool, allowedTags, isFavorite, showAct
               className="rounded-full"
             />
           </div>
-          <h3 className="text-lg font-semibold text-center">{tool.name}</h3>
+          <div className="flex items-center justify-center h-24 ">
+            <div className="text-center text-lg font-semibold">
+              {tool.name}
+            </div>
+          </div>
+
         </div>
-        <p className="text-sm text-gray-600 line-clamp-3">{tool.description}</p>
+        <div className="flex justify-between items-center px-4 mt-3">
+          <Dialog >
+            <DialogTrigger asChild>
+              <Button onClick={e => e.stopPropagation()} variant="outline" size="sm">Read More</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-3xl">
+              <ToolCard
+                tool={tool}
+                mode={edit ? 'edit' : 'view'}
+                allowedTags={allowedTags}
+                isFavorite={isFavorite}
+                onSave={async (data, mode) => {
+                  kVerbose("component", "ToolCardMediumComponent onSave", data, mode)
+
+                  try {
+                    const writeOperation = await table.execute(actionName, data)
+                    setedit(false)
+                    kVerbose("component", "ToolCardMediumComponent onSave completed", writeOperation)
+                  } catch (error) {
+                    kError("component", "onSave", error)
+                  }
+
+
+                }}
+                allowedPurposes={[]} allowedCountries={[]} />
+
+              {showActions && (
+                <DialogFooter>
+                  <Button onClick={e => { e.stopPropagation(); setedit(!edit) }} variant="ghost" size="sm">Edit</Button>
+                </DialogFooter>)}
+            </DialogContent>
+
+          </Dialog>
+          <Link href={tool.url} target="_blank" rel="noopener noreferrer">
+            <Button disabled={!tool.url} onClick={e => e.stopPropagation()} variant="ghost" size="sm">
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Open Tool
+            </Button>
+          </Link>
+        </div>
+        {/* <p className="text-sm text-gray-600 line-clamp-3">{tool.description}</p> */}
       </CardContent>
-      <CardFooter className="flex justify-between items-center p-4 bg-gray-50">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button onClick={e => e.stopPropagation()} variant="outline" size="sm">Read More</Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-3xl">
-            <ToolCard
-              tool={tool}
-              mode={edit ? 'edit' : 'view'}
-              allowedTags={allowedTags}
-              isFavorite={isFavorite}
-              onSave={async (data, mode) => {
-                kVerbose("component", "ToolCardMediumComponent onSave", data, mode)
+      {/* <CardFooter className="flex justify-between items-center px-4">
 
-                try {
-                  const writeOperation = await table.execute(actionName, data)
-                  setedit(false)
-                  kVerbose("component", "ToolCardMediumComponent onSave completed", writeOperation)
-                } catch (error) {
-                  kError("component", "onSave", error)
-                }
-
-
-              }}
-              allowedPurposes={[]} allowedCountries={[]} />
-
-            {showActions && (
-              <DialogFooter>
-                <Button onClick={e => { e.stopPropagation(); setedit(!edit) }} variant="ghost" size="sm">Edit</Button>
-              </DialogFooter>)}
-          </DialogContent>
-
-        </Dialog>
-        <Link href={tool.url} target="_blank" rel="noopener noreferrer">
-          <Button disabled={!tool.url} onClick={e => e.stopPropagation()} variant="ghost" size="sm">
-            <ExternalLink className="h-4 w-4 mr-2" />
-            Open Tool
-          </Button>
-        </Link>
-      </CardFooter>
+      </CardFooter> */}
     </Card >
   )
 }
