@@ -8,7 +8,7 @@ export const ToolSchema = SharedAttributes.extend({
   calculatedsearchindex: z
     .string()
     .nullable()
-    .describe(`calculatedSearchIndex`),
+    .describe(`calculatedsearchindex`),
   description: z.string().nullable().optional().describe(`Tool description`),
   translations: z.string().nullable().optional().describe(`Tool translations`),
   category_id: z.number().describe(`Category id`),

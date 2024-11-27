@@ -101,6 +101,8 @@ CountriesArraySchema.parse(countries)
 type Options = {
   pageSize?: number;
   heightBehaviour?: 'Dynamic' | 'Full';
+  defaultViewMode?: ViewMode;
+  hideToolbar?: boolean;
 };
 
 // Extend ViewItemsProps to include additional props
@@ -124,8 +126,8 @@ type ViewItemsProps<T extends Base> = {
 //   options,
 //   childComponent,
 // }: ViewItemsProps<T>)
-export function ItemViewerComponent<T extends { id: number, name: string, searchIndex: string, calculatedSearchIndex?: string }>
-  ({ items, schema, onSearch, properties, renderItem, editItem, options = { heightBehaviour: 'Full' } }
+export function ItemViewerComponent<T extends { id: number, name: string, searchIndex: string, calculatedsearchindex?: string }>
+  ({ items, schema, onSearch, properties, renderItem, editItem, options = { heightBehaviour: 'Full', defaultViewMode: 'card', hideToolbar: false } }
     : ViewItemsProps<T>) {
   const [viewMode, setViewMode] = useState<ViewMode>('card')
   const [currentPage, setCurrentPage] = useState(1)
@@ -139,6 +141,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
   const pageSize = options.pageSize || 10
   const totalPages = Math.max(1, Math.ceil(filteredItems?.length / pageSize))
   const heightBehaviour = options.heightBehaviour || 'Full'
+  const showToolbar = !options.hideToolbar
 
   useEffect(() => {
     setIsLoading(true)
@@ -171,8 +174,8 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
     const lowercaseQuery = query.toLowerCase()
 
     const filtered = items.filter((item) => {
-      if (item?.calculatedSearchIndex) {
-        return item?.calculatedSearchIndex?.toLowerCase().includes(lowercaseQuery)
+      if (item?.calculatedsearchindex) {
+        return item?.calculatedsearchindex?.toLowerCase().includes(lowercaseQuery)
       }
       else return item?.searchIndex?.toLowerCase().includes(lowercaseQuery)
 
@@ -224,6 +227,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
 
     return (
       <div className="absolute z-[1000] inset-y-0 right-0 w-1/3 bg-white shadow-lg p-4 overflow-y-auto">
+
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">{item.name}</h2>
           <div className="flex space-x-2">
@@ -269,7 +273,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
     <>
 
       <div className={`space-y-4 ${heightBehaviour === 'Full' ? 'h-[calc(100vh-4rem)] flex flex-col' : ''} relative`}>
-        <div className="flex justify-between items-center">
+        {showToolbar && (<div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
@@ -346,7 +350,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
             </Select>
           </div>
         </div>
-
+        )}
         <AnimatePresence mode="wait">
           <motion.div
             key={viewMode}

@@ -11,7 +11,7 @@ export const SharedAttributes = z.object({
     ID of the user who updated this entity`),
   deleted_at: z.coerce.date().nullable().describe(`Soft deletion date
       If soft deleted, the date of deletion`),
-  calculatedSearchIndex: z.string().nullable().optional()
+  calculatedsearchindex: z.string().nullable().optional()
     .describe(`Calculated search index
     optional field that can be used to store a calculated search index`),
   deletedBy: z

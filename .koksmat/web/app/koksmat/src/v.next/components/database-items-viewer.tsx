@@ -18,6 +18,12 @@ type DatabaseItemsViewerProps<S extends z.ZodType<any, any, any>> = {
   schema: S;
   renderItem?: RenderItemFunction<z.infer<S>>;
   editItem?: EditItemFunction<z.infer<S>>;
+  options?: {
+    pageSize?: number;
+    heightBehaviour?: 'Full' | 'Dynamic';
+    mode?: 'view' | 'edit';
+    hideToolbar?: boolean;
+  }
 
 }
 
@@ -25,7 +31,8 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
 
   viewName,
   renderItem,
-  editItem
+  editItem,
+  options = { pageSize: 250, heightBehaviour: 'Full', mode: 'view', hideToolbar: false }
 
 
 }: DatabaseItemsViewerProps<S>) {
@@ -35,9 +42,11 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
   const view = databaseQueries.getView(viewName)
   const table = useKoksmatDatabase().table("", view!.databaseName, view!.schema)
   const [items, setItems] = useState<T[]>()
-
   const [error, seterror] = useState("")
 
+  const pageSize = options.pageSize || 250
+  const heightBehaviour = options.heightBehaviour || 'Full'
+  const mode = options.mode || 'view'
 
   useEffect(() => {
 
@@ -104,7 +113,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
           editItem={editItem}
           properties={[]}
           onSearch={(query) => kInfo("component", 'Search query:', query)}
-          options={{ pageSize: 25, heightBehaviour: 'Full' }}
+          options={{ pageSize, heightBehaviour, hideToolbar: options.hideToolbar }}
           schema={view.schema} />)}
 
     </div >

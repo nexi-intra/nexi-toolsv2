@@ -72,13 +72,13 @@ export function ToolCardMediumComponent({ tool, allowedTags, isFavorite, showAct
             />
           </div>
           <div className="flex items-center justify-center h-24 ">
-            <div className="text-center text-lg font-semibold">
+            <div className="text-center text-lg font-semibold leading-tight">
               {tool.name}
             </div>
           </div>
 
         </div>
-        <div className="flex justify-between items-center px-4 mt-3">
+        <div className="flex   mt-3 ">
           <Dialog >
             <DialogTrigger asChild>
               <Button onClick={e => e.stopPropagation()} variant="outline" size="sm">Read More</Button>
@@ -111,6 +111,7 @@ export function ToolCardMediumComponent({ tool, allowedTags, isFavorite, showAct
             </DialogContent>
 
           </Dialog>
+          <div className="grow min-w-5" />
           <Link href={tool.url} target="_blank" rel="noopener noreferrer">
             <Button disabled={!tool.url} onClick={e => e.stopPropagation()} variant="ghost" size="sm">
               <ExternalLink className="h-4 w-4 mr-2" />

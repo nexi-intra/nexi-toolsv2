@@ -13,6 +13,7 @@ export function ToolList() {
   return (
     <DatabaseItemsViewer
       schema={view.schema}
+      options={{ heightBehaviour: "Full" }}
       renderItem={(tool, viewMode) => {
 
         const toolView: ToolView = {
