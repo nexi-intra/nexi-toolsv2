@@ -7,32 +7,21 @@ import React, { useEffect, useState } from 'react'
 import { useKoksmatDatabase } from './database-context-provider'
 import { useSearchParams } from 'next/navigation'
 import { ItemViewerComponent } from './item-viewer'
-import { Base, BaseSchema, EditItemFunction, RenderItemFunction } from './_shared'
+import { Base, BaseSchema, DatabaseItemsViewerProps, EditItemFunction, RenderItemFunction, ViewMode } from './_shared'
 import { databaseQueries } from '@/app/tools/schemas/database'
 
 import { fromError } from 'zod-validation-error';
-import { ViewNames } from '@/app/tools/schemas/database/view'
 
-type DatabaseItemsViewerProps<S extends z.ZodType<any, any, any>> = {
-  viewName: ViewNames;
-  schema: S;
-  renderItem?: RenderItemFunction<z.infer<S>>;
-  editItem?: EditItemFunction<z.infer<S>>;
-  options?: {
-    pageSize?: number;
-    heightBehaviour?: 'Full' | 'Dynamic';
-    mode?: 'view' | 'edit';
-    hideToolbar?: boolean;
-  }
 
-}
+
 
 export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
 
   viewName,
   renderItem,
   editItem,
-  options = { pageSize: 250, heightBehaviour: 'Full', mode: 'view', hideToolbar: false }
+  searchFor,
+  options = { pageSize: 250, heightBehaviour: 'Full', mode: 'view', hideToolbar: false, onLoaded: () => { }, defaultViewMode: 'table' }
 
 
 }: DatabaseItemsViewerProps<S>) {
@@ -65,6 +54,9 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
         try {
           const parsedData = itemsSchema.parse(readDataOperation);
           setItems(parsedData as any)
+          if (options.onLoaded) {
+            options.onLoaded(parsedData as Base[])
+          }
           kVerbose("component", "Completed read operation");
 
         } catch (err) {
@@ -106,6 +98,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
     <div className="space-y-4 p-6 bg-gray-100 dark:bg-gray-900 rounded-lg w-full">
 
       {error && <div className='text-red-500'>{error}</div>}
+
       {view && (
         <ItemViewerComponent
           items={items || []}
@@ -113,7 +106,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
           editItem={editItem}
           properties={[]}
           onSearch={(query) => kInfo("component", 'Search query:', query)}
-          options={{ pageSize, heightBehaviour, hideToolbar: options.hideToolbar }}
+          options={{ pageSize, heightBehaviour, hideToolbar: options.hideToolbar, onLoaded: options.onLoaded, defaultViewMode: options.defaultViewMode }}
           schema={view.schema} />)}
 
     </div >

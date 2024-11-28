@@ -143,4 +143,8 @@ export const navLinks = [
     label: "Markdown Parser",
     href: "/tools/docs/components/markdown-parser",
   },
+  {
+    label: "Table of Content",
+    href: "/tools/docs/components/toc",
+  },
 ];

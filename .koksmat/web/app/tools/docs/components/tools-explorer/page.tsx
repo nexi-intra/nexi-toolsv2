@@ -7,7 +7,7 @@ import {
   ComponentDocumentationHub,
 } from "@/components/component-documentation-hub";
 
-import { examplesToolsPage } from "@/components/page-with-view-switcher";
+import { examplesToolsPage } from "@/components/tools-page";
 
 // Example usage
 export default function ExampleUsage() {

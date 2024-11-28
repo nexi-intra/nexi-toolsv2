@@ -10,7 +10,7 @@ export default function Layout(props: { children: React.ReactNode }) {
     <div className='w-full'>
       {!isInIframe && (
         <div className='flex p-3'>
-          <div className='grow' >This is ...</div>
+          <div className='grow' ></div>
 
           <ShareComponent url={'dfdf'} subscriberCount={0} onShare={function (args_0: string, ...args: unknown[]): void {
             throw new Error('Function not implemented.')

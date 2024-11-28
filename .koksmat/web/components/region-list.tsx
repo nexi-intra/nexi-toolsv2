@@ -11,12 +11,15 @@ import {
 } from "@/components/ui/card"
 import { useState } from "react";
 import { Button } from "./ui/button";
+import Link from "next/link";
+import { LinkListProps } from "@/app/koksmat/src/v.next/components/_shared";
+import { ToolExplorerFiltered } from "./tool-list";
 
 
-
+const VIEWNAME = "regions"
 
 export function RegionList() {
-  const view = queries.getView("regions")
+  const view = queries.getView(VIEWNAME)
   const [edit, setedit] = useState(false)
   return (
 
@@ -42,7 +45,31 @@ export function RegionList() {
       }
       }
       schema={view.schema}
-      viewName={"regions"} />
+      viewName={VIEWNAME} />
   )
 }
 
+export function RegionListLinker({ searchFor, basePath, prefix, onLoaded }: LinkListProps) {
+  const view = queries.getView(VIEWNAME)
+  return (
+
+    <DatabaseItemsViewer
+      schema={view.schema}
+      searchFor={searchFor}
+      renderItem={(item, viewMode) => {
+        return <div className="min-h-96 p-4 m-4 bg-white" key={item.id}>
+          <div className="flex">
+            <div className="text-xl" id={prefix + item.id}>{item.name}</div>
+            <div className="grow"></div>
+            <div><Link className="text-blue-500 hover:underline" href={`${basePath}/${item.id}`}>more</Link></div>
+          </div>
+          <ToolExplorerFiltered />
+        </div>
+
+      }
+      }
+      options={{ hideToolbar: true, heightBehaviour: "Dynamic", onLoaded, defaultViewMode: 'raw' }}
+      viewName={VIEWNAME}
+    />
+  )
+}

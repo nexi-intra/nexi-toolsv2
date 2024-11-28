@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Grid, List, Calendar, Columns, ChevronLeft, ChevronRight, X, Edit, Copy, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -17,7 +17,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { CardViewItems } from './CardView'
 import { TableView } from './TableView'
 import { ListView } from './ListView'
-import { Base, EditItemFunction, RenderItemFunction, ViewMode } from './_shared'
+import { Base, EditItemFunction, RenderItemFunction, ViewItemOptionsProps, ViewMode } from './_shared'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Dialog,
@@ -28,6 +28,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { se } from 'date-fns/locale'
 // Schema for countries
 const CountrySchema = z.object({
   id: z.number().int().positive().describe(`unique id
@@ -98,12 +99,6 @@ CountriesArraySchema.parse(countries)
 //   value: z.any(),
 // });
 
-type Options = {
-  pageSize?: number;
-  heightBehaviour?: 'Dynamic' | 'Full';
-  defaultViewMode?: ViewMode;
-  hideToolbar?: boolean;
-};
 
 // Extend ViewItemsProps to include additional props
 type ViewItemsProps<T extends Base> = {
@@ -113,7 +108,8 @@ type ViewItemsProps<T extends Base> = {
   editItem?: EditItemFunction<T>;
   onSearch?: (query: string) => void;
   properties?: z.infer<typeof PropertySchema>[];
-  options?: Options;
+  options?: ViewItemOptionsProps;
+  searchFor?: string;
 
 };
 
@@ -127,9 +123,9 @@ type ViewItemsProps<T extends Base> = {
 //   childComponent,
 // }: ViewItemsProps<T>)
 export function ItemViewerComponent<T extends { id: number, name: string, searchIndex: string, calculatedsearchindex?: string }>
-  ({ items, schema, onSearch, properties, renderItem, editItem, options = { heightBehaviour: 'Full', defaultViewMode: 'card', hideToolbar: false } }
+  ({ searchFor, items, schema, onSearch, properties, renderItem, editItem, options = { heightBehaviour: 'Full', defaultViewMode: 'card', hideToolbar: false } }
     : ViewItemsProps<T>) {
-  const [viewMode, setViewMode] = useState<ViewMode>('card')
+  const [viewMode, setViewMode] = useState<ViewMode>(options?.defaultViewMode || 'card')
   const [currentPage, setCurrentPage] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
   const [showInfinityLoader, setShowInfinityLoader] = useState(false)
@@ -144,12 +140,12 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
   const showToolbar = !options.hideToolbar
 
   useEffect(() => {
-    setIsLoading(true)
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 1000)
+    // setIsLoading(true)
+    // const timer = setTimeout(() => {
+    //   setIsLoading(false)
+    // }, 1000)
 
-    return () => clearTimeout(timer)
+    // return () => clearTimeout(timer)
   }, [viewMode, currentPage])
 
   useEffect(() => {
@@ -169,6 +165,11 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
     setCurrentPage(1)
   }, [items])
 
+  useEffect(() => {
+    if (searchFor) {
+      handleSearch(searchFor)
+    }
+  }, [searchFor])
 
   const handleSearch = (query: string) => {
     const lowercaseQuery = query.toLowerCase()
@@ -214,6 +215,16 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
         return <TableView items={paginatedItems} onItemClick={handleItemClick} schema={schema} />
       case 'list':
         return <ListView items={paginatedItems} onItemClick={handleItemClick} schema={schema} />
+      case "raw":
+        return (<Fragment>
+          {items.map((item, key) => (
+            <Fragment key={key} >
+
+              {renderItem ? renderItem(item, "raw") : null}
+
+            </Fragment>
+          ))}
+        </Fragment>)
       default:
         return null
     }
@@ -372,7 +383,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
               </div>
             ) : (
 
-              <div className="text-center py-8">No items to display
+              <div className="text-center py-8">
                 {editItem &&
                   <CreateItem />
 
@@ -389,7 +400,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
           </div>
         )}
 
-        {filteredItems?.length > 0 && (
+        {filteredItems?.length > 0 && totalPages > 1 && (
           <div className="flex justify-between items-center mt-4">
             <Button
               variant="outline"
