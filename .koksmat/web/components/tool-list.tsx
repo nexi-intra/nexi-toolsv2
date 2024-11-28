@@ -119,42 +119,42 @@ export function ToolExplorerFiltered(props: {
       parameters={props.parameters}
 
       options={{ heightBehaviour: "Dynamic", hideToolbar: true, onLoaded, pageSize: 5 }}
-      renderItem={renderItem()}
+      renderItem={(tool, viewMode) => {
+
+        const toolView: ToolView = {
+
+          id: tool.id,
+          name: tool.name,
+          description: tool.description,
+          url: tool.url,
+          created_by: tool.created_by,
+          updated_by: tool.updated_by,
+          deleted_at: tool.deleted_at,
+          icon: tool.icon ?? "/placeholder.svg",
+          groupId: "",
+          documents: tool.documents,
+          purposes: tool.purposes.map((purpose: any) => { return { id: purpose.id, value: purpose.name } }),
+          countries: tool.countries.map((country: any) => { return { id: country.id, value: country.name } }),
+          tags: tool.tags,
+          version: "",
+          status: tool.status,
+          created_at: tool.created_at,
+          updated_at: tool.updated_at,
+          category: { color: tool.category_color, id: tool.category_id, value: tool.category_name, order: "" },
+        }
+
+        return <div>
+          <ToolCardMediumComponent
+            showActions
+            tool={toolView}
+            isFavorite={tool.is_favorite} allowedTags={[]}
+
+
+          />
+
+        </div>
+      }}
       viewName={"tools"} />
   )
 }
 
-
-function renderItem(): import("/Users/nielsgregersjohansen/kitchens/nexi-toolsv2/.koksmat/web/app/koksmat/src/v.next/components/_shared").RenderItemFunction<{ [x: string]: any; }> | undefined {
-  return (tool, viewMode) => {
-
-    const toolView: ToolView = {
-      id: tool.id,
-      name: tool.name,
-      description: tool.description,
-      url: tool.url,
-      created_by: tool.created_by,
-      updated_by: tool.updated_by,
-      deleted_at: tool.deleted_at,
-      icon: tool.icon ?? "/placeholder.svg",
-      groupId: "",
-      documents: tool.documents,
-      purposes: tool.purposes.map((purpose: any) => { return { id: purpose.id, value: purpose.name }; }),
-      countries: tool.countries.map((country: any) => { return { id: country.id, value: country.name }; }),
-      tags: tool.tags,
-      version: "",
-      status: tool.status,
-      created_at: tool.created_at,
-      updated_at: tool.updated_at,
-      category: { color: tool.category_color, id: tool.category_id, value: tool.category_name, order: "" },
-    };
-
-    return <div>
-      <ToolCardMediumComponent
-        showActions
-        tool={toolView}
-        isFavorite={tool.is_favorite} allowedTags={[]} />
-
-    </div>;
-  };
-}
