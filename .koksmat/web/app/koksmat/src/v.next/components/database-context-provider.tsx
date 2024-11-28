@@ -141,8 +141,8 @@ export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = (
           },
         }, token);
       },
-      query: async (queryname: string) => {
-        kVerbose("provider", `Querying ${queryname}`);
+      query: async (queryname: string, parameters) => {
+        kVerbose("provider", `Querying ${queryname}`, parameters);
         const token = await getToken(tokenProvider);
         return messageProvider.send({
           subject: 'query',
@@ -150,6 +150,7 @@ export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = (
           {
             messageType: "query",
             name: queryname,
+            parameters,
           },
         }, token);
       },

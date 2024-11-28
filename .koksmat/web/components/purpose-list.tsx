@@ -40,7 +40,7 @@ export function PurposesListLinker({ searchFor, basePath, prefix, onLoaded }: Li
             <div className="grow"></div>
             <div><Link className="text-blue-500 hover:underline" href={`${basePath}/${item.id}`}>all</Link></div>
           </div>
-          <ToolExplorerFiltered searchFor={searchFor} />
+          <ToolExplorerFiltered searchFor={searchFor} parameters={{ lookupid: item.id }} />
         </div>
 
       }

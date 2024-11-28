@@ -160,6 +160,9 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
 
       kVerbose("endpoint", "databaseQuery", databaseQuery);
       const jwt = jwtDecode<{ upn: string }>(token);
+      if (message.message.parameters) {
+        kVerbose("endpoint", "parameters", message.message.parameters);
+      }
       const queryResult = await run<{ Result: any[] }>(
         MICROSERVICE,
         [
@@ -167,7 +170,7 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
           databaseQuery.databaseName,
           databaseQuery.sql
             .replaceAll("###UPN###", jwt.upn ?? "")
-            .replaceAll("###WHERE###", ""),
+            .replaceAll("###LOOKUPID###", message.message.parameters?.lookupid),
           JSON.stringify(message.message.parameters),
         ],
         "",

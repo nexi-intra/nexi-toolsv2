@@ -34,6 +34,7 @@ export interface LinkListProps {
 
 export type DatabaseItemsViewerProps<S extends z.ZodType<any, any, any>> = {
   viewName: ViewNames;
+  
   parameters?: ParametersType;
   schema: S;
   renderItem?: RenderItemFunction<z.infer<S>>;

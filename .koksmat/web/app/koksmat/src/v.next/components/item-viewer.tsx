@@ -123,7 +123,7 @@ type ViewItemsProps<T extends Base> = {
 //   childComponent,
 // }: ViewItemsProps<T>)
 export function ItemViewerComponent<T extends { id: number, name: string, searchIndex: string, calculatedsearchindex?: string }>
-  ({ searchFor, items, schema, onSearch, properties, renderItem, editItem, options = { heightBehaviour: 'Full', defaultViewMode: 'card', hideToolbar: false } }
+  ({ searchFor = "", items, schema, onSearch, properties, renderItem, editItem, options = { heightBehaviour: 'Full', defaultViewMode: 'card', hideToolbar: false } }
     : ViewItemsProps<T>) {
   const [viewMode, setViewMode] = useState<ViewMode>(options?.defaultViewMode || 'card')
   const [currentPage, setCurrentPage] = useState(1)

@@ -61,8 +61,38 @@ export const metadata: SqlView = {
     c.color AS category_color
  
 FROM tool AS t
-###WHERE###
+
 LEFT JOIN category AS c ON c.id = t.category_id
+ORDER BY t.name
+`,
+  schema: ToolSchema,
+  parameters: {},
+};
+
+export const metadataRegion: SqlView = {
+  databaseName: "tools",
+
+  sql: `
+  SELECT 
+    t.*,
+       (get_m2m_right_json(t.id, 'tool', 'country')) AS countries,
+       (get_m2m_right_json(t.id, 'tool', 'purpose')) AS purposes,
+        (get_m2m_right_json(t.id, 'tool', 'language')) AS languages,
+       (proc.isFavouriteTool('###UPN###',t.id)) as is_favorite,
+    t.name || ' ' || t.description AS calculatedsearchindex,
+    c.name AS category_name,
+    c.sortorder AS category_order,
+    c.color AS category_color
+ 
+FROM tool AS t
+
+LEFT JOIN category AS c ON c.id = t.category_id
+JOIN 
+    tool_m2m_country AS tmc ON t.id = tmc.tool_id
+JOIN 
+    country AS co ON tmc.country_id = co.id
+WHERE 
+    co.region_id = ###LOOKUPID###
 ORDER BY t.name
 `,
   schema: ToolSchema,
