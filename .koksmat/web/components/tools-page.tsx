@@ -93,7 +93,7 @@ export function ToolsPage({ className = "" }: ToolsPageProps) {
               //throw new Error("Function not implemented.");
             }} />
         </div>
-        <div className="min-h-screen min-w-full bg-cyan-200">
+        <div className="min-h-screen min-w-full ">
           <ToolExplorer onLoaded={onChildsRefreshed} searchFor={searchFor} />
         </div>
         <div className="relative">

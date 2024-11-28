@@ -95,7 +95,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
 
 
   return (
-    <div className="space-y-4 p-6 bg-gray-100 dark:bg-gray-900 rounded-lg w-full">
+    <div className="space-y-4 p-6 rounded-lg w-full">
 
       {error && <div className='text-red-500'>{error}</div>}
 
