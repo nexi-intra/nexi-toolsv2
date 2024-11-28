@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { infer, z } from "zod";
 import { kError, kInfo, kVerbose } from "@/lib/koksmat-logger-client";
 import { DatabaseMessageType } from "../endpoints/database-messages-server";
 import { ActionNames, actionNames } from "@/app/tools/schemas/database/actions";
@@ -17,6 +17,8 @@ export interface MessageProvider {
 export interface TokenProvider {
   getToken(): Promise<string>;
 }
+export const parametersType = z.record(z.any()).optional();
+export type ParametersType = z.infer<typeof parametersType>;
 export type DatabaseHandlerType<T extends z.ZodObject<any>> = {
   create(data: z.infer<T>): Promise<number>;
   read(id: number): Promise<z.infer<T>>;
@@ -24,7 +26,7 @@ export type DatabaseHandlerType<T extends z.ZodObject<any>> = {
   patch(id: number, data: Partial<z.infer<T>>): void;
   delete(id: number, softDelete?: boolean): void;
   restore(id: number): Promise<z.infer<T>>;
-  query(queryname: ViewNames): Promise<any[]>;
+  query(queryname: ViewNames, parameters?: ParametersType): Promise<any[]>;
   execute(actionname: ActionNames, data: any): Promise<any>;
 };
 

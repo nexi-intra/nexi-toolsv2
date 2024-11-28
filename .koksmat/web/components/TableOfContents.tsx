@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, use } from 'react';
 import { z } from 'zod';
 import { ZeroTrust } from '@/components/zero-trust';
 import { ChevronUp, RefreshCw } from 'lucide-react';
 import { ComponentDoc } from './component-documentation-hub';
+
 
 // Define the schema for the props
 const TableOfContentsSchema = z.object({
@@ -11,6 +12,7 @@ const TableOfContentsSchema = z.object({
     prefix: z.string(),
   })),
   className: z.string().optional(),
+  version: z.number().optional(),
 });
 
 // Infer the type from the schema
@@ -42,6 +44,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = (props) => {
 
   // Function to extract TOC items from the page
   const extractTocItems = useCallback(() => {
+
     const newTocItems: { [key: string]: TOCItem[] } = {};
     props.sections.forEach(section => {
       newTocItems[section.title] = [];
@@ -83,19 +86,25 @@ export const TableOfContents: React.FC<TableOfContentsProps> = (props) => {
   }, [tocItems]);
 
   useEffect(() => {
-    extractTocItems();
+    //extractTocItems();
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
-  }, [extractTocItems, onScroll]);
+  }, [onScroll]);
+
+  useEffect(() => {
+    console.log('Version changed:', props.version);
+    extractTocItems();
+
+    // Refresh the TOC when the version changes
+  }, [props.version])
+
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const refreshToc = useCallback(() => {
-    extractTocItems();
-  }, [extractTocItems]);
 
+  //return null
   return (
     <>
       <ZeroTrust
@@ -107,13 +116,13 @@ export const TableOfContents: React.FC<TableOfContentsProps> = (props) => {
       <nav className={`hidden lg:block sticky top-4 right-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-y-auto max-h-[calc(100vh-2rem)] ${props.className || ''}`}>
         <div className="flex justify-between items-center mb-4">
           {/* <h2 className="text-xl font-bold">Table of Contents</h2> */}
-          <button
+          {/* <button
             onClick={refreshToc}
             className="p-2 rounded-full hover:bg-muted transition-colors"
             aria-label="Refresh table of contents"
           >
             <RefreshCw className="w-4 h-4" />
-          </button>
+          </button> */}
         </div>
         {Object.entries(tocItems).map(([sectionTitle, items]) => (
           <div key={sectionTitle} className="mb-4">

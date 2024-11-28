@@ -93,6 +93,7 @@ export function ToolsPage({ className = "" }: ToolsPageProps) {
               //throw new Error("Function not implemented.");
             }} />
         </div>
+
         <div className="min-h-screen min-w-full ">
           <ToolExplorer onLoaded={onChildsRefreshed} searchFor={searchFor} />
         </div>
@@ -111,7 +112,10 @@ export function ToolsPage({ className = "" }: ToolsPageProps) {
       </main>
       <aside className="w-1/4">
 
-        <TableOfContents sections={[{ title: "Purposes", prefix: "purpose-" }, { title: "Categories", prefix: "category-" }, { title: "Regions", prefix: "region-" }]} />
+        <TableOfContents
+          version={version}
+          sections={[{ title: "Purposes", prefix: "purpose-" }, { title: "Categories", prefix: "category-" }, { title: "Regions", prefix: "region-" }]} />
+
       </aside>
     </div>
   </div>

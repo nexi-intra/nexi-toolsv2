@@ -55,7 +55,7 @@ export function RegionListLinker({ searchFor, basePath, prefix, onLoaded }: Link
 
     <DatabaseItemsViewer
       schema={view.schema}
-      searchFor={searchFor}
+
       renderItem={(item, viewMode) => {
         return <div className="min-h-96 p-4 m-4 bg-white" key={item.id}>
           <div className="flex">
@@ -63,7 +63,7 @@ export function RegionListLinker({ searchFor, basePath, prefix, onLoaded }: Link
             <div className="grow"></div>
             <div><Link className="text-blue-500 hover:underline" href={`${basePath}/${item.id}`}>more</Link></div>
           </div>
-          <ToolExplorerFiltered />
+          <ToolExplorerFiltered searchFor={searchFor} />
         </div>
 
       }

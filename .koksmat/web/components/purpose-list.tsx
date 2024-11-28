@@ -32,15 +32,15 @@ export function PurposesListLinker({ searchFor, basePath, prefix, onLoaded }: Li
   return (
     <DatabaseItemsViewer
       schema={view.schema}
-      searchFor={searchFor}
+
       renderItem={(item, viewMode) => {
         return <div className="min-h-96 p-4 m-4 bg-white" key={item.id}>
           <div className="flex">
             <div className="text-xl" id={prefix + item.id}>{item.name}</div>
             <div className="grow"></div>
-            <div><Link target="_blank" className="text-blue-500 hover:underline" href={`${basePath}/${item.id}`}>all</Link></div>
+            <div><Link className="text-blue-500 hover:underline" href={`${basePath}/${item.id}`}>all</Link></div>
           </div>
-          <ToolExplorerFiltered />
+          <ToolExplorerFiltered searchFor={searchFor} />
         </div>
 
       }

@@ -168,6 +168,8 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
   useEffect(() => {
     if (searchFor) {
       handleSearch(searchFor)
+    } else {
+      setFilteredItems(items)
     }
   }, [searchFor])
 
@@ -284,6 +286,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
     <>
 
       <div className={`space-y-4 ${heightBehaviour === 'Full' ? 'h-[calc(100vh-4rem)] flex flex-col' : ''} relative`}>
+        { }
         {showToolbar && (<div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Button
@@ -336,7 +339,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
           <div className="flex items-center space-x-2">
             <TokenInput
               properties={properties!}
-              value={""}
+              value={searchFor!}
               onChange={(value, hasErrors, errors) => {
                 if (hasErrors) {
                   kWarn("component", "Errors in input", errors)

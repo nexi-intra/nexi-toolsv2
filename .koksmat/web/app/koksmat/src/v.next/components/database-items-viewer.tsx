@@ -18,6 +18,7 @@ import { fromError } from 'zod-validation-error';
 export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
 
   viewName,
+  parameters,
   renderItem,
   editItem,
   searchFor,
@@ -105,6 +106,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
           renderItem={renderItem}
           editItem={editItem}
           properties={[]}
+          searchFor={searchFor}
           onSearch={(query) => kInfo("component", 'Search query:', query)}
           options={{ pageSize, heightBehaviour, hideToolbar: options.hideToolbar, onLoaded: options.onLoaded, defaultViewMode: options.defaultViewMode }}
           schema={view.schema} />)}

@@ -165,7 +165,9 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
         [
           "query",
           databaseQuery.databaseName,
-          databaseQuery.sql.replaceAll("###UPN###", jwt.upn ?? ""),
+          databaseQuery.sql
+            .replaceAll("###UPN###", jwt.upn ?? "")
+            .replaceAll("###WHERE###", ""),
           JSON.stringify(message.message.parameters),
         ],
         "",

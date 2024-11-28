@@ -62,6 +62,7 @@ import { useContext } from "react"
 import { MagicboxContext } from "@/app/koksmat0/magicbox-context"
 import { useIsInIframe } from "@/app/koksmat/src/v.next/components/use-isiniframe"
 import GlobalBreadcrumb from "./global-breadcrumb"
+import { ShareComponent } from "./share-component"
 // Custom hook to detect if running in an iframe
 
 
@@ -124,6 +125,13 @@ const TopNavigation: React.FC<{
     >
       {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
     </Button>
+
+
+    <ShareComponent subscriberCount={0} onShare={function (args_0: string, ...args: unknown[]): void {
+      throw new Error('Function not implemented.')
+    }} onCreatePost={function (...args: unknown[]): void {
+      throw new Error('Function not implemented.')
+    }} />
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost">

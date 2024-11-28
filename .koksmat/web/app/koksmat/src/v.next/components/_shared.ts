@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { ViewNames } from "@/app/tools/schemas/database/view";
+import { ParametersType } from "../lib/database-handler";
 
 export type ViewMode = "card" | "table" | "list" | "raw"; //| "calendar" | "kanban";
 export type EditMode = "view" | "edit" | "new"; //| "calendar" | "kanban";
@@ -33,6 +34,7 @@ export interface LinkListProps {
 
 export type DatabaseItemsViewerProps<S extends z.ZodType<any, any, any>> = {
   viewName: ViewNames;
+  parameters?: ParametersType;
   schema: S;
   renderItem?: RenderItemFunction<z.infer<S>>;
   editItem?: EditItemFunction<z.infer<S>>;

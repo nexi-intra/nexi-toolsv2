@@ -61,6 +61,7 @@ export const metadata: SqlView = {
     c.color AS category_color
  
 FROM tool AS t
+###WHERE###
 LEFT JOIN category AS c ON c.id = t.category_id
 ORDER BY t.name
 `,

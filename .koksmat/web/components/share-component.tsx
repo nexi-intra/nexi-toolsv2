@@ -1,3 +1,4 @@
+"use client"
 import * as React from 'react'
 import { z } from 'zod'
 import { Share2 } from 'lucide-react'
@@ -9,6 +10,7 @@ import { ZeroTrust } from '@/components/zero-trust'
 import { kVerbose, kWarn, kInfo, kError } from "@/lib/koksmat-logger-client"
 import { ComponentDoc } from './component-documentation-hub'
 import { useToast } from "@/components/ui/use-toast"
+import { useEffect, useState } from 'react'
 
 /**
  * ShareComponent
@@ -37,10 +39,10 @@ import { useToast } from "@/components/ui/use-toast"
 const ProxyZeroTrust: React.FC<any> = () => null;
 
 // Proxy logger functions
-const proxyLogger = (...args: any[]) => {};
+const proxyLogger = (...args: any[]) => { };
 
 const ShareComponentSchema = z.object({
-  url: z.string().url(),
+  //url: z.string().url(),
   subscriberCount: z.number().int().nonnegative(),
   onShare: z.function().args(z.string()).returns(z.void()),
   onCreatePost: z.function().returns(z.void()),
@@ -50,7 +52,7 @@ const ShareComponentSchema = z.object({
 type ShareComponentProps = z.infer<typeof ShareComponentSchema>
 
 export function ShareComponent({
-  url,
+
   subscriberCount,
   onShare,
   onCreatePost,
@@ -58,7 +60,22 @@ export function ShareComponent({
 }: ShareComponentProps) {
   const [mode, setMode] = React.useState<'view' | 'new' | 'edit'>('view')
   const [startTime, setStartTime] = React.useState('0:00')
+  const [url, seturl] = useState("")
   const { toast } = useToast()
+
+  useEffect(() => {
+    const addr = window.location.href
+    const protocol = addr.split('//')
+    const [p, rest] = protocol
+    const [host, ...path] = rest.split('/')
+    const escapedPath = encodeURIComponent(path.join('/'))
+    const newUrl = `${p}//${host}/sso?token=TOKEN&path=${escapedPath}`
+
+    seturl(newUrl)
+
+
+  }, [])
+
 
   const handleShare = (platform: string) => {
     onShare(platform)
@@ -97,11 +114,11 @@ export function ShareComponent({
 
   const shareOptions = [
     { name: 'Embed', icon: '< >' },
-    { name: 'WhatsApp', icon: '📱' },
-    { name: 'Facebook', icon: 'f' },
-    { name: 'X', icon: '𝕏' },
-    { name: 'Email', icon: '✉️' },
-    { name: 'KakaoTalk', icon: '💬' },
+    // { name: 'WhatsApp', icon: '📱' },
+    // { name: 'Facebook', icon: 'f' },
+    // { name: 'X', icon: '𝕏' },
+    // { name: 'Email', icon: '✉️' },
+    // { name: 'KakaoTalk', icon: '💬' },
   ]
 
   return (
@@ -129,10 +146,10 @@ export function ShareComponent({
           </Tooltip>
           <PopoverContent className="w-80">
             <div className="flex flex-col space-y-4">
-              <h3 className="text-lg font-semibold">Share in a post</h3>
+              {/* <h3 className="text-lg font-semibold">Share in a post</h3>
               <Button onClick={handleCreatePost}>Create post</Button>
-              <p className="text-sm text-gray-500">{subscriberCount} subscribers</p>
-              <div className="flex flex-wrap justify-start gap-2">
+              <p className="text-sm text-gray-500">{subscriberCount} subscribers</p> */}
+              <div className="flex flex-wrap justify-start gap-2 hidden">
                 {shareOptions.map((option) => (
                   <Tooltip key={option.name}>
                     <TooltipTrigger asChild>
@@ -140,7 +157,7 @@ export function ShareComponent({
                         variant="outline"
                         size="icon"
                         className="rounded-full w-10 h-10"
-                        onClick={() => handleShare(option.name)}
+                        onClick={() => navigator.clipboard.writeText(url)}
                       >
                         {option.icon}
                       </Button>
@@ -155,15 +172,7 @@ export function ShareComponent({
                 <Input value={url} readOnly className="flex-grow" />
                 <Button onClick={handleCopy}>Copy</Button>
               </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="text"
-                  placeholder="Start at"
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                  className="w-24"
-                />
-              </div>
+
             </div>
           </PopoverContent>
         </Popover>
@@ -198,8 +207,8 @@ export default function MyPage() {
     `,
     example: (
       <>
-        <ShareComponent 
-          url="https://example.com/content"
+        <ShareComponent
+
           subscriberCount={100}
           onShare={(platform) => proxyLogger(`Shared on ${platform}`)}
           onCreatePost={() => proxyLogger("Create post clicked")}
