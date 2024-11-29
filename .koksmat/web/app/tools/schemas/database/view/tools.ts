@@ -46,10 +46,8 @@ export const ToolSchema = SharedAttributes.extend({
   purposes: z.array(z.any()).nullable().describe(`Purposes`),
 });
 
-export const metadata: SqlView = {
-  databaseName: "tools",
-  sql: `
-  SELECT 
+const sql = `
+  SELECT
     t.*,
        (get_m2m_right_json(t.id, 'tool', 'country')) AS countries,
        (get_m2m_right_json(t.id, 'tool', 'purpose')) AS purposes,
@@ -59,42 +57,78 @@ export const metadata: SqlView = {
     c.name AS category_name,
     c.sortorder AS category_order,
     c.color AS category_color
- 
+
 FROM tool AS t
 
 LEFT JOIN category AS c ON c.id = t.category_id
+###WHERE###
 ORDER BY t.name
-`,
+`;
+export const metadata: SqlView = {
+  databaseName: "tools",
+  sql: sql.replace("###WHERE###", ""),
   schema: ToolSchema,
-  parameters: {},
+  parameters: [],
+};
+
+export const metadataPurposes: SqlView = {
+  databaseName: "tools",
+
+  sql: sql.replace(
+    "###WHERE###",
+
+    `
+    WHERE t.id  IN (SELECT tool_id FROM tool_m2m_purpose WHERE purpose_id = ###P1###)
+      `
+  ),
+
+  schema: ToolSchema,
+  parameters: ["INT"],
 };
 
 export const metadataRegion: SqlView = {
   databaseName: "tools",
 
-  sql: `
-  SELECT 
-    t.*,
-       (get_m2m_right_json(t.id, 'tool', 'country')) AS countries,
-       (get_m2m_right_json(t.id, 'tool', 'purpose')) AS purposes,
-        (get_m2m_right_json(t.id, 'tool', 'language')) AS languages,
-       (proc.isFavouriteTool('###UPN###',t.id)) as is_favorite,
-    t.name || ' ' || t.description AS calculatedsearchindex,
-    c.name AS category_name,
-    c.sortorder AS category_order,
-    c.color AS category_color
- 
-FROM tool AS t
+  sql: sql.replace(
+    "###WHERE###",
+    ""
+    //     `
+    // where t.id in (
+    // select tool_id from tool_m2m_country  where country_id in
+    // (
+    // select id from country where region_id = ###P1###)
+    // )
+    //  `
+  ),
 
-LEFT JOIN category AS c ON c.id = t.category_id
-JOIN 
-    tool_m2m_country AS tmc ON t.id = tmc.tool_id
-JOIN 
-    country AS co ON tmc.country_id = co.id
-WHERE 
-    co.region_id = ###LOOKUPID###
-ORDER BY t.name
-`,
   schema: ToolSchema,
-  parameters: {},
+  parameters: [],
+};
+
+export const metadataCountry: SqlView = {
+  databaseName: "tools",
+
+  sql: sql.replace(
+    "###WHERE###",
+    `
+WHERE t.id IN (SELECT tool_id FROM tool_m2m_country WHERE country_id = ###P1###)
+  `
+  ),
+
+  schema: ToolSchema,
+  parameters: [],
+};
+
+export const metadataCategory: SqlView = {
+  databaseName: "tools",
+
+  sql: sql.replace(
+    "###WHERE###",
+    `
+WHERE t.category_id = ###P1###
+  `
+  ),
+
+  schema: ToolSchema,
+  parameters: [],
 };

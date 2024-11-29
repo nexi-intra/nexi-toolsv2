@@ -17,7 +17,7 @@ export interface MessageProvider {
 export interface TokenProvider {
   getToken(): Promise<string>;
 }
-export const parametersType = z.record(z.any()).optional();
+export const parametersType = z.array(z.string()).optional();
 export type ParametersType = z.infer<typeof parametersType>;
 export type DatabaseHandlerType<T extends z.ZodObject<any>> = {
   create(data: z.infer<T>): Promise<number>;

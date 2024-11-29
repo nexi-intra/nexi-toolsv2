@@ -63,7 +63,7 @@ export function RegionListLinker({ searchFor, basePath, prefix, onLoaded }: Link
             <div className="grow"></div>
             <div><Link className="text-blue-500 hover:underline" href={`${basePath}/${item.id}`}>more</Link></div>
           </div>
-          <ToolExplorerFiltered searchFor={searchFor} />
+          <ToolExplorerFiltered searchFor={searchFor} viewName="tools_for_region" parameters={[(item.id as number).toString()]} />
         </div>
 
       }

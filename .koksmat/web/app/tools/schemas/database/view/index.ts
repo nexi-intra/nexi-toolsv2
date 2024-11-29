@@ -17,6 +17,10 @@ import * as my_tools from "./my_tools";
 // Consolidate views from multiple modules
 const views = {
   tools: tools.metadata,
+  tools_for_purpose: tools.metadataPurposes,
+  tools_for_region: tools.metadataRegion,
+  tools_for_country: tools.metadataCountry,
+  tools_for_category: tools.metadataCategory,
   countries: countries.metadata,
   categories: categories.metadata,
   regions: regions.metadata,

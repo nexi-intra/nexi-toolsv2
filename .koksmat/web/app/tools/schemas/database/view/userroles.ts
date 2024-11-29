@@ -12,5 +12,5 @@ export const metadata: SqlView = {
 
     sortorder: z.string().nullable().optional(),
   }),
-  parameters: {},
+  parameters: [],
 };

@@ -6,10 +6,13 @@ import Link from "next/link";
 import { Card } from "./ui/card";
 import { LinkListProps } from "@/app/koksmat/src/v.next/components/_shared";
 import { ToolExplorer, ToolExplorerFiltered } from "./tool-list";
+import { ViewNames } from "@/app/tools/schemas/database/view";
 
-const VIEWNAME = "purposes"
+
 export function PurposesList() {
+  const VIEWNAME: ViewNames = "purposes"
   const view = databaseQueries.getView(VIEWNAME)
+
   return (
     <DatabaseItemsViewer
       schema={view.schema}
@@ -28,7 +31,9 @@ export function PurposesList() {
 
 
 export function PurposesListLinker({ searchFor, basePath, prefix, onLoaded }: LinkListProps) {
+  const VIEWNAME: ViewNames = "purposes"
   const view = databaseQueries.getView(VIEWNAME)
+
   return (
     <DatabaseItemsViewer
       schema={view.schema}
@@ -40,7 +45,8 @@ export function PurposesListLinker({ searchFor, basePath, prefix, onLoaded }: Li
             <div className="grow"></div>
             <div><Link className="text-blue-500 hover:underline" href={`${basePath}/${item.id}`}>all</Link></div>
           </div>
-          <ToolExplorerFiltered searchFor={searchFor} parameters={{ lookupid: item.id }} />
+
+          <ToolExplorerFiltered searchFor={searchFor} viewName="tools_for_purpose" parameters={[(item.id as number).toString()]} />
         </div>
 
       }

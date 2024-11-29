@@ -67,5 +67,5 @@ WHERE up.email = '###UPN###' -- Parameter for user's email
 ORDER BY t.name
 `,
   schema: ToolSchema,
-  parameters: {},
+  parameters: [],
 };

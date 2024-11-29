@@ -35,7 +35,7 @@ export function CategoryListLinker({ searchFor, basePath, prefix, onLoaded }: Li
             <div className="grow"></div>
             <div><Link className="text-blue-500 hover:underline" href={`${basePath}/${item.id}`}>all</Link></div>
           </div>
-          <ToolExplorerFiltered searchFor={searchFor} />
+          <ToolExplorerFiltered searchFor={searchFor} viewName="tools_for_category" parameters={[(item.id as number).toString()]} />
         </div>
 
       }

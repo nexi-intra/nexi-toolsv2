@@ -7,6 +7,7 @@ import { databaseQueries } from "@/app/tools/schemas/database";
 import { use, useContext } from "react";
 import { MagicboxContext } from "@/app/koksmat0/magicbox-context";
 import { ParametersType } from "@/app/koksmat/src/v.next/lib/database-handler";
+import { ViewNames } from "@/app/tools/schemas/database/view";
 
 export function ToolList() {
 
@@ -106,12 +107,21 @@ export function ToolExplorer(props: { searchFor?: string; onLoaded?: () => void 
 export function ToolExplorerFiltered(props: {
   searchFor?: string;
   filter?: string;
+  viewName?: ViewNames,
   parameters?: ParametersType;
   onLoaded?: () => void
 }) {
   const { onLoaded, searchFor } = props
+  if (props.parameters && props.parameters.length > 0) {
 
-  const view = databaseQueries.getView("tools")
+    console.log("parameters", props.parameters)
+  }
+  if (props.viewName) {
+    //debugger
+    console.log("viewName", props.viewName)
+  }
+  const viewName: ViewNames = props.viewName ?? "tools"
+  const view = databaseQueries.getView(viewName)
   return (
     <DatabaseItemsViewer
       schema={view.schema}
@@ -154,7 +164,7 @@ export function ToolExplorerFiltered(props: {
 
         </div>
       }}
-      viewName={"tools"} />
+      viewName={viewName} />
   )
 }
 

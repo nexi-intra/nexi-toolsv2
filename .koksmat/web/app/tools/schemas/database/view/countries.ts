@@ -12,5 +12,5 @@ export const metadata: SqlView = {
     region_id: z.number(),
     sortorder: z.string().nullable().optional(),
   }),
-  parameters: {},
+  parameters: [],
 };

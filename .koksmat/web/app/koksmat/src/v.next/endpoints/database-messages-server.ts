@@ -8,6 +8,7 @@ import { queries } from "@/app/global";
 import { database } from "@/actions/database/works/activityModel";
 import { databaseActions } from "@/app/tools/schemas/database";
 import { jwtDecode } from "jwt-decode";
+import { cloneElement } from "react";
 
 const crudOperationSchema = z.object({
   messageType: z.literal("crudOperation"),
@@ -26,7 +27,7 @@ const crudOperationSchema = z.object({
 const queryOperationSchema = z.object({
   messageType: z.literal("query"),
   name: z.string(),
-  parameters: z.record(z.any()).optional(),
+  parameters: z.array(z.string()).optional(),
 });
 const actionOperationSchema = z.object({
   messageType: z.literal("action"),
@@ -43,6 +44,17 @@ export const databaseMessageSchema = z.object({
 });
 export type DatabaseMessageType = z.infer<typeof databaseMessageSchema>;
 const MICROSERVICE = "magic-mix.app";
+
+function getParameterValue(
+  parameters: string[] | undefined | null,
+  index: number
+) {
+  if (!parameters) return "";
+  if (parameters.length > index) {
+    return parameters[index];
+  }
+  return "";
+}
 export async function handleDatabaseMessagesServer(request: NextRequest) {
   try {
     const body = await request.json();
@@ -151,6 +163,9 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
           break;
       }
     } else if (message.message.messageType === "query") {
+      if (message.message.name === "tools_for_purpose") {
+        console.log("tools_for_purpose");
+      }
       const databaseQuery = queries.getView(message.message.name as any);
       if (!databaseQuery) {
         return new Response(
@@ -160,17 +175,36 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
 
       kVerbose("endpoint", "databaseQuery", databaseQuery);
       const jwt = jwtDecode<{ upn: string }>(token);
+      const sql = databaseQuery.sql
+        .replaceAll("###UPN###", jwt.upn ?? "")
+        .replaceAll(
+          "###P1###",
+          getParameterValue(message.message.parameters, 0)
+        )
+        .replaceAll(
+          "###P2###",
+          getParameterValue(message.message.parameters, 1)
+        )
+        .replaceAll(
+          "###P3###",
+          getParameterValue(message.message.parameters, 2)
+        )
+        .replaceAll(
+          "###P4###",
+          getParameterValue(message.message.parameters, 3)
+        );
+
       if (message.message.parameters) {
+        console.log(sql);
         kVerbose("endpoint", "parameters", message.message.parameters);
       }
+
       const queryResult = await run<{ Result: any[] }>(
         MICROSERVICE,
         [
           "query",
           databaseQuery.databaseName,
-          databaseQuery.sql
-            .replaceAll("###UPN###", jwt.upn ?? "")
-            .replaceAll("###LOOKUPID###", message.message.parameters?.lookupid),
+          sql,
           JSON.stringify(message.message.parameters),
         ],
         "",
