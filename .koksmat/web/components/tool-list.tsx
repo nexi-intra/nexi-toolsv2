@@ -109,6 +109,7 @@ export function ToolExplorerFiltered(props: {
   filter?: string;
   viewName?: ViewNames,
   parameters?: ParametersType;
+  pageSize?: number;
   onLoaded?: () => void
 }) {
   const { onLoaded, searchFor } = props
@@ -128,7 +129,7 @@ export function ToolExplorerFiltered(props: {
       searchFor={searchFor}
       parameters={props.parameters}
 
-      options={{ heightBehaviour: "Dynamic", hideToolbar: true, onLoaded, pageSize: 5 }}
+      options={{ heightBehaviour: "Dynamic", hideToolbar: true, onLoaded, pageSize: props.pageSize ?? 5 }}
       renderItem={(tool, viewMode) => {
 
         const toolView: ToolView = {

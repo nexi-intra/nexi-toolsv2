@@ -91,14 +91,13 @@ export const metadataRegion: SqlView = {
 
   sql: sql.replace(
     "###WHERE###",
-    ""
-    //     `
-    // where t.id in (
-    // select tool_id from tool_m2m_country  where country_id in
-    // (
-    // select id from country where region_id = ###P1###)
-    // )
-    //  `
+    `
+    where t.id in (
+    select tool_id from tool_m2m_country  where country_id in
+    (
+    select id from country where region_id = ###P1###)
+    )
+     `
   ),
 
   schema: ToolSchema,
