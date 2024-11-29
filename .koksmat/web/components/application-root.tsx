@@ -56,6 +56,15 @@ import { Sun, Moon, ChevronsUpDown, Plus, ChevronRight } from 'lucide-react'
 import { Icon } from "./icon"
 import Link from "next/link"
 import Logo from "@/app/koksmat0/components/logo"
+import { KoksmatDatabaseProvider } from "@/app/koksmat/src/v.next/components/database-context-provider"
+import { MessageToKoksmatDatabase } from "@/app/koksmat/src/v.next/endpoints/database-messages-client"
+import { useContext } from "react"
+import { MagicboxContext } from "@/app/koksmat0/magicbox-context"
+import { useIsInIframe } from "@/app/koksmat/src/v.next/components/use-isiniframe"
+import GlobalBreadcrumb from "./global-breadcrumb"
+import { ShareComponent } from "./share-component"
+// Custom hook to detect if running in an iframe
+
 
 function MenuItemLabel(props: { title: string, label?: string }) {
   const { title, label } = props
@@ -67,6 +76,7 @@ function MenuItemLabel(props: { title: string, label?: string }) {
 }
 interface ApplicationRootProps {
   children: React.ReactNode
+  topnav?: React.ReactNode;
   hideTopNav?: boolean
   hideBreadcrumb?: boolean
   hideSidebar?: boolean
@@ -74,9 +84,9 @@ interface ApplicationRootProps {
 
 const translations = {
   en: {
-    teams: "Teams",
-    addTeam: "Add team",
-    platform: "Platform",
+    teams: "Configuration",
+    addTeam: "Add Configuration",
+    platform: "Solution",
     projects: "Projects",
     more: "More",
     buildingYourApplication: "Building Your Application",
@@ -86,9 +96,9 @@ const translations = {
     lightMode: "Light Mode",
   },
   da: {
-    teams: "Hold",
-    addTeam: "Tilføj hold",
-    platform: "Platform",
+    teams: "Opsætning",
+    addTeam: "Tilføj opsætning",
+    platform: "Solution",
     projects: "Projekter",
     more: "Mere",
     buildingYourApplication: "Byg din applikation",
@@ -115,6 +125,13 @@ const TopNavigation: React.FC<{
     >
       {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
     </Button>
+
+
+    <ShareComponent subscriberCount={0} onShare={function (args_0: string, ...args: unknown[]): void {
+      throw new Error('Function not implemented.')
+    }} onCreatePost={function (...args: unknown[]): void {
+      throw new Error('Function not implemented.')
+    }} />
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost">
@@ -132,10 +149,13 @@ const TopNavigation: React.FC<{
 
 export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
   children,
+  topnav,
   hideTopNav = false,
   hideBreadcrumb = false,
   hideSidebar = false
 }) => {
+  const isInIframe = useIsInIframe()
+  const magicbox = useContext(MagicboxContext)
   const [isDarkMode, setIsDarkMode] = React.useState(false)
   const [currentLanguage, setCurrentLanguage] = React.useState<SupportedLanguage>(sidebarData.language)
   const [activeTeam, setActiveTeam] = React.useState(sidebarData.teams[0])
@@ -152,133 +172,145 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
   }
 
   return (
-    <div className={`flex h-screen ${isDarkMode ? 'dark' : ''} bg-background text-foreground`}>
-      {!hideTopNav && (
-        <div className="absolute top-0 right-0 p-4 z-50">
-          <TopNavigation
-            isDarkMode={isDarkMode}
-            toggleDarkMode={toggleDarkMode}
-            currentLanguage={currentLanguage}
-            changeLanguage={changeLanguage}
-            t={t}
-          />
-        </div>
-      )}
-      <SidebarProvider>
-        {!hideSidebar && (
-          <Sidebar collapsible="icon">
-            <SidebarHeader>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <SidebarMenuButton
-                        size="lg"
-                        className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                      >
-                        <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                          <Icon iconName={activeTeam.logo} className="size-5" />
-                        </div>
-                        <div className="grid flex-1 text-left text-sm leading-tight">
-                          <span className="truncate font-semibold">
-                            {activeTeam.name[currentLanguage]}
-                          </span>
-                          <span className="truncate text-xs">
-                            {activeTeam.plan[currentLanguage]}
-                          </span>
-                        </div>
-                        <ChevronsUpDown className="ml-auto" />
-                      </SidebarMenuButton>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                      align="start"
-                      side="bottom"
-                      sideOffset={4}
-                    >
-                      <DropdownMenuLabel className="text-xs text-muted-foreground">
-                        {t.teams}
-                      </DropdownMenuLabel>
-                      {sidebarData.teams.map((team, index) => (
-                        <DropdownMenuItem
-                          key={team.name.en}
-                          onClick={() => setActiveTeam(team)}
-                          className="gap-2 p-2"
+    <KoksmatDatabaseProvider initialMessageProvider={new MessageToKoksmatDatabase()}
+      tokenProvider={{
+        getToken: async () => {
+          if (!magicbox.authtoken) {
+            //alert("No authtoken")
+            throw new Error('No authtoken - please reload the page')
+          }
+          return magicbox.authtoken
+        }
+      }}>
+
+      <div className={`flex h-screen ${isDarkMode ? 'dark' : ''} bg-background text-foreground`}>
+        {!hideTopNav && !isInIframe && (
+          <div className="absolute top-0 right-0 p-4 z-50 flex" >
+            {topnav}
+            <TopNavigation
+              isDarkMode={isDarkMode}
+              toggleDarkMode={toggleDarkMode}
+              currentLanguage={currentLanguage}
+              changeLanguage={changeLanguage}
+              t={t}
+            />
+          </div>
+        )}
+        <SidebarProvider>
+          {!hideSidebar && !isInIframe && (
+            <Sidebar collapsible="icon">
+              <SidebarHeader>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <SidebarMenuButton
+                          size="lg"
+                          className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
-                          <div className="flex size-6 items-center justify-center rounded-sm border">
-                            <Icon iconName={team.logo} />
+                          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                            <Icon iconName={activeTeam.logo} className="size-5" />
                           </div>
-                          {team.name[currentLanguage]}
-                          <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                          <div className="grid flex-1 text-left text-sm leading-tight">
+                            <span className="truncate font-semibold">
+                              {activeTeam.name[currentLanguage]}
+                            </span>
+                            <span className="truncate text-xs">
+                              {activeTeam.plan[currentLanguage]}
+                            </span>
+                          </div>
+                          <ChevronsUpDown className="ml-auto" />
+                        </SidebarMenuButton>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                        align="start"
+                        side="bottom"
+                        sideOffset={4}
+                      >
+                        <DropdownMenuLabel className="text-xs text-muted-foreground">
+                          {t.teams}
+                        </DropdownMenuLabel>
+                        {sidebarData.teams.map((team, index) => (
+                          <DropdownMenuItem
+                            key={team.name.en}
+                            onClick={() => setActiveTeam(team)}
+                            className="gap-2 p-2"
+                          >
+                            <div className="flex size-6 items-center justify-center rounded-sm border">
+                              <Icon iconName={team.logo} />
+                            </div>
+                            {team.name[currentLanguage]}
+                            <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                          </DropdownMenuItem>
+                        ))}
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="gap-2 p-2">
+                          <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+                            <Plus className="size-4" />
+                          </div>
+                          <div className="font-medium text-muted-foreground">
+                            {t.addTeam}
+                          </div>
                         </DropdownMenuItem>
-                      ))}
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem className="gap-2 p-2">
-                        <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                          <Plus className="size-4" />
-                        </div>
-                        <div className="font-medium text-muted-foreground">
-                          {t.addTeam}
-                        </div>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarHeader>
-            <SidebarContent>
-              <SidebarGroup>
-                <SidebarGroupLabel>{t.platform}</SidebarGroupLabel>
-                <SidebarMenu>
-                  {sidebarData.navMain.map((item) => (
-                    <Collapsible
-                      key={item.title.en}
-                      asChild
-                      defaultOpen={item.isActive}
-                      className="group/collapsible"
-                    >
-                      <SidebarMenuItem>
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuButton tooltip={item.title[currentLanguage]}>
-                            <Icon iconName={item.icon} className="size-5" />
-                            <span>{item.title[currentLanguage]}</span>
-                            {item.label && <span className="bg-yellow-400">{item.label}</span>}
-                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                          </SidebarMenuButton>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <SidebarMenuSub>
-                            {item.items?.map((subItem) => (
-                              <SidebarMenuSubItem key={subItem.title.en}>
-                                <SidebarMenuSubButton asChild>
-                                  <Link href={subItem.url}>
-
-                                    <span>{subItem.title[currentLanguage]} </span>
-                                    {subItem.label && <span className="bg-yellow-400">{subItem.label}</span>}
-
-                                  </Link>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            ))}
-                          </SidebarMenuSub>
-                        </CollapsibleContent>
-                      </SidebarMenuItem>
-                    </Collapsible>
-                  ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </SidebarMenuItem>
                 </SidebarMenu>
-              </SidebarGroup>
-              <SidebarGroup className="group-data-[collapsible=icon]:hidden hidden">
-                <SidebarGroupLabel>{t.projects}</SidebarGroupLabel>
-                <SidebarMenu>
-                  {sidebarData.projects.map((item) => (
-                    <SidebarMenuItem key={item.name.en}>
-                      <SidebarMenuButton asChild>
-                        <Link href={item.url}>
-                          <Icon iconName={item.icon} className="size-5" />
-                          <span>{item.name[currentLanguage]}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                      <DropdownMenu>
+              </SidebarHeader>
+              <SidebarContent>
+                <SidebarGroup>
+                  <SidebarGroupLabel>{t.platform}</SidebarGroupLabel>
+                  <SidebarMenu>
+                    {sidebarData.navMain.map((item) => (
+                      <Collapsible
+                        key={item.title.en}
+                        asChild
+                        defaultOpen={item.isActive}
+                        className="group/collapsible"
+                      >
+                        <SidebarMenuItem>
+                          <CollapsibleTrigger asChild>
+                            <SidebarMenuButton tooltip={item.title[currentLanguage]}>
+                              <Icon iconName={item.icon} className="size-5" />
+                              <span>{item.title[currentLanguage]}</span>
+                              {item.label && <span className="bg-yellow-400">{item.label}</span>}
+                              <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                            </SidebarMenuButton>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent>
+                            <SidebarMenuSub>
+                              {item.items?.map((subItem) => (
+                                <SidebarMenuSubItem key={subItem.title.en}>
+                                  <SidebarMenuSubButton asChild>
+                                    <Link href={subItem.url}>
+
+                                      <span>{subItem.title[currentLanguage]} </span>
+                                      {subItem.label && <span className="bg-yellow-400">{subItem.label}</span>}
+
+                                    </Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              ))}
+                            </SidebarMenuSub>
+                          </CollapsibleContent>
+                        </SidebarMenuItem>
+                      </Collapsible>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroup>
+                <SidebarGroup className="hidden group-data-[collapsible=icon]:hidden ">
+                  <SidebarGroupLabel>{t.projects}</SidebarGroupLabel>
+                  <SidebarMenu>
+                    {sidebarData.projects.map((item) => (
+                      <SidebarMenuItem key={item.title.en}>
+                        <SidebarMenuButton asChild>
+                          <Link href={item.url}>
+                            <Icon iconName={item.icon} className="size-5" />
+                            <span>{item?.title[currentLanguage]}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                        {/* <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <SidebarMenuAction showOnHover>
                             <Icon iconName={item.moreIcon} className="size-5" />
@@ -297,126 +329,130 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             </DropdownMenuItem>
                           ))}
                         </DropdownMenuContent>
-                      </DropdownMenu>
-                    </SidebarMenuItem>
-                  ))}
-                  <SidebarMenuItem>
-                    <SidebarMenuButton className="text-sidebar-foreground/70">
-                      {sidebarData.moreProjectsIcon}
-                      <span>{t.more}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroup>
-            </SidebarContent>
-            <SidebarFooter>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <SidebarMenuButton
-                        size="lg"
-                        className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                      >
-                        <Avatar className="h-8 w-8 rounded-lg">
-                          <AvatarImage
-                            src={sidebarData.user?.avatar}
-                            alt={sidebarData.user?.name}
-                          />
-                          <AvatarFallback className="rounded-lg">
-                            {sidebarData.user?.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="grid flex-1 text-left text-sm leading-tight">
-                          <span className="truncate font-semibold">
-                            {sidebarData.user?.name}
-                          </span>
-                          <span className="truncate text-xs">
-                            {sidebarData.user?.email}
-                          </span>
-                        </div>
-                        <ChevronsUpDown className="ml-auto size-4" />
+                      </DropdownMenu> */}
+                      </SidebarMenuItem>
+                    ))}
+                    <SidebarMenuItem>
+                      <SidebarMenuButton className="text-sidebar-foreground/70">
+                        {sidebarData.moreProjectsIcon}
+                        <span>{t.more}</span>
                       </SidebarMenuButton>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                      side="bottom"
-                      align="end"
-                      sideOffset={4}
-                    >
-                      <DropdownMenuLabel className="p-0 font-normal">
-                        <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroup>
+              </SidebarContent>
+              <SidebarFooter>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <SidebarMenuButton
+                          size="lg"
+                          className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                        >
                           <Avatar className="h-8 w-8 rounded-lg">
                             <AvatarImage
-                              src={sidebarData.user?.avatar}
-                              alt={sidebarData.user?.name}
+                              src={magicbox.user?.image}
+                              alt={magicbox.user?.name}
                             />
                             <AvatarFallback className="rounded-lg">
-                              {sidebarData.user?.name.split(' ').map(n => n[0]).join('')}
+                              {magicbox.user?.name.split(' ').map(n => n[0]).join('')}
                             </AvatarFallback>
                           </Avatar>
                           <div className="grid flex-1 text-left text-sm leading-tight">
                             <span className="truncate font-semibold">
-                              {sidebarData.user?.name}
+                              {!magicbox.authtoken && <div className="text-red-500">!</div>}
+                              {magicbox.user?.name}
                             </span>
                             <span className="truncate text-xs">
-                              {sidebarData.user?.email}
+                              {magicbox.user?.email}
                             </span>
                           </div>
-                        </div>
-                      </DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuGroup>
-                        {sidebarData.userMenuItems.map((item) => (
-                          <DropdownMenuItem key={item.label.en}>
-                            <Icon iconName={item.icon} className="size-5" />
-                            {item.label[currentLanguage]}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarFooter>
-            <SidebarRail />
-          </Sidebar>
-        )}
-        <SidebarInset>
+                          <ChevronsUpDown className="ml-auto size-4" />
+                        </SidebarMenuButton>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                        side="bottom"
+                        align="end"
+                        sideOffset={4}
+                      >
+                        <DropdownMenuLabel className="p-0 font-normal">
+                          <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                            <Avatar className="h-8 w-8 rounded-lg">
+                              <AvatarImage
+                                src={magicbox.user?.image}
+                                alt={magicbox.user?.name}
+                              />
+                              <AvatarFallback className="rounded-lg">
+                                {magicbox.user?.name.split(' ').map(n => n[0]).join('')}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="grid flex-1 text-left text-sm leading-tight">
+                              <span className="truncate font-semibold">
+                                {magicbox.user?.name}
+                              </span>
+                              <span className="truncate text-xs">
+                                {magicbox.user?.email}
+                              </span>
+                            </div>
+                          </div>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                          {sidebarData.userMenuItems.map((item) => (
+                            <DropdownMenuItem key={item.label.en}>
+                              <Icon iconName={item.icon} className="size-5" />
+                              {item.label[currentLanguage]}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarFooter>
+              <SidebarRail />
+            </Sidebar>
+          )}
 
-          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-            <div className="flex items-center gap-2 px-4">
-              <SidebarTrigger className="-ml-1" />
-              <Separator orientation="vertical" className="mr-2 h-4" />
-              {!hideBreadcrumb && (
-                <Breadcrumb>
-                  <BreadcrumbList>
-                    <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink href="#">
-                        {t.buildingYourApplication}
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator className="hidden md:block" />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage>{t.dataFetching}</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
-              )}
-            </div>
-          </header>
+          <SidebarInset>
+            {!isInIframe && (
+              <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+                <div className="flex items-center gap-2 px-4">
+                  <SidebarTrigger className="-ml-1" />
 
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-            <div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min w-full">
-              {children}
+                  <Separator orientation="vertical" className="mr-2 h-4" />
+                  {!isInIframe && <GlobalBreadcrumb />}
+                  {/* <Breadcrumb>
+                    <BreadcrumbList>
+                      <BreadcrumbItem className="hidden md:block">
+                        <BreadcrumbLink href="#">
+                          {t.buildingYourApplication}
+                        </BreadcrumbLink>
+                      </BreadcrumbItem>
+                      <BreadcrumbSeparator className="hidden md:block" />
+                      <BreadcrumbItem>
+                        <BreadcrumbPage>{t.dataFetching}</BreadcrumbPage>
+                      </BreadcrumbItem>
+                    </BreadcrumbList>
+                  </Breadcrumb> */}
+
+                </div>
+              </header>)}
+
+            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+              <div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min w-full">
+                {children}
+              </div>
             </div>
-          </div>
-        </SidebarInset>
-      </SidebarProvider>
-      {/* <pre>
+          </SidebarInset>
+        </SidebarProvider>
+        {/* <pre>
         {JSON.stringify(sidebarData.navMain, null, 2)}
 
       </pre> */}
-    </div>
+      </div>
+    </KoksmatDatabaseProvider>
   )
 }

@@ -21,7 +21,7 @@ export function useSQLSelect2<T>(servicename: string, sql: string) {
   useEffect(() => {
     //debugger;
     const load = async () => {
-      debugger;
+      //debugger;
       if (didRun) return;
       setisLoading(true);
       seterror("");

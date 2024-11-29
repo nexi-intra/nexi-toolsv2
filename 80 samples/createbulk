@@ -1,0 +1,62 @@
+
+DO $$
+DECLARE
+    tool_record jsonb;
+    category_id integer;
+BEGIN
+delete from tool_m2m_country;
+delete from tool_m2m_purpose;
+delete from tool;
+
+    -- Loop through each tool in the JSON array read from the importdata table
+    FOR tool_record IN 
+        SELECT jsonb_build_object(
+            'searchindex', elements ->> 'searchindex',
+            'url', elements ->> 'url',
+            'category', elements ->> 'category',
+            'tenant', elements ->> 'tenant',
+            'description', elements ->> 'description',
+             'metadata', jsonb_build_object(
+                'created_at', now(),  -- Example: Add creation time
+                 'icon', (select  elements->>'Base64Content' as Base64Content from (
+    SELECT jsonb_array_elements(importdata.data) AS elements
+    FROM importdata
+    WHERE importdata.name::text = 'images/downloaded-medias.json'::text
+     
+) as elements
+where elements->>'href'::text =elements -> 'metadata' ->> 'icon_reference'::text ), 
+                'icon_reference', elements -> 'metadata' ->> 'icon_reference',  -- Example: Add author 
+                'source', 'page from intranet'  -- Example: Reference source
+            ),
+            'status', elements ->> 'status',
+            'name', elements ->> 'name',
+            'Documents', (
+                SELECT jsonb_agg(
+                    jsonb_build_object(
+                        'name', key,
+                        'url', value
+                    )
+                )
+                FROM jsonb_each(elements -> 'Documents')
+            )
+        ) AS tool_record
+        FROM (
+            SELECT jsonb_array_elements(importdata.data) AS elements
+            FROM importdata
+            WHERE importdata.name::text = 'tools/tools_output.json'::text
+        ) tools_data
+    LOOP
+        -- Look up the category_id based on the category name
+        SELECT id INTO category_id
+        FROM category
+        WHERE name = tool_record->>'category';
+
+        -- If category_id is found, add it to the tool_record
+        IF category_id IS NOT NULL THEN
+            tool_record := jsonb_set(tool_record, '{category_id}', to_jsonb(category_id));
+        END IF;
+
+        -- Call create_tool function to insert the tool
+        PERFORM proc.create_tool('system', tool_record);
+    END LOOP;
+END $$;

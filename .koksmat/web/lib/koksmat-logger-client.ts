@@ -17,68 +17,91 @@ function stringifyArg(arg: any): string {
     return String(arg);
   }
 }
+export type moduleType =
+  | "applogic"
+  | "client"
+  | "server"
+  | "library"
+  | "component"
+  | "endpoint"
+  | "provider";
 
 async function kLog(
   level: "verbose" | "info" | "warning" | "error" | "fatal",
+
   correlationId: string | undefined,
+  moduleType: moduleType,
   ...args: any[]
 ): Promise<void> {
   const stringArgs = args.map(stringifyArg);
-  await koksmatLogServer({ level, args: stringArgs, correlationId });
+  await koksmatLogServer({
+    level,
+    moduleType,
+    args: stringArgs,
+    correlationId,
+  });
 }
 
 export async function kVerbose(
   //correlationId: string | undefined,
+  module: moduleType,
   ...args: any[]
 ): Promise<void> {
-  await kLog("verbose", "", ...args);
+  await kLog("verbose", "", module, ...args);
 }
 
 export async function kInfo(
   //correlationId: string | undefined,
+  module: moduleType,
   ...args: any[]
 ): Promise<void> {
-  await kLog("info", "", ...args);
+  await kLog("info", "", module, ...args);
 }
 
 export async function kWarn(
   //correlationId: string | undefined,
+  module: moduleType,
   ...args: any[]
 ): Promise<void> {
-  await kLog("warning", "", ...args);
+  await kLog("warning", "", module, ...args);
 }
 
 export async function kError(
   //correlationId: string | undefined,
+  module: moduleType,
   ...args: any[]
 ): Promise<void> {
-  await kLog("error", "", ...args);
+  await kLog("error", "", module, ...args);
 }
 
 export async function kVerboseTracking(
+  module: moduleType,
   correlationId: string | undefined,
   ...args: any[]
 ): Promise<void> {
-  await kLog("verbose", correlationId, ...args);
+  await kLog("verbose", correlationId, module, ...args);
 }
 
 export async function kInfoTracking(
+  module: moduleType,
   correlationId: string | undefined,
   ...args: any[]
 ): Promise<void> {
-  await kLog("info", correlationId, ...args);
+  await kLog("info", correlationId, module, ...args);
 }
 
 export async function kWarnTracking(
+  module: moduleType,
   correlationId: string | undefined,
   ...args: any[]
 ): Promise<void> {
-  await kLog("warning", correlationId, ...args);
+  await kLog("warning", correlationId, module, ...args);
 }
 
 export async function kErrorTracking(
+  module: moduleType,
   correlationId: string | undefined,
   ...args: any[]
 ): Promise<void> {
-  await kLog("error", correlationId, ...args);
+  await kLog("error", correlationId, module, ...args);
 }

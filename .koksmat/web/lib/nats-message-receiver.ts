@@ -69,19 +69,19 @@ export async function NatsMessageReceiver(sessionid: string): Promise<string> {
       // Use a unique consumer name or ephemeral consumer
 
       const streamOk = await ensureStream(name, jsm);
-      kVerbose("streamOk", streamOk);
+      kVerbose("library", "streamOk", streamOk);
 
       await jsm.consumers.add(name, {
         durable_name,
         ack_policy: AckPolicy.Explicit,
         filter_subject: name + ".request.>",
       });
-      kVerbose("consumer added", durable_name);
+      kVerbose("library", "consumer added", durable_name);
       const c = await js.consumers.get(name, durable_name);
-      kVerbose("waiting for message");
+      kVerbose("library", "waiting for message");
       let m = await c.next();
       if (m) {
-        kVerbose("message received with subject", m.subject);
+        kVerbose("library", "message received with subject", m.subject);
         const mi = m as JsMsgImpl;
         const subj = mi.msg.reply!;
         //nc.publish(subj, "+ACK");
@@ -93,17 +93,17 @@ export async function NatsMessageReceiver(sessionid: string): Promise<string> {
 
         resolve(message);
       } else {
-        kVerbose("no message");
+        kVerbose("library", "no message");
         resolve("");
       }
-      kVerbose("deleting consumer", durable_name);
+      kVerbose("library", "deleting consumer", durable_name);
       await jsm.consumers.delete(name, durable_name);
     } catch (error) {
       console.log("error", error);
       resolve("");
     } finally {
       if (nc) {
-        kVerbose("closing connection");
+        kVerbose("library", "closing connection");
         //await nc.drain();
         await nc.close();
       }

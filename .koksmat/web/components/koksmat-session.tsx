@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useCallback, useEffect } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { z } from 'zod'
 import { ZeroTrust } from '@/components/zero-trust'
 import { Button } from '@/components/ui/button'
@@ -25,9 +25,19 @@ const KoksmatSessionSchema = z.object({
 type KoksmatSessionProps = z.infer<typeof KoksmatSessionSchema>
 
 export default function KoksmatSession({ className = '' }: KoksmatSessionProps) {
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
   const { sessionId, setSessionId, isMinimized, setIsMinimized } = useKoksmat()
   const router = useRouter()
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set(name, value)
 
+      return params.toString()
+    },
+    [searchParams]
+  )
   useEffect(() => {
     if (!sessionId) {
       createNewSession()
@@ -52,7 +62,8 @@ export default function KoksmatSession({ className = '' }: KoksmatSessionProps) 
       const newSessionPath = await createSession({ prefix: 'koksmat' })
       const newSessionId = newSessionPath.split('/').pop() || ''
       setSessionId(newSessionId)
-      router.push(`?koksmat-sessionid=${newSessionId}`)
+      router.push(pathname + '?' + createQueryString('koksmat-sessionid', newSessionId))
+      //router.push(`?koksmat-sessionid=${newSessionId}`)
     } catch (err) {
       console.error('Failed to create new session:', err)
     }

@@ -5,8 +5,8 @@ teams:
       da: "Værktøjer"
     logo: "Link"
     plan:
-      en: "Preview"
-      da: "Forhåndsvisning"
+      en: "Beta - Production"
+      da: "Beta - Produktion"
 navMain:
   - title:
       en: "Integration Pages"
@@ -18,18 +18,18 @@ navMain:
       - title:
           en: "Explorer"
           da: "Udforsker"
-        url: "/tools/integration/explorer"
+        url: "/tools/pages/explorer"
       - title:
           en: "Favourites"
           da: "Favoritter"
-        label: coming
+        label: new
         url: "/tools/pages/profile"
   - title:
       en: "Tables"
       da: "Tabeller"
     url: "#"
     icon: "Database"
-    label: preview
+    # label: preview
     items:
       - title:
           en: "Regions"
@@ -77,27 +77,27 @@ navMain:
         url: "/tools/admin/data/user-groups"
         icon: "BookOpen"
       - title:
-          en: "Users"
-          da: "Brugere"
-        url: "/tools/admin/data/users"
+          en: "User Profiles"
+          da: "Bruger Profiler"
+        url: "/tools/admin/data/user-profiles"
         icon: "BookOpen"
       - title:
           en: "User Roles"
           da: "Brugerroller"
         url: "/tools/admin/data/user-roles"
         icon: "BookOpen"
-  - title:
-      en: "Settings"
-      da: "Indstillinger"
-    url: "#"
-    icon: "Settings2"
-    items:
-      - title:
-          en: "Mapping"
-          da: "Kortlægning"
-        url: "/tools/admin/mapping"
-        label: "alpha"
-        icon: "BookOpen"
+  # - title:
+  #     en: "Settings"
+  #     da: "Indstillinger"
+  #   url: "#"
+  #   icon: "Settings2"
+  #   items:
+  #     - title:
+  #         en: "Mapping"
+  #         da: "Kortlægning"
+  #       url: "/tools/admin/mapping"
+  #       label: "alpha"
+  #       icon: "BookOpen"
   - title:
       en: "Documentation"
       da: "Dokumentation"
@@ -112,3 +112,20 @@ navMain:
           en: "Components"
           da: "Komponenter"
         url: "/tools/docs/components"
+projects:
+  - title:
+      en: "Tools v1.0"
+      da: "Tools v1.0"
+    url: "#"
+    icon: "SquareTerminal"
+    isActive: true
+    items:
+      - title:
+          en: "Explorer"
+          da: "Udforsker"
+        url: "/tools/integration/explorer"
+      - title:
+          en: "Favourites"
+          da: "Favoritter"
+        label: coming
+        url: "/tools/pages/profile"

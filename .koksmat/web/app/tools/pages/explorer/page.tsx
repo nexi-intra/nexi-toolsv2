@@ -1,4 +1,4 @@
-import ToolsPage from '@/components/page-with-view-switcher'
+import ToolsPage from '@/components/tools-page'
 import React from 'react'
 
 export default function Page() {

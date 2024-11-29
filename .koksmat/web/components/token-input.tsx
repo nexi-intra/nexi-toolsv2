@@ -3,20 +3,24 @@
 import React, { useState, useEffect } from "react"
 import { FaCircle, FaSquare, FaStar } from "react-icons/fa"
 import { ComponentDoc } from './component-documentation-hub'
-import TokenInputInternal from "./token-input-internal"
+import TokenInputInternal, { Property } from "./token-input-internal"
 
-interface PropertyValue {
-  value: string
-  icon: React.ReactNode
-  color: string
-}
+import { z } from "zod";
 
-interface Property {
-  name: string
-  values: PropertyValue[]
-}
 
-interface ErrorDetail {
+
+
+// Example usage
+const example: Property = {
+  name: "Color Options",
+  values: [
+    { value: "Red", icon: null, color: "#ff0000" },
+    { value: "Blue", icon: null, color: "#0000ff" },
+  ],
+};
+
+
+export interface ErrorDetail {
   token: string
   message: string
 }
@@ -24,6 +28,7 @@ interface ErrorDetail {
 interface TokenInputProps {
   properties: Property[]
   value: string
+  placeholder?: string
   onChange: (
     value: string,
     hasErrors: boolean,
@@ -49,6 +54,7 @@ const TokenInput: React.FC<TokenInputProps> = ({
   properties,
   value,
   onChange,
+  placeholder,
   mode = 'edit',
   className = ""
 }) => {
@@ -72,6 +78,7 @@ const TokenInput: React.FC<TokenInputProps> = ({
       properties={properties}
       value={internalValue}
       onChange={handleChange}
+      placeholder={placeholder}
 
 
     />

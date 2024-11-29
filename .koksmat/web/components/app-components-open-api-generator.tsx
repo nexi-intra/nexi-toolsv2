@@ -6,16 +6,10 @@ import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-open
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { z } from 'zod'
-import {
 
-  typeNames,
-  schemaMapObjects,
-  SchemaName,
-  createInputSchema,
-  updateInputSchema
-} from '@/app/tools/api/view/schemas'
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { APPNAME } from '@/app/global'
+import { createInputSchema, schemaMapObjects, SchemaName, typeNames, updateInputSchema } from '@/app/tools/schemas/forms'
 
 // Call this once in your app's entry point
 extendZodWithOpenApi(z);

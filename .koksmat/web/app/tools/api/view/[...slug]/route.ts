@@ -1,6 +1,7 @@
+const todelete = 1;
 import { NextRequest, NextResponse } from "next/server";
 import { natsBackendServiceFactory } from "../backend-service";
-import { mockBackendServiceFactory } from "../mock-backend-service";
+import { createMock } from "../mock-backend-service";
 import { BackendService } from "../BackendService";
 import { kError, kInfo, kVerbose } from "@/lib/koksmat-logger-client";
 
@@ -19,14 +20,11 @@ interface ErrorResponse {
  */
 function getBackendServiceFactory(): BackendServiceFactory {
   const useMockBackend = process.env.USE_MOCK_BACKEND === "true";
-  return useMockBackend ? mockBackendServiceFactory : natsBackendServiceFactory;
+  return useMockBackend ? createMock : natsBackendServiceFactory;
 }
 
-// Get the appropriate service factory based on the environment
-const serviceFactory: BackendServiceFactory = getBackendServiceFactory();
-
 function handleError(error: unknown): NextResponse<ErrorResponse> {
-  kError("An error occurred:", error);
+  kError("endpoint", "An error occurred:", error);
   const errorMessage =
     error instanceof Error ? error.message : "An unknown error occurred";
   return NextResponse.json(
@@ -41,19 +39,22 @@ export async function GET(
   { params }: { params: { slug: string[] } }
 ) {
   try {
+    // Get the appropriate service factory based on the environment
+    const serviceFactory: BackendServiceFactory = getBackendServiceFactory();
+
     const [entityType, id] = params.slug;
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
     const pageSize = parseInt(searchParams.get("pageSize") || "10");
 
     const service = serviceFactory();
-    kVerbose(`Fetching entities of type ${entityType}`);
+    kVerbose("endpoint", `Fetching entities of type ${entityType}`);
     if (id) {
-      kVerbose(`Fetching entity with id ${id}`);
+      kVerbose("endpoint", `Fetching entity with id ${id}`);
       const entity = await service.getById(entityType, id);
       return NextResponse.json(entity);
     } else {
-      kVerbose(`Fetching all entities `);
+      kVerbose("endpoint", `Fetching all entities `);
       const result = await service.getAll(entityType, page, pageSize);
       return NextResponse.json(result);
     }

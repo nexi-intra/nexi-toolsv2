@@ -1,4 +1,5 @@
-import AccesspointEditor from "@/components/form-access-point";
+import AccesspointEditor from "@/components/access-point-form";
+import { AccessPointList } from "@/components/access-point-list";
 
 import type { Metadata } from "next";
 
@@ -10,7 +11,7 @@ export default function Page() {
 
 
   return (
-    <AccesspointEditor />
+    <AccessPointList />
   )
 }
 

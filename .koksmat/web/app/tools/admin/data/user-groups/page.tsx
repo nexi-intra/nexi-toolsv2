@@ -1,5 +1,6 @@
 
-import UserGroupEditor from "@/components/form-usergroup";
+import UserGroupForm from "@/components/usergroup-form";
+import { UserGroupsList } from "@/components/usergroup-list";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,7 +11,7 @@ export default function Page() {
 
 
   return (
-    <UserGroupEditor />
+    <UserGroupsList />
   )
 }
 

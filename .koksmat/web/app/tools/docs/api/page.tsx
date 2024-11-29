@@ -8,11 +8,9 @@
  * The rendering waits for the currentHost to be set before displaying the OpenApiGeneratorComponent.
  */
 
-import { OpenApiGeneratorComponent } from '@/components/app-components-open-api-generator';
+
 import React, { useEffect, useState } from 'react';
-import { Skeleton } from "@/components/ui/skeleton"
-import CodeSamplesPage from '@/components/code-samples-page';
-import { schemaMapObjects, typeNames } from '@/app/tools/api/view/schemas';
+
 import { APILandingPage } from '@/components/app-api-page';
 
 export default function ExampleUsage() {

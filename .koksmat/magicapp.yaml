@@ -164,6 +164,20 @@ entities:
         type: array
         required: true
         entity: *accesspoint
+      - name: Languages
+        displayname: Languages
+        type: array
+        required: true
+        entity: *language
+      - name: categories
+        displayname: Categories
+        type: array
+        entity: *category
+        required: false
+      - name: icon
+        displayname: Status
+        type: string
+        required: false
 
   usergroup: &usergroup
     name: usergroup
@@ -199,9 +213,9 @@ entities:
         type: json
         required: false
 
-  user: &user
-    name: user
-    description: User
+  userprofile: &userprofile
+    name: userprofile
+    description: User Profile
     baselineattributes: *recordAttributes
     additionalattributes:
       - name: email
@@ -266,7 +280,7 @@ entities:
         displayname: User
         type: reference
         required: true
-        entity: *user
+        entity: *userprofile
       - name: tool
         displayname: Tool
         type: reference
@@ -301,6 +315,15 @@ entities:
       - name: metadata
         type: json
         required: false
+  importdata: &importdata
+    name: importdata
+    description: Import
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: data
+        type: json
+        hidden: false
+        required: true
 models:
   itemMethods: &itemMethods
     - name: read
@@ -383,13 +406,13 @@ services:
 
     methods: *itemMethods
 
-  - name: user
-    description: Users
+  - name: userprofile
+    description: User Profiles
     entity:
       type: record
-      entity: *user
-      model: user
-      objectname: User
+      entity: *userprofile
+      model: userprofile
+      objectname: UserProfile
 
     methods: *itemMethods
 
@@ -479,5 +502,14 @@ services:
       entity: *usergroup
       model: usergroup
       objectname: User Group
+
+    methods: *itemMethods
+  - name: importdata
+    description: Import Data
+    entity:
+      type: record
+      entity: *importdata
+      model: importdata
+      objectname: Import Data
 
     methods: *itemMethods

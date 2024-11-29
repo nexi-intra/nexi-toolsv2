@@ -3,8 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { Skeleton } from "@/components/ui/skeleton"
 import CodeSamplesPage from '@/components/code-samples-page';
-import { schemaMapObjects, SchemaName, typeNames } from '@/app/tools/api/view/schemas';
+
 import ZodSchemaDocumentation from '@/components/zod-schema-documentation';
+import { schemaMapObjects, SchemaName, typeNames } from '@/app/tools/schemas/forms';
 
 
 export default function EntityCodeSamplePage(props: { params: { entity: string } }) {

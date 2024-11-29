@@ -1,7 +1,6 @@
 import { z } from "zod";
-import { SchemaName, schemaMapTypes, SchemaMap } from "./schemas";
-import { SharedAttributes } from "./schemas/_shared";
 import { APPNAME } from "@/app/global";
+import { SchemaMap, schemaMapTypes, SchemaName } from "../../schemas/forms";
 
 interface PaginatedResponse<T> {
   items: T[];

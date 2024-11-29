@@ -3,7 +3,7 @@
 import React, { } from 'react';
 
 import { ComponentDoc, ComponentDocumentationHub } from '@/components/component-documentation-hub';
-import { examplesToolCard } from '@/components/tool-card';
+import { examplesToolCard } from '@/components/tool-card-large';
 
 
 

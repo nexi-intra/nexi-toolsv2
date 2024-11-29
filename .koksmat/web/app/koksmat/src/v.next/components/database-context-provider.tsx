@@ -2,12 +2,17 @@ import React, { createContext, useContext, useState, useCallback } from 'react';
 import { z } from 'zod';
 import { kVerbose, kWarn, kInfo, kError } from "@/lib/koksmat-logger-client";
 
-
+const createResponseSchema = z.object({
+  id: z.number(),
+  comments: z.string().optional(),
+});
 // Create the context
 interface KoksmatDatabaseContextType {
   messageProvider: MessageProvider;
+  tokenProvider: TokenProvider;
   setMessageProvider: (provider: MessageProvider) => void;
-  table: <T extends z.ZodObject<any>>(tableName: string, schema: T, isVirtual?: boolean) => DatabaseHandlerType<T>;
+  table: <T extends z.ZodObject<any>>(tableName: string, databaseName: string, schema: T, isVirtual?: boolean) => DatabaseHandlerType<T>;
+
 }
 
 const KoksmatDatabaseContext = createContext<KoksmatDatabaseContextType | undefined>(undefined);
@@ -15,68 +20,158 @@ const KoksmatDatabaseContext = createContext<KoksmatDatabaseContextType | undefi
 interface KoksmatDatabaseProviderProps {
   children: React.ReactNode;
   initialMessageProvider: MessageProvider;
+  tokenProvider: TokenProvider;
 }
-
+//TODO: Isolate the implementation of the  provider
 // Create the provider component
-export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = ({ children, initialMessageProvider }) => {
+export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = ({ children, initialMessageProvider, tokenProvider }) => {
   const [messageProvider, setMessageProvider] = useState<MessageProvider>(initialMessageProvider);
 
   const useTable = useCallback(<T extends z.ZodObject<any>>(
+
     tableName: string,
+    databaseName: string,
     schema: T,
     isVirtual: boolean = false
   ): DatabaseHandlerType<T> => {
     return {
+
       create: async (data: z.infer<T>) => {
-        kInfo(`Creating new record in ${tableName}`);
-        return messageProvider.send({
-          token: 'your-token-here',
+
+        kInfo("provider", `Creating new record in ${tableName}`);
+        // Validate data using safeParse
+        const result = schema.safeParse({ ...data, tenant: "", searchindex: "" });
+        if (!result.success) {
+          kVerbose("provider", "Validation failed", data);
+          kError("provider", "Validation error in create operation", result.error);
+          throw result.error;
+        }
+        const parsedData = result.data;
+        const token = await getToken(tokenProvider);
+        const response = await messageProvider.send({
+
           subject: 'create',
-          targetData: { table: tableName, isVirtual },
-          payload: { data },
-        });
+          message:
+          {
+            messageType: 'crudOperation',
+            targetDatabase: { tableName: tableName, isVirtual, databaseName },
+            record: { data: parsedData }
+          },
+
+        }, token);
+        const parsedResponse = createResponseSchema.safeParse(response.data.Result);
+        if (!parsedResponse.success) {
+          kError("provider", "Error parsing response", parsedResponse.error);
+          throw new Error("Error parsing response");
+        }
+
+        kInfo(
+          "provider",
+          "Create operation completed successfully, id:",
+          parsedResponse.data.id
+        );
+        return parsedResponse.data.id;
       },
       update: async (id: number, data: z.infer<T>) => {
-        kInfo(`Updating record ${id} in ${tableName}`);
+        kInfo("provider", `Updating record ${id} in ${tableName}`);
+        const token = await getToken(tokenProvider);
         return messageProvider.send({
-          token: 'your-token-here',
+
           subject: 'update',
-          targetData: { table: tableName, isVirtual },
-          payload: { id, data },
-        });
+          message:
+          {
+            messageType: 'crudOperation',
+            targetDatabase: { tableName: tableName, isVirtual, databaseName },
+            record: { id, data }
+          },
+        }, token);
+      },
+      read: async (id: number) => {
+        kInfo("provider", `Reading record ${id} from ${tableName}`);
+        const token = await getToken(tokenProvider);
+        return messageProvider.send({
+
+          subject: 'read',
+          message: {
+            messageType: 'crudOperation',
+            targetDatabase: { tableName: tableName, isVirtual, databaseName },
+            record: { id }
+          },
+        }, token);
       },
       patch: async (id: number, data: Partial<z.infer<T>>) => {
-        kInfo(`Patching record ${id} in ${tableName}`);
+        kInfo("provider", `Patching record ${id} in ${tableName}`);
+        const token = await getToken(tokenProvider);
         return messageProvider.send({
-          token: 'your-token-here',
+
           subject: 'patch',
-          targetData: { table: tableName, isVirtual },
-          payload: { id, data },
-        });
+          message:
+          {
+            messageType: 'crudOperation',
+            targetDatabase: { tableName: tableName, isVirtual, databaseName },
+            record: { id, data }
+          },
+        }, token);
       },
       delete: async (id: number, hardDelete: boolean = false) => {
-        kInfo(`Deleting record ${id} in ${tableName}`);
+        kInfo("provider", `Deleting record ${id} in ${tableName}`);
+        const token = await getToken(tokenProvider);
         return messageProvider.send({
-          token: 'your-token-here',
+
           subject: 'delete',
-          targetData: { table: tableName, isVirtual },
-          payload: { id, hardDelete },
-        });
+          message:
+          {
+            messageType: 'crudOperation',
+            targetDatabase: { tableName: tableName, isVirtual, databaseName },
+            record: { id, hardDelete }
+          },
+        }, token);
       },
       restore: async (id: number) => {
-        kInfo(`Restoring record ${id} in ${tableName}`);
+        kInfo("provider", `Restoring record ${id} in ${tableName}`);
+        const token = await getToken(tokenProvider);
         return messageProvider.send({
-          token: 'your-token-here',
+
           subject: 'restore',
-          targetData: { table: tableName, isVirtual },
-          payload: { id },
-        });
+          message:
+          {
+            messageType: 'crudOperation',
+            targetDatabase: { tableName: tableName, isVirtual, databaseName },
+            record: { id }
+          },
+        }, token);
       },
+      query: async (queryname: string, parameters) => {
+        kVerbose("provider", `Querying ${queryname}`, parameters);
+        const token = await getToken(tokenProvider);
+        return messageProvider.send({
+          subject: 'query',
+          message:
+          {
+            messageType: "query",
+            name: queryname,
+            parameters,
+          },
+        }, token);
+      },
+      execute: async (queryname: string, data: any) => {
+        kVerbose("provider", `Executing ${queryname}`);
+        const token = await getToken(tokenProvider);
+        return messageProvider.send({
+          subject: 'execute',
+          message:
+          {
+            messageType: "action",
+            name: queryname,
+            parameters: data,
+          },
+        }, token);
+      }
     };
   }, [messageProvider]);
 
   return (
-    <KoksmatDatabaseContext.Provider value={{ messageProvider, setMessageProvider, table: useTable }}>
+    <KoksmatDatabaseContext.Provider value={{ messageProvider, setMessageProvider, table: useTable, tokenProvider }}>
       {children}
     </KoksmatDatabaseContext.Provider>
   );
@@ -93,28 +188,12 @@ export const useKoksmatDatabase = () => {
 
 // Example usage
 
-import { DatabaseHandlerType, MessageProvider } from '../lib/database-handler';
+//import { DatabaseHandlerType, MessageProvider, TokenProvider } from '../lib/database-handler';
 import { ComponentDoc } from '@/components/component-documentation-hub';
+import { DatabaseHandlerType, MessageProvider, TokenProvider } from '../lib/database-handler';
 
 // Form-based message provider
-const formMessageProvider: MessageProvider = {
-  send: async (message) => {
 
-    return new Promise((resolve) => {
-      const response = window.prompt(`${message.subject} operation for ${message.targetData.table}:\n${JSON.stringify(message.payload, null, 2)}\n\nEnter response:`, 'OK');
-      resolve({ success: true, response });
-    });
-  }
-};
-
-// In-memory message provider
-const inMemoryMessageProvider: MessageProvider = {
-  send: async (message) => {
-
-    kInfo(`In-memory operation: ${message.subject} for ${message.targetData.table}`);
-    return { success: true, response: 'Default response' };
-  }
-};
 
 export const examplesKoksmatDatabase: ComponentDoc[] = [
   {
@@ -170,9 +249,19 @@ const YourComponent = () => {
 };
 `,
     example: (
-      <KoksmatDatabaseProvider initialMessageProvider={formMessageProvider}>
-        <div>KoksmatDatabase Provider (See usage for example)</div>
-      </KoksmatDatabaseProvider>
+
+      <div>KoksmatDatabase Provider (See usage for example)</div>
+
     ),
   }
 ];
+
+async function getToken(tokenProvider: TokenProvider) {
+
+  const token = await tokenProvider.getToken();
+  if (!token) {
+    kError("provider", "No token provided", __dirname, __filename);
+    throw new Error("No token provided");
+  }
+  return token
+}

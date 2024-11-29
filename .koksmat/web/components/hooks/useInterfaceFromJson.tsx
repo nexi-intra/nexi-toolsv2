@@ -17,25 +17,34 @@ export function useInterfaceFromJson(prefix: string) {
     const newName =
       prefix + "Item";
     setinterfacename(newName);
-    debugger
-    const interfaces = JsonToTS(obj).map((typeInterface, index) => {
-      if (index === 0) {
-        return typeInterface.replace("RootObject", newName);
-      } else {
-        return typeInterface;
-      }
-      //console.log(typeInterface);
-    });
 
-    const interfaceDefintions = interfaces.join("\n");
-    setinterfaceDefintions(interfaceDefintions);
-    // const load = async () => {
-    //   const name = "I" + database + table + "Props";
-    //   setinterfacename(name);
-    //   const code = await jsonToInterface(JSON.stringify(json, null, 2));
-    //   setcode(code);
-    // };
-    // load();
+
+
+
+    try {
+
+
+      const interfaces = JsonToTS(obj).map((typeInterface, index) => {
+        if (index === 0) {
+          return typeInterface.replace("RootObject", newName);
+        } else {
+          return typeInterface;
+        }
+        //console.log(typeInterface);
+      });
+
+      const interfaceDefintions = interfaces.join("\n");
+      setinterfaceDefintions(interfaceDefintions);
+      // const load = async () => {
+      //   const name = "I" + database + table + "Props";
+      //   setinterfacename(name);
+      //   const code = await jsonToInterface(JSON.stringify(json, null, 2));
+      //   setcode(code);
+      // };
+      // load();
+    } catch (error) {
+
+    }
   }, [json]);
   return ({ interfaceDefintions, interfacename, setjson });
 }

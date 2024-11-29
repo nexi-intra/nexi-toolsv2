@@ -1,202 +1,36 @@
-import { z } from "zod";
+import { infer, z } from "zod";
 import { kError, kInfo, kVerbose } from "@/lib/koksmat-logger-client";
+import { DatabaseMessageType } from "../endpoints/database-messages-server";
+import { ActionNames, actionNames } from "@/app/tools/schemas/database/actions";
+import { ViewNames, viewNames } from "@/app/tools/schemas/database/view";
 
-export interface DatabaseMessageType {
-  token: string;
-  subject: string;
-  targetData: any;
-  payload: any;
-}
+// export interface DatabaseMessageType {
+//   subject: string;
+//   targetDatabase: any;
+//   record: any;
+// }d
 
 export interface MessageProvider {
-  send(message: DatabaseMessageType): Promise<any>;
+  send(message: DatabaseMessageType, token: string): Promise<any>;
 }
 
+export interface TokenProvider {
+  getToken(): Promise<string>;
+}
+export const parametersType = z.array(z.string()).optional();
+export type ParametersType = z.infer<typeof parametersType>;
 export type DatabaseHandlerType<T extends z.ZodObject<any>> = {
-  create(data: z.infer<T>): Promise<any>;
-  update(id: number, data: z.infer<T>): Promise<any>;
-  patch(id: number, data: Partial<z.infer<T>>): Promise<any>;
-  delete(id: number, hardDelete?: boolean): Promise<any>;
-  restore(id: number): Promise<any>;
+  create(data: z.infer<T>): Promise<number>;
+  read(id: number): Promise<z.infer<T>>;
+  update(id: number, data: z.infer<T>): Promise<z.infer<T>>;
+  patch(id: number, data: Partial<z.infer<T>>): void;
+  delete(id: number, softDelete?: boolean): void;
+  restore(id: number): Promise<z.infer<T>>;
+  query(queryname: ViewNames, parameters?: ParametersType): Promise<any[]>;
+  execute(actionname: ActionNames, data: any): Promise<any>;
 };
 
-export class DatabaseHandler<T extends z.ZodObject<any>>
-  implements DatabaseHandlerType<T>
-{
-  private _schema: T;
-  private _messageProvider: MessageProvider;
-  private _getToken: () => string;
-
-  constructor(
-    schema: T,
-    messageProvider: MessageProvider,
-    getToken: () => string
-  ) {
-    this._schema = schema;
-    this._messageProvider = messageProvider;
-    this._getToken = getToken;
-  }
-
-  async create(data: z.infer<T>): Promise<any> {
-    try {
-      kVerbose("Starting create operation");
-
-      // Validate data using safeParse
-      const result = this._schema.safeParse(data);
-      if (!result.success) {
-        kVerbose("Validation failed", data);
-        kError("Validation error in create operation", result.error);
-        throw result.error;
-      }
-      const parsedData = result.data;
-      kVerbose("Data validated successfully for create operation");
-
-      // Build the message object
-      const message: DatabaseMessageType = {
-        token: this._getToken(),
-        subject: "create",
-        targetData: null,
-        payload: parsedData,
-      };
-
-      kVerbose("Dispatching create message via message provider");
-
-      const response = await this._messageProvider.send(message);
-
-      kInfo("Create operation completed successfully");
-      return response;
-    } catch (error) {
-      kError("Error in create operation", error);
-      throw error;
-    }
-  }
-
-  async update(id: number, data: z.infer<T>): Promise<any> {
-    try {
-      kVerbose(`Starting update operation for id ${id}`);
-
-      // Validate data using safeParse
-      const result = this._schema.safeParse(data);
-      if (!result.success) {
-        kVerbose("Validation failed", data);
-        kError(
-          `Validation error in update operation for id ${id}`,
-          result.error
-        );
-        throw result.error;
-      }
-      const parsedData = result.data;
-      kVerbose(`Data validated successfully for update operation on id ${id}`);
-
-      // Build the message object
-      const message: DatabaseMessageType = {
-        token: this._getToken(),
-        subject: "update",
-        targetData: { id },
-        payload: parsedData,
-      };
-
-      kVerbose(`Dispatching update message via message provider for id ${id}`);
-
-      const response = await this._messageProvider.send(message);
-
-      kInfo(`Update operation completed successfully for id ${id}`);
-      return response;
-    } catch (error) {
-      kError(`Error in update operation for id ${id}`, error);
-      throw error;
-    }
-  }
-
-  async patch(id: number, data: Partial<z.infer<T>>): Promise<any> {
-    try {
-      kVerbose(`Starting patch operation for id ${id}`);
-
-      // Validate data using partial schema and safeParse
-      const partialSchema = this._schema.partial();
-      const result = partialSchema.safeParse(data);
-      if (!result.success) {
-        kVerbose("Validation failed", data);
-        kError(
-          `Validation error in patch operation for id ${id}`,
-          result.error
-        );
-        throw result.error;
-      }
-      const parsedData = result.data;
-      kVerbose(`Data validated successfully for patch operation on id ${id}`);
-
-      // Build the message object
-      const message: DatabaseMessageType = {
-        token: this._getToken(),
-        subject: "patch",
-        targetData: { id },
-        payload: parsedData,
-      };
-
-      kVerbose(`Dispatching patch message via message provider for id ${id}`);
-
-      const response = await this._messageProvider.send(message);
-
-      kInfo(`Patch operation completed successfully for id ${id}`);
-      return response;
-    } catch (error) {
-      kError(`Error in patch operation for id ${id}`, error);
-      throw error;
-    }
-  }
-
-  async delete(id: number, hardDelete: boolean = false): Promise<any> {
-    try {
-      kVerbose(
-        `Starting delete operation for id ${id} with hardDelete=${hardDelete}`
-      );
-
-      // Build the message object
-      const message: DatabaseMessageType = {
-        token: this._getToken(),
-        subject: "delete",
-        targetData: { id },
-        payload: { hardDelete },
-      };
-
-      kVerbose(
-        `Dispatching delete message via message provider for id ${id} with hardDelete=${hardDelete}`
-      );
-
-      const response = await this._messageProvider.send(message);
-
-      kInfo(
-        `Delete operation completed successfully for id ${id} with hardDelete=${hardDelete}`
-      );
-      return response;
-    } catch (error) {
-      kError(`Error in delete operation for id ${id}`, error);
-      throw error;
-    }
-  }
-
-  async restore(id: number): Promise<any> {
-    try {
-      kVerbose(`Starting restore operation for id ${id}`);
-
-      // Build the message object
-      const message: DatabaseMessageType = {
-        token: this._getToken(),
-        subject: "restore",
-        targetData: { id },
-        payload: null,
-      };
-
-      kVerbose(`Dispatching restore message via message provider for id ${id}`);
-
-      const response = await this._messageProvider.send(message);
-
-      kInfo(`Restore operation completed successfully for id ${id}`);
-      return response;
-    } catch (error) {
-      kError(`Error in restore operation for id ${id}`, error);
-      throw error;
-    }
-  }
-}
+const createResponseSchema = z.object({
+  id: z.number(),
+  comments: z.string().optional(),
+});

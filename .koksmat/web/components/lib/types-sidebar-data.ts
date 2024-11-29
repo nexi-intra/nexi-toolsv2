@@ -27,7 +27,7 @@ export interface NavItem {
 }
 
 export interface Project {
-  name: TranslatedString;
+  title: TranslatedString;
   url: string;
   icon: LucidIconName;
   moreIcon: LucidIconName;

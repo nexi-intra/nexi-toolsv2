@@ -1,1 +1,1 @@
-export * from "./v.next";
+export { components, endpoints, version } from "./v.next";

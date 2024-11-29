@@ -79,9 +79,8 @@ export async function NatsEventReceiver(
       // Use a unique consumer name or ephemeral consumer
 
       const streamOk = await ensureStream(subject, name, jsm);
-      kVerbose("streamOk", streamOk);
+      kVerbose("library", "streamOk", streamOk);
       let c = await js.consumers.get(name, durable_name).catch((error) => {
-        debugger;
         return null;
       });
 
@@ -92,13 +91,13 @@ export async function NatsEventReceiver(
           filter_subject: name + ".>",
         });
         c = await js.consumers.get(name, durable_name);
-        kVerbose("consumer added", durable_name);
+        kVerbose("library", "consumer added", durable_name);
       }
 
-      kVerbose("waiting for message");
+      kVerbose("library", "waiting for message");
       let m = await c.next();
       if (m) {
-        kInfo("message received with subject", m.subject);
+        kInfo("library", "message received with subject", m.subject);
         const mi = m as JsMsgImpl;
         const subj = mi.msg.reply!;
         //nc.publish(subj, "+ACK");
@@ -110,17 +109,17 @@ export async function NatsEventReceiver(
 
         resolve(message);
       } else {
-        kVerbose("no message");
+        kVerbose("library", "no message");
         resolve("");
       }
-      kVerbose("deleting consumer", name);
+      kVerbose("library", "deleting consumer", name);
       await jsm.consumers.delete(name, durable_name);
     } catch (error) {
       console.log("error", error);
       resolve("");
     } finally {
       if (nc) {
-        kVerbose("closing connection");
+        kVerbose("library", "closing connection");
         //await nc.drain();
         await nc.close();
       }

@@ -10,9 +10,7 @@ import {
   ServiceCallLogEntry,
 } from "./magicbox-context";
 import { IPublicClientApplication, PopupRequest } from "@azure/msal-browser";
-import { MagicRequest } from "./magicservices";
-import { Result } from "./httphelper";
-import { set } from "date-fns";
+
 
 type Props = {
   children?: React.ReactNode;
@@ -82,6 +80,7 @@ export const MagicboxProvider = ({ children }: Props) => {
     authtoken,
     authSource,
     setAuthToken: function (token: string, source: AuthSource): void {
+
       setauthSource(source);
       setauthtoken(token);
     },

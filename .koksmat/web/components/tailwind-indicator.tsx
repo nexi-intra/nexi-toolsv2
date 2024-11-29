@@ -1,4 +1,8 @@
+import { useIsInIframe } from "@/app/koksmat/src/v.next/components/use-isiniframe";
+
 export function TailwindIndicator() {
+  const isInIframe = useIsInIframe()
+  if (isInIframe) return null
   if (process.env.NODE_ENV === "production") return null;
 
   return (

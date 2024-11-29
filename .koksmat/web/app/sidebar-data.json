@@ -8,8 +8,8 @@
       },
       "logo": "Link",
       "plan": {
-        "en": "Preview",
-        "da": "Forhåndsvisning"
+        "en": "Beta - Production",
+        "da": "Beta - Produktion"
       }
     }
   ],
@@ -28,14 +28,14 @@
             "en": "Explorer",
             "da": "Udforsker"
           },
-          "url": "/tools/integration/explorer"
+          "url": "/tools/pages/explorer"
         },
         {
           "title": {
             "en": "Favourites",
             "da": "Favoritter"
           },
-          "label": "coming",
+          "label": "new",
           "url": "/tools/pages/profile"
         }
       ]
@@ -47,7 +47,6 @@
       },
       "url": "#",
       "icon": "Database",
-      "label": "preview",
       "items": [
         {
           "title": {
@@ -123,10 +122,10 @@
         },
         {
           "title": {
-            "en": "Users",
-            "da": "Brugere"
+            "en": "User Profiles",
+            "da": "Bruger Profiler"
           },
-          "url": "/tools/admin/data/users",
+          "url": "/tools/admin/data/user-profiles",
           "icon": "BookOpen"
         },
         {
@@ -135,25 +134,6 @@
             "da": "Brugerroller"
           },
           "url": "/tools/admin/data/user-roles",
-          "icon": "BookOpen"
-        }
-      ]
-    },
-    {
-      "title": {
-        "en": "Settings",
-        "da": "Indstillinger"
-      },
-      "url": "#",
-      "icon": "Settings2",
-      "items": [
-        {
-          "title": {
-            "en": "Mapping",
-            "da": "Kortlægning"
-          },
-          "url": "/tools/admin/mapping",
-          "label": "alpha",
           "icon": "BookOpen"
         }
       ]
@@ -179,6 +159,34 @@
             "da": "Komponenter"
           },
           "url": "/tools/docs/components"
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "title": {
+        "en": "Tools v1.0",
+        "da": "Tools v1.0"
+      },
+      "url": "#",
+      "icon": "SquareTerminal",
+      "isActive": true,
+      "items": [
+        {
+          "title": {
+            "en": "Explorer",
+            "da": "Udforsker"
+          },
+          "url": "/tools/integration/explorer"
+        },
+        {
+          "title": {
+            "en": "Favourites",
+            "da": "Favoritter"
+          },
+          "label": "coming",
+          "url": "/tools/pages/profile"
         }
       ]
     }

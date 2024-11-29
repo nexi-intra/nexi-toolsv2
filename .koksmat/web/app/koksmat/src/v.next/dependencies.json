@@ -1,0 +1,10 @@
+{
+  "web": {
+    "npm": [
+      "xlsx",
+      "@dnd-kit/core",
+      "@dnd-kit/sortable",
+      "@dnd-kit/utilities"
+    ]
+  }
+}

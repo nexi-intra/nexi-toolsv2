@@ -1,5 +1,6 @@
 
-import ToolGroupEditor from "@/components/form-toolgroup";
+import ToolGroupForm from "@/components/toolgroup-form";
+import { ToolGroupsList } from "@/components/toolgroup-list";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,7 +11,7 @@ export default function Page() {
 
 
   return (
-    <ToolGroupEditor />
+    <ToolGroupsList />
   )
 }
 

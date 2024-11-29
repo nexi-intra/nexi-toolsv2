@@ -1,5 +1,6 @@
 
-import UserRoleEditor from "@/components/form-userrole";
+import UserRoleEditor from "@/components/userrole-form";
+import { UserRoleList } from "@/components/userrole-list";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,7 +11,7 @@ export default function Page() {
 
 
   return (
-    <UserRoleEditor />
+    <UserRoleList />
   )
 }
 

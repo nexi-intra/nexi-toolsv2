@@ -15,6 +15,7 @@ import { useInterfaceFromJson } from "./hooks/useInterfaceFromJson"
 import { z } from "zod"
 import { ZeroTrust } from "@/components/zero-trust"
 import { ComponentDoc } from "./component-documentation-hub"
+import { generateSchemaCode } from "@/app/koksmat/src/v.next/lib/zod-from-json"
 
 /**
  * SqlQueryEditor is a component for editing and executing SQL queries.
@@ -57,6 +58,7 @@ export function SqlQueryEditor(props: SqlQueryEditorProps) {
   const [sqlResult, setSqlResult] = useState<string>("")
   const [name, setName] = useState<string>(props.name)
   const [log, setLog] = useState<LogObject[]>([])
+  const [zodResult, setZodResult] = useState("")
   const interfaceGenerator = useInterfaceFromJson("")
   const magicbox = useContext(MagicboxContext)
   const monacoInstance = useMonaco()
@@ -101,7 +103,7 @@ export function SqlQueryEditor(props: SqlQueryEditorProps) {
     interfaceGenerator.setjson(JSON.stringify(result.data.Result, null, 2))
     setLog((prevLog) => [...prevLog, logEntry])
     setSqlResult(logEntry.result)
-
+    setZodResult(generateSchemaCode(result.data.Result))
     // Call onNewInterface with the current dataset and derived interface
     onNewInterface(result.data.Result, interfaceGenerator.interfaceDefintions)
   }
@@ -178,7 +180,7 @@ export function SqlQueryEditor(props: SqlQueryEditorProps) {
               </div>
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel defaultSize={50}>
+            {/* <ResizablePanel defaultSize={50}>
               <div className="h-full">
                 <div className="p-2 bg-slate-100">Interface</div>
                 {!interfaceGenerator.interfaceDefintions && (
@@ -189,6 +191,29 @@ export function SqlQueryEditor(props: SqlQueryEditorProps) {
                 {interfaceGenerator.interfaceDefintions && (
                   <MonacoEditor
                     value={interfaceGenerator.interfaceDefintions}
+                    height="100%"
+                    language="typescript"
+                    theme="vs-dark"
+                    options={{
+                      minimap: { enabled: true },
+                      scrollBeyondLastLine: true,
+                      readOnly: true,
+                    }}
+                  />
+                )}
+              </div>
+            </ResizablePanel> */}
+            <ResizablePanel defaultSize={50}>
+              <div className="h-full">
+                <div className="p-2 bg-slate-100">ZOD Schema</div>
+                {!zodResult && (
+                  <div className="flex items-center justify-center h-full">
+                    Run to get the zod schema
+                  </div>
+                )}
+                {zodResult && (
+                  <MonacoEditor
+                    value={zodResult}
                     height="100%"
                     language="typescript"
                     theme="vs-dark"
@@ -219,7 +244,7 @@ import { SqlQueryEditor } from "./sql-query-editor"
 
 // View mode
 <SqlQueryEditor
-  database="mix"
+  database="tool"
   sql="SELECT * FROM user"
   name="View Users"
   onChange={(newSql) => console.log(newSql)}
@@ -233,8 +258,8 @@ import { SqlQueryEditor } from "./sql-query-editor"
 `,
     example: (
       <SqlQueryEditor
-        database="mix"
-        sql="SELECT * FROM user LIMIT 10"
+        database="tool"
+        sql="SELECT * FROM tool LIMIT 10"
         name="Example Query"
         onChange={(newSql) => console.log(newSql)}
         mode="edit"

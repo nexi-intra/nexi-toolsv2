@@ -42,7 +42,7 @@ CREATE TABLE public.event
 
                 ALTER TABLE IF EXISTS public.event
                 ADD FOREIGN KEY (user_id)
-                REFERENCES public.user (id) MATCH SIMPLE
+                REFERENCES public.userprofile (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;                ALTER TABLE IF EXISTS public.event

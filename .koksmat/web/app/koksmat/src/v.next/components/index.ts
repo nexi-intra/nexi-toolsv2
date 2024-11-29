@@ -1,2 +1,2 @@
 export * from "./form-generic-table";
-export * from "./schema-form";
+export * from "./generic-schema-form";
