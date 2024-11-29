@@ -22,7 +22,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
   renderItem,
   editItem,
   searchFor,
-  options = { pageSize: 250, heightBehaviour: 'Full', mode: 'view', hideToolbar: false, onLoaded: () => { }, defaultViewMode: 'table' }
+  options = { pageSize: 250, heightBehaviour: 'Full', mode: 'view', hideToolbar: false, onLoaded: () => { }, defaultViewMode: 'card' }
 
 
 }: DatabaseItemsViewerProps<S>) {
