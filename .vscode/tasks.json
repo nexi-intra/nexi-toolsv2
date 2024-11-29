@@ -90,7 +90,17 @@
 				"isDefault": true
 			}
 		},		
-	
+		{
+			"type": "npm",
+			"script": "build:cli",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "build:cli",
+			"detail": "Build the CLI",
+			"options": {
+					"cwd": "${workspaceFolder}/.koksmat/web"
+			}
+	}
 
 	]
 }

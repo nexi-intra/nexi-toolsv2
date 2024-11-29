@@ -27,7 +27,7 @@ export const AppProvider = ({ children }: Props) => {
 
   return (
     <AppContext.Provider value={app}>
-      <div>{children}</div>
+      <div className="w-full">{children}</div>
     </AppContext.Provider>
   );
 };

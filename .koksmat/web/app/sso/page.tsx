@@ -18,8 +18,8 @@ description: Single Sign On endpoint
  
  */
 
-import { https } from "@/app/koksmat/httphelper";
-import { MagicboxContext } from "@/app/koksmat/magicbox-context";
+import { https } from "@/app/koksmat0/httphelper";
+import { MagicboxContext } from "@/app/koksmat0/magicbox-context";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
@@ -46,6 +46,7 @@ export default function SSO() {
   const searchParams = useSearchParams();
   const [jwtToken, setjwtToken] = useState<jwt.JwtPayload>();
   const token = searchParams.get("token");
+  const route = searchParams.get("path");
   const cmd = searchParams.get("cmd");
   const [data, setdata] = useState<any>();
   const router = useRouter();
@@ -76,9 +77,12 @@ export default function SSO() {
       magicbox.setAuthToken(token, "SharePoint");
 
       if (!cmd) {
-        setframeHref("/sso/?cmd=framed&token=" + token);
+        setframeHref("/sso/?cmd=framed&token=" + token + "&path=" + route);
       } else if (cmd === "framed") {
-        router.push("/" + APPNAME);
+        if (route) {
+          router.push("/" + route);
+        } else { router.push("/" + APPNAME); }
+
       }
       setdata(result);
     };

@@ -5,9 +5,9 @@ import Link from "next/link"
 
 
 
-//import { openVScode } from "@/app/koksmat/vscode/server"
+//import { openVScode } from "@/app/koksmat0/vscode/server"
 
-export function PageContextHeader(props: { title: string ,description?:string}) {
+export function PageContextHeader(props: { title: string, description?: string }) {
   return null
   /*
   const { title,description } = props
