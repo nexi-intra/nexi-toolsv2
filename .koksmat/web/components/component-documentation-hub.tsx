@@ -50,7 +50,7 @@ export const ComponentDocumentation: React.FC<ComponentDocumentationProps> = ({ 
             <CardTitle>Live Example</CardTitle>
           </CardHeader>
           <CardContent>
-            <div ref={componentsRef}>
+            <div ref={componentsRef} className='shadow-2xl bg-muted'>
               {component.example}
             </div>
           </CardContent>

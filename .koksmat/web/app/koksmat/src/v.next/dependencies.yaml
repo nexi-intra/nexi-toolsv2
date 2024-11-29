@@ -1,0 +1,10 @@
+# represents the modules that are used in the web app
+web:
+  npm:
+    - xlsx
+    - "@dnd-kit/core"
+    - "@dnd-kit/sortable"
+    - "@dnd-kit/utilities"
+  # npm-dev:
+  #   - "@types/xlsx"
+  #   - "@types/dnd-kit"

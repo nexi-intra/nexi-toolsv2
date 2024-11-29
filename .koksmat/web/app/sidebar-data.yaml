@@ -1,0 +1,131 @@
+language: "en"
+teams:
+  - name:
+      en: "Tools"
+      da: "Værktøjer"
+    logo: "Link"
+    plan:
+      en: "Beta - Production"
+      da: "Beta - Produktion"
+navMain:
+  - title:
+      en: "Integration Pages"
+      da: "Integrationssider"
+    url: "#"
+    icon: "SquareTerminal"
+    isActive: true
+    items:
+      - title:
+          en: "Explorer"
+          da: "Udforsker"
+        url: "/tools/pages/explorer"
+      - title:
+          en: "Favourites"
+          da: "Favoritter"
+        label: new
+        url: "/tools/pages/profile"
+  - title:
+      en: "Tables"
+      da: "Tabeller"
+    url: "#"
+    icon: "Database"
+    # label: preview
+    items:
+      - title:
+          en: "Regions"
+          da: "Regioner"
+        url: "/tools/admin/data/regions"
+        icon: "BookOpen"
+      - title:
+          en: "Countries"
+          da: "Lande"
+        url: "/tools/admin/data/countries"
+        icon: "BookOpen"
+      - title:
+          en: "Categories"
+          da: "Kategorier"
+        url: "/tools/admin/data/categories"
+        icon: "BookOpen"
+      - title:
+          en: "Access Points"
+          da: "Adgangspunkter"
+        url: "/tools/admin/data/access-points"
+        icon: "BookOpen"
+      - title:
+          en: "Languages"
+          da: "Sprog"
+        url: "/tools/admin/data/languages"
+        icon: "BookOpen"
+      - title:
+          en: "Purposes"
+          da: "Formål"
+        url: "/tools/admin/data/purposes"
+        icon: "BookOpen"
+      - title:
+          en: "Tool Groups"
+          da: "Værktøjsgrupper"
+        url: "/tools/admin/data/tool-groups"
+        icon: "BookOpen"
+      - title:
+          en: "Tools"
+          da: "Værktøjer"
+        url: "/tools/admin/data/tools"
+        icon: "BookOpen"
+      - title:
+          en: "User Groups"
+          da: "Brugergrupper"
+        url: "/tools/admin/data/user-groups"
+        icon: "BookOpen"
+      - title:
+          en: "User Profiles"
+          da: "Bruger Profiler"
+        url: "/tools/admin/data/user-profiles"
+        icon: "BookOpen"
+      - title:
+          en: "User Roles"
+          da: "Brugerroller"
+        url: "/tools/admin/data/user-roles"
+        icon: "BookOpen"
+  # - title:
+  #     en: "Settings"
+  #     da: "Indstillinger"
+  #   url: "#"
+  #   icon: "Settings2"
+  #   items:
+  #     - title:
+  #         en: "Mapping"
+  #         da: "Kortlægning"
+  #       url: "/tools/admin/mapping"
+  #       label: "alpha"
+  #       icon: "BookOpen"
+  - title:
+      en: "Documentation"
+      da: "Dokumentation"
+    url: "#"
+    icon: "BookOpen"
+    items:
+      - title:
+          en: "Use cases"
+          da: "Brugsscenarier"
+        url: "/tools/docs/use-cases"
+      - title:
+          en: "Components"
+          da: "Komponenter"
+        url: "/tools/docs/components"
+projects:
+  - title:
+      en: "Tools v1.0"
+      da: "Tools v1.0"
+    url: "#"
+    icon: "SquareTerminal"
+    isActive: true
+    items:
+      - title:
+          en: "Explorer"
+          da: "Udforsker"
+        url: "/tools/integration/explorer"
+      - title:
+          en: "Favourites"
+          da: "Favoritter"
+        label: coming
+        url: "/tools/pages/profile"

@@ -30,7 +30,7 @@ interface IconUploaderProps {
   initialIcon?: string
   size?: number
   mode: 'new' | 'edit' | 'view'
-  onUpdate: (mode: 'new' | 'edit' | 'view', icon: string | null) => void
+  onUpdate: (mode: 'new' | 'edit' | 'view', icon: string | undefined) => void
   className?: string
 }
 

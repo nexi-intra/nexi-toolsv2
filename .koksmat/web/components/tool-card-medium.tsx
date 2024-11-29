@@ -1,41 +1,51 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Tool } from '@/app/api/entity/schemas'
+import React, { useContext, useState } from 'react'
+import { ToolView } from '@/app/tools/schemas/forms'
+
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Heart, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import ToolCard from './tool-card'
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import ToolCard from './tool-card-large'
+import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "@/components/ui/dialog"
 import Tag, { TagType } from './tag'
 import { ComponentDoc } from './component-documentation-hub'
 import { FavoriteComponent } from './favorite'
+import { kError, kVerbose } from '@/lib/koksmat-logger-client'
+import { useKoksmatDatabase } from '@/app/koksmat/src/v.next/components/database-context-provider'
+import { databaseActions } from '@/app/tools/schemas/database'
+import { MagicboxContext } from '@/app/koksmat0/magicbox-context'
 
 interface ToolCardMediumProps {
-  tool: Tool
-  onFavoriteChange: (isFavorite: boolean) => void
+  tool: ToolView
+  isFavorite: boolean
+
   allowedTags: TagType[]
+  showActions?: boolean
 }
 
-export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }: ToolCardMediumProps) {
-  const [isFavorite, setIsFavorite] = useState(tool.status === 'active')
+export function ToolCardMediumComponent({ tool, allowedTags, isFavorite, showActions }: ToolCardMediumProps) {
+  const actionName = "createOrUpdateTool"
+  //const [isFavorite, setIsFavorite] = useState(tool.status === 'active')
+  const [edit, setedit] = useState(false)
+  const action = databaseActions.getAction(actionName)
+  const table = useKoksmatDatabase().table("", action!.databaseName, action!.inputSchema)
 
-  const handleFavoriteClick = () => {
-    const newFavoriteState = !isFavorite
-    setIsFavorite(newFavoriteState)
-    onFavoriteChange(newFavoriteState)
-  }
+  const magicbox = useContext(MagicboxContext)
+
+
+
 
   return (
-    <Card className="w-64 h-80 flex flex-col">
+    <Card className="w-64 h-72 flex flex-col">
       <CardContent className="flex-grow p-4">
         <div className="flex justify-between items-start mb-4 ">
           <div className="flex flex-wrap gap-1">
             <Tag
               tags={allowedTags}
-              initialSelectedTags={tool.tags}
+              initialSelectedTags={tool.category ? [tool.category] : []}
               allowMulti={false}
               required={false}
               mode={'view'}
@@ -45,15 +55,15 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
             />
           </div>
           <FavoriteComponent
-            mode="view"
-
-            defaultIsFavorite={isFavorite} onChange={function (mode: 'view' | 'new' | 'edit', isFavorite: boolean): void {
-              //throw new Error('Function not implemented.')
-            }} />
+            mode="edit"
+            email={magicbox.user?.email}
+            tool_id={tool.id}
+            defaultIsFavorite={isFavorite}
+          />
         </div>
-        <div className="flex flex-col items-center mb-4">
-          <div className="w-16 h-16 mb-2">
-            <Image
+        <div className="flex flex-col items-center mb-0">
+          <div className="w-16 h-16 mb-0">
+            <img
               src={tool.icon || '/placeholder.svg'}
               alt={tool.name}
               width={64}
@@ -61,46 +71,75 @@ export function ToolCardMediumComponent({ tool, onFavoriteChange, allowedTags }:
               className="rounded-full"
             />
           </div>
-          <h3 className="text-lg font-semibold text-center">{tool.name}</h3>
+          <div className="flex items-center justify-center h-24 ">
+            <div className="text-center text-lg font-semibold leading-tight">
+              {tool.name}
+            </div>
+          </div>
+
         </div>
-        <p className="text-sm text-gray-600 line-clamp-3">{tool.description}</p>
+        <div className="flex   mt-3 ">
+          <Dialog >
+            <DialogTrigger asChild>
+              <Button onClick={e => e.stopPropagation()} variant="outline" size="sm">Read More</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-3xl">
+              <ToolCard
+                tool={tool}
+                mode={edit ? 'edit' : 'view'}
+                allowedTags={allowedTags}
+                isFavorite={isFavorite}
+                onSave={async (data, mode) => {
+                  kVerbose("component", "ToolCardMediumComponent onSave", data, mode)
+
+                  try {
+                    const writeOperation = await table.execute(actionName, data)
+                    setedit(false)
+                    kVerbose("component", "ToolCardMediumComponent onSave completed", writeOperation)
+                  } catch (error) {
+                    kError("component", "onSave", error)
+                  }
+
+
+                }}
+                allowedPurposes={[]} allowedCountries={[]} />
+
+              {showActions && (
+                <DialogFooter>
+                  <Button onClick={e => { e.stopPropagation(); setedit(!edit) }} variant="ghost" size="sm">Edit</Button>
+                </DialogFooter>)}
+            </DialogContent>
+
+          </Dialog>
+          <div className="grow min-w-5" />
+          <Link href={tool.url} target="_blank" rel="noopener noreferrer">
+            <Button disabled={!tool.url} onClick={e => e.stopPropagation()} variant="ghost" size="sm">
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Open Tool
+            </Button>
+          </Link>
+        </div>
+        {/* <p className="text-sm text-gray-600 line-clamp-3">{tool.description}</p> */}
       </CardContent>
-      <CardFooter className="flex justify-between items-center p-4 bg-gray-50">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline" size="sm">Read More</Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-3xl">
-            <ToolCard
-              tool={tool}
-              mode="view"
-              allowedTags={allowedTags}
-              isFavorite={isFavorite}
-              onFavoriteChange={onFavoriteChange} allowedPurposes={[]} allowedCountries={[]} />
-          </DialogContent>
-        </Dialog>
-        <Link href={tool.url} target="_blank" rel="noopener noreferrer">
-          <Button variant="ghost" size="sm">
-            <ExternalLink className="h-4 w-4 mr-2" />
-            Open Tool
-          </Button>
-        </Link>
-      </CardFooter>
-    </Card>
+      {/* <CardFooter className="flex justify-between items-center px-4">
+
+      </CardFooter> */}
+    </Card >
   )
 }
 
 // Example usage
 function ToolCardMediumExample() {
-  const [tool, setTool] = useState<Tool>({
-    id: '1',
-    createdAt: new Date(),
-    createdBy: 'John Doe',
-    updatedAt: new Date(),
-    updatedBy: 'Jane Smith',
-    deletedAt: null,
+  const [tool, setTool] = useState<ToolView>({
+    id: 1,
+    created_at: new Date(),
+    created_by: 'John Doe',
+    updated_at: new Date(),
+    updated_by: 'Jane Smith',
+    deleted_at: null,
     deletedBy: null,
     name: 'Nexi Connect',
+    category: { id: 1, value: 'Category 1', color: '#ff0000', order: "" },
     description: `Il servizio per chiedere assistenza sulla dotazione tecnologica aziendale, tramite:
 
 Ticket
@@ -112,7 +151,7 @@ Telefono
     groupId: 'tools-group',
     purposes: [],
     tags: [{
-      "id": "tag1", "value": "Tag 1", "color": "#ff0000",
+      "id": 1, "value": "Tag 1", "color": "#ff0000",
       order: ''
     }],
     version: '1.0.0',
@@ -137,9 +176,9 @@ Telefono
   })
 
   const allowedTags = [
-    { id: "tag1", value: 'tag1', color: '#ff0000', description: 'Tag 1', order: "1" },
-    { id: "tag2", value: 'tag2', color: '#00ff00', description: 'Tag 2', order: "2" },
-    { id: 'tag3', value: "tag3", color: '#0000ff', description: 'Tag 3', order: "3" },
+    { id: 1, value: 'tag1', color: '#ff0000', description: 'Tag 1', order: "1" },
+    { id: 2, value: 'tag2', color: '#00ff00', description: 'Tag 2', order: "2" },
+    { id: 3, value: "tag3", color: '#0000ff', description: 'Tag 3', order: "3" },
   ]
 
   const handleFavoriteChange = (isFavorite: boolean) => {
@@ -154,9 +193,8 @@ Telefono
       <h2 className="text-2xl font-bold mb-4">ToolCardMedium Example</h2>
       <ToolCardMediumComponent
         tool={tool}
-        onFavoriteChange={handleFavoriteChange}
-        allowedTags={allowedTags}
-      />
+
+        allowedTags={allowedTags} isFavorite={false} />
     </div>
   )
 }
@@ -168,7 +206,7 @@ export const examplesToolCardMedium: ComponentDoc[] = [
     description: 'A medium-sized card for tools with a pop-up detailed view',
     usage: `
 import React, { useState } from 'react'
-import { Tool } from '@/app/api/entity/schemas'
+import { Tool } from '@/app/tools/api/entity/schemas'
 import ToolCardMedium from './ToolCardMedium'
 
 function ToolCardMediumExample() {

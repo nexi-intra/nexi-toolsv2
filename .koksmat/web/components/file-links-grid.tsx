@@ -37,7 +37,7 @@ export function FileLinksGridComponent({ initialLinks, mode, columns, className 
 
   // Handle changes to a file link
   const handleChange = (id: string, field: keyof FileLink, value: string) => {
-    const updatedLinks = links.map(link => 
+    const updatedLinks = links.map(link =>
       link.id === id ? { ...link, [field]: value } : link
     );
     setLinks(updatedLinks);
@@ -104,8 +104,9 @@ export function FileLinksGridComponent({ initialLinks, mode, columns, className 
               </>
             ) : (
               <>
-                <span className="flex-grow">{link.name}</span>
-                <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-blue-500">
+
+                <a href={link.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="text-blue-500">
+                  <span className="flex-grow">{link.name}</span>
                   <ExternalLink size={18} />
                 </a>
               </>

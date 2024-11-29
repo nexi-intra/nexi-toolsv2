@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "jest.config.js"
-  ],
+, "components/form-generic-tabletsx"  ],
   "exclude": [
     "node_modules"
   ]

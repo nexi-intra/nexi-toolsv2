@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useSQLSelect3 } from "@/app/koksmat/usesqlselect3";
+import { useSQLSelect3 } from "@/app/koksmat0/usesqlselect3";
 import { ToolMiniature } from "./tool-miniature";
 import { useEffect, useState } from "react";
 import { getBadge } from "@/lib/getbadge";
@@ -21,7 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ToolLarge } from "./tool-large";
+
 
 export interface ToolsProps {
   weburl: string;

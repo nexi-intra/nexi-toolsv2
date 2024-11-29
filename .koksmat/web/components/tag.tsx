@@ -20,6 +20,8 @@ import {
 import { useCallback, useEffect, useState } from 'react'
 import { Badge } from './ui/badge'
 import { Input } from './ui/input'
+import { IdValue } from './lookup'
+import { kError } from '@/lib/koksmat-logger-client'
 
 
 interface TagProps {
@@ -43,14 +45,21 @@ interface TagProps {
 
 // Define the Tag interface
 export interface TagType {
-  id: string;
+  id: number;
   value: string
   color: string;
   order: string;
 }
 
+type LazyLoad = {
+  lazyLoad?: true;
+  loadItems: () => Promise<TagType[]>; // Function to load items
+} | {
+  lazyLoad?: false;
+  loadItems?: never;
+};
 // Component Props
-interface TagSelectorProps {
+type TagSelectorProps = {
   tags: TagType[]; // Available tags to select from
   initialSelectedTags?: TagType[]; // Initially selected tags
   allowMulti?: boolean; // Allow multiple selections or not
@@ -58,10 +67,12 @@ interface TagSelectorProps {
   mode: 'view' | 'edit' | 'new'; // Display mode of the component
   canAddNewTags?: boolean; // Can new tags be added
   onChange?: (selectedTags: TagType[]) => void; // Callback when selected tags change
-}
+} & LazyLoad;
 
 const TagSelector: React.FC<TagSelectorProps> = ({
   tags,
+  lazyLoad,
+  loadItems,
   initialSelectedTags = [],
   allowMulti = true,
   required = false,
@@ -70,14 +81,29 @@ const TagSelector: React.FC<TagSelectorProps> = ({
   onChange,
 }) => {
   // State for selected tags
+
   const [selectedTags, setSelectedTags] = useState<TagType[]>(initialSelectedTags);
+  const [selectableTags, setSelectableTags] = useState<TagType[]>(tags);
   const [searchQuery, setSearchQuery] = useState('');
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [isLoaded, setisLoaded] = useState(false)
+  const waitForLoad = lazyLoad && !isLoaded
+
+  const handleLazyLoad = async () => {
+    if (!lazyLoad) return;
+    if (!loadItems) {
+      kError('component', 'loadItems function is required for lazy loading');
+      return;
+    }
+    const items = await loadItems();
+    setSelectableTags([...items]);
+    setisLoaded(true)
+  }
   // Filtered tags based on search query
-  const filteredTags = tags.filter(tag =>
-    tag.id.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredTags = selectableTags.filter(tag =>
+    tag.value.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Effect to call onChange when selectedTags change
@@ -110,17 +136,17 @@ const TagSelector: React.FC<TagSelectorProps> = ({
   // Function to add a new tag
   const addNewTag = () => {
     const newTagName = searchQuery.trim();
-    if (newTagName === '' || tags.find(tag => tag.id === newTagName)) return;
+    if (newTagName === '' || selectableTags.find(tag => tag.value === newTagName)) return;
 
     const newTag: TagType = {
-      id: newTagName,
+      id: -(selectableTags.length + 1),
       color: '#000000',
       value: newTagName,
       order: newTagName,
     };
 
     // Update tags list and select the new tag
-    tags.push(newTag);
+    selectableTags.push(newTag);
     setSelectedTags(prev => [...prev, newTag]);
     setSearchQuery('');
   };
@@ -134,9 +160,9 @@ const TagSelector: React.FC<TagSelectorProps> = ({
             <Badge
               key={tag.id}
               style={{ backgroundColor: tag.color }}
-              className="flex items-center text-white"
+              className="flex items-center text-white overflow-ellipsis overflow-clip whitespace-nowrap max-w-40"
             >
-              {tag.id}
+              {tag.value}
               {mode === 'edit' && (
                 <button
                   onClick={() => toggleTag(tag)}
@@ -163,11 +189,12 @@ const TagSelector: React.FC<TagSelectorProps> = ({
             onOpenChange={setIsPopoverOpen}
           >
             <PopoverTrigger asChild>
-              <Button variant="ghost" className="flex items-center">
+              <Button onClick={handleLazyLoad} variant="ghost" className="flex items-center">
                 <ChevronDown className="h-5 w-5" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-64 p-4">
+              {waitForLoad && <p>Loading...</p>}
               {/* Search Input */}
               <div className="flex items-center mb-2">
                 <Search className="mr-2 h-4 w-4" />
@@ -197,7 +224,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({
                         className="w-3 h-3 rounded-full mr-2"
                         style={{ backgroundColor: tag.color }}
                       />
-                      <span>{tag.id}</span>
+                      <span>{tag.value}</span>
                     </div>
                     {selectedTags.find(t => t.id === tag.id) && (
                       <X size={16} className="text-red-500" />
@@ -261,15 +288,15 @@ export const examplesTag: ComponentDoc[] = [
     example: (
       <TagSelector
         tags={[
-          { id: 'bug', color: '#d73a4a', value: 'Something isn\'t working', order: '1' },
-          { id: 'documentation', color: '#0075ca', value: 'Improvements or additions to documentation', order: '2' },
-          { id: 'duplicate', color: '#cfd3d7', value: 'This issue or pull request already exists', order: '3' },
-          { id: 'enhancement', color: '#a2eeef', value: 'New feature or request', order: '4' },
-          { id: 'good first issue', color: '#7057ff', value: 'Good for newcomers', order: '5' }
+          { id: 1, color: '#d73a4a', value: 'Something isn\'t working', order: '1' },
+          { id: 2, color: '#0075ca', value: 'Improvements or additions to documentation', order: '2' },
+          { id: 3, color: '#cfd3d7', value: 'This issue or pull request already exists', order: '3' },
+          { id: 4, color: '#a2eeef', value: 'New feature or request', order: '4' },
+          { id: 5, color: '#7057ff', value: 'Good for newcomers', order: '5' }
         ]}
         initialSelectedTags={[
-          { id: 'bug', color: '#d73a4a', value: 'Something isn\'t working', order: '1' },
-          { id: 'documentation', color: '#0075ca', value: 'Improvements or additions to documentation', order: '2' }
+          { id: 1, color: '#d73a4a', value: 'Something isn\'t working', order: '1' },
+          { id: 2, color: '#0075ca', value: 'Improvements or additions to documentation', order: '2' }
         ]}
         allowMulti={true}
         required={false}

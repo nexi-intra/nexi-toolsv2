@@ -1,0 +1,112 @@
+- id: '#'
+  text: Playground
+  translations:
+    en: Playground
+    da: Legeplads
+  icon: SquareTerminal
+  children:
+    - id: '#'
+      text: History
+      translations:
+        en: History
+        da: Historik
+      icon: file
+    - id: '#'
+      text: Starred
+      translations:
+        en: Starred
+        da: Stjernemarkeret
+      icon: file
+    - id: '#'
+      text: Settings
+      translations:
+        en: Settings
+        da: Indstillinger
+      icon: file
+- id: '#'
+  text: Models
+  translations:
+    en: Models
+    da: Modeller
+  icon: Bot
+  children:
+    - id: '#'
+      text: Genesis
+      translations:
+        en: Genesis
+        da: Genesis
+      icon: file
+    - id: '#'
+      text: Explorer
+      translations:
+        en: Explorer
+        da: Udforskeren
+      icon: file
+    - id: '#'
+      text: Quantum
+      translations:
+        en: Quantum
+        da: Kvantum
+      icon: file
+- id: '#'
+  text: Documentation
+  translations:
+    en: Documentation
+    da: Dokumentation
+  icon: BookOpen
+  children:
+    - id: '#'
+      text: Introduction
+      translations:
+        en: Introduction
+        da: Introduktion
+      icon: file
+    - id: '#'
+      text: Get Started
+      translations:
+        en: Get Started
+        da: Kom i gang
+      icon: file
+    - id: '#'
+      text: Tutorials
+      translations:
+        en: Tutorials
+        da: Vejledninger
+      icon: file
+    - id: '#'
+      text: Changelog
+      translations:
+        en: Changelog
+        da: Ændringslog
+      icon: file
+- id: '#'
+  text: Settings
+  translations:
+    en: Settings
+    da: Indstillinger
+  icon: Settings2
+  children:
+    - id: '#'
+      text: General
+      translations:
+        en: General
+        da: Generelt
+      icon: file
+    - id: '#'
+      text: Team
+      translations:
+        en: Team
+        da: Hold
+      icon: file
+    - id: '#'
+      text: Billing
+      translations:
+        en: Billing
+        da: Fakturering
+      icon: file
+    - id: '#'
+      text: Limits
+      translations:
+        en: Limits
+        da: Begrænsninger
+      icon: file

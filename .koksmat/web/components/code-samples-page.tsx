@@ -14,7 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { CreateFileDialogComponent } from './app-components-create-file-dialog'
-import { typeNames } from '@/app/api/entity/schemas'
+import { typeNames } from '@/app/tools/schemas/forms'
+
 
 interface CodeSample {
   operation: string
@@ -85,8 +86,8 @@ export default function DynamicEntityCodeSamples({ schema, entityName }: Dynamic
         code: `'use client'
 
 import { useState, useEffect } from 'react'
-import { ApiClient } from '@/app/api/entity/api-client'
-import { ${typeName} } from '@/app/api/entity/schemas'
+import { ApiClient } from '@/app/tools/api/entity/api-client'
+import { ${typeName} } from '@/app/tools/api/entity/schemas'
 
 export default function ${typeName}List() {
   const [${lowercaseEntity}s, set${typeName}s] = useState<${typeName}[]>([])
@@ -139,8 +140,8 @@ export default function ${typeName}List() {
         code: `'use client'
 
 import { useState, useEffect } from 'react'
-import { ApiClient } from '@/app/api/entity/api-client'
-import { ${typeName} } from '@/app/api/entity/schemas'
+import { ApiClient } from '@/app/tools/api/entity/api-client'
+import { ${typeName} } from '@/app/tools/api/entity/schemas'
 
 export default function ${typeName}Detail() {
   // TODO: Replace '2' with the actual ID you want to fetch
@@ -184,8 +185,8 @@ export default function ${typeName}Detail() {
         code: `'use client'
 
 import { useState } from 'react'
-import { ApiClient } from '@/app/api/entity/api-client'
-import { ${typeName} } from '@/app/api/entity/schemas'
+import { ApiClient } from '@/app/tools/api/entity/api-client'
+import { ${typeName} } from '@/app/tools/api/entity/schemas'
 
 export default function Create${typeName}() {
   ${schemaFields.map(field => `const [${field.key}, set${field.key.charAt(0).toUpperCase() + field.key.slice(1)}] = useState${field.type === 'string' ? "<string>('')" : field.type === 'number' ? '<number>(0)' : field.type === 'boolean' ? '<boolean>(false)' : '<Date | null>(null)'}`).join('\n  ')}
@@ -217,8 +218,8 @@ export default function Create${typeName}() {
         code: `'use client'
 
 import { useState, useEffect } from 'react'
-import { ApiClient } from '@/app/api/entity/api-client'
-import { ${typeName} } from '@/app/api/entity/schemas'
+import { ApiClient } from '@/app/tools/api/entity/api-client'
+import { ${typeName} } from '@/app/tools/api/entity/schemas'
 
 export default function Update${typeName}() {
   // TODO: Replace '2' with the actual ID you want to update
@@ -282,8 +283,8 @@ export default function Update${typeName}() {
         code: `'use client'
 
 import { useState } from 'react'
-import { ApiClient } from '@/app/api/entity/api-client'
-import { ${typeName} } from '@/app/api/entity/schemas'
+import { ApiClient } from '@/app/tools/api/entity/api-client'
+import { ${typeName} } from '@/app/tools/api/entity/schemas'
 
 export default function Patch${typeName}() {
   // TODO: Replace '2' with the actual ID you want to patch
@@ -325,8 +326,8 @@ export default function Patch${typeName}() {
         code: `'use client'
 
 import { useState } from 'react'
-import { ApiClient } from '@/app/api/entity/api-client'
-import { ${typeName} } from '@/app/api/entity/schemas'
+import { ApiClient } from '@/app/tools/api/entity/api-client'
+import { ${typeName} } from '@/app/tools/api/entity/schemas'
 
 export default function Delete${typeName}() {
   // TODO: Replace '2' with the actual ID you want to delete
@@ -370,8 +371,8 @@ export default function Delete${typeName}() {
         code: `'use client'
 
 import { useState } from 'react'
-import { ApiClient } from '@/app/api/entity/api-client'
-import { ${typeName} } from '@/app/api/entity/schemas'
+import { ApiClient } from '@/app/tools/api/entity/api-client'
+import { ${typeName} } from '@/app/tools/api/entity/schemas'
 
 export default function Query${typeName}() {
   const [sql, setSql] = useState<string>('')

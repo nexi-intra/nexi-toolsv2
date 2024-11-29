@@ -2,7 +2,7 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 import SidebarLayoutClient from './components-layout-sidebar-layout-client'
-import ErrorBoundary from './components-error-boundary'
+import ErrorBoundary from './error-boundary'
 
 
 interface FileStructure {
