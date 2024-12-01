@@ -22,7 +22,7 @@ navMain:
       - title:
           en: "Favourites"
           da: "Favoritter"
-        label: new
+        #        label: new
         url: "/tools/pages/profile"
   - title:
       en: "Tables"

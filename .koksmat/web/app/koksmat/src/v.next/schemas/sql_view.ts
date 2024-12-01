@@ -13,6 +13,7 @@ import { z, ZodObject } from "zod";
 export type SqlView = {
   sql: string;
   databaseName: string;
+
   parameters?: string[];
   schema: ZodObject<Record<string, z.ZodTypeAny>>;
 };

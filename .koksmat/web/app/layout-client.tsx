@@ -10,6 +10,7 @@ import { KoksmatSessionProvider } from "@/components/koksmat-provider";
 import { BreadcrumbProvider } from "@/components/breadcrumb-context";
 import { useExampleHook } from "@/components/lookup-provider";
 
+
 export default function RootLayoutClientSide({
   children,
 }: Readonly<{
@@ -20,12 +21,14 @@ export default function RootLayoutClientSide({
     <MagicboxProvider>
       <MSALWrapper>
         <BreadcrumbProvider lookupHandlers={[useExampleHook()]}>
+
           <KoksmatSessionProvider>
             <div className=" w-full min-w-full min-h-full">
               {children}
             </div>
 
           </KoksmatSessionProvider>
+
         </BreadcrumbProvider>
         <TailwindIndicator />
         {/* <ServiceInspector /> */}

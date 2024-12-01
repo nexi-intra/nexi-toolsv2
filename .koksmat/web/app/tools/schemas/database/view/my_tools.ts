@@ -64,6 +64,7 @@ LEFT JOIN category AS c ON c.id = t.category_id
 INNER JOIN userprofile_m2m_tool AS umt ON umt.tool_id = t.id
 INNER JOIN userprofile AS up ON up.id = umt.userprofile_id
 WHERE up.email = '###UPN###' -- Parameter for user's email
+  AND t.deleted_at IS NULL
 ORDER BY t.name
 `,
   schema: ToolSchema,

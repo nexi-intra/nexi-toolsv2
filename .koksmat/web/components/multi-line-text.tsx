@@ -49,7 +49,7 @@ export default function MultiLineText({
   }
 
   const renderViewMode = () => {
-    const paragraphs = value.split('\n').filter(paragraph => paragraph.trim() !== '')
+    const paragraphs = value ? value.split('\n').filter(paragraph => paragraph.trim() !== '') : []
     return (
       <div className="space-y-2">
         {paragraphs.map((paragraph, index) => (
@@ -76,7 +76,7 @@ export default function MultiLineText({
       )}
       {mode !== 'view' && (
         <div className="text-sm text-gray-500 mt-1">
-          {value.length}/{maxLength} characters
+          {value?.length}/{maxLength} characters
         </div>
       )}
     </div>
