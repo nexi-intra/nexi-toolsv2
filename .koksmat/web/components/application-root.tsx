@@ -65,6 +65,19 @@ import GlobalBreadcrumb from "./global-breadcrumb"
 import { ShareComponent } from "./share-component"
 import { DatabaseCacheProvider } from "@/app/koksmat/src/v.next/components/database-cache";
 // Custom hook to detect if running in an iframe
+import { BRANCH } from '@/branch'
+import { APPDISPLAYNAME } from '@/app/global'
+
+function appName() {
+  const branch = BRANCH
+  if ((branch === "master") || (branch === "main")) {
+    return APPDISPLAYNAME
+  }
+  else {
+    return APPDISPLAYNAME + " (" + branch.toUpperCase() + " VERSION)"
+  }
+
+}
 
 
 function MenuItemLabel(props: { title: string, label?: string }) {
@@ -85,7 +98,7 @@ interface ApplicationRootProps {
 
 const translations = {
   en: {
-    teams: "Configuration",
+    teams: "Versions",
     addTeam: "Add Configuration",
     platform: "Solution",
     projects: "Projects",
@@ -97,7 +110,7 @@ const translations = {
     lightMode: "Light Mode",
   },
   da: {
-    teams: "Opsætning",
+    teams: "Versioner",
     addTeam: "Tilføj opsætning",
     platform: "Solution",
     projects: "Projekter",
@@ -214,10 +227,10 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             </div>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                               <span className="truncate font-semibold">
-                                {activeTeam.name[currentLanguage]}
+                                {APPDISPLAYNAME}
                               </span>
                               <span className="truncate text-xs">
-                                {activeTeam.plan[currentLanguage]}
+                                {BRANCH}
                               </span>
                             </div>
                             <ChevronsUpDown className="ml-auto" />
@@ -232,20 +245,76 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           <DropdownMenuLabel className="text-xs text-muted-foreground">
                             {t.teams}
                           </DropdownMenuLabel>
-                          {sidebarData.teams.map((team, index) => (
-                            <DropdownMenuItem
-                              key={team.name.en}
-                              onClick={() => setActiveTeam(team)}
-                              className="gap-2 p-2"
-                            >
-                              <div className="flex size-6 items-center justify-center rounded-sm border">
-                                <Icon iconName={team.logo} />
-                              </div>
-                              {team.name[currentLanguage]}
-                              <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                          ))}
+                          <DropdownMenuItem
+
+
+                            className="gap-2 p-2"
+                          >
+
+                            <div className="flex size-6 items-center justify-center rounded-sm border">
+                              <Icon iconName={activeTeam.logo} />
+                            </div>
+                            <Link className="grow" target="_blank" href="https://tools.intra.nexigroup.com">
+                              Production
+                            </Link>
+
+                          </DropdownMenuItem>
                           <DropdownMenuSeparator />
+                          <DropdownMenuItem
+
+
+                            className="gap-2 p-2"
+                          >
+
+                            <div className="flex size-6 items-center justify-center rounded-sm border">
+                              <Icon iconName={activeTeam.logo} />
+                            </div>
+                            <Link className="grow" target="_blank" href="https://nexi-intra-nexi-toolsv2-canary.intra.nexigroup.com">
+                              Canary
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+
+
+                            className="gap-2 p-2"
+                          >
+
+                            <div className="flex size-6 items-center justify-center rounded-sm border">
+                              <Icon iconName={activeTeam.logo} />
+                            </div>
+                            <Link className="grow" target="_blank" href="https://nexi-intra-nexi-toolsv2-alpha.intra.nexigroup.com">
+                              Alpha
+                            </Link>
+
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+
+
+                            className="gap-2 p-2"
+                          >
+
+                            <div className="flex size-6 items-center justify-center rounded-sm border">
+                              <Icon iconName={activeTeam.logo} />
+                            </div>
+                            <Link className="grow" target="_blank" href="https://nexi-intra-nexi-toolsv2-beta.intra.nexigroup.com">
+                              Beta
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+
+
+                            className="gap-2 p-2"
+                          >
+
+                            <div className="flex size-6 items-center justify-center rounded-sm border">
+                              <Icon iconName={activeTeam.logo} />
+                            </div>
+                            <Link className="grow" target="_blank" href="https://nexi-intra-nexi-toolsv2-master.intra.nexigroup.com">
+                              Master
+                            </Link>
+
+                          </DropdownMenuItem>
+                          {/* <DropdownMenuSeparator />
                           <DropdownMenuItem className="gap-2 p-2">
                             <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                               <Plus className="size-4" />
@@ -253,7 +322,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             <div className="font-medium text-muted-foreground">
                               {t.addTeam}
                             </div>
-                          </DropdownMenuItem>
+                          </DropdownMenuItem> */}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </SidebarMenuItem>
