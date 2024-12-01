@@ -24,6 +24,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Get current branch name
+        id: get_branch
+        run: echo "branch_name=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+
+      - name: Write branch name to file
+        run: |
+          echo "export const BRANCH: string = \"${{ env.branch_name }}\";" > .koksmat/web/branch.ts
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
