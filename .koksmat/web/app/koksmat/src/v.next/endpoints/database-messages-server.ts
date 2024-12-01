@@ -131,7 +131,10 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
             );
           }
           return new Response(
-            JSON.stringify({ record: readResult.data?.Result[0], status: 200 })
+            JSON.stringify({
+              data: { Result: readResult.data?.Result[0] },
+              status: 200,
+            })
           );
 
           break;
@@ -145,7 +148,10 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
               message.message.targetDatabase.databaseName,
               "update_" + message.message.targetDatabase.tableName,
               token,
-              JSON.stringify(message.message.record.data),
+              JSON.stringify({
+                ...message.message.record.data,
+                id: message.message.record.id,
+              }),
             ],
             "",
             600,

@@ -8,6 +8,7 @@ import { use, useContext } from "react";
 import { MagicboxContext } from "@/app/koksmat0/magicbox-context";
 import { ParametersType } from "@/app/koksmat/src/v.next/lib/database-handler";
 import { ViewNames } from "@/app/tools/schemas/database/view";
+import { databaseTable } from "@/app/tools/schemas/database/table";
 
 export function ToolList() {
 
@@ -15,6 +16,7 @@ export function ToolList() {
   return (
     <DatabaseItemsViewer
       schema={view.schema}
+      tableName={databaseTable.tool.tablename}
       options={{ heightBehaviour: "Full" }}
       renderItem={(tool, viewMode) => {
 
@@ -61,6 +63,7 @@ export function ToolExplorer(props: { searchFor?: string; onLoaded?: () => void 
   const view = databaseQueries.getView("tools")
   return (
     <DatabaseItemsViewer
+      tableName={databaseTable.tool.tablename}
       schema={view.schema}
       searchFor={searchFor}
 
@@ -125,6 +128,7 @@ export function ToolExplorerFiltered(props: {
   const view = databaseQueries.getView(viewName)
   return (
     <DatabaseItemsViewer
+      tableName={databaseTable.tool.tablename}
       schema={view.schema}
       searchFor={searchFor}
       parameters={props.parameters}

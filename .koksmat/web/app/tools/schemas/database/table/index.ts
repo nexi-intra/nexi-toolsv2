@@ -29,7 +29,7 @@ import * as userrole from "./userrole";
 import { kInfo } from "@/lib/koksmat-logger-client";
 import { version } from "@/app/koksmat";
 export type Userrole = z.infer<typeof userrole.schema>;
-export const table = {
+export const databaseTable = {
   accesspoint,
   auditlog,
   category,

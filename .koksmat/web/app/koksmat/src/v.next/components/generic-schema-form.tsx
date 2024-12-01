@@ -15,6 +15,7 @@ import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { ComponentDoc } from '../../../../../components/component-documentation-hub';
 import { kVerbose, kWarn, kInfo, kError } from "@/lib/koksmat-logger-client";
+import { ScrollArea } from '@radix-ui/react-scroll-area';
 
 // Define the props schema using Zod
 const SchemaFormPropsSchema = (schema: z.ZodObject<any, any>) => z.object({
@@ -205,7 +206,7 @@ const Field: React.FC<FieldProps> = ({
   const renderLabelAndDescription = () => {
     let label = keyName;
     let description = '';
-
+    debugger
     if (fieldSchema.description) {
       const lines = fieldSchema.description.split('\n');
       label = lines[0];
@@ -358,8 +359,17 @@ export function SchemaForm<T extends z.ZodObject<any, any>>({
         actionLevel="error"
         componentName="SchemaForm"
       />
-      <div className={`space-y-4 ${className}`}>
-        {Object.entries(filteredSchema().shape).map(([key, fieldSchema]) => (
+      <div className={`space-y-4 ${className}  `}>
+
+
+        {Object.entries(filteredSchema().shape).filter(([key]) => {
+
+          if (["id", "updated_at", "deleted_at", "created_at", "updated_by", "created_by", "created_at", "tenant", "searchindex", "deletedby", "calculatedsearchindex"].find((k) => k.toLocaleLowerCase() === key.toLocaleLowerCase())) {
+
+            return false
+          }
+          return true
+        }).map(([key, fieldSchema]) => (
           <Field
             key={key}
             fieldSchema={fieldSchema as z.ZodTypeAny}

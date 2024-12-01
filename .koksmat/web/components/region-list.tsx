@@ -16,32 +16,35 @@ import { LinkListProps } from "@/app/koksmat/src/v.next/components/_shared";
 import { ToolExplorerFiltered } from "./tool-list";
 
 
+import { databaseTable } from "@/app/tools/schemas/database/table";
+import DatabaseItemDialog from "@/app/koksmat/src/v.next/components/database-item-dialog";
+import { GenericTableEditor } from "@/app/koksmat/src/v.next/components";
+
+
 const VIEWNAME = "regions"
 
 export function RegionList() {
+  const databaseName = "tools"
   const view = queries.getView(VIEWNAME)
+  const table = databaseTable.region
   const [edit, setedit] = useState(false)
   return (
-
     <DatabaseItemsViewer
-      renderItem={(region, viewMode) => {
-        return <Card>
-
+      tableName={table.tablename}
+      addItem={() => {
+        return <GenericTableEditor schema={table.schema} tableName={table.tablename} databaseName={databaseName} defaultMode={"new"}
+          showJSON={true}
+          onUpdated={() => document.location.reload()} id={0} />
+      }}
+      renderItem={(item, viewMode) => {
+        return <Card className="min-w-[300px]">
           <CardHeader>
-            <CardTitle>{region.name}</CardTitle>
-            <CardDescription>{region.description}</CardDescription>
+            <h2>{item.name}</h2>
           </CardHeader>
           <CardContent>
-            {/* <p>Card Content</p> */}
+            <DatabaseItemDialog id={item.id} schema={table.schema} tableName={table.tablename} databaseName={databaseName} />
           </CardContent>
-          {/* <CardFooter className="object-right">
-            <Button variant={"link"}>Edit</Button>
-          </CardFooter> */}
-
         </Card>
-
-
-
       }
       }
       schema={view.schema}
@@ -55,7 +58,7 @@ export function RegionListLinker({ searchFor, basePath, prefix, onLoaded }: Link
 
     <DatabaseItemsViewer
       schema={view.schema}
-
+      tableName={databaseTable.region.tablename}
       renderItem={(item, viewMode) => {
         return <div className="min-h-96 p-4 m-4 bg-white" key={item.id}>
           <div className="flex">
