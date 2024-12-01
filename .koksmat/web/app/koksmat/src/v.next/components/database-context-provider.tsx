@@ -89,6 +89,7 @@ export const KoksmatDatabaseProvider: React.FC<KoksmatDatabaseProviderProps> = (
       read: async (id: number) => {
         kInfo("provider", `Reading record ${id} from ${tableName}`);
         const token = await getToken(tokenProvider);
+
         return messageProvider.send({
 
           subject: 'read',

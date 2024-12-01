@@ -21,7 +21,9 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
   parameters,
   renderItem,
   editItem,
+  addItem,
   searchFor,
+  tableName,
   options = { pageSize: 250, heightBehaviour: 'Full', mode: 'view', hideToolbar: false, onLoaded: () => { }, defaultViewMode: 'card' }
 
 
@@ -104,15 +106,25 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
       {error && <div className='text-red-500'>{error}</div>}
 
       {view && (
-        <ItemViewerComponent
-          items={items || []}
-          renderItem={renderItem}
-          editItem={editItem}
-          properties={[]}
-          searchFor={searchFor}
-          onSearch={(query) => kInfo("component", 'Search query:', query)}
-          options={{ pageSize, heightBehaviour, hideToolbar: options.hideToolbar, onLoaded: options.onLoaded, defaultViewMode: options.defaultViewMode }}
-          schema={view.schema} />)}
+        <div className='w-full'>
+          <ItemViewerComponent
+            items={items || []}
+            renderItem={renderItem}
+            editItem={editItem}
+            addItem={addItem}
+            properties={[]}
+            searchFor={searchFor}
+            onSearch={(query) => kInfo("component", 'Search query:', query)}
+            options={{ pageSize, heightBehaviour, hideToolbar: options.hideToolbar, onLoaded: options.onLoaded, defaultViewMode: options.defaultViewMode }}
+            schema={view.schema}
+            tableName={tableName}
+            databaseName={view.databaseName}
+
+          />
+
+
+        </div>
+      )}
 
     </div >
   )

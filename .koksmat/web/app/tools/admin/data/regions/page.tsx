@@ -1,4 +1,4 @@
-import RegionEditor from "@/components/region-form";
+
 import { RegionList } from "@/components/region-list";
 import type { Metadata } from "next";
 

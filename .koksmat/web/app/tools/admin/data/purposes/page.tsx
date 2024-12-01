@@ -1,4 +1,4 @@
-import PurposeForm from "@/components/purpose-form";
+
 import { PurposesList } from "@/components/purpose-list";
 import type { Metadata } from "next";
 
