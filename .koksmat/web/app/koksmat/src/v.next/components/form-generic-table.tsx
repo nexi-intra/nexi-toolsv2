@@ -8,14 +8,18 @@ import { kError, kInfo, kVerbose, kWarn } from '@/lib/koksmat-logger-client'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useKoksmatDatabase } from './database-context-provider'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-
-type GenericTableFormProps<T extends z.ZodObject<any, any>> = {
+import { ZeroTrust } from '@/components/zero-trust'
+import { set } from 'date-fns'
+import { Code2 } from 'lucide-react'
+export type FormModeType = 'view' | 'edit' | 'new' | 'copy'
+type GenericTableFormProps<T extends z.ZodObject<any, any, any>> = {
   databaseName: string;
   tableName: string;
   schema: T;
   showModeSelector?: boolean
   showJSON?: boolean
-  id?: number
+  id: number
+  defaultMode: FormModeType
   onCreated?: (id: number) => void
   onUpdated?: (id: number) => void
   onDeleted?: (id: number) => void
@@ -29,24 +33,33 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
   tableName,
   databaseName,
   showModeSelector = false,
-  showJSON = true,
+  showJSON = false,
   onCreated,
   onUpdated,
   onDeleted,
-  onRead
+  onRead,
+  defaultMode,
+  id
 
 }: GenericTableFormProps<T>) {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
-  const idParam = searchParams.get('id')
+  //const idParam = searchParams.get('id')
   const table = useKoksmatDatabase().table(tableName, databaseName, schema)
-  const [mode, setMode] = useState<'view' | 'edit' | 'new' | 'copy'>(idParam ? 'edit' : 'new')
+
+
+  const [mode, setMode] = useState<FormModeType>(defaultMode === 'view' ? "view" : (id ? 'edit' : 'new'))
   const [data, setData] = useState<z.TypeOf<T>>()
   const [isValid, setisValid] = useState(false)
-  const [id, setid] = useState<number>()
+  //const [id, setid] = useState<number>()
   const [errors, seterrors] = useState<Array<{ field: string; message: string }>>([])
   const [error, seterror] = useState("")
+  const [jsonVisible, setjsonVisible] = useState(showJSON)
+  useEffect(() => {
+    setjsonVisible(showJSON)
+  }, [showJSON])
+
 
 
 
@@ -59,27 +72,29 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
     },
     [searchParams]
   )
-  useEffect(() => {
-    if (idParam) {
-      setid(parseInt(idParam))
-    }
-  }, [idParam])
+
   useEffect(() => {
     seterror(errors.map(e => e.message).join(","))
 
 
   }, [errors])
 
+  useEffect(() => {
+    setMode(defaultMode)
+  }, [defaultMode])
+
+
 
   useEffect(() => {
 
     const load = async () => {
+
       if (id) {
         try {
           kVerbose("component", "Starting read operation");
           const readDataOperation = await table.read(id)
 
-          const parsedData = schema.safeParse(readDataOperation.record)
+          const parsedData = schema.safeParse(readDataOperation)
           if (!parsedData.success) {
             kError("component", "Data is undefined, cannot read region", parsedData.error);
             seterror("Cannot read" + parsedData.error)
@@ -91,7 +106,7 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
           //onRead && onRead(id,parsedData.data)
         } catch (error) {
           seterror("" + error)
-          kError("component", "Data is undefined, cannot create region", error);
+          kError("component", "Data is undefined, cannot create", error);
         }
       }
     }
@@ -113,9 +128,10 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
         if (mode == 'new') {
           const id = await table.create(data)
           kVerbose("component", "Completed save operation, got ", id);
+          debugger
           onCreated && onCreated(id)
           setMode('edit')
-          router.push(pathname + '?' + createQueryString('id', id.toString()))
+          //router.push(pathname + '?' + createQueryString('id', id.toString()))
         }
         kWarn("component", "No id found, cannot save")
       } else {
@@ -150,6 +166,8 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
 
   return (
     <div className="space-y-4 p-6 bg-gray-100 dark:bg-gray-900 rounded-lg w-full">
+
+
       {showModeSelector &&
         <div className="space-x-2">
           <Button disabled={!id} onClick={() => setMode('view')} variant={mode === 'view' ? 'outline' : 'link'}>View</Button>
@@ -166,20 +184,23 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
           <Button variant={"default"} disabled={!isValid} onClick={handleSave}> Save</Button>
         </div>}
       {error && <div className='text-red-500'>{error}</div>}
+
       <SchemaForm
         schema={schema}
         initialData={data}
         mode={mode}
 
-        omit={['tenant', 'searchindex']}
+        omit={[]}
         onChange={handleChange} />
+      {mode !== 'view' && <Button variant={"default"} disabled={!isValid} onClick={handleSave}> Save</Button>}
       <div className="mt-4">
         {!isValid && (
 
           <pre className="bg-white dark:bg-gray-800 text-black dark:text-white p-4 rounded-lg overflow-x-auto">
             {JSON.stringify(errors, null, 2)}
           </pre>)}
-        {showJSON &&
+
+        {jsonVisible &&
           <div>
             <h3 className="text-lg font-semibold text-black dark:text-white">Resulting JSON:</h3>
             <pre className="bg-white dark:bg-gray-800 text-black dark:text-white p-4 rounded-lg overflow-x-auto">

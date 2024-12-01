@@ -1,5 +1,5 @@
 
-import UserGroupForm from "@/components/usergroup-form";
+
 import { UserGroupsList } from "@/components/usergroup-list";
 import type { Metadata } from "next";
 

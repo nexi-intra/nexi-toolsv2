@@ -13,7 +13,7 @@ export const ToolSchema = SharedAttributes.extend({
   translations: z.string().nullable().optional().describe(`Tool translations`),
   category_id: z.number().describe(`Category id`),
   url: z.string().describe(`Tool url`),
-  status: z.string().describe(`Tool status`),
+  status: z.string().nullable().optional().describe(`Tool status`),
   icon: z.string().nullable().optional().describe(`Icon`),
   documents: z
     .array(
@@ -29,6 +29,8 @@ export const ToolSchema = SharedAttributes.extend({
     .object({
       icon_reference: z.string().nullable().optional(),
     })
+    .nullable()
+    .optional()
     .describe(`Tool metadata`),
   category_name: z.string().describe(`Category name`),
   category_order: z.string().nullable().describe(`Category order`),
@@ -78,7 +80,7 @@ export const metadataPurposes: SqlView = {
     "###WHERE###",
 
     `
-    WHERE t.id  IN (SELECT tool_id FROM tool_m2m_purpose WHERE purpose_id = ###P1###)
+    WHERE t.id  IN (SELECT tool_id FROM tool_m2m_purpose WHERE purpose_id = ###P1###) AND t.deleted_at IS NULL
       `
   ),
 
@@ -96,7 +98,7 @@ export const metadataRegion: SqlView = {
     select tool_id from tool_m2m_country  where country_id in
     (
     select id from country where region_id = ###P1###)
-    )
+    ) AND  deleted_at IS NULL
      `
   ),
 
@@ -110,7 +112,7 @@ export const metadataCountry: SqlView = {
   sql: sql.replace(
     "###WHERE###",
     `
-WHERE t.id IN (SELECT tool_id FROM tool_m2m_country WHERE country_id = ###P1###)
+WHERE t.id IN (SELECT tool_id FROM tool_m2m_country WHERE country_id = ###P1###) AND  t.deleted_at IS NULL
   `
   ),
 
@@ -124,7 +126,7 @@ export const metadataCategory: SqlView = {
   sql: sql.replace(
     "###WHERE###",
     `
-WHERE t.category_id = ###P1###
+WHERE t.category_id = ###P1### AND  t.deleted_at IS NULL
   `
   ),
 
