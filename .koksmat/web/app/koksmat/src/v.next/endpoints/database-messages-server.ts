@@ -9,6 +9,7 @@ import { database } from "@/actions/database/works/activityModel";
 import { databaseActions } from "@/app/tools/schemas/database";
 import { jwtDecode } from "jwt-decode";
 import { cloneElement } from "react";
+import { se } from "date-fns/locale";
 
 const crudOperationSchema = z.object({
   messageType: z.literal("crudOperation"),
@@ -83,7 +84,11 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
               message.message.targetDatabase.databaseName,
               "create_" + message.message.targetDatabase.tableName,
               token,
-              JSON.stringify(message.message.record.data),
+              JSON.stringify({
+                ...message.message.record.data,
+                tenant: "",
+                searchindex: "",
+              }),
             ],
             "",
             600,
@@ -97,6 +102,29 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
           return new Response(JSON.stringify({ ...createResult, status: 200 }));
           break;
         case "delete":
+          const deleteResult = await run(
+            MICROSERVICE,
+            [
+              "execute",
+              message.message.targetDatabase.databaseName,
+              "delete_" + message.message.targetDatabase.tableName,
+              token,
+              JSON.stringify({
+                //...message.message.record.data,
+                //   hard: !message.message.record.softdelete,
+                id: message.message.record.id,
+              }),
+            ],
+            "",
+            600,
+            "x"
+          );
+          if (deleteResult.hasError) {
+            return new Response(
+              JSON.stringify({ error: deleteResult.errorMessage, status: 503 })
+            );
+          }
+          return new Response(JSON.stringify({ ...deleteResult, status: 200 }));
           break;
         case "patch":
           break;

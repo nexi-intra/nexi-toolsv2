@@ -9,8 +9,8 @@ keep: true
 import { z } from "zod";
 
 export const schema = z.object({
-  tenant: z.string(),
-  searchindex: z.string(),
+  tenant: z.string().optional().describe("Tenant"),
+  searchindex: z.string().optional().describe("Search Index"),
   name: z.string().describe("Name of the user"),
   description: z
     .string()

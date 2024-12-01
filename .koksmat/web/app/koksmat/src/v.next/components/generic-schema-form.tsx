@@ -206,7 +206,7 @@ const Field: React.FC<FieldProps> = ({
   const renderLabelAndDescription = () => {
     let label = keyName;
     let description = '';
-    debugger
+
     if (fieldSchema.description) {
       const lines = fieldSchema.description.split('\n');
       label = lines[0];

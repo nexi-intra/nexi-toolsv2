@@ -128,6 +128,7 @@ export function GenericTableEditor<T extends z.ZodObject<any, any>>({
         if (mode == 'new') {
           const id = await table.create(data)
           kVerbose("component", "Completed save operation, got ", id);
+          debugger
           onCreated && onCreated(id)
           setMode('edit')
           //router.push(pathname + '?' + createQueryString('id', id.toString()))
