@@ -63,7 +63,21 @@ import { MagicboxContext } from "@/app/koksmat0/magicbox-context"
 import { useIsInIframe } from "@/app/koksmat/src/v.next/components/use-isiniframe"
 import GlobalBreadcrumb from "./global-breadcrumb"
 import { ShareComponent } from "./share-component"
+import { DatabaseCacheProvider } from "@/app/koksmat/src/v.next/components/database-cache";
 // Custom hook to detect if running in an iframe
+import { BRANCH } from '@/branch'
+import { APPDISPLAYNAME } from '@/app/global'
+
+function appName() {
+  const branch = BRANCH
+  if ((branch === "master") || (branch === "main")) {
+    return APPDISPLAYNAME
+  }
+  else {
+    return APPDISPLAYNAME + " (" + branch.toUpperCase() + " VERSION)"
+  }
+
+}
 
 
 function MenuItemLabel(props: { title: string, label?: string }) {
@@ -84,7 +98,7 @@ interface ApplicationRootProps {
 
 const translations = {
   en: {
-    teams: "Configuration",
+    teams: "Versions",
     addTeam: "Add Configuration",
     platform: "Solution",
     projects: "Projects",
@@ -96,7 +110,7 @@ const translations = {
     lightMode: "Light Mode",
   },
   da: {
-    teams: "Opsætning",
+    teams: "Versioner",
     addTeam: "Tilføj opsætning",
     platform: "Solution",
     projects: "Projekter",
@@ -128,11 +142,11 @@ const TopNavigation: React.FC<{
 
 
     <ShareComponent subscriberCount={0} onShare={function (args_0: string, ...args: unknown[]): void {
-      throw new Error('Function not implemented.')
+      //throw new Error('Function not implemented.')
     }} onCreatePost={function (...args: unknown[]): void {
-      throw new Error('Function not implemented.')
+      //throw new Error('Function not implemented.')
     }} />
-    <DropdownMenu>
+    {/* <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost">
           {t.language}
@@ -143,7 +157,7 @@ const TopNavigation: React.FC<{
         <DropdownMenuItem onClick={() => changeLanguage('en')}>English</DropdownMenuItem>
         <DropdownMenuItem onClick={() => changeLanguage('da')}>Dansk</DropdownMenuItem>
       </DropdownMenuContent>
-    </DropdownMenu>
+    </DropdownMenu> */}
   </div>
 )
 
@@ -177,140 +191,201 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
         getToken: async () => {
           if (!magicbox.authtoken) {
             //alert("No authtoken")
-            throw new Error('No authtoken - please reload the page')
+            await magicbox.signIn(["user.read"], "")
+            debugger
+            if (!magicbox.authtoken) {
+              throw new Error('No authtoken - please reload the page')
+            }
+
           }
           return magicbox.authtoken
         }
       }}>
-
-      <div className={`flex h-screen ${isDarkMode ? 'dark' : ''} bg-background text-foreground`}>
-        {!hideTopNav && !isInIframe && (
-          <div className="absolute top-0 right-0 p-4 z-50 flex" >
-            {topnav}
-            <TopNavigation
-              isDarkMode={isDarkMode}
-              toggleDarkMode={toggleDarkMode}
-              currentLanguage={currentLanguage}
-              changeLanguage={changeLanguage}
-              t={t}
-            />
-          </div>
-        )}
-        <SidebarProvider>
-          {!hideSidebar && !isInIframe && (
-            <Sidebar collapsible="icon">
-              <SidebarHeader>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <SidebarMenuButton
-                          size="lg"
-                          className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+      <DatabaseCacheProvider>
+        <div className={`flex h-screen ${isDarkMode ? 'dark' : ''} bg-background text-foreground`}>
+          {!hideTopNav && !isInIframe && (
+            <div className="absolute top-0 right-0 p-4 z-50 flex" >
+              {topnav}
+              <TopNavigation
+                isDarkMode={isDarkMode}
+                toggleDarkMode={toggleDarkMode}
+                currentLanguage={currentLanguage}
+                changeLanguage={changeLanguage}
+                t={t}
+              />
+            </div>
+          )}
+          <SidebarProvider>
+            {!hideSidebar && !isInIframe && (
+              <Sidebar collapsible="icon">
+                <SidebarHeader>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <SidebarMenuButton
+                            size="lg"
+                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                          >
+                            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                              <Icon iconName={activeTeam.logo} className="size-5" />
+                            </div>
+                            <div className="grid flex-1 text-left text-sm leading-tight">
+                              <span className="truncate font-semibold">
+                                {APPDISPLAYNAME}
+                              </span>
+                              <span className="truncate text-xs">
+                                {BRANCH}
+                              </span>
+                            </div>
+                            <ChevronsUpDown className="ml-auto" />
+                          </SidebarMenuButton>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                          align="start"
+                          side="bottom"
+                          sideOffset={4}
                         >
-                          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                            <Icon iconName={activeTeam.logo} className="size-5" />
-                          </div>
-                          <div className="grid flex-1 text-left text-sm leading-tight">
-                            <span className="truncate font-semibold">
-                              {activeTeam.name[currentLanguage]}
-                            </span>
-                            <span className="truncate text-xs">
-                              {activeTeam.plan[currentLanguage]}
-                            </span>
-                          </div>
-                          <ChevronsUpDown className="ml-auto" />
-                        </SidebarMenuButton>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                        align="start"
-                        side="bottom"
-                        sideOffset={4}
-                      >
-                        <DropdownMenuLabel className="text-xs text-muted-foreground">
-                          {t.teams}
-                        </DropdownMenuLabel>
-                        {sidebarData.teams.map((team, index) => (
+                          <DropdownMenuLabel className="text-xs text-muted-foreground">
+                            {t.teams}
+                          </DropdownMenuLabel>
                           <DropdownMenuItem
-                            key={team.name.en}
-                            onClick={() => setActiveTeam(team)}
+
+
                             className="gap-2 p-2"
                           >
+
                             <div className="flex size-6 items-center justify-center rounded-sm border">
-                              <Icon iconName={team.logo} />
+                              <Icon iconName={activeTeam.logo} />
                             </div>
-                            {team.name[currentLanguage]}
-                            <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                            <Link className="grow" href="https://tools.intra.nexigroup.com">
+                              Production
+                            </Link>
+
                           </DropdownMenuItem>
-                        ))}
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="gap-2 p-2">
-                          <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                            <Plus className="size-4" />
-                          </div>
-                          <div className="font-medium text-muted-foreground">
-                            {t.addTeam}
-                          </div>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarHeader>
-              <SidebarContent>
-                <SidebarGroup>
-                  <SidebarGroupLabel>{t.platform}</SidebarGroupLabel>
-                  <SidebarMenu>
-                    {sidebarData.navMain.map((item) => (
-                      <Collapsible
-                        key={item.title.en}
-                        asChild
-                        defaultOpen={item.isActive}
-                        className="group/collapsible"
-                      >
-                        <SidebarMenuItem>
-                          <CollapsibleTrigger asChild>
-                            <SidebarMenuButton tooltip={item.title[currentLanguage]}>
-                              <Icon iconName={item.icon} className="size-5" />
-                              <span>{item.title[currentLanguage]}</span>
-                              {item.label && <span className="bg-yellow-400">{item.label}</span>}
-                              <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                            </SidebarMenuButton>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent>
-                            <SidebarMenuSub>
-                              {item.items?.map((subItem) => (
-                                <SidebarMenuSubItem key={subItem.title.en}>
-                                  <SidebarMenuSubButton asChild>
-                                    <Link href={subItem.url}>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
 
-                                      <span>{subItem.title[currentLanguage]} </span>
-                                      {subItem.label && <span className="bg-yellow-400">{subItem.label}</span>}
 
-                                    </Link>
-                                  </SidebarMenuSubButton>
-                                </SidebarMenuSubItem>
-                              ))}
-                            </SidebarMenuSub>
-                          </CollapsibleContent>
-                        </SidebarMenuItem>
-                      </Collapsible>
-                    ))}
+                            className="gap-2 p-2"
+                          >
+
+                            <div className="flex size-6 items-center justify-center rounded-sm border">
+                              <Icon iconName={activeTeam.logo} />
+                            </div>
+                            <Link className="grow" href="https://nexi-intra-nexi-toolsv2-canary.intra.nexigroup.com">
+                              Canary
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+
+
+                            className="gap-2 p-2"
+                          >
+
+                            <div className="flex size-6 items-center justify-center rounded-sm border">
+                              <Icon iconName={activeTeam.logo} />
+                            </div>
+                            <Link className="grow" href="https://nexi-intra-nexi-toolsv2-alpha.intra.nexigroup.com">
+                              Alpha
+                            </Link>
+
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+
+
+                            className="gap-2 p-2"
+                          >
+
+                            <div className="flex size-6 items-center justify-center rounded-sm border">
+                              <Icon iconName={activeTeam.logo} />
+                            </div>
+                            <Link className="grow" href="https://nexi-intra-nexi-toolsv2-beta.intra.nexigroup.com">
+                              Beta
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+
+
+                            className="gap-2 p-2"
+                          >
+
+                            <div className="flex size-6 items-center justify-center rounded-sm border">
+                              <Icon iconName={activeTeam.logo} />
+                            </div>
+                            <Link className="grow" href="https://nexi-intra-nexi-toolsv2-master.intra.nexigroup.com">
+                              Master
+                            </Link>
+
+                          </DropdownMenuItem>
+                          {/* <DropdownMenuSeparator />
+                          <DropdownMenuItem className="gap-2 p-2">
+                            <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+                              <Plus className="size-4" />
+                            </div>
+                            <div className="font-medium text-muted-foreground">
+                              {t.addTeam}
+                            </div>
+                          </DropdownMenuItem> */}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </SidebarMenuItem>
                   </SidebarMenu>
-                </SidebarGroup>
-                <SidebarGroup className="hidden group-data-[collapsible=icon]:hidden ">
-                  <SidebarGroupLabel>{t.projects}</SidebarGroupLabel>
-                  <SidebarMenu>
-                    {sidebarData.projects.map((item) => (
-                      <SidebarMenuItem key={item.title.en}>
-                        <SidebarMenuButton asChild>
-                          <Link href={item.url}>
-                            <Icon iconName={item.icon} className="size-5" />
-                            <span>{item?.title[currentLanguage]}</span>
-                          </Link>
-                        </SidebarMenuButton>
-                        {/* <DropdownMenu>
+                </SidebarHeader>
+                <SidebarContent>
+                  <SidebarGroup>
+                    <SidebarGroupLabel>{t.platform}</SidebarGroupLabel>
+                    <SidebarMenu>
+                      {sidebarData.navMain.map((item) => (
+                        <Collapsible
+                          key={item.title.en}
+                          asChild
+                          defaultOpen={item.isActive}
+                          className="group/collapsible"
+                        >
+                          <SidebarMenuItem>
+                            <CollapsibleTrigger asChild>
+                              <SidebarMenuButton tooltip={item.title[currentLanguage]}>
+                                <Icon iconName={item.icon} className="size-5" />
+                                <span>{item.title[currentLanguage]}</span>
+                                {item.label && <span className="bg-yellow-400">{item.label}</span>}
+                                <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                              </SidebarMenuButton>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent>
+                              <SidebarMenuSub>
+                                {item.items?.map((subItem) => (
+                                  <SidebarMenuSubItem key={subItem.title.en}>
+                                    <SidebarMenuSubButton asChild>
+                                      <Link href={subItem.url}>
+
+                                        <span>{subItem.title[currentLanguage]} </span>
+                                        {subItem.label && <span className="bg-yellow-400">{subItem.label}</span>}
+
+                                      </Link>
+                                    </SidebarMenuSubButton>
+                                  </SidebarMenuSubItem>
+                                ))}
+                              </SidebarMenuSub>
+                            </CollapsibleContent>
+                          </SidebarMenuItem>
+                        </Collapsible>
+                      ))}
+                    </SidebarMenu>
+                  </SidebarGroup>
+                  <SidebarGroup className="hidden group-data-[collapsible=icon]:hidden ">
+                    <SidebarGroupLabel>{t.projects}</SidebarGroupLabel>
+                    <SidebarMenu>
+                      {sidebarData.projects.map((item) => (
+                        <SidebarMenuItem key={item.title.en}>
+                          <SidebarMenuButton asChild>
+                            <Link href={item.url}>
+                              <Icon iconName={item.icon} className="size-5" />
+                              <span>{item?.title[currentLanguage]}</span>
+                            </Link>
+                          </SidebarMenuButton>
+                          {/* <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <SidebarMenuAction showOnHover>
                             <Icon iconName={item.moreIcon} className="size-5" />
@@ -330,55 +405,26 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           ))}
                         </DropdownMenuContent>
                       </DropdownMenu> */}
-                      </SidebarMenuItem>
-                    ))}
-                    <SidebarMenuItem>
-                      <SidebarMenuButton className="text-sidebar-foreground/70">
-                        {sidebarData.moreProjectsIcon}
-                        <span>{t.more}</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  </SidebarMenu>
-                </SidebarGroup>
-              </SidebarContent>
-              <SidebarFooter>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <SidebarMenuButton
-                          size="lg"
-                          className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                        >
-                          <Avatar className="h-8 w-8 rounded-lg">
-                            <AvatarImage
-                              src={magicbox.user?.image}
-                              alt={magicbox.user?.name}
-                            />
-                            <AvatarFallback className="rounded-lg">
-                              {magicbox.user?.name.split(' ').map(n => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="grid flex-1 text-left text-sm leading-tight">
-                            <span className="truncate font-semibold">
-                              {!magicbox.authtoken && <div className="text-red-500">!</div>}
-                              {magicbox.user?.name}
-                            </span>
-                            <span className="truncate text-xs">
-                              {magicbox.user?.email}
-                            </span>
-                          </div>
-                          <ChevronsUpDown className="ml-auto size-4" />
+                        </SidebarMenuItem>
+                      ))}
+                      <SidebarMenuItem>
+                        <SidebarMenuButton className="text-sidebar-foreground/70">
+                          {sidebarData.moreProjectsIcon}
+                          <span>{t.more}</span>
                         </SidebarMenuButton>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                        side="bottom"
-                        align="end"
-                        sideOffset={4}
-                      >
-                        <DropdownMenuLabel className="p-0 font-normal">
-                          <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                      </SidebarMenuItem>
+                    </SidebarMenu>
+                  </SidebarGroup>
+                </SidebarContent>
+                <SidebarFooter>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <SidebarMenuButton
+                            size="lg"
+                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                          >
                             <Avatar className="h-8 w-8 rounded-lg">
                               <AvatarImage
                                 src={magicbox.user?.image}
@@ -390,41 +436,73 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                               <span className="truncate font-semibold">
+                                {!magicbox.authtoken && <div className="text-red-500">!</div>}
                                 {magicbox.user?.name}
                               </span>
                               <span className="truncate text-xs">
                                 {magicbox.user?.email}
                               </span>
                             </div>
-                          </div>
-                        </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                          {sidebarData.userMenuItems.map((item) => (
-                            <DropdownMenuItem key={item.label.en}>
-                              <Icon iconName={item.icon} className="size-5" />
-                              {item.label[currentLanguage]}
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarFooter>
-              <SidebarRail />
-            </Sidebar>
-          )}
+                            <ChevronsUpDown className="ml-auto size-4" />
+                          </SidebarMenuButton>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                          side="bottom"
+                          align="end"
+                          sideOffset={4}
+                        >
+                          <DropdownMenuLabel className="p-0 font-normal">
+                            <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                              <Avatar className="h-8 w-8 rounded-lg">
+                                <AvatarImage
+                                  src={magicbox.user?.image}
+                                  alt={magicbox.user?.name}
+                                />
+                                <AvatarFallback className="rounded-lg">
+                                  {magicbox.user?.name.split(' ').map(n => n[0]).join('')}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="grid flex-1 text-left text-sm leading-tight">
+                                <span className="truncate font-semibold">
+                                  {magicbox.user?.name}
+                                </span>
+                                <span className="truncate text-xs">
+                                  {magicbox.user?.email}
+                                </span>
+                              </div>
+                            </div>
+                          </DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuGroup>
+                            <DropdownMenuLabel>
+                              {magicbox.user?.roles.join(', ')}
+                            </DropdownMenuLabel>
+                            {sidebarData.userMenuItems.map((item) => (
+                              <DropdownMenuItem key={item.label.en}>
+                                <Icon iconName={item.icon} className="size-5" />
+                                {item.label[currentLanguage]}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarFooter>
+                <SidebarRail />
+              </Sidebar>
+            )}
 
-          <SidebarInset>
-            {!isInIframe && (
-              <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-                <div className="flex items-center gap-2 px-4">
-                  <SidebarTrigger className="-ml-1" />
+            <SidebarInset>
+              {!isInIframe && (
+                <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+                  <div className="flex items-center gap-2 px-4">
+                    <SidebarTrigger className="-ml-1" />
 
-                  <Separator orientation="vertical" className="mr-2 h-4" />
-                  {!isInIframe && <GlobalBreadcrumb />}
-                  {/* <Breadcrumb>
+                    <Separator orientation="vertical" className="mr-2 h-4" />
+                    {!isInIframe && <GlobalBreadcrumb />}
+                    {/* <Breadcrumb>
                     <BreadcrumbList>
                       <BreadcrumbItem className="hidden md:block">
                         <BreadcrumbLink href="#">
@@ -438,21 +516,22 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                     </BreadcrumbList>
                   </Breadcrumb> */}
 
-                </div>
-              </header>)}
+                  </div>
+                </header>)}
 
-            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-              <div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min w-full">
-                {children}
+              <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+                <div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min w-full">
+                  {children}
+                </div>
               </div>
-            </div>
-          </SidebarInset>
-        </SidebarProvider>
-        {/* <pre>
+            </SidebarInset>
+          </SidebarProvider>
+          {/* <pre>
         {JSON.stringify(sidebarData.navMain, null, 2)}
 
       </pre> */}
-      </div>
+        </div>
+      </DatabaseCacheProvider>
     </KoksmatDatabaseProvider>
   )
 }

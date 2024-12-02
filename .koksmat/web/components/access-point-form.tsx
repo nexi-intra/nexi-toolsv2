@@ -8,7 +8,7 @@ import { databases } from '@/app/tools/schemas/databases'
 
 export default function AccessPointForm() {
   return (
-    <GenericTableEditor schema={databases.databaseToolsTables.table.accesspoint.schema} tableName={databases.databaseToolsTables.table.accesspoint.tablename} databaseName={"tools"} />
+    <GenericTableEditor schema={databases.databaseToolsTables.databaseTable.accesspoint.schema} tableName={databases.databaseToolsTables.databaseTable.accesspoint.tablename} databaseName={"tools"} id={0} defaultMode={'view'} />
   )
 }
 

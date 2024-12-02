@@ -13,6 +13,7 @@ import * as usergroups from "./usergroups";
 import * as userprofiles from "./userprofiles";
 import * as toolgroups from "./toolgroups";
 import * as my_tools from "./my_tools";
+import { tablename } from "../table/accesspoint";
 
 // Consolidate views from multiple modules
 const views = {
@@ -39,7 +40,7 @@ export type ViewNames = keyof typeof views;
 export const viewNames = Object.keys(views) as ViewNames[];
 
 // Type definition for view metadata
-type ViewMetadata<T extends ViewNames> = (typeof views)[T];
+export type ViewMetadata<T extends ViewNames> = (typeof views)[T];
 
 // Function to retrieve a view by name with type safety
 export const getView = <T extends ViewNames>(viewName: T): ViewMetadata<T> => {

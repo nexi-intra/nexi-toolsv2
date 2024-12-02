@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Fragment } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Grid, List, Calendar, Columns, ChevronLeft, ChevronRight, X, Edit, Copy, MoreHorizontal } from 'lucide-react'
+import { Search, Grid, List, Calendar, Columns, ChevronLeft, ChevronRight, X, Edit, Copy, MoreHorizontal, Table } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
@@ -17,8 +17,8 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { CardViewItems } from './CardView'
 import { TableView } from './TableView'
 import { ListView } from './ListView'
-import { Base, EditItemFunction, RenderItemFunction, ViewItemOptionsProps, ViewMode } from './_shared'
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { AddItemFunction, Base, EditItemFunction, RenderItemFunction, ViewItemOptionsProps, ViewMode } from './_shared'
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
   Dialog,
   DialogContent,
@@ -29,6 +29,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { se } from 'date-fns/locale'
+import { FormModeType, GenericTableEditor } from './form-generic-table'
 // Schema for countries
 const CountrySchema = z.object({
   id: z.number().int().positive().describe(`unique id
@@ -76,28 +77,6 @@ CountriesArraySchema.parse(countries)
 
 
 
-// const ItemViewerSchema = z.object({
-//   items: CountriesArraySchema,
-//   onSearch: z.function().optional(),
-//   properties: z.array(PropertySchema).optional(),
-//   options: z.object({
-//     pageSize: z.number().optional(),
-//     heightBehaviour: z.enum(['Dynamic', 'Full']).default('Full')
-//   }).optional()
-// })
-
-// type ItemViewerProps = z.infer<typeof ItemViewerSchema>
-// type ItemViewerProps<T> = {
-//   schema: ZodSchema<T>;
-//   items: T[];
-//   renderItem: (item: T) => React.ReactNode;
-//   childComponent?: (schema: ZodSchema<T>, item: T) => React.ReactNode; // Optional child component for schema-specific rendering
-// };
-// Define PropertySchema and other supporting schemas
-// const PropertySchema = z.object({
-//   key: z.string(),
-//   value: z.any(),
-// });
 
 
 // Extend ViewItemsProps to include additional props
@@ -106,30 +85,29 @@ type ViewItemsProps<T extends Base> = {
   items: T[];
   renderItem?: RenderItemFunction<T>;
   editItem?: EditItemFunction<T>;
+  addItem?: AddItemFunction;
   onSearch?: (query: string) => void;
   properties?: z.infer<typeof PropertySchema>[];
   options?: ViewItemOptionsProps;
   searchFor?: string;
+  tableName: string;
+  databaseName: string;
+  isLoading?: boolean;
 
 };
 
-// function ViewItems<T>({
-//   schema,
-//   items,
-//   renderItem,
-//   onSearch,
-//   properties,
-//   options,
-//   childComponent,
-// }: ViewItemsProps<T>)
+
 export function ItemViewerComponent<T extends { id: number, name: string, searchIndex: string, calculatedsearchindex?: string }>
-  ({ searchFor = "", items, schema, onSearch, properties, renderItem, editItem, options = { heightBehaviour: 'Full', defaultViewMode: 'card', hideToolbar: false } }
+  ({ searchFor = "", items, isLoading, schema, onSearch, properties, renderItem, editItem, addItem, tableName, databaseName, options = { heightBehaviour: 'Full', defaultViewMode: 'card', hideToolbar: false } }
     : ViewItemsProps<T>) {
   const [viewMode, setViewMode] = useState<ViewMode>(options?.defaultViewMode || 'card')
   const [currentPage, setCurrentPage] = useState(1)
-  const [isLoading, setIsLoading] = useState(false)
+
   const [showInfinityLoader, setShowInfinityLoader] = useState(false)
   const [filteredItems, setFilteredItems] = useState(items)
+
+
+  const [selectedId, setselectedId] = useState<number | null>(null)
 
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -138,7 +116,39 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
   const totalPages = Math.max(1, Math.ceil(filteredItems?.length / pageSize))
   const heightBehaviour = options.heightBehaviour || 'Full'
   const showToolbar = !options.hideToolbar
+  function ShowItem({ id }: { id: number }) {
+    const [mode, setmode] = useState<FormModeType>("view")
+    const [debug, setdebug] = useState(false)
+    return <Dialog onOpenChange={(open) => {
+      if (!open) {
+        setselectedId(null)
+      }
+    }} open={true}>
+      <DialogTrigger asChild  >
+        <Button variant="outline">Show item</Button>
+      </DialogTrigger>
+      <DialogContent >
+        <DialogHeader>
+          <DialogTitle>Item details</DialogTitle>
+        </DialogHeader>
+        <DialogDescription>
 
+
+        </DialogDescription>
+        <div className='max-h-[80vh] max-w-[80vw] overflow-auto '>
+          <GenericTableEditor schema={schema} tableName={tableName} databaseName={databaseName} id={id} defaultMode={mode}
+            showJSON={debug}
+
+            onUpdated={() => setselectedId(null)} />
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setdebug(!debug)}>Debug</Button>
+          <Button variant="outline" onClick={() => setselectedId(null)}>Close</Button>
+          <Button variant="outline" onClick={() => setmode("edit")}>Edit</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  }
   useEffect(() => {
     // setIsLoading(true)
     // const timer = setTimeout(() => {
@@ -195,18 +205,20 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
   const paginatedItems = filteredItems.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 
   const handleItemClick = (item: T) => {
+    setselectedId(item.id)
+    //const params = new URLSearchParams(searchParams)
 
-    const params = new URLSearchParams(searchParams)
-    params.set('pane', 'details')
-    params.set('id', item.id.toString())
-    router.push(`?${params.toString()}`)
+    // params.set('pane', 'details')
+    // params.set('id', item.id.toString())
+    // router.push(`?${params.toString()}`)
   }
 
   const handleClosePane = () => {
-    const params = new URLSearchParams(searchParams)
-    params.delete('pane')
-    params.delete('id')
-    router.push(`?${params.toString()}`)
+    setselectedId(null)
+    // const params = new URLSearchParams(searchParams)
+    // params.delete('pane')
+    // params.delete('id')
+    // router.push(`?${params.toString()}`)
   }
 
   const renderView = () => {
@@ -239,8 +251,10 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
     if (!item) return null
 
     return (
-      <div className="absolute z-[1000] inset-y-0 right-0 w-1/3 bg-white shadow-lg p-4 overflow-y-auto">
+      // <div className="absolute z-[1000] inset-y-0 right-0 w-1/3 bg-white shadow-lg p-4 overflow-y-auto"
 
+      // >
+      <div>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">{item.name}</h2>
           <div className="flex space-x-2">
@@ -286,6 +300,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
     <>
 
       <div className={`space-y-4 ${heightBehaviour === 'Full' ? 'h-[calc(100vh-4rem)] flex flex-col' : ''} relative`}>
+        {selectedId && <ShowItem id={selectedId} />}
         { }
         {showToolbar && (<div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
@@ -298,13 +313,14 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
               <Grid className="h-4 w-4" />
               <span className="sr-only">Card view</span>
             </Button>
-            <Button
+            {/* <Button
               variant="outline"
               size="icon"
               onClick={() => setViewMode('table')}
               className={viewMode === 'table' ? 'bg-primary text-primary-foreground' : ''}
             >
-              <List className="h-4 w-4" />
+              <Table className="h-4 w-4" />
+
               <span className="sr-only">Table view</span>
             </Button>
             <Button
@@ -315,8 +331,26 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
             >
               <List className="h-4 w-4" />
               <span className="sr-only">List view</span>
-            </Button>
-            <CreateItem />
+            </Button> */}
+            {addItem && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">Add new </Button>
+                </DialogTrigger>
+                <DialogContent >
+                  <DialogHeader>
+                    <DialogTitle>Create a new record</DialogTitle>
+
+                  </DialogHeader>
+                  <ScrollArea className="h-[80vh] w-full rounded-md border">
+
+                    {addItem("new")}
+                  </ScrollArea>
+                </DialogContent>
+              </Dialog>
+
+
+            )}
             {/* <Button
               variant="outline"
               size="icon"
@@ -381,16 +415,24 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
                 ))}
               </div>
             ) : filteredItems?.length > 0 ? (
-              <div className=''>
-                {renderView()}
+              <div className='flex'>
+                <main className='flex-grow overflow-x-auto max-w-full'>
+                  <div className="w-full">
+                    {renderView()}
+                  </div>
+                </main>
+                {searchParams.get('pane') === 'details' && (
+                  <aside className="w-full md:w-64 flex-shrink-0 mt-4 md:mt-0 md:ml-4">
+                    {renderDetailsPane()}</aside>
+                )
+
+                }
               </div>
             ) : (
 
               <div className="text-center py-8">
-                {editItem &&
-                  <CreateItem />
 
-                }
+                <p className="text-lg mt-4">No items found</p>
 
               </div>
             )}
@@ -427,29 +469,12 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
           </div>
         )}
       </div>
-      {searchParams.get('pane') === 'details' && renderDetailsPane()}
+
     </>
   )
 
-  function CreateItem() {
-    return <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Add new <span className='text-slate-500 pl-2'>Preview</span></Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] max-h-[40vh]">
-        <DialogHeader>
-          <DialogTitle>Create a new record</DialogTitle>
 
-        </DialogHeader>
-        <ScrollArea className="h-72 w-full rounded-md border">
-          {editItem?.("new", 0)}
-        </ScrollArea>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  }
+
 }
 
 const properties = [
@@ -553,13 +578,12 @@ export default function MyPage() {
 
       <ItemViewerComponent
         items={countries}
-        renderItem={(item, mode) => (<div>{item.name + "(" + item.continent + ")"}</div>)
-
-        }
+        tableName='country'
+        renderItem={(item, mode) => (<div>{item.name + "(" + item.continent + ")"}</div>)}
         properties={[]}
         onSearch={(query) => kInfo("component", 'Search query:', query)}
         options={{ pageSize: 10, heightBehaviour: 'Full' }}
-        schema={CountrySchema} />
+        schema={CountrySchema} databaseName={''} />
     ),
   }
 ]

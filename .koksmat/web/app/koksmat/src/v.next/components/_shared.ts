@@ -15,6 +15,8 @@ export type EditItemFunction<T> = (
   id?: number
 ) => React.ReactNode;
 
+export type AddItemFunction = (viewMode: EditMode) => React.ReactNode;
+
 export const BaseSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -34,10 +36,12 @@ export interface LinkListProps {
 
 export type DatabaseItemsViewerProps<S extends z.ZodType<any, any, any>> = {
   viewName: ViewNames;
-  
+
   parameters?: ParametersType;
   schema: S;
+  tableName: string;
   renderItem?: RenderItemFunction<z.infer<S>>;
+  addItem?: AddItemFunction;
   editItem?: EditItemFunction<z.infer<S>>;
   searchFor?: string;
   options?: {

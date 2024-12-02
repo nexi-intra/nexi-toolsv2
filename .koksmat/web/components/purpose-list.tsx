@@ -1,33 +1,55 @@
 "use client"
 import { DatabaseItemsViewer } from "@/app/koksmat/src/v.next/components/database-items-viewer";
 import { databaseQueries } from "@/app/tools/schemas/database";
-import PurposeForm from "./purpose-form";
+
 import Link from "next/link";
-import { Card } from "./ui/card";
+
 import { LinkListProps } from "@/app/koksmat/src/v.next/components/_shared";
 import { ToolExplorer, ToolExplorerFiltered } from "./tool-list";
 import { ViewNames } from "@/app/tools/schemas/database/view";
+import { databaseTable } from "@/app/tools/schemas/database/table";
 
+
+import { Card, CardHeader, CardContent } from "./ui/card";
+import { queries } from "@/app/global";
+import { GenericTableEditor } from "@/app/koksmat/src/v.next/components";
+import DatabaseItemDialog from "@/app/koksmat/src/v.next/components/database-item-dialog";
+
+
+
+const VIEWNAME: ViewNames = "purposes"
+const table = databaseTable.purpose
+const databaseName = "tools"
 
 export function PurposesList() {
-  const VIEWNAME: ViewNames = "purposes"
-  const view = databaseQueries.getView(VIEWNAME)
+  const view = queries.getView(VIEWNAME)
 
   return (
+
     <DatabaseItemsViewer
+      tableName={table.tablename}
       schema={view.schema}
-      editItem={function (item: any) {
-        return <div>
-          <PurposeForm />
-        </div>
+      options={{ hideToolbar: false }}
+      addItem={() => {
+        return <GenericTableEditor schema={table.schema} tableName={table.tablename} databaseName={databaseName} defaultMode={"new"}
+          showJSON={true}
 
-
+          onUpdated={() => document.location.reload()} id={0} />
       }}
+      renderItem={(item, viewMode) => {
+        return <Card className="min-w-[300px]">
+          <CardHeader>
+            <h2>{item.name}</h2>
+          </CardHeader>
+          <CardContent>
+            <DatabaseItemDialog id={item.id} schema={table.schema} tableName={table.tablename} databaseName={databaseName} />
+          </CardContent>
+        </Card>
+      }
+      }
       viewName={VIEWNAME} />
   )
 }
-
-
 
 
 export function PurposesListLinker({ searchFor, basePath, prefix, onLoaded }: LinkListProps) {
@@ -37,7 +59,7 @@ export function PurposesListLinker({ searchFor, basePath, prefix, onLoaded }: Li
   return (
     <DatabaseItemsViewer
       schema={view.schema}
-
+      tableName={databaseTable.purpose.tablename}
       renderItem={(item, viewMode) => {
         return <div className="min-h-96 p-4 m-4 bg-white" key={item.id}>
           <div className="flex">
