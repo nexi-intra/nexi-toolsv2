@@ -13,6 +13,7 @@ export default function RootLayout2({
   return (
     <html lang="en">
       <body>
+        <link rel="manifest" href="manifest.json" />
         <Script id="clarityinjection">
           {`
     (function(c,l,a,r,i,t,y){
