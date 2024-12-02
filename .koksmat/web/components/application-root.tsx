@@ -191,7 +191,12 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
         getToken: async () => {
           if (!magicbox.authtoken) {
             //alert("No authtoken")
-            throw new Error('No authtoken - please reload the page')
+            await magicbox.signIn(["user.read"], "")
+            debugger
+            if (!magicbox.authtoken) {
+              throw new Error('No authtoken - please reload the page')
+            }
+
           }
           return magicbox.authtoken
         }
@@ -254,7 +259,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             <div className="flex size-6 items-center justify-center rounded-sm border">
                               <Icon iconName={activeTeam.logo} />
                             </div>
-                            <Link className="grow" target="_blank" href="https://tools.intra.nexigroup.com">
+                            <Link className="grow" href="https://tools.intra.nexigroup.com">
                               Production
                             </Link>
 
@@ -269,7 +274,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             <div className="flex size-6 items-center justify-center rounded-sm border">
                               <Icon iconName={activeTeam.logo} />
                             </div>
-                            <Link className="grow" target="_blank" href="https://nexi-intra-nexi-toolsv2-canary.intra.nexigroup.com">
+                            <Link className="grow" href="https://nexi-intra-nexi-toolsv2-canary.intra.nexigroup.com">
                               Canary
                             </Link>
                           </DropdownMenuItem>
@@ -282,7 +287,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             <div className="flex size-6 items-center justify-center rounded-sm border">
                               <Icon iconName={activeTeam.logo} />
                             </div>
-                            <Link className="grow" target="_blank" href="https://nexi-intra-nexi-toolsv2-alpha.intra.nexigroup.com">
+                            <Link className="grow" href="https://nexi-intra-nexi-toolsv2-alpha.intra.nexigroup.com">
                               Alpha
                             </Link>
 
@@ -296,7 +301,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             <div className="flex size-6 items-center justify-center rounded-sm border">
                               <Icon iconName={activeTeam.logo} />
                             </div>
-                            <Link className="grow" target="_blank" href="https://nexi-intra-nexi-toolsv2-beta.intra.nexigroup.com">
+                            <Link className="grow" href="https://nexi-intra-nexi-toolsv2-beta.intra.nexigroup.com">
                               Beta
                             </Link>
                           </DropdownMenuItem>
@@ -309,7 +314,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             <div className="flex size-6 items-center justify-center rounded-sm border">
                               <Icon iconName={activeTeam.logo} />
                             </div>
-                            <Link className="grow" target="_blank" href="https://nexi-intra-nexi-toolsv2-master.intra.nexigroup.com">
+                            <Link className="grow" href="https://nexi-intra-nexi-toolsv2-master.intra.nexigroup.com">
                               Master
                             </Link>
 
