@@ -92,16 +92,17 @@ type ViewItemsProps<T extends Base> = {
   searchFor?: string;
   tableName: string;
   databaseName: string;
+  isLoading?: boolean;
 
 };
 
 
 export function ItemViewerComponent<T extends { id: number, name: string, searchIndex: string, calculatedsearchindex?: string }>
-  ({ searchFor = "", items, schema, onSearch, properties, renderItem, editItem, addItem, tableName, databaseName, options = { heightBehaviour: 'Full', defaultViewMode: 'card', hideToolbar: false } }
+  ({ searchFor = "", items, isLoading, schema, onSearch, properties, renderItem, editItem, addItem, tableName, databaseName, options = { heightBehaviour: 'Full', defaultViewMode: 'card', hideToolbar: false } }
     : ViewItemsProps<T>) {
   const [viewMode, setViewMode] = useState<ViewMode>(options?.defaultViewMode || 'card')
   const [currentPage, setCurrentPage] = useState(1)
-  const [isLoading, setIsLoading] = useState(false)
+
   const [showInfinityLoader, setShowInfinityLoader] = useState(false)
   const [filteredItems, setFilteredItems] = useState(items)
 
