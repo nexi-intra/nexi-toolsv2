@@ -475,6 +475,9 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           </DropdownMenuLabel>
                           <DropdownMenuSeparator />
                           <DropdownMenuGroup>
+                            <DropdownMenuLabel>
+                              {magicbox.user?.roles.join(', ')}
+                            </DropdownMenuLabel>
                             {sidebarData.userMenuItems.map((item) => (
                               <DropdownMenuItem key={item.label.en}>
                                 <Icon iconName={item.icon} className="size-5" />
