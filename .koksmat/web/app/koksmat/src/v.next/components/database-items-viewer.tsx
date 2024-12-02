@@ -11,6 +11,7 @@ import { Base, BaseSchema, DatabaseItemsViewerProps, EditItemFunction, RenderIte
 import { databaseQueries } from '@/app/tools/schemas/database'
 
 import { fromError } from 'zod-validation-error';
+import { set } from 'date-fns'
 
 
 
@@ -35,6 +36,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
   const table = useKoksmatDatabase().table("", view!.databaseName, view!.schema)
   const [items, setItems] = useState<T[]>()
   const [error, seterror] = useState("")
+  const [isLoading, setisLoading] = useState(true)
 
   const pageSize = options.pageSize || 250
   const heightBehaviour = options.heightBehaviour || 'Full'
@@ -44,11 +46,13 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
 
     const load = async () => {
       try {
+        setisLoading(true)
         kVerbose("component", "Starting read operation");
         if (viewName === "tools_for_purpose") {
           //debugger
         }
         const readDataOperation = await table.query(viewName, parameters)
+        setisLoading(false)
         if (readDataOperation.length === 0) {
           setItems([])
           kInfo("component", "No data found");
@@ -108,6 +112,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
       {view && (
         <div className='w-full'>
           <ItemViewerComponent
+            isLoading={isLoading}
             items={items || []}
             renderItem={renderItem}
             editItem={editItem}
