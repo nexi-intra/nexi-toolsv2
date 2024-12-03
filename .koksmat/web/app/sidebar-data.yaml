@@ -24,6 +24,7 @@ navMain:
           da: "Favoritter"
         #        label: new
         url: "/tools/pages/profile"
+
   - title:
       en: "Tables"
       da: "Tabeller"
@@ -112,6 +113,20 @@ navMain:
           en: "Components"
           da: "Komponenter"
         url: "/tools/docs/components"
+  - title:
+      en: "Outlook Integration"
+      da: "Outlook Integration"
+    url: "#"
+    icon: "SquareTerminal"
+
+    label: test
+    isActive: true
+    items:
+      - title:
+          en: "Bank Holiday"
+          da: "Bank Holiday"
+
+        url: "/tools/pages/international/bankholiday"
 projects:
   - title:
       en: "Tools v1.0"

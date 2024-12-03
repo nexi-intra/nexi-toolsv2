@@ -160,6 +160,25 @@
           "url": "/tools/docs/components"
         }
       ]
+    },
+    {
+      "title": {
+        "en": "Outlook Integration",
+        "da": "Outlook Integration"
+      },
+      "url": "#",
+      "icon": "SquareTerminal",
+      "label": "test",
+      "isActive": true,
+      "items": [
+        {
+          "title": {
+            "en": "Bank Holiday",
+            "da": "Bank Holiday"
+          },
+          "url": "/tools/pages/international/bankholiday"
+        }
+      ]
     }
   ],
   "projects": [
