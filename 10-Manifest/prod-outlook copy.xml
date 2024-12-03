@@ -125,14 +125,14 @@
           <bt:String id="ActionButton.Tooltip" DefaultValue="Click to Show a Taskpane"/>
         </bt:LongStrings>
       </Resources>
-      <WebApplicationInfo>
+      <!-- <WebApplicationInfo>
         <Id>64599827-012f-4b98-a7ed-52c92947df32</Id>
         <Resource>api://nexi-intra-nexi-toolsv2-canary.intra.nexigroup.com/64599827-012f-4b98-a7ed-52c92947df32</Resource>
         <Scopes>
           <Scope>User.Read</Scope>
           <Scope>profile</Scope>
         </Scopes>
-      </WebApplicationInfo>
+      </WebApplicationInfo> -->
     </VersionOverrides>
   </VersionOverrides>
 </OfficeApp>

@@ -11,6 +11,7 @@ export interface Session {
   accessToken: string;
 }
 
+export type appModeTypes = "normal" | "iframed" | "app"
 export interface User {
   name: string;
   email: string;
@@ -52,6 +53,10 @@ export type MagicboxContextType = {
   clearServiceCallLog: () => void;
   showTracer: boolean;
   setShowTracer: (showTracer: boolean) => void;
+  setAppMode: (mode: appModeTypes) => void;
+  appMode: appModeTypes;
+
+
 };
 export const MagicboxContext = createContext<MagicboxContextType>({
   session: {
@@ -101,4 +106,8 @@ export const MagicboxContext = createContext<MagicboxContextType>({
   setShowTracer: function (showTracer: boolean): void {
     throw new Error("Function not implemented.");
   },
+  setAppMode: function (mode: appModeTypes): void {
+    throw new Error("Function not implemented.");
+  },
+  appMode: "normal"
 });

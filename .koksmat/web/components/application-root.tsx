@@ -203,7 +203,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
       }}>
       <DatabaseCacheProvider>
         <div className={`flex h-screen ${isDarkMode ? 'dark' : ''} bg-background text-foreground`}>
-          {!hideTopNav && !isInIframe && (
+          {!hideTopNav && !isInIframe && magicbox.appMode !== "app" && (
             <div className="absolute top-0 right-0 p-4 z-50 flex" >
               {topnav}
               <TopNavigation
@@ -216,7 +216,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
             </div>
           )}
           <SidebarProvider>
-            {!hideSidebar && !isInIframe && (
+            {!hideSidebar && !isInIframe && magicbox.appMode !== "app" && (
               <Sidebar collapsible="icon">
                 <SidebarHeader>
                   <SidebarMenu>
@@ -495,7 +495,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
             )}
 
             <SidebarInset>
-              {!isInIframe && (
+              {!isInIframe && magicbox.appMode !== "app" && (
                 <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
                   <div className="flex items-center gap-2 px-4">
                     <SidebarTrigger className="-ml-1" />
