@@ -36,6 +36,13 @@
             "da": "Favoritter"
           },
           "url": "/tools/pages/profile"
+        },
+        {
+          "title": {
+            "en": "App Launcher",
+            "da": "Start Menu"
+          },
+          "url": "/tools/pages/app"
         }
       ]
     },

@@ -3,18 +3,22 @@
 import { useState } from 'react'
 import { ChevronRight, ChevronDown, Folder, File } from 'lucide-react'
 
-const treeData = [
+const treeData: TreeNodeProps['node'][] = [
   {
     name: 'Documents',
     type: 'folder',
     children: [
-      { name: 'Project A', type: 'folder', children: [
-        { name: 'Report.docx', type: 'file' },
-        { name: 'Data.xlsx', type: 'file' },
-      ]},
-      { name: 'Project B', type: 'folder', children: [
-        { name: 'Presentation.pptx', type: 'file' },
-      ]},
+      {
+        name: 'Project A', type: 'folder', children: [
+          { name: 'Report.docx', type: 'file' },
+          { name: 'Data.xlsx', type: 'file' },
+        ]
+      },
+      {
+        name: 'Project B', type: 'folder', children: [
+          { name: 'Presentation.pptx', type: 'file' },
+        ]
+      },
     ],
   },
   {

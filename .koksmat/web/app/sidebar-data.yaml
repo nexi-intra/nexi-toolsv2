@@ -24,6 +24,11 @@ navMain:
           da: "Favoritter"
         #        label: new
         url: "/tools/pages/profile"
+      - title:
+          en: "App Launcher"
+          da: "Start Menu"
+        #        label: new
+        url: "/tools/pages/app"
 
   - title:
       en: "Tables"
