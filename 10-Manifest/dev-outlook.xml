@@ -3,11 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
   xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0" xsi:type="MailApp">
-  <Id>5e60ac88-e111-11ea-87d0-0242ac130003</Id>
+  <Id>97f51b03-2a58-4302-8753-3d88891e8947</Id>
   <Version>1.0.0.0</Version>
   <ProviderName>Nexi Group</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="International"/>
+  <DisplayName DefaultValue="Nexi Int. (DEV"/>
   <Description DefaultValue="A template to get started."/>
   <IconUrl DefaultValue="https://localhost:1234/logo64.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:1234/logo64.png"/>
@@ -117,7 +117,7 @@
           <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:1234/officeaddin"/>
         </bt:Urls>
         <bt:ShortStrings>
-          <bt:String id="GroupLabel" DefaultValue="Magic Button "/>
+          <bt:String id="GroupLabel" DefaultValue="Magic Button"/>
           <bt:String id="TaskpaneButton.Label" DefaultValue="Magic Button "/>
         </bt:ShortStrings>
         <bt:LongStrings>

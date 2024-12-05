@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useEffect, useState } from "react"
+import { use, useContext, useEffect, useState } from "react"
 import { Context } from "./context"
 import { Button } from "@/components/ui/button"
 import { insertHeader, addContentControls, addFooter, addParagraphs, changeCustomer } from "./actions/word-samples"
@@ -15,6 +15,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import BankHolidaysCalendar from "@/components/bank-holidays-calendar"
+import { z } from "zod"
+import { getSampleHolidays } from "../tools/schemas/forms/holiday-schema"
+
 
 const OfficeContext = () => {
   const context: Office.Context = Office.context
@@ -231,6 +234,32 @@ const excelActions: ActionType[] = [
   },
   showPowerApp
 ]
+
+// Define the schema
+const dateSchema = z.preprocess((input) => {
+  // If the input is already a Date, return it as is
+  if (input instanceof Date) {
+    return input;
+  }
+
+  // If the input is a string, try parsing it
+  if (typeof input === "string") {
+    const date = new Date(input);
+    // Check if it's a valid date
+    if (!isNaN(date.getTime())) {
+      return date;
+    }
+  }
+
+  // Return the original input if it doesn't match the criteria
+  return input;
+}, z.date());
+
+const AddinPropsSchema = z.object({
+  startDate: dateSchema,
+
+})
+
 export default function Index() {
   const context = useContext(Context)
   const [hosttypename, sethosttypename] = useState("")
@@ -239,9 +268,56 @@ export default function Index() {
   const [panel, setpanel] = useState<React.ReactNode>(null)
   const { hosttype, platformtype } = context
 
+  const [error, seterror] = useState("")
+
 
   const [open, setopen] = useState(true)
   const [currentDate, setcurrentDate] = useState(new Date())
+  const [officeHash, setofficeHash] = useState("")
+
+
+  const [ticks, setTicks] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTicks(prevTicks => prevTicks + 1)
+    }, 1000)
+
+    // Cleanup function to clear the interval when the component unmounts
+    return () => clearInterval(interval)
+  }, []) // Empty dependency array means this effect runs once on mount
+
+
+  useEffect(() => {
+    if (hosttypename !== "Outlook") return
+    Office.context.mailbox.item?.start?.getAsync((result) => {
+      if (result.status !== Office.AsyncResultStatus.Succeeded) {
+        console.error(`Action failed with message ${result.error.message}`);
+        return;
+      }
+      if (officeHash === result.value.toISOString()) return
+      setofficeHash(result.value.toISOString())
+
+      try {
+        const newDate = AddinPropsSchema.parse({ startDate: result.value })
+
+        setcurrentDate(newDate.startDate)
+        seterror("")
+      } catch (error) {
+        if (error instanceof Error) {
+          seterror(error.message)
+          console.error(error.message)
+        } else {
+          seterror("Unknown error")
+          console.error(error)
+        }
+      }
+
+
+    });
+  }
+
+    , [hosttype, ticks])
 
 
   useEffect(() => {
@@ -262,14 +338,7 @@ export default function Index() {
       case Office.HostType.Outlook:
         setactions(outlookActions)
         sethosttypename("Outlook")
-        Office.context.mailbox.item?.start?.getAsync((result) => {
-          if (result.status !== Office.AsyncResultStatus.Succeeded) {
-            console.error(`Action failed with message ${result.error.message}`);
-            return;
-          }
-          setcurrentDate(result.value)
-          //console.log(`Appointment starts: ${result.value}`);
-        });
+
         // setpanel(<CavaPanel title="Cava" isOfficeInitialized={true} />)
         break;
       case Office.HostType.OneNote:
@@ -300,8 +369,9 @@ export default function Index() {
   if (!context.isloaded) return <div>Loading ...</div>
   return (
     <div>
-
-      <BankHolidaysCalendar initialHolidays={[]} initialDate={currentDate} />
+      {error && <div className="text-red-700">{error}</div>}
+      {/* {ticks}:{officeHash} */}
+      <BankHolidaysCalendar initialHolidays={getSampleHolidays()} initialDate={currentDate} externalManagedDate />
     </div>
   )
   return (

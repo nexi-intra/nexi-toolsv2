@@ -1,7 +1,7 @@
 "use client"
 
 import { useContext, useEffect, useState } from "react"
-import { format, addDays, isSameDay } from "date-fns"
+import { format } from "date-fns"
 import { CalendarIcon, ChevronDown, Edit2 } from 'lucide-react'
 import { ZeroTrust } from '@/components/zero-trust'
 import { cn } from "@/lib/utils"
@@ -11,11 +11,36 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Holiday, Holidays, HolidaysSchema } from "@/app/tools/schemas/forms/holiday-schema"
+import { Holiday, Holidays, HolidaysSchemaArray } from "@/app/tools/schemas/forms/holiday-schema"
 import { HolidayEditDialog } from "./holiday-edit-dialog"
 import { MagicboxContext } from "@/app/koksmat0/magicbox-context"
 import { MSALTest } from "@/app/koksmat0/msal/test"
+import { z } from "zod"
+function isSameDate(date1: Date, date2: Date) {
+  // Ensure both inputs are Date objects
+  const d1 = date1 instanceof Date ? date1 : new Date(date1);
+  const d2 = date2 instanceof Date ? date2 : new Date(date2);
 
+  // Compare year, month, and day
+  return (
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate()
+  );
+}
+
+function isSameDateText(date1: Date, date2: Date) {
+  // Ensure both inputs are Date objects
+  const d1 = date1 instanceof Date ? date1 : new Date(date1);
+  const d2 = date2 instanceof Date ? date2 : new Date(date2);
+  debugger
+  // Compare year, month, and day
+  return (
+    (d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate()) + " : " + d1 + " : " + d2
+  );
+}
 const countryNames: Record<string, string> = {
   AT: "Austria", BE: "Belgium", BG: "Bulgaria", HR: "Croatia", CY: "Cyprus", CZ: "Czech Republic",
   DK: "Denmark", EE: "Estonia", FI: "Finland", FR: "France", DE: "Germany", GR: "Greece",
@@ -38,13 +63,19 @@ const translations = {
   nl: { name: "Nederlands", title: "Feestdagen", selectDate: "Selecteer startdatum" }
 }
 
-interface BankHolidaysCalendarProps {
-  initialHolidays: Holidays
-  initialDate: Date
-  className?: string
-}
 
-export default function BankHolidaysCalendar({ initialHolidays, className, initialDate }: BankHolidaysCalendarProps) {
+
+const BankHolidaysCalendarPropsSchema = z.object({
+  initialHolidays: HolidaysSchemaArray,
+  initialDate: z.date(),
+  className: z.string().optional(),
+  externalManagedDate: z.boolean().optional()
+
+})
+
+type BankHolidaysCalendarProps = z.infer<typeof BankHolidaysCalendarPropsSchema>
+
+export default function BankHolidaysCalendar({ initialHolidays, className, initialDate, externalManagedDate }: BankHolidaysCalendarProps) {
   const [language, setLanguage] = useState<keyof typeof translations>("en")
   const [startDate, setStartDate] = useState<Date | undefined>(initialDate)
   const [holidays, setHolidays] = useState<Holidays>(initialHolidays)
@@ -52,16 +83,25 @@ export default function BankHolidaysCalendar({ initialHolidays, className, initi
   const [editingHoliday, setEditingHoliday] = useState<Holiday | null>(null)
   const magicBox = useContext(MagicboxContext)
   useEffect(() => {
-    setStartDate(initialDate)
+    const values = BankHolidaysCalendarPropsSchema.parse({ initialHolidays, initialDate, className })
+    setStartDate(values.initialDate)
 
 
   }, [initialDate])
 
-
+  function addDays(date: Date, days: number): Date {
+    const result = new Date(date); // Create a copy of the original date
+    result.setDate(result.getDate() + days); // Add the specified number of days
+    return result;
+  }
   const getHolidaysForWeek = (start: Date) => {
+    //debugger
+    return holidays
     return holidays.filter(holiday => {
-      const holidayDate = new Date(holiday.date)
-      return holidayDate >= start && holidayDate < addDays(start, 7)
+      const d = new Date(holiday.date)
+
+
+      return holiday.date >= start && holiday.date < addDays(start, 7)
     })
   }
 
@@ -77,11 +117,12 @@ export default function BankHolidaysCalendar({ initialHolidays, className, initi
   return (
     <>
       <ZeroTrust
-        schema={HolidaysSchema}
-        props={initialHolidays}
-        actionLevel="error"
+        schema={BankHolidaysCalendarPropsSchema}
+        props={{ initialHolidays, initialDate, className }}
+        actionLevel="warn"
         componentName="BankHolidaysCalendar"
       />
+
       {/* <MSALTest /> */}
       {/* {magicBox.user && <div>{magicBox.user.name}</div>} */}
       <Card className={cn("w-full", className)}>
@@ -108,40 +149,45 @@ export default function BankHolidaysCalendar({ initialHolidays, className, initi
           </div>
         </CardHeader>
         <CardContent>
+
           <div className="space-y-4">
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">{translations[language].selectDate}</p>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !startDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={startDate}
-                    onSelect={setStartDate}
-                    initialFocus
-                    fromDate={new Date("2025-01-01")}
-                    toDate={new Date("2025-12-31")}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
+            {!externalManagedDate && (
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">{translations[language].selectDate}</p>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !startDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={startDate}
+                      onSelect={setStartDate}
+                      initialFocus
+                      fromDate={new Date("2025-01-01")}
+                      toDate={new Date("2025-12-31")}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            )}
             {startDate && (
               <div className="space-y-6">
                 {Array.from({ length: 7 }, (_, i) => addDays(startDate, i)).map((date) => {
-                  const holidaysOnDate = getHolidaysForWeek(startDate).filter(h => isSameDay(new Date(h.date), date))
+                  const thisWeek = getHolidaysForWeek(startDate)
+                  const holidaysOnDate = thisWeek.filter(h => isSameDate(h.date, date))
                   return (
                     <div key={date.toISOString()} className="border-b pb-4 last:border-b-0">
+
                       <div className="text-lg font-semibold mb-2">{format(date, "EEEE, MMMM d")}</div>
                       {holidaysOnDate.length > 0 ? (
                         holidaysOnDate.map((holiday) => (
