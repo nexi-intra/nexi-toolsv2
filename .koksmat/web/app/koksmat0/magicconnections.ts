@@ -1,6 +1,6 @@
 "use client";
 
-import { run } from "./magicservices";
+import { runMagicService } from "./magicservices";
 
 export interface MagicService {
   name: string;
@@ -32,7 +32,7 @@ export class MagicConnections {
   }
 
   public async connect(serviceName: string, msalToken: string) {
-    const result = await run(
+    const result = await runMagicService(
       serviceName + ".connect",
       [msalToken],
       "",

@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useMemo, useState } from "react";
 
-import { run } from "@/app/koksmat0/magicservices";
+import { runMagicService } from "@/app/koksmat0/magicservices";
 import { Result } from "./httphelper";
 import { MagicboxContext } from "./magicbox-context";
 import { stat } from "fs";
@@ -54,7 +54,7 @@ export function useService<T>(
         status
       );
 
-      const result = await run<T>(
+      const result = await runMagicService<T>(
         servicename,
         args,
         body,

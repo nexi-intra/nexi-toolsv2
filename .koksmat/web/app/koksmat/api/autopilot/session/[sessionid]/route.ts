@@ -1,4 +1,3 @@
-import { getUPNfromToken } from "@/app/koksmat/api/workspace";
 import { kError, kInfo } from "@/lib/koksmat-logger-client";
 
 import { NatsMessageReceiver } from "@/lib/nats-message-receiver";
@@ -24,8 +23,6 @@ export async function GET(
   }
 
   //const jwt: any = jwtDecode(token);
-
-  const upn = await getUPNfromToken(token);
 
   const msg = await NatsMessageReceiver(params.sessionid);
 

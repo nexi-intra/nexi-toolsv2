@@ -1,4 +1,3 @@
-"use server";
 import { Result } from "@/app/koksmat0/httphelper";
 import { kError, kVerbose } from "@/lib/koksmat-logger-client";
 import { NatsConnection, connect, StringCodec } from "nats";
@@ -10,7 +9,7 @@ export interface MagicRequest {
   timeout: number;
 }
 
-export async function run<T>(
+export async function sendMessageToNATS<T>(
   subject: string,
   args: string[],
   body: string,

@@ -7,6 +7,7 @@ import { databaseQueries } from "@/app/tools/schemas/database";
 
 
 export function MyToolList() {
+  debugger
   const viewName = "my_tools"
   const view = databaseQueries.getView(viewName)
   return (

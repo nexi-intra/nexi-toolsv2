@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { kError, kVerbose, kWarn } from "@/lib/koksmat-logger-client";
-import { run } from "../actions/server";
+import { sendMessageToNATS } from "../actions/server";
 
 import { z } from "zod";
 import { queries } from "@/app/global";
@@ -10,6 +10,7 @@ import { databaseActions } from "@/app/tools/schemas/database";
 import { jwtDecode } from "jwt-decode";
 import { cloneElement } from "react";
 import { se } from "date-fns/locale";
+import { SQLSafeString } from "../schemas/sqlsafestring";
 
 const crudOperationSchema = z.object({
   messageType: z.literal("crudOperation"),
@@ -28,7 +29,7 @@ const crudOperationSchema = z.object({
 const queryOperationSchema = z.object({
   messageType: z.literal("query"),
   name: z.string(),
-  parameters: z.array(z.string()).optional(),
+  parameters: z.array(SQLSafeString).optional(),
 });
 const actionOperationSchema = z.object({
   messageType: z.literal("action"),
@@ -77,7 +78,7 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
     if (message.message.messageType === "crudOperation") {
       switch (message.subject) {
         case "create":
-          const createResult = await run(
+          const createResult = await sendMessageToNATS(
             MICROSERVICE,
             [
               "execute",
@@ -102,7 +103,7 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
           return new Response(JSON.stringify({ ...createResult, status: 200 }));
           break;
         case "delete":
-          const deleteResult = await run(
+          const deleteResult = await sendMessageToNATS(
             MICROSERVICE,
             [
               "execute",
@@ -130,7 +131,7 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
           break;
 
         case "read":
-          const readResult = await run<{ Result: any[] }>(
+          const readResult = await sendMessageToNATS<{ Result: any[] }>(
             MICROSERVICE,
             [
               "query",
@@ -169,7 +170,7 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
         case "undo_delete":
           break;
         case "update":
-          const updateResult = await run(
+          const updateResult = await sendMessageToNATS(
             MICROSERVICE,
             [
               "execute",
@@ -233,7 +234,7 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
         kVerbose("endpoint", "parameters", message.message.parameters);
       }
 
-      const queryResult = await run<{ Result: any[] }>(
+      const queryResult = await sendMessageToNATS<{ Result: any[] }>(
         MICROSERVICE,
         [
           "query",
@@ -264,7 +265,7 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
       }
 
       kVerbose("endpoint", "databaseAction", databaseAction);
-      const queryResult = await run<{ Result: any[] }>(
+      const queryResult = await sendMessageToNATS<{ Result: any[] }>(
         MICROSERVICE,
         [
           "execute",

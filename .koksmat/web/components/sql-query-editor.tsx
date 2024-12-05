@@ -9,7 +9,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
 import { MagicboxContext } from "@/app/koksmat0/magicbox-context"
-import { run } from "@/actions/server"
+import { runServerAction } from "@/actions/server"
 import { LogObject } from "./log-viewer"
 import { useInterfaceFromJson } from "./hooks/useInterfaceFromJson"
 import { z } from "zod"
@@ -78,7 +78,7 @@ export function SqlQueryEditor(props: SqlQueryEditorProps) {
     if (!sqlExpression) return
 
     setError("")
-    const result = await run<any>(
+    const result = await runServerAction<any>(
       "magic-mix.app",
       ["query", database, sqlExpression],
       "",
