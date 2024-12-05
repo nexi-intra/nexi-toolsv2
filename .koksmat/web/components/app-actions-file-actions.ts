@@ -5,6 +5,8 @@ import path from "path";
 import { exec } from "child_process";
 
 export async function checkFileExists(filePath: string): Promise<boolean> {
+  if (process.env.NODE_ENV === "production")
+    throw new Error("Not allowed in production");
   try {
     await fs.access(path.join(process.cwd(), "app", filePath, "page.tsx"));
     return true;
@@ -17,6 +19,8 @@ export async function createFile(
   filePath: string,
   content: string
 ): Promise<{ success: boolean; message: string }> {
+  if (process.env.NODE_ENV === "production")
+    throw new Error("Not allowed in production");
   try {
     const fullPath = path.join(process.cwd(), "app", filePath, "page.tsx");
     await fs.mkdir(path.dirname(fullPath), { recursive: true });
@@ -33,6 +37,8 @@ export async function createFile(
 export async function openFile(
   filePath: string
 ): Promise<{ success: boolean; message: string }> {
+  if (process.env.NODE_ENV === "production")
+    throw new Error("Not allowed in production");
   return new Promise((resolve) => {
     const fullPath = path.join(process.cwd(), "app", filePath, "page.tsx");
     exec(`code ${fullPath}`, (error) => {

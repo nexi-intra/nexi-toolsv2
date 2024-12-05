@@ -41,6 +41,7 @@ export async function middleware(request: NextRequest) {
   // console.log(`Raw token: ${userTokenDetails}`);
 
   // Detect potential bot activity
+  const SHOWBODY = false;
   const userAgent = request.headers.get("user-agent") || "Unknown";
   const botKeywords = [
     "bot",
@@ -67,7 +68,8 @@ export async function middleware(request: NextRequest) {
         // Clone the request to read its body
         const reqClone = request.clone();
         const body = await reqClone.json();
-        console.log("Request body (JSON):", JSON.stringify(body, null, 2));
+        if (SHOWBODY)
+          console.log("Request body (JSON):", JSON.stringify(body, null, 2));
       } catch (error) {
         console.error("Error parsing JSON body:", error);
       }
@@ -76,7 +78,7 @@ export async function middleware(request: NextRequest) {
         // Clone the request to read its body
         const reqClone = request.clone();
         const formData = await reqClone.formData();
-        console.log("Form data:", Object.fromEntries(formData));
+        if (SHOWBODY) console.log("Form data:", Object.fromEntries(formData));
       } catch (error) {
         console.error("Error parsing form data:", error);
       }
@@ -91,7 +93,7 @@ export async function middleware(request: NextRequest) {
           );
           // return new NextResponse("Bots are not allowed", { status: 403 });
         } else {
-          console.log("Request body (plain text):", text);
+          if (SHOWBODY) console.log("Request body (plain text):", text);
         }
       } catch (error) {
         console.error("Error reading plain text body:", error);

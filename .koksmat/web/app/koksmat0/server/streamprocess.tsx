@@ -19,6 +19,8 @@ export async function streamProcess(
   const { cwd } = options || {};
   const processUI = createStreamableUI();
   let isOpen: boolean = true;
+  if (process.env.NODE_ENV === "production")
+    throw new Error("Not allowed in production");
   const runProcess = () => {
     {
       let stdoutput = "";

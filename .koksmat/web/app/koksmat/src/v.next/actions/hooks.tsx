@@ -2,12 +2,12 @@
 import React, { useEffect, useState } from "react";
 
 import { generateMethods } from "@/actions/client";
-import { run } from "./server";
+import { runServerAction } from "./server";
 
 const servicename = "magic-mix.app";
 
 async function sqlSelect<T>(databasename: string, sql: string) {
-  const result = await run<T>(
+  const result = await runServerAction<T>(
     servicename,
     ["query", databasename, sql],
     "",
