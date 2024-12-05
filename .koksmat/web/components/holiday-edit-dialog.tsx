@@ -57,8 +57,8 @@ export function HolidayEditDialog({ holiday, isOpen, onClose, onSave, countryNam
               <Input
                 id="date"
                 type="date"
-                value={editedHoliday.date}
-                onChange={(e) => setEditedHoliday({ ...editedHoliday, date: e.target.value })}
+                value={editedHoliday.date.toISOString().split('T')[0]}
+                onChange={(e) => setEditedHoliday({ ...editedHoliday, date: new Date(e.target.value) })}
                 className="col-span-3"
               />
             </div>
