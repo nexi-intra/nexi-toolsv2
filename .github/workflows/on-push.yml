@@ -28,6 +28,29 @@ jobs:
         id: get_branch
         run: echo "branch_name=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
 
+      # Step 3: Install TruffleHog
+      - name: Install TruffleHog
+        run: pip install trufflehog
+
+      # Step 4: Run TruffleHog
+      - name: Run TruffleHog
+        run: trufflehog filesystem --directory=. --json
+        continue-on-error: true # Optional: Prevent failure on TruffleHog errors
+
+      # Step 5: Set up SecretLint
+      - name: Set up Node.js for SecretLint
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      # Step 6: Install SecretLint
+      - name: Install SecretLint
+        run: npm install -g secretlint
+
+      # Step 7: Run SecretLint
+      - name: Run SecretLint
+        run: secretlint "**/*"
+        continue-on-error: true # Optional: Prevent failure on SecretLint errors
       - name: Write branch name to file
         run: |
           echo "export const BRANCH: string = \"${{ env.branch_name }}\";" > .koksmat/web/branch.ts
