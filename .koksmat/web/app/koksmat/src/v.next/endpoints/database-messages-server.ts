@@ -10,6 +10,7 @@ import { databaseActions } from "@/app/tools/schemas/database";
 import { jwtDecode } from "jwt-decode";
 import { cloneElement } from "react";
 import { se } from "date-fns/locale";
+import { SQLSafeString } from "../schemas/sqlsafestring";
 
 const crudOperationSchema = z.object({
   messageType: z.literal("crudOperation"),
@@ -28,7 +29,7 @@ const crudOperationSchema = z.object({
 const queryOperationSchema = z.object({
   messageType: z.literal("query"),
   name: z.string(),
-  parameters: z.array(z.string()).optional(),
+  parameters: z.array(SQLSafeString).optional(),
 });
 const actionOperationSchema = z.object({
   messageType: z.literal("action"),
