@@ -9,7 +9,7 @@ import { cwd } from "process";
 
 export async function loadMap(app: string) {
   if (process.env.NODE_ENV === "production")
-    throw new Error("Not allowed in production");
+    throw new Error("Not allowed in production 5");
   const filepath = path.join(cwd(), "src", "app", app, "map.yaml");
   console.log("map filepath", filepath);
   const data = yaml.load(fs.readFileSync(filepath).toString());

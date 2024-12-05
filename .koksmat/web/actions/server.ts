@@ -29,7 +29,7 @@ export async function getRecord<T>(
       })
       .parse({ tablename, id, token });
     const sql = `select * from ${input.tablename} where id = ${input.id} and deleted_at is null`;
-    const result = await runServerAction<T>(
+    const result = await runServerActionProduction<T>(
       "magic-mix.app",
       ["query", DATABASENAME, sql],
       "",
@@ -58,7 +58,7 @@ export async function getRecords<T>(tablename: string, token: string) {
       .parse({ tablename, token });
 
     const sql = `select * from ${input.tablename} where  deleted_at is null`;
-    const result = await runServerAction<T>(
+    const result = await runServerActionProduction<T>(
       "magic-mix.app",
       ["query", DATABASENAME, sql],
       "",
@@ -76,7 +76,7 @@ export async function getRecords<T>(tablename: string, token: string) {
   }
 }
 
-async function runServerAction<T>(
+export async function runServerAction<T>(
   subject: string,
   args: string[],
   body: string,
@@ -98,7 +98,76 @@ async function runServerAction<T>(
 
   try {
     if (process.env.NODE_ENV === "production")
-      throw new Error("Not allowed in production");
+      throw new Error("Not allowed in production 1");
+    const connectionString = process.env.NATS ?? "nats://127.0.0.1:4222";
+    nc = await connect({
+      servers: [connectionString],
+    });
+    const payload = JSON.stringify(req);
+
+    const sc = StringCodec();
+    const encodedPayload = sc.encode(payload);
+    const response = await nc
+      .request(subject, encodedPayload, { timeout: timeout * 1000 })
+      .catch((error) => {
+        console.log("connecting to NATS", connectionString);
+        console.log("subject", subject);
+        console.log("payload", payload);
+
+        console.error("Error", error);
+        hasError = true;
+        errorMessage = (error as any).message;
+      });
+    if (response) {
+      serviceCallResult = JSON.parse(sc.decode(response.data));
+
+      errorMessage = serviceCallResult.errorMessage ?? "Unknown error";
+      hasError = serviceCallResult.hasError;
+      if (!hasError) {
+        data = JSON.parse(serviceCallResult.data);
+      } else {
+        data = undefined;
+      }
+    }
+  } catch (error) {
+    hasError = true;
+    errorMessage = (error as any).message;
+  } finally {
+    if (nc) {
+      nc.close();
+    }
+  }
+
+  const result: Result<T> = {
+    hasError,
+    errorMessage,
+    data,
+  };
+
+  return result;
+}
+
+async function runServerActionProduction<T>(
+  subject: string,
+  args: string[],
+  body: string,
+  timeout: number,
+  channel: string
+): Promise<Result<T>> {
+  const req: MagicRequest = {
+    args,
+    body,
+    channel,
+    timeout,
+  };
+
+  let errorMessage: string | undefined = undefined;
+  let hasError = false;
+  let nc: NatsConnection | null = null;
+  let data: T | undefined = undefined;
+  let serviceCallResult: Result<any>;
+
+  try {
     const connectionString = process.env.NATS ?? "nats://127.0.0.1:4222";
     nc = await connect({
       servers: [connectionString],

@@ -16,7 +16,7 @@ const DEV_BASE_PATH = process.cwd();
  */
 export async function openInCode(relativeFilePath: string): Promise<void> {
   if (process.env.NODE_ENV === "production")
-    throw new Error("Not allowed in production");
+    throw new Error("Not allowed in production 14");
   try {
     const fullFilePath = path.join(DEV_BASE_PATH, relativeFilePath);
     kVerbose("component", `Opening file in VS Code: ${fullFilePath}`);

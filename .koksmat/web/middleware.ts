@@ -41,7 +41,7 @@ export async function middleware(request: NextRequest) {
   // console.log(`Raw token: ${userTokenDetails}`);
 
   // Detect potential bot activity
-  const SHOWBODY = false;
+  const SHOWBODY = true;
   const userAgent = request.headers.get("user-agent") || "Unknown";
   const botKeywords = [
     "bot",

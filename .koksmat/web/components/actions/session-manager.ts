@@ -138,7 +138,7 @@ export async function createFile(input: CreateFileInput): Promise<string> {
   const { sessionId, fileName, content, correlationId } =
     CreateFileSchema.parse(input);
   if (process.env.NODE_ENV === "production")
-    throw new Error("Not allowed in production");
+    throw new Error("Not allowed in production 15");
   try {
     const filePath = path.join(SESSION_BASE_PATH, sessionId, fileName);
     kInfoTracking("component", correlationId, `Creating file: ${filePath}`);
@@ -162,7 +162,7 @@ export async function executeFile(
 ): Promise<void> {
   const { sessionId, fileName, correlationId } = ExecuteFileSchema.parse(input);
   if (process.env.NODE_ENV === "production")
-    throw new Error("Not allowed in production");
+    throw new Error("Not allowed in production 16");
   try {
     const filePath = path.join(SESSION_BASE_PATH, sessionId, fileName);
     kInfoTracking("component", correlationId, `Executing file: ${filePath}`);
@@ -225,7 +225,7 @@ export async function executeFile(
 export async function openInCode(input: OpenInCodeInput): Promise<void> {
   const { sessionId, fileName, correlationId } = OpenInCodeSchema.parse(input);
   if (process.env.NODE_ENV === "production")
-    throw new Error("Not allowed in production");
+    throw new Error("Not allowed in production 17");
   try {
     const filePath = path.join(SESSION_BASE_PATH, sessionId, fileName);
     kInfoTracking(

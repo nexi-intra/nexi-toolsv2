@@ -9,7 +9,7 @@ export interface MagicRequest {
   timeout: number;
 }
 
-export async function run<T>(
+export async function runMagicService<T>(
   subject: string,
   args: string[],
   body: string,
@@ -31,7 +31,7 @@ export async function run<T>(
 
   try {
     if (process.env.NODE_ENV === "production")
-      throw new Error("Not allowed in production");
+      throw new Error("Not allowed in production 0");
     const connectionString = process.env.NATS ?? "nats://127.0.0.1:4222";
     nc = await connect({
       servers: [connectionString],

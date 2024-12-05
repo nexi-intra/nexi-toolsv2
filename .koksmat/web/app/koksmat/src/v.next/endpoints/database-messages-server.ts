@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { kError, kVerbose, kWarn } from "@/lib/koksmat-logger-client";
-import { runServerAction } from "../actions/server";
+import { sendMessageToNATS } from "../actions/server";
 
 import { z } from "zod";
 import { queries } from "@/app/global";
@@ -78,7 +78,7 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
     if (message.message.messageType === "crudOperation") {
       switch (message.subject) {
         case "create":
-          const createResult = await runServerAction(
+          const createResult = await sendMessageToNATS(
             MICROSERVICE,
             [
               "execute",
@@ -103,7 +103,7 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
           return new Response(JSON.stringify({ ...createResult, status: 200 }));
           break;
         case "delete":
-          const deleteResult = await runServerAction(
+          const deleteResult = await sendMessageToNATS(
             MICROSERVICE,
             [
               "execute",
@@ -131,7 +131,7 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
           break;
 
         case "read":
-          const readResult = await runServerAction<{ Result: any[] }>(
+          const readResult = await sendMessageToNATS<{ Result: any[] }>(
             MICROSERVICE,
             [
               "query",
@@ -170,7 +170,7 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
         case "undo_delete":
           break;
         case "update":
-          const updateResult = await runServerAction(
+          const updateResult = await sendMessageToNATS(
             MICROSERVICE,
             [
               "execute",
@@ -234,7 +234,7 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
         kVerbose("endpoint", "parameters", message.message.parameters);
       }
 
-      const queryResult = await runServerAction<{ Result: any[] }>(
+      const queryResult = await sendMessageToNATS<{ Result: any[] }>(
         MICROSERVICE,
         [
           "query",
@@ -265,7 +265,7 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
       }
 
       kVerbose("endpoint", "databaseAction", databaseAction);
-      const queryResult = await runServerAction<{ Result: any[] }>(
+      const queryResult = await sendMessageToNATS<{ Result: any[] }>(
         MICROSERVICE,
         [
           "execute",

@@ -1,4 +1,3 @@
-"use server";
 import { Result } from "@/app/koksmat0/httphelper";
 import { kError, kVerbose } from "@/lib/koksmat-logger-client";
 import { NatsConnection, connect, StringCodec } from "nats";
@@ -10,7 +9,7 @@ export interface MagicRequest {
   timeout: number;
 }
 
-export async function runServerAction<T>(
+export async function sendMessageToNATS<T>(
   subject: string,
   args: string[],
   body: string,
@@ -31,8 +30,6 @@ export async function runServerAction<T>(
   let serviceCallResult: Result<any>;
 
   try {
-    if (process.env.NODE_ENV === "production")
-      throw new Error("Not allowed in production");
     const connectionString = process.env.NATS ?? "nats://127.0.0.1:4222";
     nc = await connect({
       servers: [connectionString],

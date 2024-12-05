@@ -10,7 +10,7 @@ export async function loadTravelPlan(
   source?: "filesystem" | "mongo" | "sharepoint"
 ) {
   if (process.env.NODE_ENV === "production")
-    throw new Error("Not allowed in production");
+    throw new Error("Not allowed in production 9");
   const data = yaml.load(fs.readFileSync(path).toString());
   fs.writeFileSync(
     path.replace(".yaml", ".json"),
@@ -24,7 +24,7 @@ export async function listTravelPlans(
   source?: "filesystem" | "mongo" | "sharepoint"
 ) {
   if (process.env.NODE_ENV === "production")
-    throw new Error("Not allowed in production");
+    throw new Error("Not allowed in production 10");
   return fs
     .readdirSync(path, { withFileTypes: true })
     .filter((file) => file.isFile)
