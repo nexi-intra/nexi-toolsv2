@@ -275,7 +275,7 @@ export default function Index() {
   const [currentDate, setcurrentDate] = useState(new Date())
   const [officeHash, setofficeHash] = useState("")
 
-
+  const [hasDate, sethasDate] = useState(false)
   const [ticks, setTicks] = useState(0)
 
   useEffect(() => {
@@ -300,7 +300,7 @@ export default function Index() {
 
       try {
         const newDate = AddinPropsSchema.parse({ startDate: result.value })
-
+        sethasDate(true)
         setcurrentDate(newDate.startDate)
         seterror("")
       } catch (error) {
@@ -371,7 +371,7 @@ export default function Index() {
     <div>
       {error && <div className="text-red-700">{error}</div>}
       {/* {ticks}:{officeHash} */}
-      <BankHolidaysCalendar initialHolidays={getSampleHolidays()} initialDate={currentDate} externalManagedDate />
+      <BankHolidaysCalendar initialHolidays={getSampleHolidays()} initialDate={currentDate} externalManagedDate={hasDate} />
     </div>
   )
   return (
