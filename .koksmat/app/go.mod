@@ -5,19 +5,14 @@ go 1.21
 toolchain go1.21.1
 
 require (
-	github.com/friendsofgo/errors v0.9.2
 	github.com/go-chi/jwtauth/v5 v5.3.0
 	github.com/golang-jwt/jwt/v5 v5.2.0
-	github.com/kat-co/vala v0.0.0-20170210184112-42e1d8b61f12
 	github.com/lib/pq v1.10.9
 	github.com/spf13/cobra v1.8.0
 	github.com/swaggest/rest v0.2.61
 	github.com/swaggest/swgui v1.8.0
 	github.com/swaggest/usecase v1.3.1
-	github.com/volatiletech/null/v8 v8.1.2
-	github.com/volatiletech/randomize v0.0.1
-	github.com/volatiletech/sqlboiler/v4 v4.16.2
-	github.com/volatiletech/strmangle v0.0.6
+	github.com/uptrace/bun/extra/bundebug v1.2.1
 )
 
 require (
@@ -36,11 +31,8 @@ require (
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/tmthrgd/go-hex v0.0.0-20190904060850-447a3041c3bc // indirect
-	github.com/uptrace/bun/extra/bundebug v1.2.1 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
-	github.com/volatiletech/inflect v0.0.1 // indirect
-	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	mellium.im/sasl v0.3.1 // indirect
 )
 
@@ -58,9 +50,9 @@ require (
 	github.com/klauspost/compress v1.17.5 // indirect
 	github.com/lestrrat-go/blackmagic v1.0.2 // indirect
 	github.com/lestrrat-go/httpcc v1.0.1 // indirect
-	github.com/lestrrat-go/httprc v1.0.4 // indirect
+	github.com/lestrrat-go/httprc v1.0.5 // indirect
 	github.com/lestrrat-go/iter v1.0.2 // indirect
-	github.com/lestrrat-go/jwx/v2 v2.0.19 // indirect
+	github.com/lestrrat-go/jwx/v2 v2.0.21 // indirect
 	github.com/lestrrat-go/option v1.0.1 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
@@ -75,7 +67,7 @@ require (
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.6.0 // indirect
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/swaggest/form/v5 v5.1.1 // indirect
 	github.com/swaggest/jsonschema-go v0.3.64 // indirect
@@ -99,7 +91,6 @@ require (
 )
 
 require (
-	github.com/dimchansky/utfbom v1.1.1
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jackc/pgx/v4 v4.18.3
 	github.com/nats-io/nats.go v1.31.0
