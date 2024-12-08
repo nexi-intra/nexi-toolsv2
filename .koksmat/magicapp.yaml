@@ -324,6 +324,72 @@ entities:
         type: json
         hidden: false
         required: true
+  tenant: &tenant
+    name: tenant
+    description: Tenant
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: status
+        displayname: Status
+        type: string
+        required: false
+      - name: metadata
+        displayname: Metadata
+        type: json
+        required: false
+      - name: userroles
+        displayname: User Roles
+        type: array
+        required: true
+        entity: *userrole
+      - name: usergroups
+        displayname: User Groups
+        type: array
+        required: true
+        entity: *usergroup
+      - name: users
+        displayname: Users
+        type: array
+        required: true
+        entity: *userprofile
+  board: &board
+    name: board
+    description: Board
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: status
+        displayname: Status
+        type: string
+        required: false
+      - name: layout
+        displayname: Layout
+        type: json
+        required: false
+      - name: metadata
+        displayname: Metadata
+        type: json
+        required: false
+      - name: userroles
+        displayname: User Roles
+        type: array
+        required: true
+        entity: *userrole
+      - name: usergroups
+        displayname: User Groups
+        type: array
+        required: true
+        entity: *usergroup
+      - name: users
+        displayname: Users
+        type: array
+        required: true
+        entity: *userprofile
+      - name: tools
+        displayname: Tools
+        type: array
+        required: true
+        entity: *tool
+
 models:
   itemMethods: &itemMethods
     - name: read
@@ -511,5 +577,24 @@ services:
       entity: *importdata
       model: importdata
       objectname: Import Data
+
+    methods: *itemMethods
+  - name: tenant
+    description: Tenants
+    entity:
+      type: record
+      entity: *tenant
+      model: tenant
+      objectname: Tenant
+
+    methods: *itemMethods
+
+  - name: board
+    description: Boards
+    entity:
+      type: record
+      entity: *board
+      model: board
+      objectname: Board
 
     methods: *itemMethods

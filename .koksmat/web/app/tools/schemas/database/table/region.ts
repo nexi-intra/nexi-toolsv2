@@ -20,7 +20,7 @@ export const schema = z.object({
     .nullable()
     .optional()
     .describe("Description of the region"),
-  Translations: z.object({}).passthrough().optional().describe("Translations"),
+  translations: z.object({}).passthrough().optional().describe("Translations"),
   sortOrder: z.string().optional().describe("Sort order"),
 });
 

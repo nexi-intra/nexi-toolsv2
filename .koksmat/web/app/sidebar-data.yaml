@@ -68,6 +68,16 @@ navMain:
         url: "/tools/admin/data/purposes"
         icon: "BookOpen"
       - title:
+          en: "Boards"
+          da: "Oversigter"
+        url: "/tools/admin/data/boards"
+        icon: "BookOpen"
+      - title:
+          en: "Tenants"
+          da: "Lejere"
+        url: "/tools/admin/data/tenants"
+        icon: "BookOpen"
+      - title:
           en: "Tool Groups"
           da: "Værktøjsgrupper"
         url: "/tools/admin/data/tool-groups"

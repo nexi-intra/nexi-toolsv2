@@ -9,7 +9,7 @@ keep: false
 
 -- sure sild
 
-CREATE TABLE public.tool
+CREATE TABLE public.board
 (
     id SERIAL PRIMARY KEY,
     created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -33,23 +33,15 @@ CREATE TABLE public.tool
     ,name character varying COLLATE pg_catalog."default"  NOT NULL
     ,description character varying COLLATE pg_catalog."default" 
     ,Translations JSONB  
-    ,category_id int   NOT NULL
-    ,url character varying COLLATE pg_catalog."default"  NOT NULL
     ,status character varying COLLATE pg_catalog."default" 
-    ,Documents JSONB  
+    ,layout JSONB  
     ,metadata JSONB  
-    ,icon character varying COLLATE pg_catalog."default" 
 
 
 );
 
-                ALTER TABLE IF EXISTS public.tool
-                ADD FOREIGN KEY (category_id)
-                REFERENCES public.category (id) MATCH SIMPLE
-                ON UPDATE NO ACTION
-                ON DELETE NO ACTION
-                NOT VALID;                -- lollipop
-                CREATE TABLE public.tool_m2m_country (
+                -- lollipop
+                CREATE TABLE public.board_m2m_userrole (
                 id SERIAL PRIMARY KEY,
                 created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 created_by character varying COLLATE pg_catalog."default"  ,
@@ -63,77 +55,7 @@ CREATE TABLE public.tool
                 koksmat_state VARCHAR COLLATE pg_catalog."default",
 
                 koksmat_bucket JSONB 
-                    ,tool_id int  
- 
-                    ,country_id int  
- 
-
-                );
-            
-
-                ALTER TABLE public.tool_m2m_country
-                ADD FOREIGN KEY (tool_id)
-                REFERENCES public.tool (id) MATCH SIMPLE
-                ON UPDATE NO ACTION
-                ON DELETE NO ACTION
-                NOT VALID;
-
-                ALTER TABLE public.tool_m2m_country
-                ADD FOREIGN KEY (country_id)
-                REFERENCES public.country (id) MATCH SIMPLE
-                ON UPDATE NO ACTION
-                ON DELETE NO ACTION
-                NOT VALID;                -- lollipop
-                CREATE TABLE public.tool_m2m_purpose (
-                id SERIAL PRIMARY KEY,
-                created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                created_by character varying COLLATE pg_catalog."default"  ,
-                updated_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                updated_by character varying COLLATE pg_catalog."default",
-                deleted_at timestamp with time zone,
-                koksmat_masterdataref VARCHAR COLLATE pg_catalog."default",
-                koksmat_masterdata_id VARCHAR COLLATE pg_catalog."default",
-                koksmat_masterdata_etag VARCHAR COLLATE pg_catalog."default",
-                koksmat_compliancetag VARCHAR COLLATE pg_catalog."default",
-                koksmat_state VARCHAR COLLATE pg_catalog."default",
-
-                koksmat_bucket JSONB 
-                    ,tool_id int  
- 
-                    ,purpose_id int  
- 
-
-                );
-            
-
-                ALTER TABLE public.tool_m2m_purpose
-                ADD FOREIGN KEY (tool_id)
-                REFERENCES public.tool (id) MATCH SIMPLE
-                ON UPDATE NO ACTION
-                ON DELETE NO ACTION
-                NOT VALID;
-
-                ALTER TABLE public.tool_m2m_purpose
-                ADD FOREIGN KEY (purpose_id)
-                REFERENCES public.purpose (id) MATCH SIMPLE
-                ON UPDATE NO ACTION
-                ON DELETE NO ACTION
-                NOT VALID;                -- lollipop
-                CREATE TABLE public.tool_m2m_userrole (
-                id SERIAL PRIMARY KEY,
-                created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                created_by character varying COLLATE pg_catalog."default"  ,
-                updated_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                updated_by character varying COLLATE pg_catalog."default",
-                deleted_at timestamp with time zone,
-                koksmat_masterdataref VARCHAR COLLATE pg_catalog."default",
-                koksmat_masterdata_id VARCHAR COLLATE pg_catalog."default",
-                koksmat_masterdata_etag VARCHAR COLLATE pg_catalog."default",
-                koksmat_compliancetag VARCHAR COLLATE pg_catalog."default",
-                koksmat_state VARCHAR COLLATE pg_catalog."default",
-
-                koksmat_bucket JSONB 
-                    ,tool_id int  
+                    ,board_id int  
  
                     ,userrole_id int  
  
@@ -141,20 +63,20 @@ CREATE TABLE public.tool
                 );
             
 
-                ALTER TABLE public.tool_m2m_userrole
-                ADD FOREIGN KEY (tool_id)
-                REFERENCES public.tool (id) MATCH SIMPLE
+                ALTER TABLE public.board_m2m_userrole
+                ADD FOREIGN KEY (board_id)
+                REFERENCES public.board (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;
 
-                ALTER TABLE public.tool_m2m_userrole
+                ALTER TABLE public.board_m2m_userrole
                 ADD FOREIGN KEY (userrole_id)
                 REFERENCES public.userrole (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;                -- lollipop
-                CREATE TABLE public.tool_m2m_accesspoint (
+                CREATE TABLE public.board_m2m_usergroup (
                 id SERIAL PRIMARY KEY,
                 created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 created_by character varying COLLATE pg_catalog."default"  ,
@@ -168,28 +90,28 @@ CREATE TABLE public.tool
                 koksmat_state VARCHAR COLLATE pg_catalog."default",
 
                 koksmat_bucket JSONB 
-                    ,tool_id int  
+                    ,board_id int  
  
-                    ,accesspoint_id int  
+                    ,usergroup_id int  
  
 
                 );
             
 
-                ALTER TABLE public.tool_m2m_accesspoint
-                ADD FOREIGN KEY (tool_id)
-                REFERENCES public.tool (id) MATCH SIMPLE
+                ALTER TABLE public.board_m2m_usergroup
+                ADD FOREIGN KEY (board_id)
+                REFERENCES public.board (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;
 
-                ALTER TABLE public.tool_m2m_accesspoint
-                ADD FOREIGN KEY (accesspoint_id)
-                REFERENCES public.accesspoint (id) MATCH SIMPLE
+                ALTER TABLE public.board_m2m_usergroup
+                ADD FOREIGN KEY (usergroup_id)
+                REFERENCES public.usergroup (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;                -- lollipop
-                CREATE TABLE public.tool_m2m_language (
+                CREATE TABLE public.board_m2m_userprofile (
                 id SERIAL PRIMARY KEY,
                 created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 created_by character varying COLLATE pg_catalog."default"  ,
@@ -203,28 +125,28 @@ CREATE TABLE public.tool
                 koksmat_state VARCHAR COLLATE pg_catalog."default",
 
                 koksmat_bucket JSONB 
-                    ,tool_id int  
+                    ,board_id int  
  
-                    ,language_id int  
+                    ,userprofile_id int  
  
 
                 );
             
 
-                ALTER TABLE public.tool_m2m_language
-                ADD FOREIGN KEY (tool_id)
-                REFERENCES public.tool (id) MATCH SIMPLE
+                ALTER TABLE public.board_m2m_userprofile
+                ADD FOREIGN KEY (board_id)
+                REFERENCES public.board (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;
 
-                ALTER TABLE public.tool_m2m_language
-                ADD FOREIGN KEY (language_id)
-                REFERENCES public.language (id) MATCH SIMPLE
+                ALTER TABLE public.board_m2m_userprofile
+                ADD FOREIGN KEY (userprofile_id)
+                REFERENCES public.userprofile (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;                -- lollipop
-                CREATE TABLE public.tool_m2m_category (
+                CREATE TABLE public.board_m2m_tool (
                 id SERIAL PRIMARY KEY,
                 created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 created_by character varying COLLATE pg_catalog."default"  ,
@@ -238,30 +160,30 @@ CREATE TABLE public.tool
                 koksmat_state VARCHAR COLLATE pg_catalog."default",
 
                 koksmat_bucket JSONB 
-                    ,tool_id int  
+                    ,board_id int  
  
-                    ,category_id int  
+                    ,tool_id int  
  
 
                 );
             
 
-                ALTER TABLE public.tool_m2m_category
-                ADD FOREIGN KEY (tool_id)
-                REFERENCES public.tool (id) MATCH SIMPLE
+                ALTER TABLE public.board_m2m_tool
+                ADD FOREIGN KEY (board_id)
+                REFERENCES public.board (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;
 
-                ALTER TABLE public.tool_m2m_category
-                ADD FOREIGN KEY (category_id)
-                REFERENCES public.category (id) MATCH SIMPLE
+                ALTER TABLE public.board_m2m_tool
+                ADD FOREIGN KEY (tool_id)
+                REFERENCES public.tool (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID;
 
 
 ---- create above / drop below ----
-DROP TABLE IF EXISTS public.tool_m2m_country;DROP TABLE IF EXISTS public.tool_m2m_purpose;DROP TABLE IF EXISTS public.tool_m2m_userrole;DROP TABLE IF EXISTS public.tool_m2m_accesspoint;DROP TABLE IF EXISTS public.tool_m2m_language;DROP TABLE IF EXISTS public.tool_m2m_category;
-DROP TABLE public.tool;
+DROP TABLE IF EXISTS public.board_m2m_userrole;DROP TABLE IF EXISTS public.board_m2m_usergroup;DROP TABLE IF EXISTS public.board_m2m_userprofile;DROP TABLE IF EXISTS public.board_m2m_tool;
+DROP TABLE public.board;
 

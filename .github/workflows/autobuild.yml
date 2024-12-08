@@ -84,6 +84,8 @@ jobs:
                       env:
                         - name: NATS
                           value: nats://nats:4222
+                        - name: NEXT_PUBLIC_APPINSIGHTS_INSTRUMENTATIONKEY
+                          value: ${{ env.APPINSIGHTS }}
 
 
           "@ | Out-File -FilePath deployment.yml

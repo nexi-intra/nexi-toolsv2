@@ -9,7 +9,7 @@ keep: false
 
 -- sherry sild
 
-CREATE OR REPLACE FUNCTION proc.update_tool(
+CREATE OR REPLACE FUNCTION proc.update_tenant(
     p_actor_name VARCHAR,
     p_params JSONB,
     p_koksmat_sync JSONB DEFAULT NULL
@@ -24,12 +24,8 @@ v_tenant VARCHAR COLLATE pg_catalog."default" ;
     v_searchindex VARCHAR COLLATE pg_catalog."default" ;
     v_name VARCHAR COLLATE pg_catalog."default" ;
     v_description VARCHAR COLLATE pg_catalog."default";
-    v_category_id INTEGER;
-    v_url VARCHAR;
     v_status VARCHAR;
-    v_Documents JSONB;
     v_metadata JSONB;
-    v_icon VARCHAR;
         v_audit_id integer;  -- Variable to hold the OUT parameter value
     p_auditlog_params jsonb;
 
@@ -41,46 +37,38 @@ BEGIN
     v_searchindex := p_params->>'searchindex';
     v_name := p_params->>'name';
     v_description := p_params->>'description';
-    v_category_id := p_params->>'category_id';
-    v_url := p_params->>'url';
     v_status := p_params->>'status';
-    v_Documents := p_params->>'Documents';
     v_metadata := p_params->>'metadata';
-    v_icon := p_params->>'icon';
          
     
 
         
-    UPDATE public.tool
+    UPDATE public.tenant
     SET updated_by = p_actor_name,
         updated_at = CURRENT_TIMESTAMP,
         tenant = v_tenant,
         searchindex = v_searchindex,
         name = v_name,
         description = v_description,
-        category_id = v_category_id,
-        url = v_url,
         status = v_status,
-        Documents = v_Documents,
-        metadata = v_metadata,
-        icon = v_icon
+        metadata = v_metadata
     WHERE id = v_id;
 
     GET DIAGNOSTICS v_rows_updated = ROW_COUNT;
     
     IF v_rows_updated < 1 THEN
-        RAISE EXCEPTION 'No records updated. tool ID % not found', v_id ;
+        RAISE EXCEPTION 'No records updated. tenant ID % not found', v_id ;
     END IF;
 
 
            p_auditlog_params := jsonb_build_object(
         'tenant', '',
         'searchindex', '',
-        'name', 'update_tool',
+        'name', 'update_tenant',
         'status', 'success',
         'description', '',
-        'action', 'update_tool',
-        'entity', 'tool',
+        'action', 'update_tenant',
+        'entity', 'tenant',
         'entityid', -1,
         'actor', p_actor_name,
         'metadata', p_params
@@ -93,7 +81,7 @@ BEGIN
   "type": "object",
 
   "properties": {
-    "title": "Update Tool",
+    "title": "Update Tenant",
   "description": "Update operation",
   
     "tenant": { 
@@ -108,23 +96,11 @@ BEGIN
     "description": { 
     "type": "string",
     "description":"" },
-    "category_id": { 
-    "type": "number",
-    "description":"" },
-    "url": { 
-    "type": "string",
-    "description":"" },
     "status": { 
     "type": "string",
     "description":"" },
-    "Documents": { 
-    "type": "object",
-    "description":"" },
     "metadata": { 
     "type": "object",
-    "description":"" },
-    "icon": { 
-    "type": "string",
     "description":"" }
 
     }
