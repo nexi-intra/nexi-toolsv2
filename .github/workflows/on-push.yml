@@ -126,7 +126,7 @@ jobs:
                         - name: NATS
                           value: nats://nats:4222
                         - name: NEXT_PUBLIC_APPINSIGHTS_INSTRUMENTATIONKEY
-                          value: ${{ env.APPINSIGHTS }}                          
+                          value: ${{ vars.APPINSIGHTS }}                          
           "@ | Out-File -FilePath deployment.yml
           @"
             apiVersion: v1
