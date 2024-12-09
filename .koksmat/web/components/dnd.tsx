@@ -2,16 +2,51 @@ import React, { useReducer } from 'react';
 import { z } from 'zod';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+
 import { GripVertical, GripHorizontal, Trash2 } from 'lucide-react';
+import OneLineText from './one-line-text';
+import IconUploader from './icon-uploader';
+import { ToolCardMiniComponent } from './tool-card-mini';
+import { Tool } from '@/app/tools/schemas/forms/tool';
 
 // -------------------------------------------
 // Zod Schemas and Types
 // -------------------------------------------
 
+const tool: Tool = {
+  id: 1,
+  // createdAt: new Date(),
+  // createdBy: 'John Doe',
+  // updatedAt: new Date(),
+  // updatedBy: 'Jane Smith',
+  // deletedAt: null,
+  // deletedBy: null,
+  name: 'Sample Tool',
+  description: 'This is a sample tool for demonstration purposes. It has a longer description to show how text truncation works in the preview card.',
+  url: 'https://example.com/sample-tool',
+  created_at: new Date(),
+  created_by: '',
+  updated_at: new Date(),
+  updated_by: '',
+  deleted_at: null,
+  status: 'deprecated',
+  groupId: '',
+  purposes: [],
+  category: {
+    id: 0,
+    value: '',
+    order: '',
+    color: ''
+  },
+  tags: [],
+  version: ''
+}
+export const ComponentTypeSchema = z.enum(['box', 'tower', 'tool-small', 'tool-medium', 'tool-large']);
+
 export const ComponentSchema = z.object({
   id: z.string(),
   content: z.string(),
+  type: ComponentTypeSchema,
 });
 export type ComponentItem = z.infer<typeof ComponentSchema>;
 
@@ -64,6 +99,14 @@ const MoveComponentActionSchema = z.object({
   destinationIndex: z.number(),
 });
 
+const InsertComponentActionSchema = z.object({
+  type: z.literal('INSERT_COMPONENT'),
+  rowIndex: z.number(),
+  columnIndex: z.number(),
+  componentIndex: z.number(),
+  component: ComponentSchema,
+});
+
 const DeleteComponentActionSchema = z.object({
   type: z.literal('DELETE_COMPONENT'),
   rowIndex: z.number(),
@@ -85,6 +128,11 @@ const InsertColumnActionSchema = z.object({
   type: z.literal('INSERT_COLUMN'),
   index: z.number(),
 });
+const UpdateColumnActionSchema = z.object({
+  type: z.literal('UPDATE_COLUMN'),
+  title: z.string(),
+  index: z.number(),
+});
 
 const DeleteColumnActionSchema = z.object({
   type: z.literal('DELETE_COLUMN'),
@@ -103,10 +151,12 @@ export const EditorActionSchema = z.union([
   MoveColumnActionSchema,
   MoveRowActionSchema,
   MoveComponentActionSchema,
+  InsertComponentActionSchema,
   DeleteComponentActionSchema,
   InsertRowActionSchema,
   DeleteRowActionSchema,
   InsertColumnActionSchema,
+  UpdateColumnActionSchema,
   DeleteColumnActionSchema,
   UndoActionSchema,
   RedoActionSchema,
@@ -136,6 +186,7 @@ const initialRows: Row[] = Array.from({ length: 3 }, (_, rowIndex) => ({
     components: Array.from({ length: 2 }, (_, compIndex) => ({
       id: `comp-${rowIndex}-${colIndex}-${compIndex}`,
       content: `Comp ${rowIndex + 1}-${colIndex + 1}-${compIndex + 1}`,
+      type: 'box'
     })),
   })),
 }));
@@ -150,6 +201,14 @@ const initialState: EditorState = {
   history: [],
   future: [],
 };
+
+// A palette of components that can be dragged into the grid
+const paletteComponents: ComponentItem[] = [
+  { id: 'palette-comp-1', content: 'Palette Tower', type: "tower" },
+
+  { id: 'palette-comp-3', content: 'Palette Box 3', type: "box" },
+  { id: 'palette-comp-4', content: 's', type: "tool-small" },
+];
 
 function editorReducer(state: EditorState, action: EditorAction): EditorState {
   const pushToHistory = (): EditorState => ({
@@ -223,6 +282,25 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       };
     }
 
+    case 'INSERT_COMPONENT': {
+      const newState = pushToHistory();
+      const { rows } = newState.grid;
+      const newRows = Array.from(rows);
+      const row = newRows[action.rowIndex];
+      const cells = Array.from(row.cells);
+      const cell = cells[action.columnIndex];
+      const newComponents = Array.from(cell.components);
+      // Insert the copied component at the specified index
+      newComponents.splice(action.componentIndex, 0, action.component);
+      cells[action.columnIndex] = { ...cell, components: newComponents };
+      newRows[action.rowIndex] = { ...row, cells };
+
+      return {
+        ...newState,
+        grid: { ...newState.grid, rows: newRows },
+      };
+    }
+
     case 'DELETE_COMPONENT': {
       const newState = pushToHistory();
       const { rows } = newState.grid;
@@ -252,6 +330,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
             {
               id: `comp-${rows.length}-${colIndex}-0`,
               content: `New Comp`,
+              type: "box"
             },
           ],
         })),
@@ -294,6 +373,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
             {
               id: `comp-${rowIndex}-${newColumns.length - 1}-0`,
               content: 'New Comp',
+              type: "box"
             },
           ],
         });
@@ -303,6 +383,16 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       return {
         ...newState,
         grid: { ...newState.grid, columns: newColumns, rows: newRows },
+      };
+    }
+    case 'UPDATE_COLUMN': {
+      const newState = pushToHistory();
+      const { columns } = newState.grid;
+      const newColumns = Array.from(columns);
+      newColumns[action.index] = { ...newColumns[action.index], title: action.title };
+      return {
+        ...newState,
+        grid: { ...newState.grid, columns: newColumns },
       };
     }
 
@@ -366,6 +456,43 @@ function parseRowColumnFromDroppableId(droppableId: string): { rowIndex: number;
   return { rowIndex: parseInt(match[1], 10), columnIndex: parseInt(match[2], 10) };
 }
 
+
+export function DrawComponent({ component, isEditMode }: { isEditMode: boolean, component: ComponentItem }) {
+  switch (component.type) {
+    case "tower":
+      return (
+        <div className="p-4 border rounded bg-yellow-400">
+          <IconUploader
+            size={24}
+            mode={isEditMode ? "edit" : "view"}
+            initialIcon="/placeholder.svg?height=24&width=24"
+            onUpdate={(mode, value) => console.log(mode, value)}
+            className=" "
+          />
+          {component.content}
+        </div>
+      );
+
+    case "box":
+      return (
+        <div className="p-4 border rounded bg-green-400">
+          {component.content}
+        </div>
+      );
+    case "tool-small":
+      return (
+        <ToolCardMiniComponent tool={tool} isFavorite={false} allowedTags={[]} />
+      );
+    default:
+      return (
+        <div className="p-4 border rounded bg-white">
+          {component.content}
+        </div>
+      );
+  }
+
+}
+
 export function DragDropEditor({ isEditMode, onSave }: DragDropEditorProps) {
   const [state, dispatch] = useReducer(editorReducer, initialState);
 
@@ -376,6 +503,27 @@ export function DragDropEditor({ isEditMode, onSave }: DragDropEditorProps) {
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
     const { source, destination, type } = result;
+
+    // If we are dragging from the palette to a cell in the grid, we are copying a component.
+    if (source.droppableId === 'palette' && type === 'COMPONENT') {
+      // The destination must be a cell droppable
+      const { rowIndex, columnIndex } = parseRowColumnFromDroppableId(destination.droppableId);
+      // Find the dragged component from the palette
+      const paletteComp = paletteComponents[source.index];
+      // Insert a copy at the destination index
+      dispatch({
+        type: 'INSERT_COMPONENT',
+        rowIndex,
+        columnIndex,
+        componentIndex: destination.index,
+        component: {
+          id: `comp-${rowIndex}-${columnIndex}-${Date.now()}`,
+          content: paletteComp.content,
+          type: paletteComp.type
+        },
+      });
+      return;
+    }
 
     if (type === 'COLUMN') {
       dispatch({
@@ -389,7 +537,8 @@ export function DragDropEditor({ isEditMode, onSave }: DragDropEditorProps) {
         source: source.index,
         destination: destination.index,
       });
-    } else if (type === 'COMPONENT') {
+    } else if (type === 'COMPONENT' && source.droppableId !== 'palette') {
+      // Normal component reordering or moving between cells
       const sourcePos = parseRowColumnFromDroppableId(source.droppableId);
       const destPos = parseRowColumnFromDroppableId(destination.droppableId);
 
@@ -467,8 +616,49 @@ export function DragDropEditor({ isEditMode, onSave }: DragDropEditorProps) {
         <Button onClick={() => onSave(grid)}>Save</Button>
       </div>
 
-      {/* Header Row for Columns */}
+      {/* Palette of Components */}
+      {/* Users can drag these into the grid. They won't disappear from the palette. */}
+
       <DragDropContext onDragEnd={onDragEnd}>
+        {isEditMode && (
+          <Droppable droppableId="palette" type="COMPONENT" direction="horizontal" isDropDisabled>
+            {(provided, snapshot) => (
+              <div
+                className={`flex mb-4 p-2 ${isEditMode ? "border" : ""} ${snapshot.isDraggingOver ? 'bg-gray-100' : 'bg-white'}`}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                {paletteComponents.map((comp, index) => (
+                  <Draggable
+                    key={comp.id}
+                    draggableId={comp.id}
+                    index={index}
+
+                    isDragDisabled={!isEditMode}
+                  >
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        className={`p-2 ${isEditMode ? "border" : ""} rounded bg-white flex items-center mr-2 ${snapshot.isDragging ? 'bg-blue-50' : 'bg-white'
+                          }`}
+                      >
+                        <div {...provided.dragHandleProps} className="cursor-move mr-2">
+                          <GripHorizontal size={16} />
+                        </div>
+                        <DrawComponent component={comp} isEditMode={isEditMode} />
+
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        )}
+
+        {/* Header Row for Columns */}
         <Droppable droppableId="columns" type="COLUMN" direction="horizontal">
           {(provided, snapshot) => (
             <div
@@ -497,7 +687,21 @@ export function DragDropEditor({ isEditMode, onSave }: DragDropEditorProps) {
                               <GripHorizontal size={16} />
                             </div>
                           )}
-                          <span className="font-bold">{col.title}</span>
+
+                          <OneLineText
+                            initialValue={col.title}
+                            placeholder="Enter column title"
+                            mode={isEditMode ? "edit" : "view"}
+                            onChange={(mode, value) => {
+                              dispatch({
+                                type: 'UPDATE_COLUMN',
+                                title: value,
+                                index: colIndex,
+                              });
+                            }}
+                          />
+
+
                         </div>
                         {isEditMode && (
                           <Button
@@ -517,10 +721,8 @@ export function DragDropEditor({ isEditMode, onSave }: DragDropEditorProps) {
             </div>
           )}
         </Droppable>
-      </DragDropContext>
 
-      {/* Rows and Cells (no column titles here) */}
-      <DragDropContext onDragEnd={onDragEnd}>
+        {/* Rows and Cells (no column titles here) */}
         <Droppable droppableId="rows" type="ROW" direction="vertical">
           {(provided, snapshot) => (
             <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-4">
@@ -535,7 +737,7 @@ export function DragDropEditor({ isEditMode, onSave }: DragDropEditorProps) {
                     <div
                       ref={provided.innerRef}
                       {...provided.draggableProps}
-                      className={`border p-2 ${snapshot.isDragging ? 'bg-blue-50' : 'bg-white'}`}
+                      className={`${isEditMode ? "border" : ""} p-2 bg-slate-300 ${snapshot.isDragging ? 'bg-blue-50' : 'bg-white'}`}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center">
@@ -544,7 +746,9 @@ export function DragDropEditor({ isEditMode, onSave }: DragDropEditorProps) {
                               <GripVertical size={16} />
                             </div>
                           )}
-                          <span className="font-bold">{row.id}</span>
+                          {isEditMode && (
+                            <span className="font-bold">{row.id}</span>
+                          )}
                         </div>
                         {isEditMode && (
                           <Button
@@ -570,7 +774,7 @@ export function DragDropEditor({ isEditMode, onSave }: DragDropEditorProps) {
                             >
                               {(provided, snapshot) => (
                                 <div
-                                  className={`flex-1 border p-2 min-h-[50px] ${snapshot.isDraggingOver ? 'bg-gray-100' : ''
+                                  className={`flex-1 ${isEditMode ? "border" : ""} p-2 min-h-[50px] ${snapshot.isDraggingOver ? 'bg-gray-100' : ''
                                     }`}
                                   ref={provided.innerRef}
                                   {...provided.droppableProps}
@@ -587,7 +791,7 @@ export function DragDropEditor({ isEditMode, onSave }: DragDropEditorProps) {
                                           <div
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
-                                            className={`p-2 border rounded ${snapshot.isDragging ? 'bg-blue-50' : 'bg-white'
+                                            className={`p-2 ${isEditMode ? "border" : ""} rounded ${snapshot.isDragging ? 'bg-blue-50' : 'bg-white'
                                               } flex items-center`}
                                           >
                                             {isEditMode && (
@@ -596,15 +800,9 @@ export function DragDropEditor({ isEditMode, onSave }: DragDropEditorProps) {
                                               </div>
                                             )}
                                             {isEditMode ? (
-                                              <Input
-                                                value={comp.content}
-                                                onChange={() => {
-                                                  // If needed, implement an UPDATE_COMPONENT action
-                                                }}
-                                                className="flex-grow"
-                                              />
+                                              <DrawComponent isEditMode={isEditMode} component={comp} />
                                             ) : (
-                                              <div className="flex-grow">{comp.content}</div>
+                                              <div className="flex-grow"> <DrawComponent isEditMode={isEditMode} component={comp} /></div>
                                             )}
                                             {isEditMode && (
                                               <Button
@@ -637,6 +835,7 @@ export function DragDropEditor({ isEditMode, onSave }: DragDropEditorProps) {
           )}
         </Droppable>
       </DragDropContext>
+
     </div>
   );
 }

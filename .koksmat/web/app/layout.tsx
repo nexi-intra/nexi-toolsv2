@@ -16,7 +16,7 @@ export default function RootLayout2({
     <html lang="en">
       <body>
         <ApplicationInsightsProvider instrumentationKey={instrumentationKey}>
-          <link rel="manifest" href="manifest.json" />
+          <link rel="manifest" href="manifests/pwa" />
           <Script id="clarityinjection">
             {`
     (function(c,l,a,r,i,t,y){

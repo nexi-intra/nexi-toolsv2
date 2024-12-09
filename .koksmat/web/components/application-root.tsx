@@ -67,6 +67,7 @@ import { DatabaseCacheProvider } from "@/app/koksmat/src/v.next/components/datab
 // Custom hook to detect if running in an iframe
 import { BRANCH } from '@/branch'
 import { APPDISPLAYNAME } from '@/app/global'
+import Image from "next/image"
 
 function appName() {
   const branch = BRANCH
@@ -190,8 +191,8 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
       tokenProvider={{
         getToken: async () => {
           if (!magicbox.authtoken) {
-            //alert("No authtoken")
-            await magicbox.signIn(["user.read"], "")
+            //TODO : In case of successfull sing in, Capture auth token and return it
+            const x = await magicbox.signIn(["user.read"], "")
             debugger
             if (!magicbox.authtoken) {
               throw new Error('No authtoken - please reload the page')
@@ -228,7 +229,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                           >
                             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                              <Icon iconName={activeTeam.logo} className="size-5" />
+                              <Image src="/tool-white.svg" width={64} height={64} alt="icon" className="w-6 h-6" />
                             </div>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                               <span className="truncate font-semibold">
@@ -257,7 +258,8 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           >
 
                             <div className="flex size-6 items-center justify-center rounded-sm border">
-                              <Icon iconName={activeTeam.logo} />
+                              <Image src="/appimages/ios/64.png" width={64} height={64} alt="icon" className="w-6 h-6" />
+
                             </div>
                             <Link className="grow" href="https://tools.intra.nexigroup.com">
                               Production
@@ -272,7 +274,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           >
 
                             <div className="flex size-6 items-center justify-center rounded-sm border">
-                              <Icon iconName={activeTeam.logo} />
+                              <Image src="/appimages/ios/64.png" width={64} height={64} alt="icon" className="w-6 h-6" />
                             </div>
                             <Link className="grow" href="https://nexi-intra-nexi-toolsv2-canary.intra.nexigroup.com">
                               Canary
@@ -285,7 +287,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           >
 
                             <div className="flex size-6 items-center justify-center rounded-sm border">
-                              <Icon iconName={activeTeam.logo} />
+                              <Image src="/appimages/ios/64.png" width={64} height={64} alt="icon" className="w-6 h-6" />
                             </div>
                             <Link className="grow" href="https://nexi-intra-nexi-toolsv2-alpha.intra.nexigroup.com">
                               Alpha
@@ -299,7 +301,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           >
 
                             <div className="flex size-6 items-center justify-center rounded-sm border">
-                              <Icon iconName={activeTeam.logo} />
+                              <Image src="/appimages/ios/64.png" width={64} height={64} alt="icon" className="w-6 h-6" />
                             </div>
                             <Link className="grow" href="https://nexi-intra-nexi-toolsv2-beta.intra.nexigroup.com">
                               Beta
@@ -312,7 +314,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           >
 
                             <div className="flex size-6 items-center justify-center rounded-sm border">
-                              <Icon iconName={activeTeam.logo} />
+                              <Image src="/appimages/ios/64.png" width={64} height={64} alt="icon" className="w-6 h-6" />
                             </div>
                             <Link className="grow" href="https://nexi-intra-nexi-toolsv2-master.intra.nexigroup.com">
                               Master
