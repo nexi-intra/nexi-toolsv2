@@ -193,7 +193,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
           if (!magicbox.authtoken) {
             //TODO : In case of successfull sing in, Capture auth token and return it
             const x = await magicbox.signIn(["user.read"], "")
-            debugger
+            //debugger
             if (!magicbox.authtoken) {
               throw new Error('No authtoken - please reload the page')
             }

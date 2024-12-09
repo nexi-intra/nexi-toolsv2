@@ -2,10 +2,10 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Script from "next/script";
 
-import { CLARITY } from "./global";
+import { APPINSIGHTS, CLARITY } from "./global";
 import RootLayoutClientSide from "./layout-client";
 import { ApplicationInsightsProvider } from "./koksmat/src/v.next/components/ApplicationInsightsProvider";
-const instrumentationKey = process.env.NEXT_PUBLIC_APPINSIGHTS_INSTRUMENTATIONKEY || '';
+const instrumentationKey = APPINSIGHTS
 
 export default function RootLayout2({
   children,
@@ -16,7 +16,7 @@ export default function RootLayout2({
     <html lang="en">
       <body>
         <ApplicationInsightsProvider instrumentationKey={instrumentationKey}>
-          <link rel="manifest" href="manifests/pwa" />
+          <link rel="manifest" href="/manifests/pwa" />
           <Script id="clarityinjection">
             {`
     (function(c,l,a,r,i,t,y){
