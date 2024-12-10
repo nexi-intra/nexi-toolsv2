@@ -125,6 +125,8 @@ jobs:
                       env:
                         - name: NATS
                           value: nats://nats:4222
+                        - name: APPLICATIONINSIGHTS_CONNECTION_STRING
+                          value: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
           "@ | Out-File -FilePath deployment.yml
           @"
             apiVersion: v1
