@@ -11,7 +11,7 @@ This document outlines the dataflow within the Tools application built with Next
 5. [Data Storage](#data-storage)
 6. [Data Pipeline (ETL)](#data-pipeline-etl)
 7. [Mermaid Diagrams](#mermaid-diagrams)
-8. [Conclusion](#conclusion)
+
 
 ---
 
@@ -25,10 +25,9 @@ The Tools application follows a modern microservices architecture, leveraging Ne
 graph TD
     A[Next.js Frontend] -->|HTTP Requests| B[Next.js API Endpoint]
     B -->|NATS Messaging| C[Backend Microservices]
-    C --> D[PostgreSQL Database]
-    C --> E[SharePoint Lists]
+    C --> D[PostgreSQL Database]    
     F[GitHub Actions] --> D
-    F --> E
+    E[SharePoint Lists] -->|Web hooks / on demand| F
 ```
 
 ---
@@ -104,11 +103,11 @@ graph TD
     subgraph Backend
         C[Microservice Worker] -->|Subscribe| N
         C --> D[PostgreSQL Database]
-        C --> E[SharePoint Lists]
+        
     end
 
     subgraph ETL Pipeline
-        F[GitHub Actions] -->|Extract Data| E
+        F[GitHub Actions] -->|Extract Data| SharePoint
         F -->|Transform Data| T[ETL Process]
         T -->|Load Data| D
     end
@@ -137,7 +136,6 @@ sequenceDiagram
     API->>NATS: Publishes Message
     NATS->>Backend: Delivers Message
     Backend->>PostgreSQL: Executes SQL Operation
-    Backend->>SharePoint: Reads/Writes SharePoint Data
     GitHubActions->>SharePoint: Extract Data
     GitHubActions->>GitHubActions: Transform Data
     GitHubActions->>PostgreSQL: Load Data
