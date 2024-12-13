@@ -445,6 +445,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
 
 const DragDropEditorPropsSchema = z.object({
   isEditMode: z.boolean(),
+  value: GridSchema,
   onSave: z.function().args(GridSchema).returns(z.void()),
 });
 
@@ -493,7 +494,7 @@ export function DrawComponent({ component, isEditMode }: { isEditMode: boolean, 
 
 }
 
-export function DragDropEditor({ isEditMode, onSave }: DragDropEditorProps) {
+export function DragDropEditor({ isEditMode, onSave, value }: DragDropEditorProps) {
   const [state, dispatch] = useReducer(editorReducer, initialState);
 
   const { grid, history, future } = state;

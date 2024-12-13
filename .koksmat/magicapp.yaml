@@ -389,6 +389,54 @@ entities:
         type: array
         required: true
         entity: *tool
+  setting: &setting
+    name: setting
+    description: Settings
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: data
+        displayname: Data
+        type: json
+        required: false
+      - name: userprofile
+        displayname: User Profile
+        type: reference
+        required: false
+        entity: *userprofile
+      - name: usergroup
+        displayname: User Group
+        type: reference
+        required: false
+        entity: *usergroup
+      - name: tool
+        displayname: Tool
+        type: reference
+        required: false
+        entity: *tool
+  bucket: &bucket
+    name: bucket
+    description: Buckets
+    baselineattributes: *recordAttributes
+    additionalattributes:
+      - name: data
+        displayname: Data
+        type: json
+        required: false
+      - name: userprofile
+        displayname: User Profile
+        type: reference
+        required: false
+        entity: *userprofile
+      - name: usergroup
+        displayname: User Group
+        type: reference
+        required: false
+        entity: *usergroup
+      - name: tool
+        displayname: Tool
+        type: reference
+        required: false
+        entity: *tool
 
 models:
   itemMethods: &itemMethods
@@ -596,5 +644,25 @@ services:
       entity: *board
       model: board
       objectname: Board
+
+    methods: *itemMethods
+
+  - name: setting
+    description: Settings
+    entity:
+      type: record
+      entity: *setting
+      model: setting
+      objectname: Setting
+
+    methods: *itemMethods
+
+  - name: bucket
+    description: Bucket
+    entity:
+      type: record
+      entity: *bucket
+      model: bucket
+      objectname: Bucket
 
     methods: *itemMethods
