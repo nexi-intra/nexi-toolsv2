@@ -14,7 +14,7 @@ param(
 )
 
 $url = $listUrl.ToLower()
-
+$hostUrl = $url.Split("/sites/")[0]
 $siteUrl = $url.Split("/lists/")[0]
 $siteName = $url.Split("/sites/")[1].Split("/")[0]
 $listName = $url.Split("/lists/")[1].Split("/")[0]
@@ -93,9 +93,7 @@ foreach ($item in $listItems) {
         Modified                = $item.FieldValues.Modified.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
         CreatedBy               = $item.FieldValues.Author.Email
         ModifiedBy              = $item.FieldValues.Editor.Email
-        Etag                    = $item.FieldValues.__metadata.etag
-        Site                    = $siteName
-        List                    = $listName
+        Etag                    = $item.FieldValues._UIVersionString
         Title                   = $item.FieldValues.Title
         Area                    = $item.FieldValues.Area.LookupValue
         Link                    = $item.FieldValues.Link.Url
@@ -109,4 +107,12 @@ foreach ($item in $listItems) {
    
 }
 write-host "Output to $result"
-$items | ConvertTo-Json -Depth 10 | Out-File -FilePath $result -Encoding utf8NoBOM
+$itemData = @{
+    Items   = $items
+    Created = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
+    Site    = $siteName
+    List    = $listName
+    Host    = $hostUrl
+}
+
+$itemData | ConvertTo-Json -Depth 10 | Out-File -FilePath $result -Encoding utf8NoBOM

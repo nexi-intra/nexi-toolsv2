@@ -7,7 +7,7 @@ try {
   . "$root/.koksmat/pwsh/build-env.ps1"
   . "$PSScriptRoot/temp.ps1"
   
-  # . "$PSScriptRoot/run.ps1" -DryRun $false
+  . "$PSScriptRoot/run.ps1" -DryRun $false
 }
 catch {
   write-host "Error: $_" -ForegroundColor:Red
