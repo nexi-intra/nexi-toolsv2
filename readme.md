@@ -1,250 +1,142 @@
+# Tools Application Dataflow Overview
+
+This document outlines the dataflow within the Tools application built with Next.js. It covers the interactions between the frontend, backend, databases, and external services, providing a clear understanding of how data moves through the system.
+
+## Table of Contents
+
+1. [Architecture Overview](#architecture-overview)
+2. [Frontend (Next.js)](#frontend-nextjs)
+3. [API Layer](#api-layer)
+4. [Backend Services](#backend-services)
+5. [Data Storage](#data-storage)
+6. [Data Pipeline (ETL)](#data-pipeline-etl)
+7. [Mermaid Diagrams](#mermaid-diagrams)
+
+
 ---
-title: Template for a Magic App
-description: This architecture ensures that frontend developers focus solely on building the user interface and client-side logic, without direct access to production data. Backend developers manage data processing and API creation, maintaining strict access controls through the MagicPot. The use of GitHub Actions for continuous integration and deployment automates the process of building and publishing Docker images, while the PowerShell script facilitates seamless deployment to Kubernetes.
+
+## Architecture Overview
+
+The Tools application follows a modern microservices architecture, leveraging Next.js for the frontend and a set of backend services communicating via NATS. Data is primarily stored in a PostgreSQL database and SharePoint lists, with GitHub Actions facilitating the ETL (Extract, Transform, Load) processes.
+
+### High-Level Architecture Diagram
+
+```mermaid
+graph TD
+    A[Next.js Frontend] -->|HTTP Requests| B[Next.js API Endpoint]
+    B -->|NATS Messaging| C[Backend Microservices]
+    C --> D[PostgreSQL Database]    
+    F[GitHub Actions] --> D
+    E[SharePoint Lists] -->|Web hooks / on demand| F
+```
+
 ---
 
-### Architecture Overview
+## Frontend (Next.js)
 
-The architecture of the KOKSMAT framework ensures a clear separation between frontend and backend developers, with specific roles and access levels.
-
-#### Frontend (Next.js Application)
-
-- **Technologies Used**: Next.js 14, TypeScript, Tailwind CSS, shadcn-ui components
-- **Location**: `.koksmat/web`
+- **Framework**: Next.js with client-side rendering (`"use client"` directive).
 - **Responsibilities**:
-  - Developing user interfaces and client-side logic
-  - Handling user authentication via Microsoft Online
-  - Consuming backend APIs (MagicPot) for all data interactions
-  - Never interacting directly with production data
+  - Provides the user interface.
+  - Handles user interactions and client-side logic.
+  - Communicates with the backend via a single API endpoint.
 
-#### Backend (Go Application)
+## API Layer
 
-- **Technologies Used**: Go, Postgres, Kubernetes
-- **Location**: `.koksmat/app`
-- **Responsibilities**:
-  - Handling business logic, data processing, and storage
-  - Ensuring data integrity and security
+- **Single API Endpoint**: Acts as the bridge between the frontend and backend services.
+- **Communication Protocol**: Utilizes NATS for message-based communication to ensure scalable and decoupled interactions with backend microservices.
 
-### Getting Started with a New Project
+## Backend Services
 
-To start a new project using the KOKSMAT framework, follow these steps:
+- **Microservice Worker**:
+  - Connects to the PostgreSQL database.
+  - Handles various data operations such as SQL `SELECT` statements and CRUD (Create, Read, Update, Delete) operations.
+  - Interacts with SharePoint lists for additional data management.
+- **Communication**:
+  - Receives messages from the API layer via NATS.
+  - Processes requests and performs necessary data operations.
 
-1. **Decide on a Project Name**: Choose a subject matter for the project, formatted as two words separated by a dash (e.g., `intranet-tools`).
+## Data Storage
 
-2. **Create a New Repository**:
+### PostgreSQL Database
 
-   - Use the master template repository: [magic-master](https://github.com/magicbutton/magic-master)
-   - Name the new repository according to the project subject (e.g., `intranet-tools`).
+- **Purpose**: Stores structured application data.
+- **Operations**: Handles SQL queries including `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `PATCH`, and `RESTORE`.
 
-3. **Set Up the Repository**:
+### SharePoint Lists
 
-   - Clone the new repository to your local machine or open it in GitHub Codespaces.
-   - Rename the project folder to match the subject (e.g., `tools`).
+- **Distribution**: Data is maintained across multiple SharePoint site collections, including Communication Sites and Team Sites.
+- **Central Registration**: All SharePoint lists are registered in a central list for easy management and access.
 
-4. **Update Configuration**:
-   - Open `.koksmat/web/app/global.ts`.
-   - Update the `APPNAME` variable to match your project name (e.g., `tools`).
-   - Change the `clientId` and `authority` values to match your Azure tenant configuration:
-     ```typescript
-     export const APPNAME = "tools";
-     export const CLARITY = "your-clarity-key";
-     export const MSAL = {
-       clientId: "your-client-id",
-       authority: "https://login.microsoftonline.com/your-tenant-id",
-       redirectUri: "/",
-       postLogoutRedirectUri: "/",
-     };
-     ```
-5. **Change name**
+## Data Pipeline (ETL)
 
-- Search and replace "magicbutton/magic-master" with your repos name "owner/repo"
+- **GitHub Actions**:
+  - Designed to perform Extract, Transform, and Load (ETL) operations.
+  - **Extract**: Pulls data from SharePoint lists.
+  - **Transform**: Processes and formats data as needed.
+  - **Load**: Inserts or updates data in the PostgreSQL database.
 
-### Continuous Integration and Deployment with GitHub Actions
+### ETL Workflow Diagram
 
-The KOKSMAT framework leverages GitHub Actions for continuous integration and deployment, specifically for publishing Docker images and deploying them to Kubernetes. This process is triggered whenever a new release is made.
+```mermaid
+graph TD
+    F[GitHub Actions] -->|Extract| E[SharePoint Lists]
+    F -->|Transform| T[ETL Process]
+    T -->|Load| D[PostgreSQL Database]
+```
 
-#### GitHub Actions for Publishing Docker Images
+---
 
-1. **Configuration File**:
+## Mermaid Diagrams
 
-   - The release tag and image name are controlled by the `.koksmat/koksmat.json` file:
-     ```json
-     {
-       "version": {
-         "minor": 0,
-         "build": 5,
-         "patch": 5,
-         "major": 0
-       },
-       "appname": "magic-people",
-       "dnsprod": "people.intra.nexigroup.com",
-       "dnstest": "people-test.intra.nexigroup.com",
-       "imagename": "ghcr.io/magicbutton/magic-people",
-       "port": 4444
-     }
-     ```
+### 1. Detailed Dataflow Diagram
 
-2. **GitHub Actions Workflow**:
+```mermaid
+graph TD
+    subgraph Frontend
+        A[Next.js Client] -->|HTTP Request| B[Next.js API Endpoint]
+    end
 
-   - The workflow is triggered on creating a new release, building the Docker image, and pushing it to the GitHub Container Registry:
+    subgraph API Layer
+        B -->|Publish Message| N[NATS Server]
+    end
 
-     ```yaml
-     name: Build and Publish Docker Image
+    subgraph Backend
+        C[Microservice Worker] -->|Subscribe| N
+        C --> D[PostgreSQL Database]
+        
+    end
 
-     on:
-       release:
-         types: [published]
+    subgraph ETL Pipeline
+        F[GitHub Actions] -->|Extract Data| SharePoint
+        F -->|Transform Data| T[ETL Process]
+        T -->|Load Data| D
+    end
 
-     jobs:
-       build:
-         runs-on: ubuntu-latest
+    style Frontend fill:#f9f,stroke:#333,stroke-width:2px
+    style API Layer fill:#bbf,stroke:#333,stroke-width:2px
+    style Backend fill:#bfb,stroke:#333,stroke-width:2px
+    style ETL Pipeline fill:#ffb,stroke:#333,stroke-width:2px
+```
 
-         steps:
-           - name: Checkout code
-             uses: actions/checkout@v2
+### 2. Data Operations Flow
 
-           - name: Set up Docker Buildx
-             uses: docker/setup-buildx-action@v1
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant API
+    participant NATS
+    participant Backend
+    participant PostgreSQL
+    participant SharePoint
+    participant GitHubActions
 
-           - name: Login to GitHub Container Registry
-             uses: docker/login-action@v1
-             with:
-               registry: ghcr.io
-               username: ${{ github.actor }}
-               password: ${{ secrets.GITHUB_TOKEN }}
-
-           - name: Extract version
-             id: extract_version
-             run: |
-               version=$(jq -r '.version.major+"."+ .version.minor+"."+ .version.patch+"."+ .version.build' .koksmat/koksmat.json)
-               echo "::set-output name=version::$version"
-
-           - name: Build and push Docker image
-             run: |
-               imagename=$(jq -r '.imagename' .koksmat/koksmat.json)
-               version=${{ steps.extract_version.outputs.version }}
-               docker build -t $imagename:$version .
-               docker push $imagename:$version
-     ```
-
-#### Deploying to Kubernetes
-
-The deployment manifest is generated and published to Kubernetes using a PowerShell script located at `60-provision/10-web.ps1`.
-
-- **PowerShell Script**:
-
-  - This script reads the `koksmat.json` file, generates a Kubernetes manifest, and applies it:
-
-    ```powershell
-    <#---
-    title: Web deploy to production
-    tag: webdeployproduction
-    api: post
-    ---#>
-
-    if ((Split-Path -Leaf (Split-Path  -Parent -Path $PSScriptRoot)) -eq "sessions") {
-      $path = join-path $PSScriptRoot ".." ".."
-    }
-    else {
-      $path = join-path $PSScriptRoot ".." ".koksmat/"
-
-    }
-
-    $koksmatDir = Resolve-Path $path
-
-    $inputFile = join-path  $koksmatDir "koksmat.json"
-
-    if (!(Test-Path -Path $inputFile) ) {
-      Throw "Cannot find file at expected path: $inputFile"
-    }
-    $json = Get-Content -Path $inputFile | ConvertFrom-Json
-    $version = "v$($json.version.major).$($json.version.minor).$($json.version.patch).$($json.version.build)"
-    $port = "$($json.port)"
-    $appname = $json.appname
-    $imagename = $json.imagename
-    $dnsname = $json.dnsprod
-
-    $image = "$($imagename)-web:$($version)"
-
-    $config = @"
-    apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: pvc-$appname
-    spec:
-      accessModes:
-        - ReadWriteMany
-      resources:
-        requests:
-          storage: 1Gi
-      storageClassName: azurefile
-    ---
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: $appname
-    spec:
-      selector:
-        matchLabels:
-          app: $appname
-      replicas: 1
-      template:
-        metadata:
-          labels:
-            app: $appname
-        spec:
-          containers:
-          - name: $appname
-            image: $image
-            ports:
-              - containerPort: $port
-            env:
-            - name: NATS
-              value: nats://nats:4222
-            - name: DATAPATH
-              value: /data
-            volumeMounts:
-            - mountPath: /data
-              name: data
-          volumes:
-          - name: data
-            persistentVolumeClaim:
-              claimName: pvc-$appname
-    ---
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: $appname
-      labels:
-        app: $appname
-        service: $appname
-    spec:
-      ports:
-      - name: http
-        port: 5301
-        targetPort: $port
-      selector:
-        app: $appname
-    ---
-    apiVersion: networking.k8s.io/v1
-    kind: Ingress
-    metadata:
-      name: $appname
-    spec:
-      rules:
-      - host: $dnsname
-        http:
-          paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: $appname
-                port:
-                  number: 5301
-    "@
-
-    write-host "Applying config" -ForegroundColor Green
-    write-host $config -ForegroundColor Gray
-    $config |  kubectl apply -f -
-    ```
+    User->>Frontend: Interacts with UI
+    Frontend->>API: Sends API Request
+    API->>NATS: Publishes Message
+    NATS->>Backend: Delivers Message
+    Backend->>PostgreSQL: Executes SQL Operation
+    GitHubActions->>SharePoint: Extract Data
+    GitHubActions->>GitHubActions: Transform Data
+    GitHubActions->>PostgreSQL: Load Data
+```

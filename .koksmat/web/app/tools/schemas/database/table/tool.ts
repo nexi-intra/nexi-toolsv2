@@ -19,7 +19,7 @@ export const schema = z.object({
     .describe(
       "Description of the tool\nNote that you can add links for documentation in other formats"
     ),
-  Translations: z.object({}).passthrough().optional().describe("Translations"),
+  translations: z.object({}).passthrough().optional().describe("Translations"),
   category_id: z.number().int().describe("Category ID"),
   url: z.string().url().describe("URL of the tool"),
   icon: z.string().url().describe("Icon of the tool"),

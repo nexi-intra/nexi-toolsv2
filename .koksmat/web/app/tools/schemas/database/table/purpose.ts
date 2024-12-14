@@ -18,7 +18,7 @@ export const schema = z
       .nullable()
       .optional()
       .describe("Description of the purpose"),
-    Translations: z
+    translations: z
       .object({})
       .passthrough()
       .optional()

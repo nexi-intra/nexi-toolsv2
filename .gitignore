@@ -8,3 +8,5 @@ workdir
 .koksmat/web/.koksmat/state.yaml
 .koksmat/web/.koksmat/state.yaml
 .koksmat/web/koksmat.log
+temp.ps1
+*.pfx

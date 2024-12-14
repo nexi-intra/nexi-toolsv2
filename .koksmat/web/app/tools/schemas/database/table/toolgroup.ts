@@ -17,7 +17,7 @@ export const schema = z.object({
     .nullable()
     .optional()
     .describe("Description of the Tool Group"),
-  Translations: z.object({}).passthrough().optional().describe("Translations"),
+  translations: z.object({}).passthrough().optional().describe("Translations"),
   status: z.string().optional().describe("Status of the Tool Group"),
   metadata: z.object({}).passthrough().optional().describe("Metadata"),
 });

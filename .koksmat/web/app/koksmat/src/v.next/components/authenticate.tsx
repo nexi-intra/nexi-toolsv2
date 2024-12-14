@@ -73,6 +73,7 @@ export default function Authenticate(props: {
 
   useEffect(() => {
     const load = async () => {
+      debugger
       if (magicbox.authtoken) {
         settoken(magicbox.authtoken);
         return;

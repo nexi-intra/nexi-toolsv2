@@ -532,24 +532,27 @@ export const TreeEditor: React.FC<{
               </SelectItem>
             </SelectContent>
           </Select>
-          <div className="space-x-2">
-            <Button
-              onClick={undo}
-              disabled={!canUndo || mode === 'view'}
-              size="sm"
-            >
-              <Undo className="w-4 h-4 mr-2" />
-              Undo
-            </Button>
-            <Button
-              onClick={redo}
-              disabled={!canRedo || mode === 'view'}
-              size="sm"
-            >
-              <Redo className="w-4 h-4 mr-2" />
-              Redo
-            </Button>
-          </div>
+          {mode !== 'view' && (
+            <div className="space-x-2 flex">
+              <Button
+                onClick={undo}
+                variant={"secondary"}
+                disabled={!canUndo}
+                size="sm"
+              >
+                <Undo className="w-4 h-4 mr-2" />
+
+              </Button>
+              <Button
+                onClick={redo}
+                variant={"secondary"}
+                disabled={!canRedo}
+                size="sm"
+              >
+                <Redo className="w-4 h-4 mr-2" />
+
+              </Button>
+            </div>)}
         </div>
         <div className="flex">
           <div className="flex-grow overflow-auto max-h-[600px]">
@@ -756,7 +759,7 @@ const exampleData: EditorData = [
 
 
 // Export the component
-export default function Component() {
+export default function TreeView() {
   // Example actions (you should replace these with your actual actions)
   const exampleActions: ActionType[] = [
     {

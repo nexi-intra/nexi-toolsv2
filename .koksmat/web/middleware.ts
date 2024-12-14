@@ -41,7 +41,7 @@ export async function middleware(request: NextRequest) {
   // console.log(`Raw token: ${userTokenDetails}`);
 
   // Detect potential bot activity
-  const SHOWBODY = true;
+  const SHOWBODY = false;
   const userAgent = request.headers.get("user-agent") || "Unknown";
   const botKeywords = [
     "bot",
@@ -102,7 +102,7 @@ export async function middleware(request: NextRequest) {
       console.log("Body present, but not parsing (content-type):", contentType);
     }
   } else {
-    console.log("No body in the request");
+    //console.log("No body in the request");
   }
 
   // Return the response without modifying it

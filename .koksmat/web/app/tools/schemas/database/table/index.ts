@@ -26,8 +26,11 @@ export type UserProfile = z.infer<typeof userprofile.schema>;
 import * as usergroup from "./usergroup";
 export type Usergroup = z.infer<typeof usergroup.schema>;
 import * as userrole from "./userrole";
-import { kInfo } from "@/lib/koksmat-logger-client";
-import { version } from "@/app/koksmat";
+import * as tenant from "./tenant";
+export type Tenant = z.infer<typeof tenant.schema>;
+import * as board from "./board";
+export type Board = z.infer<typeof board.schema>;
+
 export type Userrole = z.infer<typeof userrole.schema>;
 export const databaseTable = {
   accesspoint,
@@ -43,6 +46,8 @@ export const databaseTable = {
   userprofile,
   usergroup,
   userrole,
+  tenant,
+  board,
 };
 
 // Usage example:

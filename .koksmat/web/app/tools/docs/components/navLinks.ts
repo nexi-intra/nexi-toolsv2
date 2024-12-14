@@ -147,4 +147,8 @@ export const navLinks = [
     label: "Table of Content",
     href: "/tools/docs/components/toc",
   },
+  {
+    label: "Action Card",
+    href: "/tools/docs/components/action-card",
+  },
 ];

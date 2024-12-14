@@ -29,6 +29,7 @@ v_tenant VARCHAR COLLATE pg_catalog."default" ;
     v_status VARCHAR;
     v_Documents JSONB;
     v_metadata JSONB;
+    v_icon VARCHAR;
         v_audit_id integer;  -- Variable to hold the OUT parameter value
     p_auditlog_params jsonb;
 
@@ -45,6 +46,7 @@ BEGIN
     v_status := p_params->>'status';
     v_Documents := p_params->>'Documents';
     v_metadata := p_params->>'metadata';
+    v_icon := p_params->>'icon';
          
     
 
@@ -60,7 +62,8 @@ BEGIN
         url = v_url,
         status = v_status,
         Documents = v_Documents,
-        metadata = v_metadata
+        metadata = v_metadata,
+        icon = v_icon
     WHERE id = v_id;
 
     GET DIAGNOSTICS v_rows_updated = ROW_COUNT;
@@ -119,6 +122,9 @@ BEGIN
     "description":"" },
     "metadata": { 
     "type": "object",
+    "description":"" },
+    "icon": { 
+    "type": "string",
     "description":"" }
 
     }

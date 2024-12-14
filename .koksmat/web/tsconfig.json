@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "jest.config.js"
-, "components/form-generic-tabletsx"  ],
+, "components/form-generic-tabletsx", "../../../nexi-booking-v2/.koksmat/web/components/ApplicationInsightsProvider.tsx", "../../../nexi-booking-v2/.koksmat/web/components/useApplicationInsights.ts"  ],
   "exclude": [
     "node_modules"
   ]

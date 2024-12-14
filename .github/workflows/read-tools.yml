@@ -1,0 +1,36 @@
+name: Read Tools
+
+on:
+  workflow_dispatch:
+    inputs:
+      listurl:
+        description: 'Full URL of the list to use'
+        required: true
+        default: 'https://contoso.sharepoint.com/sites/contoso'
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+  
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    env:
+      # Define environment variables here
+      WORKDIR: ${{ github.workspace }}
+      PNPAPPID: ${{vars.PNPAPPID }}
+      PNPTENANTID: ${{vars.PNPTENANTID }}
+      PNPCERTIFICATE: ${{secrets.PNPCERTIFICATE }}
+      PNPSITE: ${{vars.PNPSITE }}
+      AZURE_STORAGE_ACCOUNT: ${{vars.AZURE_STORAGE_ACCOUNT }}
+      AZURE_STORAGE_CONTAINER: ${{vars.AZURE_STORAGE_CONTAINER }}
+      AZURE_STORAGE_KEY: ${{secrets.AZURE_STORAGE_KEY }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Update Metadata
+        run: |
+          echo "Deploying version ${{ github.event.inputs.listurl }} to ${{ github.event.inputs.environment }} environment."
+          # Add your deployment scripts here
