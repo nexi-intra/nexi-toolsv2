@@ -34,7 +34,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
   const searchParams = useSearchParams()
   const view = databaseQueries.getView(viewName)
   const table = useKoksmatDatabase().table("", view!.databaseName, view!.schema)
-  const [items, setItems] = useState<T[]>()
+  const [items, setItems] = useState<T[]>([])
   const [error, seterror] = useState("")
   const [isLoading, setisLoading] = useState(true)
 
@@ -53,7 +53,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
         }
         const readDataOperation = await table.query(viewName, parameters)
         setisLoading(false)
-        if (readDataOperation.length === 0) {
+        if (readDataOperation?.length === 0) {
           setItems([])
           kInfo("component", "No data found");
           return
@@ -101,8 +101,13 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
   }, [])
 
 
+  if (isLoading) {
+    return <div className="text-center" >Loading...</div>
+  }
+  if (items?.length < 1) {
+    return <div className="" >No items</div>
 
-
+  }
 
   return (
     <div className="space-y-4 p-6 rounded-lg w-full">

@@ -6,12 +6,14 @@ import { ToolView } from '@/app/tools/schemas/forms'
 import { databaseQueries } from "@/app/tools/schemas/database";
 
 
-export function MyToolList() {
+export function MyToolList(props: { searchFor?: string; onLoaded?: () => void }) {
   debugger
   const viewName = "my_tools"
   const view = databaseQueries.getView(viewName)
   return (
     <DatabaseItemsViewer
+      options={{ heightBehaviour: "Dynamic", hideToolbar: true }}
+      searchFor={props.searchFor}
       schema={view.schema}
       renderItem={(tool, viewMode) => {
 
@@ -38,7 +40,7 @@ export function MyToolList() {
 
         return <div>
           <ToolCardMediumComponent
-            showActions
+
             tool={toolView}
             isFavorite={tool.is_favorite} allowedTags={[]} />
 

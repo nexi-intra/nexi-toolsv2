@@ -123,10 +123,10 @@ export function ToolExplorerFiltered(props: {
   onLoaded?: () => void
 }) {
   const { onLoaded, searchFor } = props
-  if (props.parameters && props.parameters.length > 0) {
+  // if (props.parameters && props.parameters.length > 0) {
 
-    console.log("parameters", props.parameters)
-  }
+  //   console.log("parameters", props.parameters)
+  // }
   if (props.viewName) {
     //debugger
     console.log("viewName", props.viewName)
