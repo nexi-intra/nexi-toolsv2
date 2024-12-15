@@ -86,7 +86,7 @@ export function ToolsPage({ className = "" }: ToolsPageProps) {
 
   return <div className="h-full w-full">
     <div className="flex">
-      <main className="w-3/4">
+      <main className="w-full lg:w-3/4">
         <div className="sticky top-0 z-10 bg-white">
           <TokenInput
             placeholder="Search tools..."
@@ -122,7 +122,7 @@ export function ToolsPage({ className = "" }: ToolsPageProps) {
           <RegionListLinker basePath={"/tools/pages/region"} prefix="region-" onLoaded={onRegionsLoaded} searchFor={searchFor} />
         </div> */}
       </main>
-      <aside className="w-1/4">
+      <aside className="lg:w-1/4">
 
         <TableOfContents
           version={version}
