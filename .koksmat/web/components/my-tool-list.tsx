@@ -29,7 +29,7 @@ export function MyToolList(props: { searchFor?: string; onLoaded?: () => void })
             <div className="grow" />
             <div className="p-10 border">
               <div className="text-2xl mb-2">No favourite tools</div>
-              You haven't selected any favourite tools, find tools that you find relevant and click on the star
+              You haven&apos;t selected any favourite tools, find tools that you find relevant and click on the star
             </div>
             <div className="grow" />
           </div>
