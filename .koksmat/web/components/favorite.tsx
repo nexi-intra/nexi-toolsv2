@@ -6,6 +6,7 @@ import { ComponentDoc } from './component-documentation-hub'
 import { databaseActions } from '@/app/tools/schemas/database'
 import { useKoksmatDatabase } from '@/app/koksmat/src/v.next/components/database-context-provider'
 import { kError, kVerbose } from '@/lib/koksmat-logger-client'
+import { useUserProfile } from './userprofile-context'
 
 /**
  * Favorite Component
@@ -36,6 +37,7 @@ export function FavoriteComponent({
   tool_id,
   email
 }: FavoriteProps) {
+  const { bumpVersion } = useUserProfile();
   const [isFavorite, setIsFavorite] = useState(defaultIsFavorite)
   const actionName = "userprofileFavourite"
   const action = databaseActions.getAction(actionName)
@@ -59,6 +61,7 @@ export function FavoriteComponent({
           kVerbose("component", "FavoriteComponent onSave completed", writeOperation);
         }
         setIsFavorite(newState)
+        bumpVersion()
         onChange?.(newState);
 
       } catch (error) {

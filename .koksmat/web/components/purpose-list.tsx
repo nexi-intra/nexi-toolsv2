@@ -61,7 +61,7 @@ export function PurposesListLinker({ searchFor, basePath, prefix, onLoaded }: Li
       schema={view.schema}
       tableName={databaseTable.purpose.tablename}
       renderItem={(item, viewMode) => {
-        return <div className="min-h-96 p-4 m-4 bg-white" key={item.id}>
+        return <div className="min-h-96 p-4 m-4 bg-white dark:bg-gray-800" key={item.id}>
           <div className="flex">
             <div className="text-xl" id={prefix + item.id}>{item.name}</div>
             <div className="grow"></div>

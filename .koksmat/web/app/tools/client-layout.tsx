@@ -9,6 +9,7 @@ import TabNavigatorWithReorder from "../koksmat/src/v.next/components/tab-naviga
 import ErrorBoundary from "@/components/error-boundary";
 import Authenticate, { UserProfileAPI } from "../koksmat/src/v.next/components/authenticate";
 import { useIsInIframe } from "@/app/koksmat/src/v.next/components/use-isiniframe"
+import { UserProfileProvider } from "@/components/userprofile-context";
 
 export default function AppClientLayout(props: { children: any }) {
   const { children } = props;
@@ -18,11 +19,13 @@ export default function AppClientLayout(props: { children: any }) {
       <AppProvider>
         <ErrorBoundary>
           <Authenticate apiScope={UserProfileAPI}>
-            <ApplicationRoot hideBreadcrumb topnav={<TabNavigatorWithReorder />} >
+            <UserProfileProvider>
+              <ApplicationRoot hideBreadcrumb topnav={<TabNavigatorWithReorder />} >
 
-              {children}
-              <KoksmatSession />
-            </ApplicationRoot>
+                {children}
+                <KoksmatSession />
+              </ApplicationRoot>
+            </UserProfileProvider>
           </Authenticate>
         </ErrorBoundary>
       </AppProvider>
