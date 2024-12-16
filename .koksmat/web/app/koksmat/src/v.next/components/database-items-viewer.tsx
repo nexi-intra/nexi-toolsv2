@@ -46,8 +46,8 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
 
     const load = async () => {
       try {
-        setisLoading(true)
-        setItems([])
+        //setisLoading(true)
+        //setItems([])
         kVerbose("component", "Starting read operation");
         if (viewName === "tools_for_purpose") {
           //debugger
