@@ -41,6 +41,13 @@
             "it": "Preferiti"
           },
           "url": "/tools/pages/profile"
+        },
+        {
+          "title": {
+            "en": "App Launcher",
+            "da": "Start Menu"
+          },
+          "url": "/tools/pages/app"
         }
       ]
     },
@@ -105,6 +112,22 @@
             "it": "Scopi"
           },
           "url": "/tools/admin/data/purposes",
+          "icon": "BookOpen"
+        },
+        {
+          "title": {
+            "en": "Boards",
+            "da": "Oversigter"
+          },
+          "url": "/tools/admin/data/boards",
+          "icon": "BookOpen"
+        },
+        {
+          "title": {
+            "en": "Tenants",
+            "da": "Lejere"
+          },
+          "url": "/tools/admin/data/tenants",
           "icon": "BookOpen"
         },
         {
@@ -178,6 +201,25 @@
             "it": "Componenti"
           },
           "url": "/tools/docs/components"
+        }
+      ]
+    },
+    {
+      "title": {
+        "en": "Outlook Integration",
+        "da": "Outlook Integration"
+      },
+      "url": "#",
+      "icon": "SquareTerminal",
+      "label": "test",
+      "isActive": true,
+      "items": [
+        {
+          "title": {
+            "en": "Bank Holiday",
+            "da": "Bank Holiday"
+          },
+          "url": "/tools/pages/international/bankholiday"
         }
       ]
     }

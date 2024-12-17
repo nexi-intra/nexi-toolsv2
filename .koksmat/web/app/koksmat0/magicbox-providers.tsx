@@ -8,6 +8,7 @@ import {
   User,
   AuthSource,
   ServiceCallLogEntry,
+  appModeTypes,
 } from "./magicbox-context";
 import { IPublicClientApplication, PopupRequest } from "@azure/msal-browser";
 
@@ -27,6 +28,8 @@ export const MagicboxProvider = ({ children }: Props) => {
   const servicecalllog = useMemo<ServiceCallLogEntry[]>(() => {
     return [];
   }, []);
+
+  const [appMode, setappMode] = useState<appModeTypes>("normal")
 
   const [showtracer, setshowtracer] = useState(false);
   const magicbox: MagicboxContextType = {
@@ -102,6 +105,10 @@ export const MagicboxProvider = ({ children }: Props) => {
       localStorage.setItem("showtracer", showTracer ? "true" : "false");
       setshowtracer(showTracer);
     },
+    setAppMode: function (mode: appModeTypes): void {
+      setappMode(mode);
+    },
+    appMode
   };
 
   useEffect(() => {

@@ -13,6 +13,8 @@ import * as usergroups from "./usergroups";
 import * as userprofiles from "./userprofiles";
 import * as toolgroups from "./toolgroups";
 import * as my_tools from "./my_tools";
+import * as boards from "./boards";
+import * as tenants from "./tenants";
 import { tablename } from "../table/accesspoint";
 
 // Consolidate views from multiple modules
@@ -33,6 +35,8 @@ const views = {
   usergroups: usergroups.metadata,
   userprofiles: userprofiles.metadata,
   my_tools: my_tools.metadata,
+  boards: boards.metadata,
+  tenants: tenants.metadata,
 } as const;
 
 // Define a union of all available view names

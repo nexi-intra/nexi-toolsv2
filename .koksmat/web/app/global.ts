@@ -1,6 +1,7 @@
 export const APPNAME = "tools";
 export const APPDISPLAYNAME = "Nexi Tools";
 export const CLARITY = "luhqg4xhfv";
+export const APPINSIGHTS = "be3445e2-ecfa-4361-bcde-d66d43d36d83";
 export const MSAL = {
   clientId: "902987fd-0ebd-4963-a92b-f200990bb176",
 

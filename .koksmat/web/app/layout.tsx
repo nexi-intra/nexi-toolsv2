@@ -2,8 +2,10 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Script from "next/script";
 
-import { CLARITY } from "./global";
+import { APPINSIGHTS, CLARITY } from "./global";
 import RootLayoutClientSide from "./layout-client";
+import { ApplicationInsightsProvider } from "./koksmat/src/v.next/components/ApplicationInsightsProvider";
+const instrumentationKey = APPINSIGHTS
 
 export default function RootLayout2({
   children,
@@ -13,24 +15,27 @@ export default function RootLayout2({
   return (
     <html lang="en">
       <body>
-        <Script id="clarityinjection">
-          {`
+        <ApplicationInsightsProvider instrumentationKey={instrumentationKey}>
+          <link rel="manifest" href="/manifests/pwa" />
+          <Script id="clarityinjection">
+            {`
     (function(c,l,a,r,i,t,y){
       c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
       t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
       y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
   })(window, document, "clarity", "script", "${CLARITY}");            
             `}
-        </Script>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        ><RootLayoutClientSide>
+          </Script>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          ><RootLayoutClientSide>
 
-            {children}</RootLayoutClientSide>
-        </ThemeProvider>
+              {children}</RootLayoutClientSide>
+          </ThemeProvider>
+        </ApplicationInsightsProvider>
       </body>
     </html>
   );
