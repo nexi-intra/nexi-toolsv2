@@ -188,7 +188,7 @@ export default function ToolCard({
           onChange={(_, value) => setDescription(value)}
         />
 
-        {captionForArray(mode, "Countries", countries)}
+        {/* {captionForArray(mode, "Countries", countries)}
         <Lookup
           className='p-2'
           renderItem={(item) => <span className='flex '><Globe className='h-6 w-6 mt-1 mr-2' />{item.value}</span>}
@@ -214,7 +214,7 @@ export default function ToolCard({
             setCountries([...selectedCountries])
           }}
           required={true}
-        />
+        /> */}
 
         {captionForArray(mode, "Purposes", purposes)}
         <Lookup

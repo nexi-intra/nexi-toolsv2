@@ -4,12 +4,14 @@
     {
       "name": {
         "en": "Tools",
-        "da": "Værktøjer"
+        "da": "Værktøjer",
+        "it": "Strumenti"
       },
       "logo": "Link",
       "plan": {
         "en": "Beta - Production",
-        "da": "Beta - Produktion"
+        "da": "Beta - Produktion",
+        "it": "Beta - Produzione"
       }
     }
   ],
@@ -17,7 +19,8 @@
     {
       "title": {
         "en": "Integration Pages",
-        "da": "Integrationssider"
+        "da": "Integrationssider",
+        "it": "Pagine di Integrazione"
       },
       "url": "#",
       "icon": "SquareTerminal",
@@ -26,14 +29,16 @@
         {
           "title": {
             "en": "Explorer",
-            "da": "Udforsker"
+            "da": "Udforsker",
+            "it": "Esploratore"
           },
           "url": "/tools/pages/explorer"
         },
         {
           "title": {
             "en": "Favourites",
-            "da": "Favoritter"
+            "da": "Favoritter",
+            "it": "Preferiti"
           },
           "url": "/tools/pages/profile"
         },
@@ -49,7 +54,8 @@
     {
       "title": {
         "en": "Tables",
-        "da": "Tabeller"
+        "da": "Tabeller",
+        "it": "Tabelle"
       },
       "url": "#",
       "icon": "Database",
@@ -57,7 +63,8 @@
         {
           "title": {
             "en": "Regions",
-            "da": "Regioner"
+            "da": "Regioner",
+            "it": "Regioni"
           },
           "url": "/tools/admin/data/regions",
           "icon": "BookOpen"
@@ -65,7 +72,8 @@
         {
           "title": {
             "en": "Countries",
-            "da": "Lande"
+            "da": "Lande",
+            "it": "Paesi"
           },
           "url": "/tools/admin/data/countries",
           "icon": "BookOpen"
@@ -73,7 +81,8 @@
         {
           "title": {
             "en": "Categories",
-            "da": "Kategorier"
+            "da": "Kategorier",
+            "it": "Categorie"
           },
           "url": "/tools/admin/data/categories",
           "icon": "BookOpen"
@@ -81,7 +90,8 @@
         {
           "title": {
             "en": "Access Points",
-            "da": "Adgangspunkter"
+            "da": "Adgangspunkter",
+            "it": "Punti di Accesso"
           },
           "url": "/tools/admin/data/access-points",
           "icon": "BookOpen"
@@ -89,7 +99,8 @@
         {
           "title": {
             "en": "Languages",
-            "da": "Sprog"
+            "da": "Sprog",
+            "it": "Lingue"
           },
           "url": "/tools/admin/data/languages",
           "icon": "BookOpen"
@@ -97,7 +108,8 @@
         {
           "title": {
             "en": "Purposes",
-            "da": "Formål"
+            "da": "Formål",
+            "it": "Scopi"
           },
           "url": "/tools/admin/data/purposes",
           "icon": "BookOpen"
@@ -121,7 +133,8 @@
         {
           "title": {
             "en": "Tool Groups",
-            "da": "Værktøjsgrupper"
+            "da": "Værktøjsgrupper",
+            "it": "Gruppi di Strumenti"
           },
           "url": "/tools/admin/data/tool-groups",
           "icon": "BookOpen"
@@ -129,7 +142,8 @@
         {
           "title": {
             "en": "Tools",
-            "da": "Værktøjer"
+            "da": "Værktøjer",
+            "it": "Strumenti"
           },
           "url": "/tools/admin/data/tools",
           "icon": "BookOpen"
@@ -137,7 +151,8 @@
         {
           "title": {
             "en": "User Groups",
-            "da": "Brugergrupper"
+            "da": "Brugergrupper",
+            "it": "Gruppi Utente"
           },
           "url": "/tools/admin/data/user-groups",
           "icon": "BookOpen"
@@ -145,7 +160,8 @@
         {
           "title": {
             "en": "User Profiles",
-            "da": "Bruger Profiler"
+            "da": "Bruger Profiler",
+            "it": "Profili Utente"
           },
           "url": "/tools/admin/data/user-profiles",
           "icon": "BookOpen"
@@ -153,7 +169,8 @@
         {
           "title": {
             "en": "User Roles",
-            "da": "Brugerroller"
+            "da": "Brugerroller",
+            "it": "Ruoli Utente"
           },
           "url": "/tools/admin/data/user-roles",
           "icon": "BookOpen"
@@ -163,7 +180,8 @@
     {
       "title": {
         "en": "Documentation",
-        "da": "Dokumentation"
+        "da": "Dokumentation",
+        "it": "Documentazione"
       },
       "url": "#",
       "icon": "BookOpen",
@@ -171,14 +189,16 @@
         {
           "title": {
             "en": "Use cases",
-            "da": "Brugsscenarier"
+            "da": "Brugsscenarier",
+            "it": "Casi d'Uso"
           },
           "url": "/tools/docs/use-cases"
         },
         {
           "title": {
             "en": "Components",
-            "da": "Komponenter"
+            "da": "Komponenter",
+            "it": "Componenti"
           },
           "url": "/tools/docs/components"
         }
@@ -208,7 +228,8 @@
     {
       "title": {
         "en": "Tools v1.0",
-        "da": "Tools v1.0"
+        "da": "Tools v1.0",
+        "it": "Strumenti v1.0"
       },
       "url": "#",
       "icon": "SquareTerminal",
@@ -217,14 +238,16 @@
         {
           "title": {
             "en": "Explorer",
-            "da": "Udforsker"
+            "da": "Udforsker",
+            "it": "Esploratore"
           },
           "url": "/tools/integration/explorer"
         },
         {
           "title": {
             "en": "Favourites",
-            "da": "Favoritter"
+            "da": "Favoritter",
+            "it": "Preferiti"
           },
           "label": "coming",
           "url": "/tools/pages/profile"

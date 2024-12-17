@@ -122,7 +122,19 @@ const translations = {
     darkMode: "Mørk tilstand",
     lightMode: "Lys tilstand",
   },
-}
+  it: {
+    teams: "Versioni",
+    addTeam: "Aggiungi Configurazione",
+    platform: "Soluzione",
+    projects: "Progetti",
+    more: "Altro",
+    buildingYourApplication: "Costruisci la tua applicazione",
+    dataFetching: "Recupero dati",
+    language: "Lingua",
+    darkMode: "Modalità scura",
+    lightMode: "Modalità chiara",
+  },
+};
 
 const TopNavigation: React.FC<{
   isDarkMode: boolean;
@@ -147,7 +159,7 @@ const TopNavigation: React.FC<{
     }} onCreatePost={function (...args: unknown[]): void {
       //throw new Error('Function not implemented.')
     }} />
-    {/* <DropdownMenu>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost">
           {t.language}
@@ -157,8 +169,10 @@ const TopNavigation: React.FC<{
       <DropdownMenuContent>
         <DropdownMenuItem onClick={() => changeLanguage('en')}>English</DropdownMenuItem>
         <DropdownMenuItem onClick={() => changeLanguage('da')}>Dansk</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => changeLanguage('it')}>Italian</DropdownMenuItem>
+
       </DropdownMenuContent>
-    </DropdownMenu> */}
+    </DropdownMenu>
   </div>
 )
 

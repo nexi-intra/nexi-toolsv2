@@ -148,7 +148,12 @@ export const navLinks = [
     href: "/tools/docs/components/toc",
   },
   {
+
+    label: "Popup Frame",
+    href: "/tools/docs/components/popup-frame",
+  },{
     label: "Action Card",
     href: "/tools/docs/components/action-card",
+
   },
 ];

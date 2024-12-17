@@ -10,6 +10,7 @@ import { ParametersType } from "@/app/koksmat/src/v.next/lib/database-handler";
 import { ViewNames } from "@/app/tools/schemas/database/view";
 import { databaseTable } from "@/app/tools/schemas/database/table";
 import { GenericTableEditor } from "@/app/koksmat/src/v.next/components";
+import { useUserProfile } from "./userprofile-context";
 
 export function ToolList() {
   const databaseName = "tools"
@@ -66,7 +67,7 @@ export function ToolList() {
 
 export function ToolExplorer(props: { searchFor?: string; onLoaded?: () => void }) {
   const { onLoaded, searchFor } = props
-
+  const { version } = useUserProfile();
   const view = databaseQueries.getView("tools")
   return (
     <DatabaseItemsViewer
@@ -74,7 +75,7 @@ export function ToolExplorer(props: { searchFor?: string; onLoaded?: () => void 
       schema={view.schema}
       searchFor={searchFor}
 
-      options={{ heightBehaviour: "Dynamic", hideToolbar: true, onLoaded, pageSize: 25 }}
+      options={{ heightBehaviour: "Dynamic", hideToolbar: true, onLoaded, pageSize: 25, version }}
       renderItem={(tool, viewMode) => {
 
         const toolView: ToolView = {
@@ -123,10 +124,10 @@ export function ToolExplorerFiltered(props: {
   onLoaded?: () => void
 }) {
   const { onLoaded, searchFor } = props
-  if (props.parameters && props.parameters.length > 0) {
+  // if (props.parameters && props.parameters.length > 0) {
 
-    console.log("parameters", props.parameters)
-  }
+  //   console.log("parameters", props.parameters)
+  // }
   if (props.viewName) {
     //debugger
     console.log("viewName", props.viewName)

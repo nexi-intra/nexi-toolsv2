@@ -25,7 +25,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
   addItem,
   searchFor,
   tableName,
-  options = { pageSize: 250, heightBehaviour: 'Full', mode: 'view', hideToolbar: false, onLoaded: () => { }, defaultViewMode: 'card' }
+  options = { pageSize: 250, heightBehaviour: 'Full', mode: 'view', hideToolbar: false, onLoaded: () => { }, defaultViewMode: 'card', version: 0 }
 
 
 }: DatabaseItemsViewerProps<S>) {
@@ -34,7 +34,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
   const searchParams = useSearchParams()
   const view = databaseQueries.getView(viewName)
   const table = useKoksmatDatabase().table("", view!.databaseName, view!.schema)
-  const [items, setItems] = useState<T[]>()
+  const [items, setItems] = useState<T[]>([])
   const [error, seterror] = useState("")
   const [isLoading, setisLoading] = useState(true)
 
@@ -46,14 +46,15 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
 
     const load = async () => {
       try {
-        setisLoading(true)
+        //setisLoading(true)
+        //setItems([])
         kVerbose("component", "Starting read operation");
         if (viewName === "tools_for_purpose") {
           //debugger
         }
         const readDataOperation = await table.query(viewName, parameters)
         setisLoading(false)
-        if (readDataOperation.length === 0) {
+        if (readDataOperation?.length === 0) {
           setItems([])
           kInfo("component", "No data found");
           return
@@ -62,10 +63,15 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
         const itemsSchema = z.array(view!.schema)
         // parse some invalid value
         try {
-          const parsedData = itemsSchema.parse(readDataOperation);
-          setItems(parsedData as any)
+          const parsedData = itemsSchema.safeParse(readDataOperation);
+          if (parsedData.success === false) {
+            debugger
+
+
+          }
+          setItems(parsedData.data as any)
           if (options.onLoaded) {
-            options.onLoaded(parsedData as Base[])
+            options.onLoaded(parsedData.data as Base[])
           }
           kVerbose("component", "Completed read operation");
 
@@ -98,11 +104,19 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
       }
     }
     load()
-  }, [])
+  }, [options.version])
 
 
+  if (isLoading) {
+    return <div className="text-center" >Loading...</div>
+  }
+  if (items?.length < 1) {
+    if (options.componentNoItems) {
+      return options.componentNoItems
+    }
+    return <div className="text-center" >No items</div>
 
-
+  }
 
   return (
     <div className="space-y-4 p-6 rounded-lg w-full">
@@ -120,7 +134,10 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
             properties={[]}
             searchFor={searchFor}
             onSearch={(query) => kInfo("component", 'Search query:', query)}
-            options={{ pageSize, heightBehaviour, hideToolbar: options.hideToolbar, onLoaded: options.onLoaded, defaultViewMode: options.defaultViewMode }}
+            options={{
+              componentNoItems: options.componentNoItems,
+              pageSize, heightBehaviour, hideToolbar: options.hideToolbar, onLoaded: options.onLoaded, defaultViewMode: options.defaultViewMode
+            }}
             schema={view.schema}
             tableName={tableName}
             databaseName={view.databaseName}

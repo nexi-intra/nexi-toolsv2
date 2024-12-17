@@ -431,9 +431,11 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
             ) : (
 
               <div className="text-center py-8">
-
-                <p className="text-lg mt-4">No items found</p>
-
+                {options.componentNoItems ? (
+                  options.componentNoItems
+                ) : (
+                  <p className="text-lg mt-4">No items found</p>
+                )}
               </div>
             )}
           </motion.div>
