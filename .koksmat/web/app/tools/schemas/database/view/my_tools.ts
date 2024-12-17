@@ -10,7 +10,11 @@ export const ToolSchema = SharedAttributes.extend({
     .nullable()
     .describe(`calculatedsearchindex`),
   description: z.string().nullable().optional().describe(`Tool description`),
-  translations: z.string().nullable().optional().describe(`Tool translations`),
+  translations: z
+    .object({})
+    .nullable()
+    .optional()
+    .describe(`Tool translations`),
   category_id: z.number().describe(`Category id`),
   url: z.string().describe(`Tool url`),
   status: z.string().describe(`Tool status`),
