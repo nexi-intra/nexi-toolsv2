@@ -51,7 +51,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
-import { SupportedLanguage } from "@/components/lib/types-sidebar-data"
+
 import { Sun, Moon, ChevronsUpDown, Plus, ChevronRight } from 'lucide-react'
 import { Icon } from "./icon"
 import Link from "next/link"
@@ -68,6 +68,7 @@ import { DatabaseCacheProvider } from "@/app/koksmat/src/v.next/components/datab
 import { BRANCH } from '@/branch'
 import { APPDISPLAYNAME } from '@/app/global'
 import Image from "next/image"
+import { SupportedLanguage, useLanguage } from "./language-context"
 
 function appName() {
   const branch = BRANCH
@@ -139,10 +140,10 @@ const translations = {
 const TopNavigation: React.FC<{
   isDarkMode: boolean;
   toggleDarkMode: () => void;
-  currentLanguage: SupportedLanguage;
+  language: SupportedLanguage;
   changeLanguage: (lang: SupportedLanguage) => void;
   t: typeof translations[SupportedLanguage];
-}> = ({ isDarkMode, toggleDarkMode, currentLanguage, changeLanguage, t }) => (
+}> = ({ isDarkMode, toggleDarkMode, language, changeLanguage, t }) => (
   <div className="flex items-center space-x-4">
     <Button
       variant="ghost"
@@ -186,10 +187,11 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
   const isInIframe = useIsInIframe()
   const magicbox = useContext(MagicboxContext)
   const [isDarkMode, setIsDarkMode] = React.useState(false)
-  const [currentLanguage, setCurrentLanguage] = React.useState<SupportedLanguage>(sidebarData.language)
+  //const [language, setlanguage] = React.useState<SupportedLanguage>(sidebarData.language)
+  const { language, setLanguage } = useLanguage()
   const [activeTeam, setActiveTeam] = React.useState(sidebarData.teams[0])
 
-  const t = translations[currentLanguage]
+  const t = translations[language]
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode)
@@ -197,7 +199,9 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
   }
 
   const changeLanguage = (lang: SupportedLanguage) => {
-    setCurrentLanguage(lang)
+
+    setLanguage(lang)
+    //setlanguage(lang)
   }
 
   return (
@@ -224,7 +228,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
               <TopNavigation
                 isDarkMode={isDarkMode}
                 toggleDarkMode={toggleDarkMode}
-                currentLanguage={currentLanguage}
+                language={language}
                 changeLanguage={changeLanguage}
                 t={t}
               />
@@ -362,9 +366,9 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                         >
                           <SidebarMenuItem>
                             <CollapsibleTrigger asChild>
-                              <SidebarMenuButton tooltip={item.title[currentLanguage]}>
+                              <SidebarMenuButton tooltip={item.title[language]}>
                                 <Icon iconName={item.icon} className="size-5" />
-                                <span>{item.title[currentLanguage]}</span>
+                                <span>{item.title[language]}</span>
                                 {item.label && <span className="bg-yellow-400">{item.label}</span>}
                                 <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                               </SidebarMenuButton>
@@ -376,7 +380,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                                     <SidebarMenuSubButton asChild>
                                       <Link href={subItem.url}>
 
-                                        <span>{subItem.title[currentLanguage]} </span>
+                                        <span>{subItem.title[language]} </span>
                                         {subItem.label && <span className="bg-yellow-400">{subItem.label}</span>}
 
                                       </Link>
@@ -398,7 +402,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           <SidebarMenuButton asChild>
                             <Link href={item.url}>
                               <Icon iconName={item.icon} className="size-5" />
-                              <span>{item?.title[currentLanguage]}</span>
+                              <span>{item?.title[language]}</span>
                             </Link>
                           </SidebarMenuButton>
                           {/* <DropdownMenu>
@@ -416,7 +420,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           {item.actions.map((action) => (
                             <DropdownMenuItem key={action.label.en}>
                               <Icon iconName={action.icon} className="size-5" />
-                              <span>{action.label[currentLanguage]}</span>
+                              <span>{action.label[language]}</span>
                             </DropdownMenuItem>
                           ))}
                         </DropdownMenuContent>
@@ -497,7 +501,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             {sidebarData.userMenuItems.map((item) => (
                               <DropdownMenuItem key={item.label.en}>
                                 <Icon iconName={item.icon} className="size-5" />
-                                {item.label[currentLanguage]}
+                                {item.label[language]}
                               </DropdownMenuItem>
                             ))}
                           </DropdownMenuGroup>
