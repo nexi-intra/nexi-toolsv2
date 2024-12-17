@@ -13,14 +13,30 @@ type LanguageContextType = {
 // Context
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+// Function to detect browser language
+const detectBrowserLanguage = (): SupportedLanguage => {
+  if (typeof navigator === 'undefined') {
+    // Fallback if navigator is not available (e.g., during server-side rendering)
+    return 'en';
+  }
+
+  const language = navigator.language.split('-')[0];
+  if (language === 'it' || language === 'da') {
+    return language as SupportedLanguage;
+  }
+  return 'en';
+};
+
 // Provider
 type LanguageProviderProps = {
   children: ReactNode;
   initialLanguage?: SupportedLanguage;
 };
 
-export function LanguageProvider({ children, initialLanguage = 'en' }: LanguageProviderProps) {
-  const [language, setLanguage] = useState<SupportedLanguage>(initialLanguage);
+export function LanguageProvider({ children, initialLanguage }: LanguageProviderProps) {
+  const [language, setLanguage] = useState<SupportedLanguage>(() => {
+    return initialLanguage || detectBrowserLanguage();
+  });
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage }}>
@@ -37,5 +53,3 @@ export function useLanguage() {
   }
   return context;
 }
-
-
