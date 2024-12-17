@@ -2,24 +2,44 @@
 
 import React, { useState, useEffect } from 'react'
 import { Star } from 'lucide-react'
+import { z } from "zod"
 import { ComponentDoc } from './component-documentation-hub'
 import { databaseActions } from '@/app/tools/schemas/database'
 import { useKoksmatDatabase } from '@/app/koksmat/src/v.next/components/database-context-provider'
 import { kError, kVerbose } from '@/lib/koksmat-logger-client'
 import { useUserProfile } from './userprofile-context'
+import { useLanguage, SupportedLanguage } from "@/components/language-context"
 
-/**
- * Favorite Component
- * 
- * This component allows users to mark an item as a favorite. It supports view, new, and edit modes.
- * The component uses a star icon to represent the favorite status and can be customized with additional classes.
- * 
- * @param {Object} props - The properties passed to the component
- * @param {boolean} props.defaultIsFavorite - The initial favorite state
- * @param {string} props.mode - The mode of the component: 'view', 'new', or 'edit'
- * @param {function} props.onChange - Callback function called when the favorite state changes
- * @param {string} props.className - Additional CSS classes to apply to the component
- */
+const favoriteTranslationSchema = z.object({
+  removeFavorites: z.string(),
+  addFavorites: z.string(),
+  favoriteStatus: z.string(),
+});
+
+type FavoriteTranslation = z.infer<typeof favoriteTranslationSchema>;
+
+const favoriteTranslationsSchema = z.record(z.enum(["en", "da", "it"]), favoriteTranslationSchema);
+
+type FavoriteTranslations = z.infer<typeof favoriteTranslationsSchema>;
+
+const translations: FavoriteTranslations = {
+  en: {
+    removeFavorites: "Remove from favorites",
+    addFavorites: "Add to favorites",
+    favoriteStatus: "Favorite status",
+  },
+  da: {
+    removeFavorites: "Fjern fra favoritter",
+    addFavorites: "Tilføj til favoritter",
+    favoriteStatus: "Favoritstatus",
+  },
+  it: {
+    removeFavorites: "Rimuovi dai preferiti",
+    addFavorites: "Aggiungi ai preferiti",
+    favoriteStatus: "Stato preferito",
+  },
+};
+
 export interface FavoriteProps {
   defaultIsFavorite: boolean
   mode: 'view' | 'new' | 'edit'
@@ -37,13 +57,15 @@ export function FavoriteComponent({
   tool_id,
   email
 }: FavoriteProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   const { bumpVersion } = useUserProfile();
   const [isFavorite, setIsFavorite] = useState(defaultIsFavorite)
   const actionName = "userprofileFavourite"
   const action = databaseActions.getAction(actionName)
   const table = useKoksmatDatabase().table("", action!.databaseName, action!.inputSchema)
 
-  // Update local state if prop changes
   useEffect(() => {
     setIsFavorite(defaultIsFavorite)
   }, [defaultIsFavorite])
@@ -70,7 +92,6 @@ export function FavoriteComponent({
     }
   }
 
-  // Determine the star color based on the favorite state and mode
   const starColor = isFavorite ? 'text-yellow-400' : 'text-gray-400'
   const isInteractive = mode !== 'view'
 
@@ -82,14 +103,13 @@ export function FavoriteComponent({
         fill={isFavorite ? 'currentColor' : 'none'}
         onClick={handleToggle}
         role={isInteractive ? 'button' : 'presentation'}
-        aria-label={isInteractive ? (isFavorite ? 'Remove from favorites' : 'Add to favorites') : 'Favorite status'}
+        aria-label={isInteractive ? (isFavorite ? t?.removeFavorites : t?.addFavorites) : t?.favoriteStatus}
         tabIndex={isInteractive ? 0 : -1}
       />
     </div>
   )
 }
 
-// Example usage documentation
 export const examplesFavorite: ComponentDoc[] = [
   {
     id: 'FavoriteView',
@@ -151,3 +171,4 @@ export const examplesFavorite: ComponentDoc[] = [
     ),
   },
 ]
+
