@@ -45,7 +45,8 @@
         {
           "title": {
             "en": "App Launcher",
-            "da": "Start Menu"
+            "da": "Start Menu",
+            "it": "Lancio App"
           },
           "url": "/tools/pages/app"
         }
@@ -117,7 +118,8 @@
         {
           "title": {
             "en": "Boards",
-            "da": "Oversigter"
+            "da": "Oversigter",
+            "it": "Bacheche"
           },
           "url": "/tools/admin/data/boards",
           "icon": "BookOpen"
@@ -125,7 +127,8 @@
         {
           "title": {
             "en": "Tenants",
-            "da": "Lejere"
+            "da": "Lejere",
+            "it": "Inquilini"
           },
           "url": "/tools/admin/data/tenants",
           "icon": "BookOpen"
@@ -207,7 +210,8 @@
     {
       "title": {
         "en": "Outlook Integration",
-        "da": "Outlook Integration"
+        "da": "Outlook Integration",
+        "it": "Integrazione Outlook"
       },
       "url": "#",
       "icon": "SquareTerminal",
@@ -217,7 +221,8 @@
         {
           "title": {
             "en": "Bank Holiday",
-            "da": "Bank Holiday"
+            "da": "Bank Holiday",
+            "it": "Festa Bancaria"
           },
           "url": "/tools/pages/international/bankholiday"
         }

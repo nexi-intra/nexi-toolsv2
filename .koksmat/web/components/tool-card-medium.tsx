@@ -1,13 +1,14 @@
 'use client'
 
 import React, { useContext, useState } from 'react'
+import { SupportedLanguage, useLanguage } from "@/components/language-context"
+
 import { ToolView } from '@/app/tools/schemas/forms'
 
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Heart, ExternalLink } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
-import Image from 'next/image'
 import ToolCard from './tool-card-large'
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "@/components/ui/dialog"
 import Tag, { TagType } from './tag'
@@ -21,22 +22,124 @@ import { MagicboxContext } from '@/app/koksmat0/magicbox-context'
 interface ToolCardMediumProps {
   tool: ToolView
   isFavorite: boolean
-
   allowedTags: TagType[]
   showActions?: boolean
 }
+import { z } from "zod";
+
+
+
+const translationSchema = z.object({
+  teams: z.string(),
+  addTeam: z.string(),
+  platform: z.string(),
+  projects: z.string(),
+  more: z.string(),
+  buildingYourApplication: z.string(),
+  dataFetching: z.string(),
+  language: z.string(),
+  darkMode: z.string(),
+  lightMode: z.string(),
+  enterToolName: z.string(),
+  enterToolDescription: z.string(),
+  countries: z.string(),
+  purposes: z.string(),
+  documents: z.string(),
+  enterToolUrl: z.string(),
+  openTool: z.string(),
+  create: z.string(),
+  save: z.string(),
+  readMore: z.string(),
+  toolCardMediumExample: z.string(),
+});
+
+export type Translation = z.infer<typeof translationSchema>;
+
+const translations: Record<SupportedLanguage, Translation> = {
+  en: {
+    teams: "Versions",
+    addTeam: "Add Configuration",
+    platform: "Solution",
+    projects: "Projects",
+    more: "More",
+    buildingYourApplication: "Building Your Application",
+    dataFetching: "Data Fetching",
+    language: "Language",
+    darkMode: "Dark Mode",
+    lightMode: "Light Mode",
+    enterToolName: "Enter tool name",
+    enterToolDescription: "Enter tool description",
+    countries: "Countries",
+    purposes: "Purposes",
+    documents: "Documents",
+    enterToolUrl: "Enter tool url",
+    openTool: "Open Tool",
+    create: "Create",
+    save: "Save",
+    readMore: "Read More",
+    toolCardMediumExample: "ToolCardMedium Example",
+  },
+  da: {
+    teams: "Versioner",
+    addTeam: "Tilføj opsætning",
+    platform: "Solution",
+    projects: "Projekter",
+    more: "Mere",
+    buildingYourApplication: "Byg din applikation",
+    dataFetching: "Datahentning",
+    language: "Sprog",
+    darkMode: "Mørk tilstand",
+    lightMode: "Lys tilstand",
+    enterToolName: "Indtast værktøjsnavn",
+    enterToolDescription: "Indtast værktøjsbeskrivelse",
+    countries: "Lande",
+    purposes: "Formål",
+    documents: "Dokumenter",
+    enterToolUrl: "Indtast værktøjs-url",
+    openTool: "Åbn værktøj",
+    create: "Opret",
+    save: "Gem",
+    readMore: "Læs mere",
+    toolCardMediumExample: "ToolCardMedium Eksempel",
+  },
+  it: {
+    teams: "Versioni",
+    addTeam: "Aggiungi Configurazione",
+    platform: "Soluzione",
+    projects: "Progetti",
+    more: "Altro",
+    buildingYourApplication: "Costruisci la tua applicazione",
+    dataFetching: "Recupero dati",
+    language: "Lingua",
+    darkMode: "Modalità scura",
+    lightMode: "Modalità chiara",
+    enterToolName: "Inserisci il nome dello strumento",
+    enterToolDescription: "Inserisci la descrizione dello strumento",
+    countries: "Paesi",
+    purposes: "Scopi",
+    documents: "Documenti",
+    enterToolUrl: "Inserisci l'URL dello strumento",
+    openTool: "Apri strumento",
+    create: "Crea",
+    save: "Salva",
+    readMore: "Leggi di più",
+    toolCardMediumExample: "Esempio ToolCardMedium",
+  },
+};
+
+export default translations;
+
 
 export function ToolCardMediumComponent({ tool, allowedTags, isFavorite, showActions }: ToolCardMediumProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   const actionName = "createOrUpdateTool"
-  //const [isFavorite, setIsFavorite] = useState(tool.status === 'active')
   const [edit, setedit] = useState(false)
   const action = databaseActions.getAction(actionName)
   const table = useKoksmatDatabase().table("", action!.databaseName, action!.inputSchema)
 
   const magicbox = useContext(MagicboxContext)
-
-
-
 
   return (
     <Card className="w-64 h-72 flex flex-col">
@@ -49,9 +152,6 @@ export function ToolCardMediumComponent({ tool, allowedTags, isFavorite, showAct
               allowMulti={false}
               required={false}
               mode={'view'}
-            // onChange={(_, selectedTags) => handleChange('tags', selectedTags)}
-
-
             />
           </div>
           <FavoriteComponent
@@ -76,12 +176,11 @@ export function ToolCardMediumComponent({ tool, allowedTags, isFavorite, showAct
               {tool.name}
             </div>
           </div>
-
         </div>
-        <div className="flex   mt-3 ">
-          <Dialog >
+        <div className="flex mt-3 ">
+          <Dialog>
             <DialogTrigger asChild>
-              <Button onClick={e => e.stopPropagation()} variant="outline" size="sm">Read More</Button>
+              <Button onClick={e => e.stopPropagation()} variant="outline" size="sm">{t?.readMore}</Button>
             </DialogTrigger>
             <DialogContent className="max-w-3xl">
               <ToolCard
@@ -91,7 +190,6 @@ export function ToolCardMediumComponent({ tool, allowedTags, isFavorite, showAct
                 isFavorite={isFavorite}
                 onSave={async (data, mode) => {
                   kVerbose("component", "ToolCardMediumComponent onSave", data, mode)
-
                   try {
                     const writeOperation = await table.execute(actionName, data)
                     setedit(false)
@@ -99,37 +197,34 @@ export function ToolCardMediumComponent({ tool, allowedTags, isFavorite, showAct
                   } catch (error) {
                     kError("component", "onSave", error)
                   }
-
-
                 }}
-                allowedPurposes={[]} allowedCountries={[]} />
-
+                allowedPurposes={[]}
+                allowedCountries={[]}
+              />
               {showActions && (
                 <DialogFooter>
                   <Button onClick={e => { e.stopPropagation(); setedit(!edit) }} variant="ghost" size="sm">Edit</Button>
-                </DialogFooter>)}
+                </DialogFooter>
+              )}
             </DialogContent>
-
           </Dialog>
           <div className="grow min-w-5" />
           <Link href={tool.url} target="_blank" rel="noopener noreferrer">
             <Button disabled={!tool.url} onClick={e => e.stopPropagation()} variant="ghost" size="sm">
               <ExternalLink className="h-4 w-4 mr-2" />
-              Open Tool
+              {t?.openTool}
             </Button>
           </Link>
         </div>
-        {/* <p className="text-sm text-gray-600 line-clamp-3">{tool.description}</p> */}
       </CardContent>
-      {/* <CardFooter className="flex justify-between items-center px-4">
-
-      </CardFooter> */}
-    </Card >
+    </Card>
   )
 }
 
-// Example usage
 function ToolCardMediumExample() {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   const [tool, setTool] = useState<ToolView>({
     id: 1,
     created_at: new Date(),
@@ -158,7 +253,6 @@ Telefono
     status: 'active',
     icon: '/nexiconnect.png',
     documentationUrl: 'https://example.com/docs',
-
     supportContact: [],
     license: [],
     compatiblePlatforms: ['Windows', 'Mac', 'Linux'],
@@ -181,20 +275,14 @@ Telefono
     { id: 3, value: "tag3", color: '#0000ff', description: 'Tag 3', order: "3" },
   ]
 
-  const handleFavoriteChange = (isFavorite: boolean) => {
-    setTool(prevTool => ({
-      ...prevTool,
-      status: isFavorite ? 'active' : 'inactive'
-    }))
-  }
-
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">ToolCardMedium Example</h2>
+      <h2 className="text-2xl font-bold mb-4">{t?.toolCardMediumExample}</h2>
       <ToolCardMediumComponent
         tool={tool}
-
-        allowedTags={allowedTags} isFavorite={false} />
+        allowedTags={allowedTags}
+        isFavorite={false}
+      />
     </div>
   )
 }
@@ -206,64 +294,32 @@ export const examplesToolCardMedium: ComponentDoc[] = [
     description: 'A medium-sized card for tools with a pop-up detailed view',
     usage: `
 import React, { useState } from 'react'
-import { Tool } from '@/app/tools/api/entity/schemas'
-import ToolCardMedium from './ToolCardMedium'
+import { ToolView } from '@/app/tools/schemas/forms'
+import { ToolCardMediumComponent } from './tool-card-medium-component'
+import { useLanguage } from "@/components/language-context"
+import translations from './translations'
 
 function ToolCardMediumExample() {
-  const [tool, setTool] = useState<Tool>({
-    id: '1',
-    createdAt: new Date(),
-    createdBy: 'John Doe',
-    updatedAt: new Date(),
-    updatedBy: 'Jane Smith',
-    deletedAt: null,
-    deletedBy: null,
-    name: 'Sample Tool',
-    description: 'This is a sample tool for demonstration purposes. It has a longer description to show how text truncation works in the preview card.',
-    url: 'https://example.com/sample-tool',
-    groupId: 'tools-group',
-    purposeIds: ['purpose1', 'purpose2'],
-    tagIds: ['tag1', 'tag2', 'tag3'],
-    version: '1.0.0',
-    status: 'active',
-    icon: '/placeholder.svg',
-    documentationUrl: 'https://example.com/docs',
-    supportContact: 'support@example.com',
-    license: 'MIT',
-    compatiblePlatforms: ['Windows', 'Mac', 'Linux'],
-    systemRequirements: 'Node.js 14+',
-    relatedToolIds: ['tool2', 'tool3'],
-    countries: ['US', 'UK', 'CA'],
-    repositoryUrl: 'https://github.com/example/sample-tool',
-    collaborationType: 'Open Source',
-    documents: [
-      { name: 'User Guide', url: 'https://example.com/user-guide.pdf' },
-      { name: 'API Documentation', url: 'https://example.com/api-docs.pdf' }
-    ],
-    teamSize: 5,
-    primaryFocus: 'Development'
+  const { language } = useLanguage();
+  const t = translations[language];
+
+  const [tool, setTool] = useState<ToolView>({
+    // ... (tool properties)
   })
 
   const allowedTags = [
-    { name: 'tag1', color: '#ff0000', description: 'Tag 1' },
-    { name: 'tag2', color: '#00ff00', description: 'Tag 2' },
-    { name: 'tag3', color: '#0000ff', description: 'Tag 3' },
+    { id: 1, value: 'tag1', color: '#ff0000', description: 'Tag 1', order: "1" },
+    { id: 2, value: 'tag2', color: '#00ff00', description: 'Tag 2', order: "2" },
+    { id: 3, value: "tag3", color: '#0000ff', description: 'Tag 3', order: "3" },
   ]
-
-  const handleFavoriteChange = (isFavorite: boolean) => {
-    setTool(prevTool => ({
-      ...prevTool,
-      status: isFavorite ? 'active' : 'inactive'
-    }))
-  }
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">ToolCardMedium Example</h2>
-      <ToolCardMedium
+      <h2 className="text-2xl font-bold mb-4">{t?.toolCardMediumExample}</h2>
+      <ToolCardMediumComponent
         tool={tool}
-        onFavoriteChange={handleFavoriteChange}
         allowedTags={allowedTags}
+        isFavorite={false}
       />
     </div>
   )
@@ -272,3 +328,4 @@ function ToolCardMediumExample() {
     example: <ToolCardMediumExample />,
   },
 ]
+

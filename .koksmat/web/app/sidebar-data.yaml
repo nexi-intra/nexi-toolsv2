@@ -32,7 +32,8 @@ navMain:
       - title:
           en: "App Launcher"
           da: "Start Menu"
-        #        label: new
+          it: "Lancio App"
+        # label: new
         url: "/tools/pages/app"
 
   - title:
@@ -82,11 +83,13 @@ navMain:
       - title:
           en: "Boards"
           da: "Oversigter"
+          it: "Bacheche"
         url: "/tools/admin/data/boards"
         icon: "BookOpen"
       - title:
           en: "Tenants"
           da: "Lejere"
+          it: "Inquilini"
         url: "/tools/admin/data/tenants"
         icon: "BookOpen"
       - title:
@@ -153,16 +156,16 @@ navMain:
   - title:
       en: "Outlook Integration"
       da: "Outlook Integration"
+      it: "Integrazione Outlook"
     url: "#"
     icon: "SquareTerminal"
-
     label: test
     isActive: true
     items:
       - title:
           en: "Bank Holiday"
           da: "Bank Holiday"
-
+          it: "Festa Bancaria"
         url: "/tools/pages/international/bankholiday"
 projects:
   - title:
