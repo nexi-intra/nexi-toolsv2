@@ -1,9 +1,7 @@
 import * as LucidIcons from "lucide-react";
-import type {
-  SidebarData,
-  SupportedLanguage,
-} from "@/components/lib/types-sidebar-data";
+import type { SidebarData } from "@/components/lib/types-sidebar-data";
 import data from "./sidebar-data.json";
+import { SupportedLanguage } from "@/components/language-context";
 
 type JSONSidebarData = {
   language: SupportedLanguage;

@@ -174,7 +174,7 @@ export function ActionCard({
             )}
 
             <DragDropEditor isEditMode={isEditable}
-              value={data.grid}
+              value={data.grid || { columns: [], rows: [] }}
               onSave={(data) => handleUpdate({ grid: data })} />
             {/* <div className="flex flex-wrap gap-2 mb-4">
               {data.tools.map((tool, index) => (
@@ -257,7 +257,7 @@ export const examplesActionCard: ComponentDoc[] = [
           description: "This is a sample action description.",
           hashtag: "sample",
           isPinned: false,
-          grid: null
+          grid: { columns: [], rows: [] }
         }}
         onUpdate={(mode, data) => console.log(mode, data)}
       />

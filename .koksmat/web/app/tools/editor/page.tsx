@@ -19,9 +19,9 @@ export default function Home() {
         setdata({
           columns: args_0.columns,
           rows: args_0.rows
-        })
+        });
 
-      }} />
+      }} value={{ columns: [], rows: [] }} />
       <pre>
         {JSON.stringify(data, null, 2)}
       </pre>
