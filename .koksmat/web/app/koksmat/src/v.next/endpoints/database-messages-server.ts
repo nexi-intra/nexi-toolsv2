@@ -209,9 +209,9 @@ export async function handleDatabaseMessagesServer(request: NextRequest) {
       }
 
       kVerbose("endpoint", "databaseQuery", databaseQuery);
-      const jwt = jwtDecode<{ upn: string }>(token);
+      const jwt = jwtDecode<{ upn: string; email: string }>(token);
       const sql = databaseQuery.sql
-        .replaceAll("###UPN###", jwt.upn ?? "")
+        .replaceAll("###UPN###", jwt.upn ?? jwt.email ?? "")
         .replaceAll(
           "###P1###",
           getParameterValue(message.message.parameters, 0)
