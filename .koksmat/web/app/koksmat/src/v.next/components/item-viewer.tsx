@@ -30,56 +30,123 @@ import {
 } from "@/components/ui/dialog"
 import { se } from 'date-fns/locale'
 import { FormModeType, GenericTableEditor } from './form-generic-table'
-// Schema for countries
-const CountrySchema = z.object({
-  id: z.number().int().positive().describe(`unique id
-    The unique identifier of the country`),
-  name: z.string().min(1).describe(`Country name
-    The name of the country`),
-  searchIndex: z.string().min(1).describe("The search index of the country"),
-  continent: z.string().min(1).describe(`Continent
-    The continent the country is located in`),
-  population: z.number().int().positive().describe(`Population    
-    The population of the country`),
-  capital: z.string().min(1).describe(`Capital 
-    The capital of the country`),
-  constitutionDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD').describe(`Constitution date
-     The date the constitution was signed`),
-})
-
-export type Country = z.infer<typeof CountrySchema>
-
-// Schema for arrays of countries
-const CountriesArraySchema = z.array(CountrySchema)
-
-// Sample data
-const countries: Country[] = [
-  { id: 1, name: 'United States', continent: 'North America', population: 331002651, capital: 'Washington, D.C.', constitutionDate: '1787-09-17', searchIndex: "abc" },
-  { id: 2, name: 'China', continent: 'Asia', population: 1439323776, capital: 'Beijing', constitutionDate: '1982-12-04', searchIndex: "abc" },
-  { id: 3, name: 'India', continent: 'Asia', population: 1380004385, capital: 'New Delhi', constitutionDate: '1950-01-26', searchIndex: "abc" },
-  { id: 4, name: 'Brazil', continent: 'South America', population: 212559417, capital: 'Brasília', constitutionDate: '1988-10-05', searchIndex: "abc" },
-  { id: 5, name: 'Russia', continent: 'Europe/Asia', population: 145934462, capital: 'Moscow', constitutionDate: '1993-12-25', searchIndex: "abc" },
-  { id: 6, name: 'Japan', continent: 'Asia', population: 126476461, capital: 'Tokyo', constitutionDate: '1947-05-03', searchIndex: "abc" },
-  { id: 7, name: 'Germany', continent: 'Europe', population: 83783942, capital: 'Berlin', constitutionDate: '1949-05-23', searchIndex: "abc" },
-  { id: 8, name: 'United Kingdom', continent: 'Europe', population: 67886011, capital: 'London', constitutionDate: '1215-06-15', searchIndex: "abc" },
-  { id: 9, name: 'France', continent: 'Europe', population: 65273511, capital: 'Paris', constitutionDate: '1958-10-04', searchIndex: "abc" },
-  { id: 10, name: 'Italy', continent: 'Europe', population: 60461826, capital: 'Rome', constitutionDate: '1948-01-01', searchIndex: "abc" },
-  { id: 11, name: 'South Africa', continent: 'Africa', population: 59308690, capital: 'Pretoria, Cape Town, Bloemfontein', constitutionDate: '1996-12-10', searchIndex: "abc" },
-  { id: 12, name: 'South Korea', continent: 'Asia', population: 51269185, capital: 'Seoul', constitutionDate: '1948-07-17', searchIndex: "abc" },
-  { id: 13, name: 'Colombia', continent: 'South America', population: 50882891, capital: 'Bogotá', constitutionDate: '1991-07-04', searchIndex: "abc" },
-  { id: 14, name: 'Spain', continent: 'Europe', population: 46754778, capital: 'Madrid', constitutionDate: '1978-12-29', searchIndex: "abc" },
-  { id: 15, name: 'Argentina', continent: 'South America', population: 45195774, capital: 'Buenos Aires', constitutionDate: '1853-05-01', searchIndex: "abc" },
-]
-
-// Validate the sample data
-CountriesArraySchema.parse(countries)
+import { useLanguage } from "@/components/language-context"
 
 
 
+export type SupportedLanguage = "en" | "da" | "it";
+
+const translationSchema = z.object({
+  en: z.object({
+    cardView: z.string(),
+    tableView: z.string(),
+    listView: z.string(),
+    addNew: z.string(),
+    page: z.string(),
+    noItemsFound: z.string(),
+    previous: z.string(),
+    next: z.string(),
+    pageOf: z.string(),
+    itemDetails: z.string(),
+    createNewRecord: z.string(),
+    edit: z.string(),
+    copy: z.string(),
+    moreOptions: z.string(),
+    close: z.string(),
+  }),
+  da: z.object({
+    cardView: z.string(),
+    tableView: z.string(),
+    listView: z.string(),
+    addNew: z.string(),
+    page: z.string(),
+    noItemsFound: z.string(),
+    previous: z.string(),
+    next: z.string(),
+    pageOf: z.string(),
+    itemDetails: z.string(),
+    createNewRecord: z.string(),
+    edit: z.string(),
+    copy: z.string(),
+    moreOptions: z.string(),
+    close: z.string(),
+  }),
+  it: z.object({
+    cardView: z.string(),
+    tableView: z.string(),
+    listView: z.string(),
+    addNew: z.string(),
+    page: z.string(),
+    noItemsFound: z.string(),
+    previous: z.string(),
+    next: z.string(),
+    pageOf: z.string(),
+    itemDetails: z.string(),
+    createNewRecord: z.string(),
+    edit: z.string(),
+    copy: z.string(),
+    moreOptions: z.string(),
+    close: z.string(),
+  }),
+});
+
+export type TranslationType = z.infer<typeof translationSchema>;
+
+export const translations: TranslationType = {
+  en: {
+    cardView: "Card view",
+    tableView: "Table view",
+    listView: "List view",
+    addNew: "Add new",
+    page: "Page",
+    noItemsFound: "No items found",
+    previous: "Previous",
+    next: "Next",
+    pageOf: "Page {current} of {total}",
+    itemDetails: "Item details",
+    createNewRecord: "Create a new record",
+    edit: "Edit",
+    copy: "Copy",
+    moreOptions: "More options",
+    close: "Close",
+  },
+  da: {
+    cardView: "Kortvisning",
+    tableView: "Tabelvisning",
+    listView: "Listevisning",
+    addNew: "Tilføj ny",
+    page: "Side",
+    noItemsFound: "Ingen elementer fundet",
+    previous: "Forrige",
+    next: "Næste",
+    pageOf: "Side {current} af {total}",
+    itemDetails: "Elementdetaljer",
+    createNewRecord: "Opret en ny post",
+    edit: "Rediger",
+    copy: "Kopier",
+    moreOptions: "Flere muligheder",
+    close: "Luk",
+  },
+  it: {
+    cardView: "Vista a schede",
+    tableView: "Vista tabella",
+    listView: "Vista elenco",
+    addNew: "Aggiungi nuovo",
+    page: "Pagina",
+    noItemsFound: "Nessun elemento trovato",
+    previous: "Precedente",
+    next: "Successivo",
+    pageOf: "Pagina {current} di {total}",
+    itemDetails: "Dettagli elemento",
+    createNewRecord: "Crea un nuovo record",
+    edit: "Modifica",
+    copy: "Copia",
+    moreOptions: "Altre opzioni",
+    close: "Chiudi",
+  },
+};
 
 
-
-// Extend ViewItemsProps to include additional props
 type ViewItemsProps<T extends Base> = {
   schema: ZodObject<Record<string, z.ZodTypeAny>>;
   items: T[];
@@ -93,29 +160,27 @@ type ViewItemsProps<T extends Base> = {
   tableName: string;
   databaseName: string;
   isLoading?: boolean;
-
 };
-
 
 export function ItemViewerComponent<T extends { id: number, name: string, searchIndex: string, calculatedsearchindex?: string }>
   ({ searchFor = "", items, isLoading, schema, onSearch, properties, renderItem, editItem, addItem, tableName, databaseName, options = { heightBehaviour: 'Full', defaultViewMode: 'card', hideToolbar: false } }
     : ViewItemsProps<T>) {
   const [viewMode, setViewMode] = useState<ViewMode>(options?.defaultViewMode || 'card')
   const [currentPage, setCurrentPage] = useState(1)
-
   const [showInfinityLoader, setShowInfinityLoader] = useState(false)
   const [filteredItems, setFilteredItems] = useState(items)
-
-
   const [selectedId, setselectedId] = useState<number | null>(null)
 
   const searchParams = useSearchParams()
   const router = useRouter()
+  const { language } = useLanguage()
+  const t = translations[language as SupportedLanguage]
 
   const pageSize = options.pageSize || 10
   const totalPages = Math.max(1, Math.ceil(filteredItems?.length / pageSize))
   const heightBehaviour = options.heightBehaviour || 'Full'
   const showToolbar = !options.hideToolbar
+
   function ShowItem({ id }: { id: number }) {
     const [mode, setmode] = useState<FormModeType>("view")
     const [debug, setdebug] = useState(false)
@@ -124,39 +189,28 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
         setselectedId(null)
       }
     }} open={true}>
-      <DialogTrigger asChild  >
-        <Button variant="outline">Show item</Button>
+      <DialogTrigger asChild>
+        <Button variant="outline">{t?.itemDetails}</Button>
       </DialogTrigger>
-      <DialogContent >
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>Item details</DialogTitle>
+          <DialogTitle>{t?.itemDetails}</DialogTitle>
         </DialogHeader>
         <DialogDescription>
-
-
         </DialogDescription>
         <div className='max-h-[80vh] max-w-[80vw] overflow-auto '>
           <GenericTableEditor schema={schema} tableName={tableName} databaseName={databaseName} id={id} defaultMode={mode}
             showJSON={debug}
-
             onUpdated={() => setselectedId(null)} />
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setdebug(!debug)}>Debug</Button>
-          <Button variant="outline" onClick={() => setselectedId(null)}>Close</Button>
-          <Button variant="outline" onClick={() => setmode("edit")}>Edit</Button>
+          <Button variant="outline" onClick={() => setselectedId(null)}>{t?.close}</Button>
+          <Button variant="outline" onClick={() => setmode("edit")}>{t?.edit}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   }
-  useEffect(() => {
-    // setIsLoading(true)
-    // const timer = setTimeout(() => {
-    //   setIsLoading(false)
-    // }, 1000)
-
-    // return () => clearTimeout(timer)
-  }, [viewMode, currentPage])
 
   useEffect(() => {
     if (isLoading) {
@@ -191,10 +245,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
         return item?.calculatedsearchindex?.toLowerCase().includes(lowercaseQuery)
       }
       else return item?.searchIndex?.toLowerCase().includes(lowercaseQuery)
-
-    }
-
-    )
+    })
     setFilteredItems(filtered)
     setCurrentPage(1)
     if (onSearch) {
@@ -206,19 +257,10 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
 
   const handleItemClick = (item: T) => {
     setselectedId(item.id)
-    //const params = new URLSearchParams(searchParams)
-
-    // params.set('pane', 'details')
-    // params.set('id', item.id.toString())
-    // router.push(`?${params.toString()}`)
   }
 
   const handleClosePane = () => {
     setselectedId(null)
-    // const params = new URLSearchParams(searchParams)
-    // params.delete('pane')
-    // params.delete('id')
-    // router.push(`?${params.toString()}`)
   }
 
   const renderView = () => {
@@ -233,9 +275,7 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
         return (<Fragment>
           {items.map((item, key) => (
             <Fragment key={key} >
-
               {renderItem ? renderItem(item, "raw") : null}
-
             </Fragment>
           ))}
         </Fragment>)
@@ -251,28 +291,25 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
     if (!item) return null
 
     return (
-      // <div className="absolute z-[1000] inset-y-0 right-0 w-1/3 bg-white shadow-lg p-4 overflow-y-auto"
-
-      // >
       <div>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">{item.name}</h2>
           <div className="flex space-x-2">
             <Button variant="ghost" size="icon">
               <Edit className="h-4 w-4" />
-              <span className="sr-only">Edit</span>
+              <span className="sr-only">{t?.edit}</span>
             </Button>
             <Button variant="ghost" size="icon">
               <Copy className="h-4 w-4" />
-              <span className="sr-only">Copy</span>
+              <span className="sr-only">{t?.copy}</span>
             </Button>
             <Button variant="ghost" size="icon">
               <MoreHorizontal className="h-4 w-4" />
-              <span className="sr-only">More options</span>
+              <span className="sr-only">{t?.moreOptions}</span>
             </Button>
             <Button variant="ghost" size="icon" onClick={handleClosePane}>
               <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
+              <span className="sr-only">{t?.close}</span>
             </Button>
           </div>
         </div>
@@ -298,10 +335,8 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
 
   return (
     <>
-
       <div className={`space-y-4 ${heightBehaviour === 'Full' ? 'h-[calc(100vh-4rem)] flex flex-col' : ''} relative`}>
         {selectedId && <ShowItem id={selectedId} />}
-        { }
         {showToolbar && (<div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Button
@@ -311,64 +346,23 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
               className={viewMode === 'card' ? 'bg-primary text-primary-foreground' : ''}
             >
               <Grid className="h-4 w-4" />
-              <span className="sr-only">Card view</span>
+              <span className="sr-only">{t?.cardView}</span>
             </Button>
-            {/* <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setViewMode('table')}
-              className={viewMode === 'table' ? 'bg-primary text-primary-foreground' : ''}
-            >
-              <Table className="h-4 w-4" />
-
-              <span className="sr-only">Table view</span>
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setViewMode('list')}
-              className={viewMode === 'list' ? 'bg-primary text-primary-foreground' : ''}
-            >
-              <List className="h-4 w-4" />
-              <span className="sr-only">List view</span>
-            </Button> */}
             {addItem && (
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline">Add new </Button>
+                  <Button variant="outline">{t?.addNew}</Button>
                 </DialogTrigger>
                 <DialogContent >
                   <DialogHeader>
-                    <DialogTitle>Create a new record</DialogTitle>
-
+                    <DialogTitle>{t?.createNewRecord}</DialogTitle>
                   </DialogHeader>
                   <ScrollArea className="h-[80vh] w-full rounded-md border">
-
                     {addItem("new")}
                   </ScrollArea>
                 </DialogContent>
               </Dialog>
-
-
             )}
-            {/* <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setViewMode('calendar')}
-              className={viewMode === 'calendar' ? 'bg-primary text-primary-foreground' : ''}
-            >
-              <Calendar className="h-4 w-4" />
-              <span className="sr-only">Calendar view</span>
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setViewMode('kanban')}
-              className={viewMode === 'kanban' ? 'bg-primary text-primary-foreground' : ''}
-            >
-              <Columns className="h-4 w-4" />
-              <span className="sr-only">Kanban view</span>
-            </Button> */}
           </div>
           <div className="flex items-center space-x-2">
             <TokenInput
@@ -386,12 +380,12 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
             />
             <Select onValueChange={(value) => setCurrentPage(Number(value))}>
               <SelectTrigger className="w-[100px]">
-                <SelectValue placeholder="Page" />
+                <SelectValue placeholder={t?.page} /><SelectValue placeholder={t?.page} />
               </SelectTrigger>
               <SelectContent>
                 {Array.from({ length: totalPages }, (_, i) => (
                   <SelectItem key={i + 1} value={(i + 1).toString()}>
-                    Page {i + 1}
+                    {t?.page} {i + 1}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -423,17 +417,17 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
                 </main>
                 {searchParams.get('pane') === 'details' && (
                   <aside className="w-full md:w-64 flex-shrink-0 mt-4 md:mt-0 md:ml-4">
-                    {renderDetailsPane()}</aside>
-                )
-
-                }
+                    {renderDetailsPane()}
+                  </aside>
+                )}
               </div>
             ) : (
-
               <div className="text-center py-8">
-
-                <p className="text-lg mt-4">No items found</p>
-
+                {options.componentNoItems ? (
+                  options.componentNoItems
+                ) : (
+                  <p className="text-lg mt-4">{t?.noItemsFound}</p>
+                )}
               </div>
             )}
           </motion.div>
@@ -453,28 +447,24 @@ export function ItemViewerComponent<T extends { id: number, name: string, search
               disabled={currentPage === 1}
             >
               <ChevronLeft className="h-4 w-4 mr-2" />
-              Previous
+              {t?.previous}
             </Button>
             <span>
-              Page {currentPage} of {totalPages}
+              {t?.pageOf.replace("{current}", currentPage.toString()).replace("{total}", totalPages.toString())}
             </span>
             <Button
               variant="outline"
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
             >
-              Next
+              {t?.next}
               <ChevronRight className="h-4 w-4 ml-2" />
             </Button>
           </div>
         )}
       </div>
-
     </>
   )
-
-
-
 }
 
 const properties = [
@@ -575,15 +565,8 @@ export default function MyPage() {
 }
 `,
     example: (
-
-      <ItemViewerComponent
-        items={countries}
-        tableName='country'
-        renderItem={(item, mode) => (<div>{item.name + "(" + item.continent + ")"}</div>)}
-        properties={[]}
-        onSearch={(query) => kInfo("component", 'Search query:', query)}
-        options={{ pageSize: 10, heightBehaviour: 'Full' }}
-        schema={CountrySchema} databaseName={''} />
+      <div>Visit the source code</div>
     ),
   }
 ]
+

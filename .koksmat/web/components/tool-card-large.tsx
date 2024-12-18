@@ -1,6 +1,8 @@
 'use client'
 
 import React, { useState, useEffect, useContext } from 'react'
+import { SupportedLanguage, useLanguage } from "@/components/language-context"
+
 
 import IconUploader from './icon-uploader'
 import TagSelector, { TagType } from './tag'
@@ -19,12 +21,106 @@ import { ComponentDoc } from './component-documentation-hub'
 import { useKoksmatDatabase } from '@/app/koksmat/src/v.next/components/database-context-provider'
 import { databaseQueries } from '@/app/tools/schemas/database'
 import { kError } from '@/lib/koksmat-logger-client'
-import { set } from 'date-fns'
-import { init } from 'next/dist/compiled/webpack/webpack'
 import { MagicboxContext } from '@/app/koksmat0/magicbox-context'
 import { ToolView } from '@/app/tools/schemas/forms'
 
 type ModeType = 'view' | 'edit' | 'new'
+import { z } from "zod";
+
+
+
+const translationSchema = z.object({
+  teams: z.string(),
+  addTeam: z.string(),
+  platform: z.string(),
+  projects: z.string(),
+  more: z.string(),
+  buildingYourApplication: z.string(),
+  dataFetching: z.string(),
+  language: z.string(),
+  darkMode: z.string(),
+  lightMode: z.string(),
+  enterToolName: z.string(),
+  enterToolDescription: z.string(),
+  countries: z.string(),
+  purposes: z.string(),
+  documents: z.string(),
+  enterToolUrl: z.string(),
+  openTool: z.string(),
+  create: z.string(),
+  save: z.string(),
+});
+
+export type Translation = z.infer<typeof translationSchema>;
+
+const translations: Record<SupportedLanguage, Translation> = {
+  en: {
+    teams: "Versions",
+    addTeam: "Add Configuration",
+    platform: "Solution",
+    projects: "Projects",
+    more: "More",
+    buildingYourApplication: "Building Your Application",
+    dataFetching: "Data Fetching",
+    language: "Language",
+    darkMode: "Dark Mode",
+    lightMode: "Light Mode",
+    enterToolName: "Enter tool name",
+    enterToolDescription: "Enter tool description",
+    countries: "Countries",
+    purposes: "Purposes",
+    documents: "Documents",
+    enterToolUrl: "Enter tool url",
+    openTool: "Open Tool",
+    create: "Create",
+    save: "Save",
+  },
+  da: {
+    teams: "Versioner",
+    addTeam: "Tilføj opsætning",
+    platform: "Solution",
+    projects: "Projekter",
+    more: "Mere",
+    buildingYourApplication: "Byg din applikation",
+    dataFetching: "Datahentning",
+    language: "Sprog",
+    darkMode: "Mørk tilstand",
+    lightMode: "Lys tilstand",
+    enterToolName: "Indtast værktøjsnavn",
+    enterToolDescription: "Indtast værktøjsbeskrivelse",
+    countries: "Lande",
+    purposes: "Formål",
+    documents: "Dokumenter",
+    enterToolUrl: "Indtast værktøjs-url",
+    openTool: "Åbn værktøj",
+    create: "Opret",
+    save: "Gem",
+  },
+  it: {
+    teams: "Versioni",
+    addTeam: "Aggiungi Configurazione",
+    platform: "Soluzione",
+    projects: "Progetti",
+    more: "Altro",
+    buildingYourApplication: "Costruisci la tua applicazione",
+    dataFetching: "Recupero dati",
+    language: "Lingua",
+    darkMode: "Modalità scura",
+    lightMode: "Modalità chiara",
+    enterToolName: "Inserisci il nome dello strumento",
+    enterToolDescription: "Inserisci la descrizione dello strumento",
+    countries: "Paesi",
+    purposes: "Scopi",
+    documents: "Documenti",
+    enterToolUrl: "Inserisci l'URL dello strumento",
+    openTool: "Apri strumento",
+    create: "Crea",
+    save: "Salva",
+  },
+};
+
+
+
 
 function captionForArray(mode: ModeType, caption: string, arr?: any[]) {
   const hasItems = arr && arr.length > 0
@@ -41,7 +137,6 @@ interface ToolCardProps {
   allowedPurposes: { name: string; code: string; sortorder: string }[]
   allowedCountries: { name: string; code: string }[]
   isFavorite: boolean
-
 }
 
 export default function ToolCard({
@@ -51,8 +146,10 @@ export default function ToolCard({
   className = '',
   allowedTags,
   isFavorite,
-
 }: ToolCardProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   const [name, setName] = useState(initialTool.name)
   const [description, setDescription] = useState(initialTool.description)
   const [icon, setIcon] = useState(initialTool.icon)
@@ -61,7 +158,6 @@ export default function ToolCard({
   const [countries, setCountries] = useState(initialTool.countries)
   const [purposes, setPurposes] = useState(initialTool.purposes)
   const [documents, setDocuments] = useState(initialTool.documents)
-  // const [isFavorite, setIsFavorite] = useState(initialIsFavorite)
   const [categoryId, setcategoryId] = useState(initialTool.category.id)
   const [categoryValue, setcategoryValue] = useState(initialTool.category.value)
   const [categoryColor, setcategoryColor] = useState(initialTool.category.color)
@@ -72,7 +168,6 @@ export default function ToolCard({
   const view = databaseQueries.getView("countries")
   const database = useKoksmatDatabase().table("", view.databaseName, view.schema)
 
-
   useEffect(() => {
     setName(initialTool.name)
     setDescription(initialTool.description)
@@ -82,7 +177,6 @@ export default function ToolCard({
     setCountries(initialTool.countries)
     setPurposes(initialTool.purposes)
     setDocuments(initialTool.documents)
-
   }, [initialTool])
 
   useEffect(() => {
@@ -95,7 +189,6 @@ export default function ToolCard({
       setCountries([])
       setPurposes([])
       setDocuments([])
-
     }
   }, [mode])
 
@@ -117,8 +210,6 @@ export default function ToolCard({
     }
   }
 
-
-
   return (
     <Card className={className}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -132,14 +223,14 @@ export default function ToolCard({
           />
           <OneLineTextComponent
             initialValue={name}
-            placeholder="Enter tool name"
+            placeholder={t?.enterToolName}
             mode={mode}
             onChange={(_, value) => setName(value)}
             className='text-2xl font-bold ml-3'
           />
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 pt-3">
           <TagSelector
             tags={allowedTags}
             initialSelectedTags={[{
@@ -156,74 +247,42 @@ export default function ToolCard({
               setcategoryId(selected[0].id)
               setcategoryValue(selected[0].value)
               setcategoryColor(selected[0].color)
-
             }}
             loadItems={async () => {
               try {
                 const categories = await database.query("categories")
                 return categories.map((category: any) => ({ id: category.id, value: category.name, order: category.sortorder, color: category.color }))
-
               } catch (error) {
                 kError("component", "Data read error", error);
                 seterror("" + error)
                 return []
               }
             }}
-
-          // onChange={(selected) => setTags(selected)}
           />
           <FavoriteComponent
             mode={"edit"}
             tool_id={initialTool.id}
             email={magicbox.user?.email}
             defaultIsFavorite={isFavorite}
+            className='mt-[-8px]'
           />
         </div>
       </CardHeader>
       <CardContent>
         <MultiLineText
           initialValue={description}
-          placeholder="Enter tool description"
+          placeholder={t?.enterToolDescription}
           mode={mode}
           onChange={(_, value) => setDescription(value)}
         />
 
-        {captionForArray(mode, "Countries", countries)}
-        <Lookup
-          className='p-2'
-          renderItem={(item) => <span className='flex '><Globe className='h-6 w-6 mt-1 mr-2' />{item.value}</span>}
-          initialSelectedItems={countries?.map(country => ({ id: country.id, value: country.value, sortorder: country.order })) ?? []}
-          items={[]}
-          mode={mode}
-          lazyLoad
-          loadItems={async () => {
-            try {
-              const readDataOperation = await database.query("countries")
-              return readDataOperation.map((country: any) => ({ id: country.id, value: country.name, sortorder: country.sortorder }))
-
-            } catch (error) {
-              kError("component", "Data read error", error);
-              seterror("" + error)
-              return []
-            }
-          }}
-
-          onChange={(selectedItems) => {
-
-            const selectedCountries = selectedItems.map(item => ({ id: item.id, value: item.value, order: item.sortorder }))
-            setCountries([...selectedCountries])
-          }}
-          required={true}
-        />
-
-        {captionForArray(mode, "Purposes", purposes)}
+        {captionForArray(mode, t?.purposes, purposes)}
         <Lookup
           className='p-2'
           initialSelectedItems={purposes?.map(purpose => ({ id: purpose.id, value: purpose.value, sortorder: purpose.order })) ?? []}
           items={purposes?.map(purpose => ({ id: purpose.id, value: purpose.value, sortorder: purpose.order })) ?? []}
           mode={mode}
           onChange={(selectedItems) => {
-
             const selectedPurposes = selectedItems.map(item => ({ id: item.id, value: item.value, order: item.sortorder }))
             setPurposes([...selectedPurposes])
           }}
@@ -232,18 +291,16 @@ export default function ToolCard({
             try {
               const readDataOperation = await database.query("purposes")
               return readDataOperation.map((purpose: any) => ({ id: purpose.id, value: purpose.name, sortorder: purpose.sortorder }))
-
             } catch (error) {
               kError("component", "Data read error", error);
               seterror("" + error)
               return []
             }
           }}
-          // onChange={(selectedItems) => setPurposes(selectedItems.map(item => ({ id: item.id, value: item.value, order: item.sortorder })))}
           required={true}
         />
 
-        {captionForArray(mode, "Documents", documents)}
+        {captionForArray(mode, t?.documents, documents)}
         <FileLinksGridComponent
           initialLinks={documents?.map((doc, index) => ({
             id: index.toString(),
@@ -258,7 +315,7 @@ export default function ToolCard({
         {mode !== 'view' && (
           <OneLineTextComponent
             initialValue={url}
-            placeholder="Enter tool url"
+            placeholder={t?.enterToolUrl}
             mode={mode}
             onChange={(_, value) => setUrl(value)}
           />
@@ -267,7 +324,7 @@ export default function ToolCard({
           <div className="flex justify-center w-full mt-4">
             <Link href={url} target="_blank">
               <Button variant="default" onClick={e => e.stopPropagation()} disabled={!url}>
-                Open Tool
+                {t?.openTool}
               </Button>
             </Link>
           </div>
@@ -279,7 +336,7 @@ export default function ToolCard({
             e.stopPropagation()
             handleSave()
           }}>
-            {mode === 'new' ? 'Create' : 'Save'}
+            {mode === 'new' ? t?.create : t?.save}
           </Button>
         )}
       </CardFooter>
@@ -287,8 +344,10 @@ export default function ToolCard({
   )
 }
 
-// Example component
 function ToolCardExample() {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   const [mode, setMode] = useState<'view' | 'edit' | 'new'>('view')
   const [tool, setTool] = useState<ToolView>({
     id: 1,
@@ -316,20 +375,14 @@ Telefono
     icon: '/nexiconnect.png',
     documentationUrl: 'https://example.com/docs',
 
-    supportContact: [],
-    license: [],
-    compatiblePlatforms: ['Windows', 'Mac', 'Linux'],
-    systemRequirements: 'Node.js 14+',
-    relatedToolIds: [],
+
     countries: [{ value: 'Italy', id: 1, order: '1' }],
-    repositoryUrl: 'https://github.com/example/sample-tool',
-    collaborationType: [],
+
     documents: [
-      { name: 'Manuale Utente', url: 'https://christianiabpos.sharepoint.com/sites/nexiintra-unit-gf-it/SiteAssets/SitePages/Nexi-Connect(1)/Nexi_Connect_Come_fare_per.pdf?web=1' },
+
       { name: 'Nexi Connect: il nuovo accesso al supporto IT', url: 'https://christianiabpos.sharepoint.com/sites/nexiintra-unit-gf-it/SitePages/it/Nexi-Connect.aspx' }
     ],
-    teamSize: 5,
-    primaryFocus: []
+
   })
   const [isFavorite, setIsFavorite] = useState(false)
 
@@ -350,6 +403,7 @@ Telefono
     { id: 2, name: 'Purpose 2', code: 'PUR2', sortorder: '2' },
     { id: 3, name: 'Purpose 3', code: 'PUR3', sortorder: '3' },
   ]
+
   const handleSave = (updatedTool: ToolView, saveMode: 'view' | 'edit' | 'new') => {
     console.log('Saved:', updatedTool, 'Mode:', saveMode)
     setTool(updatedTool)
@@ -361,13 +415,11 @@ Telefono
     console.log('Favorite changed:', newFavoriteState)
   }
 
-
-
   return (
     <>
-      <Card className="w-full  mx-auto">
+      <Card className="w-full mx-auto">
         <CardHeader>
-          <CardTitle>ToolCard Example</CardTitle>
+          <CardTitle>{t?.teams}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <Select value={mode} onValueChange={(value: 'view' | 'edit' | 'new') => setMode(value)}>
@@ -388,19 +440,14 @@ Telefono
             allowedCountries={allowedCountries}
             allowedPurposes={allowedPurposes}
             isFavorite={isFavorite}
-
           />
         </CardContent>
       </Card>
       <CodeViewer filename="tool.json" language="json" code={JSON.stringify(tool, null, 2)} />
-      {/* <pre>
-        {JSON.stringify(tool, null, 2)}
-      </pre> */}
     </>
   )
 }
 
-// Example usage documentation
 export const examplesToolCard: ComponentDoc[] = [
   {
     id: 'ToolCard-AllModes',
@@ -408,39 +455,39 @@ export const examplesToolCard: ComponentDoc[] = [
     description: 'ToolCard component with view/edit/new mode selector, allowed tags, and favorite management',
     usage: `
 import React, { useState } from 'react'
-import { Tool } from '@/app/tools/api/entity/schemas'
+import { ToolView } from '@/app/tools/schemas/forms'
 import ToolCard from './ToolCard'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useLanguage } from "@/components/language-context"
+import translations from './translations'
 
 function ToolCardExample() {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   const [mode, setMode] = useState<'view' | 'edit' | 'new'>('view')
-  const [tool, setTool] = useState<Tool>({
+  const [tool, setTool] = useState<ToolView>({
     // ... (tool properties)
   })
   const [isFavorite, setIsFavorite] = useState(false)
 
   const allowedTags = [
-    { name: 'tag1', color: '#ff0000', description: 'Tag 1' },
-    { name: 'tag2', color: '#00ff00', description: 'Tag 2' },
-    { name: 'tag3', color: '#0000ff', description: 'Tag 3' },
+    { id: 1, value: 'tag1', color: '#ff0000', description: 'Tag 1', order: "1" },
+    { id: 2, value: 'tag2', color: '#00ff00', description: 'Tag 2', order: "2" },
+    { id: 3, value: 'tag3', color: '#0000ff', description: 'Tag 3', order: "3" },
   ]
 
-  const handleSave = (updatedTool: Tool, saveMode: 'view' | 'edit' | 'new') => {
+  const handleSave = (updatedTool: ToolView, saveMode: 'view' | 'edit' | 'new') => {
     console.log('Saved:', updatedTool, 'Mode:', saveMode)
     setTool(updatedTool)
     setMode('view')
   }
 
-  const handleFavoriteChange = (newFavoriteState: boolean) => {
-    setIsFavorite(newFavoriteState)
-    console.log('Favorite changed:', newFavoriteState)
-  }
-
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full mx-auto">
       <CardHeader>
-        <CardTitle>ToolCard Example</CardTitle>
+        <CardTitle>{t?.teams}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <Select value={mode} onValueChange={(value: 'view' | 'edit' | 'new') => setMode(value)}>
@@ -459,7 +506,6 @@ function ToolCardExample() {
           onSave={handleSave}
           allowedTags={allowedTags}
           isFavorite={isFavorite}
-          onFavoriteChange={handleFavoriteChange}
         />
       </CardContent>  
     </Card>
@@ -469,3 +515,4 @@ function ToolCardExample() {
     example: <ToolCardExample />,
   },
 ]
+

@@ -1,21 +1,45 @@
 "use client"
+
+import { z } from "zod";
 import { DatabaseItemsViewer } from "@/app/koksmat/src/v.next/components/database-items-viewer";
 import { databaseQueries } from "@/app/tools/schemas/database";
-
 import Link from "next/link";
-
 import { LinkListProps } from "@/app/koksmat/src/v.next/components/_shared";
 import { ToolExplorer, ToolExplorerFiltered } from "./tool-list";
 import { ViewNames } from "@/app/tools/schemas/database/view";
 import { databaseTable } from "@/app/tools/schemas/database/table";
-
-
 import { Card, CardHeader, CardContent } from "./ui/card";
 import { queries } from "@/app/global";
 import { GenericTableEditor } from "@/app/koksmat/src/v.next/components";
 import DatabaseItemDialog from "@/app/koksmat/src/v.next/components/database-item-dialog";
+import { useLanguage, SupportedLanguage } from "@/components/language-context";
+import { getTranslation } from "@/app/tools/schemas/_shared";
 
+const translationSchema = z.object({
+  purposes: z.string(),
+  addPurpose: z.string(),
+  all: z.string(),
+});
 
+type Translation = z.infer<typeof translationSchema>;
+
+const translations: Record<SupportedLanguage, Translation> = {
+  en: {
+    purposes: "Purposes",
+    addPurpose: "Add Purpose",
+    all: "all",
+  },
+  da: {
+    purposes: "Formål",
+    addPurpose: "Tilføj formål",
+    all: "alle",
+  },
+  it: {
+    purposes: "Scopi",
+    addPurpose: "Aggiungi scopo",
+    all: "tutti",
+  },
+};
 
 const VIEWNAME: ViewNames = "purposes"
 const table = databaseTable.purpose
@@ -23,60 +47,85 @@ const databaseName = "tools"
 
 export function PurposesList() {
   const view = queries.getView(VIEWNAME)
+  const { language } = useLanguage();
+  const t = translations[language];
 
   return (
-
     <DatabaseItemsViewer
       tableName={table.tablename}
       schema={view.schema}
       options={{ hideToolbar: false }}
       addItem={() => {
-        return <GenericTableEditor schema={table.schema} tableName={table.tablename} databaseName={databaseName} defaultMode={"new"}
+        return <GenericTableEditor
+          schema={table.schema}
+          tableName={table.tablename}
+          databaseName={databaseName}
+          defaultMode={"new"}
           showJSON={true}
-
-          onUpdated={() => document.location.reload()} id={0} />
+          onUpdated={() => document.location.reload()}
+          id={0}
+        />
       }}
       renderItem={(item, viewMode) => {
-        return <Card className="min-w-[300px]">
-          <CardHeader>
-            <h2>{item.name}</h2>
-          </CardHeader>
-          <CardContent>
-            <DatabaseItemDialog id={item.id} schema={table.schema} tableName={table.tablename} databaseName={databaseName} />
-          </CardContent>
-        </Card>
-      }
-      }
-      viewName={VIEWNAME} />
+        return (
+          <Card className="min-w-[300px]">
+            <CardHeader>
+              <h2 >{item.name}</h2>
+            </CardHeader>
+            <CardContent>
+              <DatabaseItemDialog
+                id={item.id}
+                schema={table.schema}
+                tableName={table.tablename}
+                databaseName={databaseName}
+              />
+            </CardContent>
+          </Card>
+        )
+      }}
+      viewName={VIEWNAME}
+    />
   )
 }
-
 
 export function PurposesListLinker({ searchFor, basePath, prefix, onLoaded }: LinkListProps) {
   const VIEWNAME: ViewNames = "purposes"
   const view = databaseQueries.getView(VIEWNAME)
+  const { language } = useLanguage();
+  const t = translations[language];
 
   return (
     <DatabaseItemsViewer
       schema={view.schema}
       tableName={databaseTable.purpose.tablename}
       renderItem={(item, viewMode) => {
-        return <div className="min-h-96 p-4 m-4 bg-white" key={item.id}>
-          <div className="flex">
-            <div className="text-xl" id={prefix + item.id}>{item.name}</div>
-            <div className="grow"></div>
-            <div><Link className="text-blue-500 hover:underline" href={`${basePath}/${item.id}`}>all</Link></div>
+        return (
+          <div className="min-h-96 p-4 m-4 bg-white dark:bg-gray-800" key={item.id}>
+            <div className="flex">
+              <div className="text-xl" id={prefix + item.id}>{getTranslation(item.translations, "name", language, item.name)}</div>
+              <div className="grow"></div>
+              <div>
+                <Link className="text-blue-500 hover:underline" href={`${basePath}/${item.id}`}>
+                  {t?.all}
+                </Link>
+              </div>
+            </div>
+            <ToolExplorerFiltered
+              searchFor={searchFor}
+              viewName="tools_for_purpose"
+              parameters={[(item.id as number).toString()]}
+            />
           </div>
-
-          <ToolExplorerFiltered searchFor={searchFor} viewName="tools_for_purpose" parameters={[(item.id as number).toString()]} />
-        </div>
-
-      }
-      }
-      options={{ hideToolbar: true, heightBehaviour: "Dynamic", onLoaded, defaultViewMode: 'raw' }}
-
-      viewName={VIEWNAME} />
+        )
+      }}
+      options={{
+        hideToolbar: true,
+        heightBehaviour: "Dynamic",
+        onLoaded,
+        defaultViewMode: 'raw'
+      }}
+      viewName={VIEWNAME}
+    />
   )
 }
-
 

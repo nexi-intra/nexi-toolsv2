@@ -28,6 +28,7 @@ v_tenant VARCHAR COLLATE pg_catalog."default" ;
     v_status VARCHAR;
     v_Documents JSONB;
     v_metadata JSONB;
+    v_icon VARCHAR;
     v_id INTEGER;
         v_audit_id integer;  -- Variable to hold the OUT parameter value
     p_auditlog_params jsonb;
@@ -43,6 +44,7 @@ BEGIN
     v_status := p_params->>'status';
     v_Documents := p_params->>'Documents';
     v_metadata := p_params->>'metadata';
+    v_icon := p_params->>'icon';
          
     
     INSERT INTO public.tool (
@@ -59,7 +61,8 @@ BEGIN
         url,
         status,
         Documents,
-        metadata
+        metadata,
+        icon
     )
     VALUES (
         DEFAULT,
@@ -75,7 +78,8 @@ BEGIN
         v_url,
         v_status,
         v_Documents,
-        v_metadata
+        v_metadata,
+        v_icon
     )
     RETURNING id INTO v_id;
 
@@ -131,6 +135,9 @@ BEGIN
     "description":"" },
     "metadata": { 
     "type": "object",
+    "description":"" },
+    "icon": { 
+    "type": "string",
     "description":"" }
 
     }

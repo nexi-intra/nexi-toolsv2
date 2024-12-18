@@ -9,6 +9,7 @@ import KoksmatClient from "@/components/koksmat-client";
 import { KoksmatSessionProvider } from "@/components/koksmat-provider";
 import { BreadcrumbProvider } from "@/components/breadcrumb-context";
 import { useExampleHook } from "@/components/lookup-provider";
+import { LanguageProvider } from "@/components/language-context";
 
 
 export default function RootLayoutClientSide({
@@ -21,14 +22,14 @@ export default function RootLayoutClientSide({
     <MagicboxProvider>
       <MSALWrapper>
         <BreadcrumbProvider lookupHandlers={[useExampleHook()]}>
+          <LanguageProvider>
+            <KoksmatSessionProvider>
+              <div className=" w-full min-w-full min-h-full">
+                {children}
+              </div>
 
-          <KoksmatSessionProvider>
-            <div className=" w-full min-w-full min-h-full">
-              {children}
-            </div>
-
-          </KoksmatSessionProvider>
-
+            </KoksmatSessionProvider>
+          </LanguageProvider>
         </BreadcrumbProvider>
         <TailwindIndicator />
         {/* <ServiceInspector /> */}

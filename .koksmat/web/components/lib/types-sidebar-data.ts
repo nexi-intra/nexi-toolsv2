@@ -1,7 +1,8 @@
 import * as LucidIcons from "lucide-react";
+import { SupportedLanguage } from "../language-context";
 type LucidIconName = keyof typeof LucidIcons;
 
-export type SupportedLanguage = "en" | "da";
+//export type SupportedLanguage = "en" | "da" | "it";
 
 export type TranslatedString = {
   [key in SupportedLanguage]: string;

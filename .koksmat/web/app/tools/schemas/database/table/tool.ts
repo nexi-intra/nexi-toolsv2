@@ -6,7 +6,9 @@ keep: true
 ---
 */
 
+import { Translation } from "next-i18next";
 import { z } from "zod";
+import { translationsSchema } from "../../_shared";
 
 export const schema = z.object({
   tenant: z.string().optional().describe("Tenant"),
@@ -19,11 +21,11 @@ export const schema = z.object({
     .describe(
       "Description of the tool\nNote that you can add links for documentation in other formats"
     ),
-  Translations: z.object({}).passthrough().optional().describe("Translations"),
+  translations: translationsSchema,
   category_id: z.number().int().describe("Category ID"),
   url: z.string().url().describe("URL of the tool"),
   icon: z.string().url().describe("Icon of the tool"),
-  status: z.string().optional().describe("Status of the tool"),
+  //status: z.string().optional().describe("Status of the tool"),
   Documents: z.object({}).passthrough().optional().describe("Documents"),
   metadata: z.object({}).passthrough().optional().describe("Metadata"),
 });

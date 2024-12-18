@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Grid, List, Table } from "lucide-react";
+import React, { useContext, useEffect, useState } from "react";
+import { Grid, List, Table } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ToolCardMediumComponent } from "./tool-card-medium";
-
 import { ComponentDoc } from "./component-documentation-hub";
 import { ToolSearchComponent, ToolSearchProps } from "./tool-search";
 import { mockTools } from "./mockTools";
@@ -22,103 +21,168 @@ import { PurposesListLinker } from "./purpose-list";
 import { ca } from "date-fns/locale";
 import { Property } from "./token-input-internal";
 import { Base } from "@/app/koksmat/src/v.next/components/_shared";
+import { MyToolList } from "./my-tool-list";
+import Link from "next/link";
+import { PopupFrame } from "./popup-frame";
+import { MagicboxContext } from "@/app/koksmat0/magicbox-context";
+import { useLanguage, SupportedLanguage } from "@/components/language-context";
+import { z } from "zod";
 
 type ViewMode = "cards" | "table" | "list";
 
 interface ToolsPageProps {
   className?: string;
 }
-let v = 0
+
+const translationSchema = z.object({
+  yourTools: z.string(),
+  allTools: z.string(),
+  yourProfile: z.string(),
+  purposes: z.string(),
+  categories: z.string(),
+  searchTools: z.string(),
+});
+
+type Translation = z.infer<typeof translationSchema>;
+
+const translations: Record<SupportedLanguage, Translation> = {
+  en: {
+    yourTools: "Your Tools",
+    allTools: "All Tools",
+    yourProfile: "Your profile",
+    purposes: "Purposes",
+    categories: "Categories",
+    searchTools: "Search tools...",
+  },
+  da: {
+    yourTools: "Dine værktøjer",
+    allTools: "Alle værktøjer",
+    yourProfile: "Din profil",
+    purposes: "Formål",
+    categories: "Kategorier",
+    searchTools: "Søg værktøjer...",
+  },
+  it: {
+    yourTools: "I tuoi strumenti",
+    allTools: "Tutti gli strumenti",
+    yourProfile: "Il tuo profilo",
+    purposes: "Scopi",
+    categories: "Categorie",
+    searchTools: "Cerca strumenti...",
+  },
+};
+
+let v = 0;
 export function ToolsPage({ className = "" }: ToolsPageProps) {
-  const [version, setversion] = useState(0)
-
-  const [categories, setcategories] = useState<Base[]>([])
-  const [regions, setregions] = useState<Base[]>([])
-  const [purposes, setpurposes] = useState<Base[]>([])
-  const [properties, setproperties] = useState<Property[]>([])
-  const [searchFor, setsearchFor] = useState("")
-
+  const [version, setversion] = useState(0);
+  const magicbox = useContext(MagicboxContext);
+  const [categories, setcategories] = useState<Base[]>([]);
+  const [regions, setregions] = useState<Base[]>([]);
+  const [purposes, setpurposes] = useState<Base[]>([]);
+  const [properties, setproperties] = useState<Property[]>([]);
+  const [searchFor, setsearchFor] = useState("");
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const onChildsRefreshed = () => {
-    v++
-    setversion(v)
-
-  }
+    v++;
+    setversion(v);
+  };
 
   const onRegionsLoaded = (items: Base[]) => {
-    setregions(items)
-    onChildsRefreshed()
-  }
+    setregions(items);
+    onChildsRefreshed();
+  };
   const onCategoriesLoaded = (items: Base[]) => {
-    setcategories(items)
-    onChildsRefreshed()
-
-  }
+    setcategories(items);
+    onChildsRefreshed();
+  };
 
   const onPurposesLoaded = (items: Base[]) => {
-    setpurposes(items)
-    onChildsRefreshed()
-
-  }
-
+    setpurposes(items);
+    onChildsRefreshed();
+  };
 
   useEffect(() => {
-
     setproperties([
-
       {
         name: "purpose",
-        values: purposes.map((purpose: any) => { return { value: purpose.name, icon: null, color: purpose.color } })
+        values: purposes.map((purpose: any) => {
+          return { value: purpose.name, icon: null, color: purpose.color };
+        }),
       },
-      {
-        name: "category",
-        values: categories.map((category: any) => { return { value: category.name, icon: null, color: category.color } })
-      },
-      {
-        name: "region",
-        values: regions.map((region: any) => { return { value: region.name, icon: null, color: region.color } })
-      }
-    ])
+    ]);
+  }, [categories, regions, purposes]);
 
-  }, [categories, regions, purposes])
+  return (
+    <div className="h-full w-full">
+      <div className="lg:flex">
+        <main className="w-full lg:w-3/4">
+          <div className="sticky top-0 z-10 bg-white dark:bg-gray-800">
+            <TokenInput
+              placeholder={t?.searchTools}
+              properties={properties}
+              value={searchFor}
+              onChange={function (
+                value: string,
+                hasErrors: boolean,
+                errors: ErrorDetail[]
+              ): void {
+                setsearchFor(value);
+              }}
+            />
+          </div>
 
-  return <div className="h-full w-full">
-    <div className="flex">
-      <main className="w-3/4">
-        <div className="sticky top-0 z-10 bg-white">
-          <TokenInput
-            placeholder="Search tools..."
-            properties={properties} value={searchFor} onChange={function (value: string, hasErrors: boolean, errors: ErrorDetail[]): void {
-              setsearchFor(value)
-              //throw new Error("Function not implemented.");
-            }} />
-        </div>
-
-        <div className="min-h-screen min-w-full ">
-          <ToolExplorer onLoaded={onChildsRefreshed} searchFor={searchFor} />
-        </div>
-        <div className="relative">
-          <h3 className="font-semibold mb-2 sticky top-10 bg-white text-3xl z-10 p-4">Purposes</h3>
-          <PurposesListLinker basePath={"/tools/pages/purpose"} prefix="purpose-" onLoaded={onPurposesLoaded} searchFor={searchFor} />
-        </div>
-        <div className="relative">
-          <h3 className="font-semibold mb-2 sticky top-10  bg-white text-3xl z-10 p-4">Categories</h3>
-          <CategoryListLinker basePath={"/tools/pages/category"} prefix="category-" onLoaded={onCategoriesLoaded} searchFor={searchFor} />
-        </div>
-        <div className="relative">
-          <h3 className="font-semibold mb-2 sticky top-10 bg-white text-3xl z-10 p-4">Regions</h3>
-          <RegionListLinker basePath={"/tools/pages/region"} prefix="region-" onLoaded={onRegionsLoaded} searchFor={searchFor} />
-        </div>
-      </main>
-      <aside className="w-1/4">
-
-        <TableOfContents
-          version={version}
-          sections={[{ title: "Purposes", prefix: "purpose-" }, { title: "Categories", prefix: "category-" }, { title: "Regions", prefix: "region-" }]} />
-
-      </aside>
+          <div className="min-h-screen min-w-full ">
+            <div className="relative">
+              <h3 className="font-semibold mb-2 sticky top-10 bg-white dark:bg-gray-800 text-3xl z-10 p-4">
+                {t?.yourTools}
+              </h3>
+              <MyToolList searchFor={searchFor} />
+            </div>
+            <div className="relative">
+              <div className="flex">
+                <h3 className="font-semibold mb-2 sticky top-10 text-3xl z-10 p-4">
+                  {t?.allTools}
+                </h3>
+                <div className="flex-grow"></div>
+                <span className="text-right mr-4">
+                  <PopupFrame
+                    url={"https://home.nexi-intra.com/sso?token=TOKEN"}
+                    token={magicbox.authtoken}
+                    linkText={t?.yourProfile}
+                    dialogTitle={t?.yourProfile}
+                  />
+                </span>
+              </div>
+              <ToolExplorer onLoaded={onChildsRefreshed} searchFor={searchFor} />
+            </div>
+          </div>
+          <div className="relative">
+            <h3 className="font-semibold mb-2 sticky top-10 bg-white  dark:bg-gray-800 text-3xl z-10 p-4">
+              {t?.purposes}
+            </h3>
+            <PurposesListLinker
+              basePath={"/tools/pages/purpose"}
+              prefix="purpose-"
+              onLoaded={onPurposesLoaded}
+              searchFor={searchFor}
+            />
+          </div>
+        </main>
+        <aside className=" lg:visible  lg:w-1/4">
+          <div className="font-semibold sticky top-0 bg-white dark:bg-gray-800 text-xl z-10 px-4">
+            {t?.categories}
+          </div>
+          <TableOfContents
+            version={version}
+            language={language}
+            sections={[{ title: t?.purposes, prefix: "purpose-" }]}
+          />
+        </aside>
+      </div>
     </div>
-  </div>
+  );
 }
 
 // Example SearchComponent

@@ -51,6 +51,8 @@ export type DatabaseItemsViewerProps<S extends z.ZodType<any, any, any>> = {
     hideToolbar?: boolean;
     defaultViewMode?: ViewMode;
     onLoaded?: OnLoadedType;
+    version?: number;
+    componentNoItems?: React.ReactNode;
   };
 };
 
@@ -60,4 +62,5 @@ export type ViewItemOptionsProps = {
   defaultViewMode?: ViewMode;
   hideToolbar?: boolean;
   onLoaded?: OnLoadedType;
+  componentNoItems?: React.ReactNode;
 };

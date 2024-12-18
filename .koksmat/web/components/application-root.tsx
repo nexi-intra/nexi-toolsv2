@@ -51,7 +51,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
-import { SupportedLanguage } from "@/components/lib/types-sidebar-data"
+
 import { Sun, Moon, ChevronsUpDown, Plus, ChevronRight } from 'lucide-react'
 import { Icon } from "./icon"
 import Link from "next/link"
@@ -67,6 +67,8 @@ import { DatabaseCacheProvider } from "@/app/koksmat/src/v.next/components/datab
 // Custom hook to detect if running in an iframe
 import { BRANCH } from '@/branch'
 import { APPDISPLAYNAME } from '@/app/global'
+import Image from "next/image"
+import { SupportedLanguage, useLanguage } from "./language-context"
 
 function appName() {
   const branch = BRANCH
@@ -121,15 +123,27 @@ const translations = {
     darkMode: "Mørk tilstand",
     lightMode: "Lys tilstand",
   },
-}
+  it: {
+    teams: "Versioni",
+    addTeam: "Aggiungi Configurazione",
+    platform: "Soluzione",
+    projects: "Progetti",
+    more: "Altro",
+    buildingYourApplication: "Costruisci la tua applicazione",
+    dataFetching: "Recupero dati",
+    language: "Lingua",
+    darkMode: "Modalità scura",
+    lightMode: "Modalità chiara",
+  },
+};
 
 const TopNavigation: React.FC<{
   isDarkMode: boolean;
   toggleDarkMode: () => void;
-  currentLanguage: SupportedLanguage;
+  language: SupportedLanguage;
   changeLanguage: (lang: SupportedLanguage) => void;
   t: typeof translations[SupportedLanguage];
-}> = ({ isDarkMode, toggleDarkMode, currentLanguage, changeLanguage, t }) => (
+}> = ({ isDarkMode, toggleDarkMode, language, changeLanguage, t }) => (
   <div className="flex items-center space-x-4">
     <Button
       variant="ghost"
@@ -146,7 +160,7 @@ const TopNavigation: React.FC<{
     }} onCreatePost={function (...args: unknown[]): void {
       //throw new Error('Function not implemented.')
     }} />
-    {/* <DropdownMenu>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost">
           {t.language}
@@ -156,8 +170,10 @@ const TopNavigation: React.FC<{
       <DropdownMenuContent>
         <DropdownMenuItem onClick={() => changeLanguage('en')}>English</DropdownMenuItem>
         <DropdownMenuItem onClick={() => changeLanguage('da')}>Dansk</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => changeLanguage('it')}>Italian</DropdownMenuItem>
+
       </DropdownMenuContent>
-    </DropdownMenu> */}
+    </DropdownMenu>
   </div>
 )
 
@@ -171,10 +187,11 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
   const isInIframe = useIsInIframe()
   const magicbox = useContext(MagicboxContext)
   const [isDarkMode, setIsDarkMode] = React.useState(false)
-  const [currentLanguage, setCurrentLanguage] = React.useState<SupportedLanguage>(sidebarData.language)
+  //const [language, setlanguage] = React.useState<SupportedLanguage>(sidebarData.language)
+  const { language, setLanguage } = useLanguage()
   const [activeTeam, setActiveTeam] = React.useState(sidebarData.teams[0])
 
-  const t = translations[currentLanguage]
+  const t = translations[language]
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode)
@@ -182,7 +199,9 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
   }
 
   const changeLanguage = (lang: SupportedLanguage) => {
-    setCurrentLanguage(lang)
+
+    setLanguage(lang)
+    //setlanguage(lang)
   }
 
   return (
@@ -190,9 +209,9 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
       tokenProvider={{
         getToken: async () => {
           if (!magicbox.authtoken) {
-            //alert("No authtoken")
-            await magicbox.signIn(["user.read"], "")
-            debugger
+            //TODO : In case of successfull sing in, Capture auth token and return it
+            const x = await magicbox.signIn(["user.read"], "")
+            //debugger
             if (!magicbox.authtoken) {
               throw new Error('No authtoken - please reload the page')
             }
@@ -203,20 +222,20 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
       }}>
       <DatabaseCacheProvider>
         <div className={`flex h-screen ${isDarkMode ? 'dark' : ''} bg-background text-foreground`}>
-          {!hideTopNav && !isInIframe && (
+          {!hideTopNav && !isInIframe && magicbox.appMode !== "app" && (
             <div className="absolute top-0 right-0 p-4 z-50 flex" >
               {topnav}
               <TopNavigation
                 isDarkMode={isDarkMode}
                 toggleDarkMode={toggleDarkMode}
-                currentLanguage={currentLanguage}
+                language={language}
                 changeLanguage={changeLanguage}
                 t={t}
               />
             </div>
           )}
           <SidebarProvider>
-            {!hideSidebar && !isInIframe && (
+            {!hideSidebar && !isInIframe && magicbox.appMode !== "app" && (
               <Sidebar collapsible="icon">
                 <SidebarHeader>
                   <SidebarMenu>
@@ -228,7 +247,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                           >
                             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                              <Icon iconName={activeTeam.logo} className="size-5" />
+                              <Image src="/tool-white.svg" width={64} height={64} alt="icon" className="w-6 h-6" />
                             </div>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                               <span className="truncate font-semibold">
@@ -257,7 +276,8 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           >
 
                             <div className="flex size-6 items-center justify-center rounded-sm border">
-                              <Icon iconName={activeTeam.logo} />
+                              <Image src="/appimages/ios/64.png" width={64} height={64} alt="icon" className="w-6 h-6" />
+
                             </div>
                             <Link className="grow" href="https://tools.intra.nexigroup.com">
                               Production
@@ -272,7 +292,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           >
 
                             <div className="flex size-6 items-center justify-center rounded-sm border">
-                              <Icon iconName={activeTeam.logo} />
+                              <Image src="/appimages/ios/64.png" width={64} height={64} alt="icon" className="w-6 h-6" />
                             </div>
                             <Link className="grow" href="https://nexi-intra-nexi-toolsv2-canary.intra.nexigroup.com">
                               Canary
@@ -285,7 +305,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           >
 
                             <div className="flex size-6 items-center justify-center rounded-sm border">
-                              <Icon iconName={activeTeam.logo} />
+                              <Image src="/appimages/ios/64.png" width={64} height={64} alt="icon" className="w-6 h-6" />
                             </div>
                             <Link className="grow" href="https://nexi-intra-nexi-toolsv2-alpha.intra.nexigroup.com">
                               Alpha
@@ -299,7 +319,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           >
 
                             <div className="flex size-6 items-center justify-center rounded-sm border">
-                              <Icon iconName={activeTeam.logo} />
+                              <Image src="/appimages/ios/64.png" width={64} height={64} alt="icon" className="w-6 h-6" />
                             </div>
                             <Link className="grow" href="https://nexi-intra-nexi-toolsv2-beta.intra.nexigroup.com">
                               Beta
@@ -312,7 +332,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           >
 
                             <div className="flex size-6 items-center justify-center rounded-sm border">
-                              <Icon iconName={activeTeam.logo} />
+                              <Image src="/appimages/ios/64.png" width={64} height={64} alt="icon" className="w-6 h-6" />
                             </div>
                             <Link className="grow" href="https://nexi-intra-nexi-toolsv2-master.intra.nexigroup.com">
                               Master
@@ -346,9 +366,9 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                         >
                           <SidebarMenuItem>
                             <CollapsibleTrigger asChild>
-                              <SidebarMenuButton tooltip={item.title[currentLanguage]}>
+                              <SidebarMenuButton tooltip={item.title[language]}>
                                 <Icon iconName={item.icon} className="size-5" />
-                                <span>{item.title[currentLanguage]}</span>
+                                <span>{item.title[language]}</span>
                                 {item.label && <span className="bg-yellow-400">{item.label}</span>}
                                 <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                               </SidebarMenuButton>
@@ -360,7 +380,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                                     <SidebarMenuSubButton asChild>
                                       <Link href={subItem.url}>
 
-                                        <span>{subItem.title[currentLanguage]} </span>
+                                        <span>{subItem.title[language]} </span>
                                         {subItem.label && <span className="bg-yellow-400">{subItem.label}</span>}
 
                                       </Link>
@@ -382,7 +402,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           <SidebarMenuButton asChild>
                             <Link href={item.url}>
                               <Icon iconName={item.icon} className="size-5" />
-                              <span>{item?.title[currentLanguage]}</span>
+                              <span>{item?.title[language]}</span>
                             </Link>
                           </SidebarMenuButton>
                           {/* <DropdownMenu>
@@ -400,7 +420,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                           {item.actions.map((action) => (
                             <DropdownMenuItem key={action.label.en}>
                               <Icon iconName={action.icon} className="size-5" />
-                              <span>{action.label[currentLanguage]}</span>
+                              <span>{action.label[language]}</span>
                             </DropdownMenuItem>
                           ))}
                         </DropdownMenuContent>
@@ -481,7 +501,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
                             {sidebarData.userMenuItems.map((item) => (
                               <DropdownMenuItem key={item.label.en}>
                                 <Icon iconName={item.icon} className="size-5" />
-                                {item.label[currentLanguage]}
+                                {item.label[language]}
                               </DropdownMenuItem>
                             ))}
                           </DropdownMenuGroup>
@@ -495,7 +515,7 @@ export const ApplicationRoot: React.FC<ApplicationRootProps> = ({
             )}
 
             <SidebarInset>
-              {!isInIframe && (
+              {!isInIframe && magicbox.appMode !== "app" && (
                 <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
                   <div className="flex items-center gap-2 px-4">
                     <SidebarTrigger className="-ml-1" />

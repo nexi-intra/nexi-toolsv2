@@ -1,7 +1,7 @@
 "use client";
 import { https } from "@/app/koksmat0/httphelper";
 import { MagicboxContext } from "@/app/koksmat0/magicbox-context";
-import { run } from "@/app/koksmat0/magicservices";
+import { runMagicService } from "@/app/koksmat0/magicservices";
 
 import { useMsal, useAccount } from "@azure/msal-react";
 import { useContext, useEffect, useState } from "react";
@@ -89,7 +89,7 @@ export default function Process(props: ProcessProps) {
       if (!token) return;
       const calledTimestamp = new Date();
       const args = ["process", processname, token, JSON.stringify(payload)];
-      const result = await run(servicename, args, "", 600, "x");
+      const result = await runMagicService(servicename, args, "", 600, "x");
       magicbox.logServiceCall({
         calledTimestamp,
         responedTimestamp: new Date(),

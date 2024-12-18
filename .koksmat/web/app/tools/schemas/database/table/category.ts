@@ -17,7 +17,7 @@ export const schema = z.object({
     .nullable()
     .optional()
     .describe("Description of the category"),
-  Translations: z.object({}).passthrough().optional().describe("Translations"),
+  translations: z.object({}).passthrough().optional().describe("Translations"),
   sortOrder: z.string().optional().describe("Sort order"),
   color: z.string().optional(),
 }).describe(`

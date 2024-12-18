@@ -52,44 +52,44 @@ export const ToolSchema = SharedAttributes.extend({
     .url()
     .optional()
     .describe("Optional documentation URL for the tool"),
-  supportContact: z
-    .array(
-      z.object({
-        id: z.string(),
-        value: z.string(),
-        order: z.string(),
-      })
-    )
-    .optional()
-    .describe("Optional support contact for the tool"),
-  license: z
-    .array(
-      z.object({
-        id: z.string(),
-        value: z.string(),
-        order: z.string(),
-      })
-    )
-    .optional()
-    .describe("Optional license information for the tool"),
-  compatiblePlatforms: z
-    .array(z.string())
-    .optional()
-    .describe("Optional array of compatible platforms"),
-  systemRequirements: z
-    .string()
-    .optional()
-    .describe("Optional minimum system requirements"),
-  relatedToolIds: z
-    .array(
-      z.object({
-        id: z.string(),
-        value: z.string(),
-        order: z.string(),
-      })
-    )
-    .optional()
-    .describe("Optional array of related tools"),
+  // supportContact: z
+  //   .array(
+  //     z.object({
+  //       id: z.string(),
+  //       value: z.string(),
+  //       order: z.string(),
+  //     })
+  //   )
+  //   .optional()
+  //   .describe("Optional support contact for the tool"),
+  // license: z
+  //   .array(
+  //     z.object({
+  //       id: z.string(),
+  //       value: z.string(),
+  //       order: z.string(),
+  //     })
+  //   )
+  //   .optional()
+  //   .describe("Optional license information for the tool"),
+  // compatiblePlatforms: z
+  //   .array(z.string())
+  //   .optional()
+  //   .describe("Optional array of compatible platforms"),
+  // systemRequirements: z
+  //   .string()
+  //   .optional()
+  //   .describe("Optional minimum system requirements"),
+  // relatedToolIds: z
+  //   .array(
+  //     z.object({
+  //       id: z.string(),
+  //       value: z.string(),
+  //       order: z.string(),
+  //     })
+  //   )
+  //   .optional()
+  //   .describe("Optional array of related tools"),
   countries: z
     .array(
       z.object({
@@ -100,21 +100,21 @@ export const ToolSchema = SharedAttributes.extend({
     )
     .optional()
     .describe("Countries involved in the tool's development or usage"),
-  repositoryUrl: z
-    .string()
-    .url()
-    .optional()
-    .describe("URL of the tool's code repository"),
-  collaborationType: z
-    .array(
-      z.object({
-        id: z.string(),
-        value: z.string(),
-        order: z.string(),
-      })
-    )
-    .optional()
-    .describe("Type of collaboration (e.g., 'Open Source', 'Internal')"),
+  // repositoryUrl: z
+  //   .string()
+  //   .url()
+  //   .optional()
+  //   .describe("URL of the tool's code repository"),
+  // collaborationType: z
+  //   .array(
+  //     z.object({
+  //       id: z.string(),
+  //       value: z.string(),
+  //       order: z.string(),
+  //     })
+  //   )
+  //   .optional()
+  //   .describe("Type of collaboration (e.g., 'Open Source', 'Internal')"),
   documents: z
     .array(
       z.object({
@@ -124,22 +124,22 @@ export const ToolSchema = SharedAttributes.extend({
     )
     .optional()
     .describe("Array of important documents related to the tool"),
-  teamSize: z
-    .number()
-    .optional()
-    .describe("Number of team members working on the tool"),
-  primaryFocus: z
-    .array(
-      z.object({
-        id: z.string(),
-        value: z.string(),
-        order: z.string(),
-      })
-    )
-    .optional()
-    .describe(
-      "Primary focus or category of the tool (e.g., 'Business Productivity')"
-    ),
+  // teamSize: z
+  //   .number()
+  //   .optional()
+  //   .describe("Number of team members working on the tool"),
+  // primaryFocus: z
+  //   .array(
+  //     z.object({
+  //       id: z.string(),
+  //       value: z.string(),
+  //       order: z.string(),
+  //     })
+  //   )
+  //   .optional()
+  //   .describe(
+  //     "Primary focus or category of the tool (e.g., 'Business Productivity')"
+  //   ),
 });
 
 export type Tool = z.infer<typeof ToolSchema>;

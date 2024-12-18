@@ -7,6 +7,7 @@ keep: true
 */
 
 import { z } from "zod";
+import { translationsSchema } from "../../_shared";
 
 export const schema = z
   .object({
@@ -18,11 +19,7 @@ export const schema = z
       .nullable()
       .optional()
       .describe("Description of the purpose"),
-    Translations: z
-      .object({})
-      .passthrough()
-      .optional()
-      .describe("Translations"),
+    translations: translationsSchema,
     sortOrder: z.string().optional(),
   })
   .describe("Sort order");

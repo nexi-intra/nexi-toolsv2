@@ -73,10 +73,12 @@ export default function Authenticate(props: {
 
   useEffect(() => {
     const load = async () => {
+
       if (magicbox.authtoken) {
         settoken(magicbox.authtoken);
         return;
       }
+      //TODO: make the aquiring of token return a value that can be used here
       await aquireToken(apiScope);
     };
     if (!apiScope || apiScope === undefined) return;

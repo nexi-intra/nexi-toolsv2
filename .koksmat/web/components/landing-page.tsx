@@ -5,19 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChevronDown, Globe, List, Search, Users, Shield, Star, Zap, HelpCircle } from 'lucide-react'
 import UseCases from './use-cases'
-import { APPDISPLAYNAME } from '@/app/global'
-import { BRANCH } from '@/branch'
+import { appName } from '../lib/appName'
 
-function appName() {
-  const branch = BRANCH
-  if ((branch === "master") || (branch === "main")) {
-    return APPDISPLAYNAME
-  }
-  else {
-    return APPDISPLAYNAME + " (" + branch.toUpperCase() + " VERSION)"
-  }
-
-}
 export default function LandingPage() {
 
 

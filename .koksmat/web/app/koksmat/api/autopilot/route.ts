@@ -1,4 +1,3 @@
-import { run } from "@/app/koksmat0/magicservices";
 import { NatsConnection, connect, StringCodec } from "nats";
 import { NextResponse } from "next/server";
 

@@ -1,7 +1,7 @@
 import { SqlView } from "@/app/koksmat/src/v.next/schemas/sql_view";
 import * as z from "zod";
 
-import { SharedAttributes } from "../../_shared";
+import { SharedAttributes, translationsSchema } from "../../_shared";
 export const ToolSchema = SharedAttributes.extend({
   searchindex: z.string().nullable().describe(`searchIndex`),
   is_favorite: z.boolean().describe(`isFavorite`),
@@ -10,10 +10,10 @@ export const ToolSchema = SharedAttributes.extend({
     .nullable()
     .describe(`calculatedsearchindex`),
   description: z.string().nullable().optional().describe(`Tool description`),
-  translations: z.string().nullable().optional().describe(`Tool translations`),
+  translations: translationsSchema,
   category_id: z.number().describe(`Category id`),
   url: z.string().describe(`Tool url`),
-  status: z.string().describe(`Tool status`),
+  //status: z.string().describe(`Tool status`),
   icon: z.string().nullable().optional().describe(`Icon`),
   documents: z
     .array(

@@ -1,5 +1,3 @@
-import { run } from "@/app/koksmat0/magicservices";
-import { tryCatch } from "@/app/officeaddin/actions/outlook-samples";
 import { NatsConnection, connect, StringCodec } from "nats";
 
 export async function GET(
