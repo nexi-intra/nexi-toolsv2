@@ -14,7 +14,7 @@ export default function LanguageSelectorPage(props: { params: { language: Suppor
   useEffect(() => {
     setLanguage(props.params.language);
 
-    router.push("/" + APPNAME + "/tools/explorer");
+    router.push("/tools/pages/explorer");
   }, [props.params.language]);
 
   return (
