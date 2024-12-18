@@ -45,8 +45,10 @@ export function MyToolList(props: { searchFor?: string; onLoaded?: () => void })
 
           const toolView: ToolView = {
             id: tool.id,
-            name: tool.name,//getTranslation(tool.translations, "name", language, tool.name),
-            description: tool.description, // getTranslation(tool.translations, "description", language, tool.description),
+            name: //tool.name,
+              getTranslation(tool.translations, "name", language, tool.name),
+            description: //tool.description, 
+              getTranslation(tool.translations, "description", language, tool.description),
             url: tool.url,
             created_by: tool.created_by,
             updated_by: tool.updated_by,
