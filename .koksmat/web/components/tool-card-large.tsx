@@ -373,20 +373,15 @@ Telefono
     status: 'active',
     icon: '/nexiconnect.png',
     documentationUrl: 'https://example.com/docs',
-    supportContact: [],
-    license: [],
-    compatiblePlatforms: ['Windows', 'Mac', 'Linux'],
-    systemRequirements: 'Node.js 14+',
-    relatedToolIds: [],
+
+
     countries: [{ value: 'Italy', id: 1, order: '1' }],
-    repositoryUrl: 'https://github.com/example/sample-tool',
-    collaborationType: [],
+
     documents: [
 
       { name: 'Nexi Connect: il nuovo accesso al supporto IT', url: 'https://christianiabpos.sharepoint.com/sites/nexiintra-unit-gf-it/SitePages/it/Nexi-Connect.aspx' }
     ],
-    teamSize: 5,
-    primaryFocus: []
+
   })
   const [isFavorite, setIsFavorite] = useState(false)
 

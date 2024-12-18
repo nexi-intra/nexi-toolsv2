@@ -11,11 +11,14 @@ import { ViewNames } from "@/app/tools/schemas/database/view";
 import { databaseTable } from "@/app/tools/schemas/database/table";
 import { GenericTableEditor } from "@/app/koksmat/src/v.next/components";
 import { useUserProfile } from "./userprofile-context";
+import { useLanguage } from "./language-context";
+import { getTranslation } from "@/app/tools/schemas/_shared";
 
 export function ToolList() {
   const databaseName = "tools"
   const view = databaseQueries.getView("tools")
   const table = databaseTable.tool
+  const { language } = useLanguage()
   return (
     <DatabaseItemsViewer
       schema={view.schema}
@@ -27,12 +30,12 @@ export function ToolList() {
           onUpdated={() => document.location.reload()} id={0} />
       }}
       renderItem={(tool, viewMode) => {
-
+        debugger
         const toolView: ToolView = {
 
           id: tool.id,
-          name: tool.name,
-          description: tool.description,
+          name: getTranslation(tool.translations, "name", language, tool.name),
+          description: getTranslation(tool.translations, "description", language, tool.description),
           url: tool.url,
           created_by: tool.created_by,
           updated_by: tool.updated_by,
@@ -69,6 +72,7 @@ export function ToolExplorer(props: { searchFor?: string; onLoaded?: () => void 
   const { onLoaded, searchFor } = props
   const { version } = useUserProfile();
   const view = databaseQueries.getView("tools")
+  const { language } = useLanguage()
   return (
     <DatabaseItemsViewer
       tableName={databaseTable.tool.tablename}
@@ -81,8 +85,8 @@ export function ToolExplorer(props: { searchFor?: string; onLoaded?: () => void 
         const toolView: ToolView = {
 
           id: tool.id,
-          name: tool.name,
-          description: tool.description,
+          name: getTranslation(tool.translations, "name", language, tool.name),
+          description: getTranslation(tool.translations, "description", language, tool.description),
           url: tool.url,
           created_by: tool.created_by,
           updated_by: tool.updated_by,

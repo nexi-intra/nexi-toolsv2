@@ -253,20 +253,16 @@ Telefono
     status: 'active',
     icon: '/nexiconnect.png',
     documentationUrl: 'https://example.com/docs',
-    supportContact: [],
-    license: [],
-    compatiblePlatforms: ['Windows', 'Mac', 'Linux'],
-    systemRequirements: 'Node.js 14+',
-    relatedToolIds: [],
+
+
     countries: [],
-    repositoryUrl: 'https://github.com/example/sample-tool',
-    collaborationType: [],
+
+
     documents: [
       { name: 'Manuale Utente', url: 'https://christianiabpos.sharepoint.com/sites/nexiintra-unit-gf-it/SiteAssets/SitePages/Nexi-Connect(1)/Nexi_Connect_Come_fare_per.pdf?web=1' },
       { name: 'Nexi Connect: il nuovo accesso al supporto IT', url: 'https://christianiabpos.sharepoint.com/sites/nexiintra-unit-gf-it/SitePages/it/Nexi-Connect.aspx' }
     ],
-    teamSize: 5,
-    primaryFocus: []
+
   })
 
   const allowedTags = [

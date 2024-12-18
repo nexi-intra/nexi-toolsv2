@@ -46,6 +46,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
 
     const load = async () => {
       try {
+        seterror("")
         //setisLoading(true)
         //setItems([])
         kVerbose("component", "Starting read operation");
@@ -54,7 +55,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
         }
         const readDataOperation = await table.query(viewName, parameters)
         setisLoading(false)
-        if (readDataOperation?.length === 0) {
+        if (readDataOperation?.length === 0 || !readDataOperation) {
           setItems([])
           kInfo("component", "No data found");
           return
@@ -65,7 +66,7 @@ export function DatabaseItemsViewer<S extends z.ZodType<any, any, any>>({
         try {
           const parsedData = itemsSchema.safeParse(readDataOperation);
           if (parsedData.success === false) {
-            debugger
+            seterror("Cannot read" + parsedData.error)
 
 
           }

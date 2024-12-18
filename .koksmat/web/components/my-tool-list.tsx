@@ -8,6 +8,8 @@ import { use, useContext, useEffect } from "react";
 import { useUserProfile } from "./userprofile-context";
 import { Popup } from "@/app/officeaddin/components/popup";
 import { PopupFrame } from "./popup-frame";
+import { getTranslation } from "@/app/tools/schemas/_shared";
+import { useLanguage } from "./language-context";
 
 
 export function MyToolList(props: { searchFor?: string; onLoaded?: () => void }) {
@@ -15,6 +17,7 @@ export function MyToolList(props: { searchFor?: string; onLoaded?: () => void })
   const { version } = useUserProfile();
   const viewName = "my_tools"
   const view = databaseQueries.getView(viewName)
+  const { language } = useLanguage()
 
 
   return (
@@ -42,8 +45,8 @@ export function MyToolList(props: { searchFor?: string; onLoaded?: () => void })
 
           const toolView: ToolView = {
             id: tool.id,
-            name: tool.name,
-            description: tool.description,
+            name: tool.name,//getTranslation(tool.translations, "name", language, tool.name),
+            description: tool.description, // getTranslation(tool.translations, "description", language, tool.description),
             url: tool.url,
             created_by: tool.created_by,
             updated_by: tool.updated_by,
