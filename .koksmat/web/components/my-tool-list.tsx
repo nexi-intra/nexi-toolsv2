@@ -1,54 +1,83 @@
 "use client"
+
+import { z } from 'zod';
 import { DatabaseItemsViewer } from "@/app/koksmat/src/v.next/components/database-items-viewer";
 import { ToolCardMediumComponent } from "./tool-card-medium";
 import { ToolView } from '@/app/tools/schemas/forms'
-
 import { databaseQueries } from "@/app/tools/schemas/database";
 import { use, useContext, useEffect } from "react";
 import { useUserProfile } from "./userprofile-context";
 import { Popup } from "@/app/officeaddin/components/popup";
 import { PopupFrame } from "./popup-frame";
 import { getTranslation } from "@/app/tools/schemas/_shared";
-import { useLanguage } from "./language-context";
+import { useLanguage } from "@/components/language-context";
 
+type SupportedLanguage = "en" | "da" | "it";
+
+const translationSchema = z.object({
+  en: z.object({
+    noFavoriteTools: z.string(),
+    noFavoriteToolsDescription: z.string(),
+  }),
+  da: z.object({
+    noFavoriteTools: z.string(),
+    noFavoriteToolsDescription: z.string(),
+  }),
+  it: z.object({
+    noFavoriteTools: z.string(),
+    noFavoriteToolsDescription: z.string(),
+  }),
+});
+
+type TranslationType = z.infer<typeof translationSchema>;
+
+const translations: TranslationType = {
+  en: {
+    noFavoriteTools: "No favourite tools",
+    noFavoriteToolsDescription: "You haven't selected any favourite tools, find tools that you find relevant and click on the star",
+  },
+  da: {
+    noFavoriteTools: "Ingen favoritværktøjer",
+    noFavoriteToolsDescription: "Du har ikke valgt nogen favoritværktøjer, find værktøjer, du finder relevante, og klik på stjernen",
+  },
+  it: {
+    noFavoriteTools: "Nessuno strumento preferito",
+    noFavoriteToolsDescription: "Non hai selezionato alcuno strumento preferito, trova gli strumenti che ritieni rilevanti e clicca sulla stella",
+  },
+};
 
 export function MyToolList(props: { searchFor?: string; onLoaded?: () => void }) {
-
   const { version } = useUserProfile();
   const viewName = "my_tools"
   const view = databaseQueries.getView(viewName)
-  const { language } = useLanguage()
-
+  const { language } = useLanguage();
+  const t = translations[language as SupportedLanguage];
 
   return (
     <div className="relative">
-
-
       <DatabaseItemsViewer
         options={{
           heightBehaviour: "Dynamic",
-          hideToolbar: true, version,
-          componentNoItems: <div className="flex">
-            <div className="grow" />
-            <div className="p-10 border">
-              <div className="text-2xl mb-2">No favourite tools</div>
-              You haven&apos;t selected any favourite tools, find tools that you find relevant and click on the star
+          hideToolbar: true,
+          version,
+          componentNoItems: (
+            <div className="flex">
+              <div className="grow" />
+              <div className="p-10 border">
+                <div className="text-2xl mb-2">{t?.noFavoriteTools}</div>
+                {t?.noFavoriteToolsDescription}
+              </div>
+              <div className="grow" />
             </div>
-            <div className="grow" />
-          </div>
-
-
+          )
         }}
         searchFor={props.searchFor}
         schema={view.schema}
         renderItem={(tool, viewMode) => {
-
           const toolView: ToolView = {
             id: tool.id,
-            name: //tool.name,
-              getTranslation(tool.translations, "name", language, tool.name),
-            description: //tool.description, 
-              getTranslation(tool.translations, "description", language, tool.description),
+            name: getTranslation(tool.translations, "name", language, tool.name),
+            description: getTranslation(tool.translations, "description", language, tool.description),
             url: tool.url,
             created_by: tool.created_by,
             updated_by: tool.updated_by,
@@ -66,15 +95,19 @@ export function MyToolList(props: { searchFor?: string; onLoaded?: () => void })
             category: { color: tool.category_color, id: tool.category_id, value: tool.category_name, order: "" },
           };
 
-          return <div>
-            <ToolCardMediumComponent
-
-              tool={toolView}
-              isFavorite={tool.is_favorite} allowedTags={[]} />
-
-          </div>;
+          return (
+            <div>
+              <ToolCardMediumComponent
+                tool={toolView}
+                isFavorite={tool.is_favorite}
+                allowedTags={[]}
+              />
+            </div>
+          );
         }}
-        viewName={viewName} tableName={""} />
+        viewName={viewName}
+        tableName={""}
+      />
     </div>
   )
 }
