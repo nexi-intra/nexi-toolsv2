@@ -176,6 +176,7 @@ export function ToolsPage({ className = "" }: ToolsPageProps) {
           </div>
           <TableOfContents
             version={version}
+            language={language}
             sections={[{ title: t?.purposes, prefix: "purpose-" }]}
           />
         </aside>

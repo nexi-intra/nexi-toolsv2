@@ -230,7 +230,7 @@ export default function ToolCard({
           />
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 pt-3">
           <TagSelector
             tags={allowedTags}
             initialSelectedTags={[{
@@ -264,6 +264,7 @@ export default function ToolCard({
             tool_id={initialTool.id}
             email={magicbox.user?.email}
             defaultIsFavorite={isFavorite}
+            className='mt-[-8px]'
           />
         </div>
       </CardHeader>

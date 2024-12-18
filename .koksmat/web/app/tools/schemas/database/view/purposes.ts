@@ -1,6 +1,7 @@
 import { SqlView } from "@/app/koksmat/src/v.next/schemas/sql_view";
 import * as z from "zod";
-import { SharedAttributes } from "../../_shared";
+import { SharedAttributes, translationsSchema } from "../../_shared";
+import translations from "@/components/tool-card-medium";
 export const metadata: SqlView = {
   databaseName: "tools",
   sql: `SELECT * FROM purpose WHERE deleted_at IS NULL order by name`,
@@ -8,7 +9,7 @@ export const metadata: SqlView = {
     searchindex: z.string(),
     name: z.string(),
     description: z.string().nullable().optional(),
-    translations: z.string().nullable().optional(),
+    translations: translationsSchema,
 
     sortorder: z.string().nullable().optional(),
   }),

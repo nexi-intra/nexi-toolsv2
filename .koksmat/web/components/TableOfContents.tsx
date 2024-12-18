@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { ZeroTrust } from '@/components/zero-trust';
 import { ChevronUp, RefreshCw } from 'lucide-react';
 import { ComponentDoc } from './component-documentation-hub';
+import { useLanguage } from './language-context';
+import language from 'react-syntax-highlighter/dist/esm/languages/hljs/1c';
 
 
 // Define the schema for the props
@@ -11,6 +13,7 @@ const TableOfContentsSchema = z.object({
     title: z.string(),
     prefix: z.string(),
   })),
+  language: z.string(),
   className: z.string().optional(),
   version: z.number().optional(),
 });
@@ -41,6 +44,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = (props) => {
   const [tocItems, setTocItems] = useState<{ [key: string]: TOCItem[] }>({});
   const [activeId, setActiveId] = useState<string>('');
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const { language } = props
 
   // Function to extract TOC items from the page
   const extractTocItems = useCallback(() => {
@@ -61,7 +65,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = (props) => {
       });
     });
     setTocItems(newTocItems);
-  }, [props.sections]);
+  }, [props.sections, language]);
 
   // Scroll spy function
   const onScroll = useCallback(() => {
@@ -95,8 +99,8 @@ export const TableOfContents: React.FC<TableOfContentsProps> = (props) => {
     console.log('Version changed:', props.version);
     extractTocItems();
 
-    // Refresh the TOC when the version changes
-  }, [props.version])
+    // Refresh the TOC when the version changes or the language change
+  }, [props.version, language])
 
 
   const scrollToTop = () => {
@@ -167,6 +171,7 @@ const sections = [
   `,
   example: (
     <TableOfContents
+      language='en'
       sections={[
         { title: 'Introduction', prefix: 'intro-' },
         { title: 'Main Content', prefix: 'main-' },
